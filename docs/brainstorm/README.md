@@ -1,0 +1,1 @@
+These sort of docs are generally used to help me figure out how I want to organize code. I do lots of rambling, and lots of this stuff might not make sense. 
