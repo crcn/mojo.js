@@ -11,6 +11,11 @@ var jam = {
             "main": "./lib/index.js"
         },
         {
+            "name": "backbone",
+            "location": "vendor/backbone",
+            "main": "./backbone.js"
+        },
+        {
             "name": "comerr",
             "location": "vendor/comerr",
             "main": "./lib/index.js"
@@ -18,6 +23,11 @@ var jam = {
         {
             "name": "cstep",
             "location": "vendor/cstep",
+            "main": "./lib/index.js"
+        },
+        {
+            "name": "disposable",
+            "location": "vendor/disposable",
             "main": "./lib/index.js"
         },
         {
@@ -41,9 +51,19 @@ var jam = {
             "main": "jquery.js"
         },
         {
+            "name": "jquery-transit",
+            "location": "vendor/jquery-transit",
+            "main": "jquery.transit.js"
+        },
+        {
             "name": "outcome",
             "location": "vendor/outcome",
             "main": "./lib/index.js"
+        },
+        {
+            "name": "require-css",
+            "location": "vendor/require-css",
+            "main": "css.js"
         },
         {
             "name": "sift",
@@ -73,13 +93,15 @@ var jam = {
         {
             "name": "underscore",
             "location": "vendor/underscore",
-            "main": "underscore.js"
+            "main": "./underscore.js"
         }
     ],
     "version": "0.2.15",
     "shim": {
-        "underscore": {
-            "exports": "_"
+        "jquery-transit": {
+            "deps": [
+                "jquery"
+            ]
         }
     }
 };
@@ -101,6 +123,11 @@ if (typeof require !== "undefined" && require.config) {
             "main": "./lib/index.js"
         },
         {
+            "name": "backbone",
+            "location": "vendor/backbone",
+            "main": "./backbone.js"
+        },
+        {
             "name": "comerr",
             "location": "vendor/comerr",
             "main": "./lib/index.js"
@@ -108,6 +135,11 @@ if (typeof require !== "undefined" && require.config) {
         {
             "name": "cstep",
             "location": "vendor/cstep",
+            "main": "./lib/index.js"
+        },
+        {
+            "name": "disposable",
+            "location": "vendor/disposable",
             "main": "./lib/index.js"
         },
         {
@@ -131,9 +163,19 @@ if (typeof require !== "undefined" && require.config) {
             "main": "jquery.js"
         },
         {
+            "name": "jquery-transit",
+            "location": "vendor/jquery-transit",
+            "main": "jquery.transit.js"
+        },
+        {
             "name": "outcome",
             "location": "vendor/outcome",
             "main": "./lib/index.js"
+        },
+        {
+            "name": "require-css",
+            "location": "vendor/require-css",
+            "main": "css.js"
         },
         {
             "name": "sift",
@@ -163,12 +205,14 @@ if (typeof require !== "undefined" && require.config) {
         {
             "name": "underscore",
             "location": "vendor/underscore",
-            "main": "underscore.js"
+            "main": "./underscore.js"
         }
     ],
     "shim": {
-        "underscore": {
-            "exports": "_"
+        "jquery-transit": {
+            "deps": [
+                "jquery"
+            ]
         }
     }
 });
@@ -190,6 +234,11 @@ else {
             "main": "./lib/index.js"
         },
         {
+            "name": "backbone",
+            "location": "vendor/backbone",
+            "main": "./backbone.js"
+        },
+        {
             "name": "comerr",
             "location": "vendor/comerr",
             "main": "./lib/index.js"
@@ -197,6 +246,11 @@ else {
         {
             "name": "cstep",
             "location": "vendor/cstep",
+            "main": "./lib/index.js"
+        },
+        {
+            "name": "disposable",
+            "location": "vendor/disposable",
             "main": "./lib/index.js"
         },
         {
@@ -220,9 +274,19 @@ else {
             "main": "jquery.js"
         },
         {
+            "name": "jquery-transit",
+            "location": "vendor/jquery-transit",
+            "main": "jquery.transit.js"
+        },
+        {
             "name": "outcome",
             "location": "vendor/outcome",
             "main": "./lib/index.js"
+        },
+        {
+            "name": "require-css",
+            "location": "vendor/require-css",
+            "main": "css.js"
         },
         {
             "name": "sift",
@@ -252,12 +316,14 @@ else {
         {
             "name": "underscore",
             "location": "vendor/underscore",
-            "main": "underscore.js"
+            "main": "./underscore.js"
         }
     ],
     "shim": {
-        "underscore": {
-            "exports": "_"
+        "jquery-transit": {
+            "deps": [
+                "jquery"
+            ]
         }
     }
 };

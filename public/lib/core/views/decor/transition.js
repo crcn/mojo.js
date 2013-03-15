@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./base"], function(BaseViewDecorator) {
+  define(["./base", "underscore", "jquery-transit", "jquery"], function(BaseViewDecorator, _, transit, $) {
     var TransitionDecorator;
     TransitionDecorator = (function(_super) {
 
@@ -18,7 +18,12 @@
 
 
       TransitionDecorator.prototype.setup = function(callback) {
-        return callback();
+        var enter;
+        enter = this.view.get("transition.enter");
+        if (!enter) {
+          return callback;
+        }
+        return this.transition(enter, callback);
       };
 
       /*
@@ -26,7 +31,39 @@
 
 
       TransitionDecorator.prototype.teardown = function(callback) {
-        return callback();
+        var exit;
+        exit = this.view.get("transition.exit");
+        if (!exit) {
+          return callback;
+        }
+        return this.transition(exit, callback);
+      };
+
+      /*
+      */
+
+
+      TransitionDecorator.prototype.transition = function(transition, callback) {
+        var element;
+        element = this.element();
+        if (transition.from) {
+          element.css(transition.from);
+        }
+        return element.transit(transition.to || transition, callback);
+      };
+
+      /*
+      */
+
+
+      TransitionDecorator.prototype.element = function() {
+        var selector;
+        selector = this.view.get("transition.selector") || this.view.get("transition.element");
+        if (selector) {
+          return this.view.element.find(selector);
+        } else {
+          return view.element;
+        }
       };
 
       return TransitionDecorator;

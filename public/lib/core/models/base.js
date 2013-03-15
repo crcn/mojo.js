@@ -30,6 +30,18 @@
         return _results;
       };
 
+      /*
+      */
+
+
+      Model.prototype.validate = function(callback) {};
+
+      /*
+      */
+
+
+      Model.prototype.save = function(callback) {};
+
       return Model;
 
     })(Bindable);

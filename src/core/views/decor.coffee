@@ -15,12 +15,16 @@ define ["./base"], (BaseView) ->
 
       @_view = options.get "view"
 
-
-    
+      
+      @glue "modelLocator", @_view, "modelLocator"
 
 
     ###
     ###
 
-    _attached: () ->
-      @_view.attach @get("childElement")
+    attach: (element, callback) ->
+      super.attach element, () =>
+        @_view.attach @get("children"), callback
+
+
+

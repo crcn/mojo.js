@@ -30,7 +30,7 @@
 
 
       TemplateViewDecorator.prototype.templateData = function() {
-        return this.view.get();
+        return this.view.get("data");
       };
 
       return TemplateViewDecorator;

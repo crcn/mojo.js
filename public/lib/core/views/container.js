@@ -11,6 +11,8 @@
       __extends(ContainerView, _super);
 
       function ContainerView() {
+        this._setModelLocator = __bind(this._setModelLocator, this);
+
         this._attachChild = __bind(this._attachChild, this);
 
         this._onChildrenUpdated = __bind(this._onChildrenUpdated, this);
@@ -28,7 +30,8 @@
           childElement: "div"
         });
         this.children = new Collection();
-        return this.children.source(options.get("children") || []);
+        this.children.source(options.get("children") || []);
+        return this.bind("modelLocator", this._setModelLocator);
       };
 
       /*
@@ -109,7 +112,8 @@
         if (callback == null) {
           callback = (function() {});
         }
-        return child.attach(this._childElement().append("<" + (this.get("childElement")) + " />").children().last());
+        child.attach(this._childElement().append("<" + (this.get("childElement")) + " />").children().last());
+        return this._setChildModelLocator(child);
       };
 
       /*
@@ -122,6 +126,29 @@
         } else {
           return this.element;
         }
+      };
+
+      /*
+      */
+
+
+      ContainerView.prototype._setModelLocator = function() {
+        var child, _i, _len, _ref, _results;
+        _ref = this.children.source();
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          _results.push(this._setChildModelLocator(child));
+        }
+        return _results;
+      };
+
+      /*
+      */
+
+
+      ContainerView.prototype._setChildModelLocator = function(child) {
+        return child.set("modelLocator", this.get("modelLocator"));
       };
 
       return ContainerView;

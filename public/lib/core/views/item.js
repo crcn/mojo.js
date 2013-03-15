@@ -14,10 +14,7 @@
       }
 
       ItemView.prototype.init = function(options) {
-        var _this = this;
-        return options.on("data.*", function() {
-          return _this.rerender();
-        });
+        return options.bind("data", this.rerender);
       };
 
       return ItemView;

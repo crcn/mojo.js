@@ -1,4 +1,4 @@
-define ["./template", "asyngleton"], (Template, asyngleton) ->
+define ["./template", "asyngleton", "underscore"], (Template, asyngleton, _) ->
 
   
   class TemplateFactory

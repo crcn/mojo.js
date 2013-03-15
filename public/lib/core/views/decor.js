@@ -21,15 +21,19 @@
         options.defaults({
           childElement: ".view"
         });
-        return this._view = options.get("view");
+        this._view = options.get("view");
+        return this.glue("modelLocator", this._view, "modelLocator");
       };
 
       /*
       */
 
 
-      DecorView.prototype._attached = function() {
-        return this._view.attach(this.get("childElement"));
+      DecorView.prototype.attach = function(element, callback) {
+        var _this = this;
+        return DecorView.__super__.attach.apply(this, arguments).attach(element, function() {
+          return _this._view.attach(_this.get("children"), callback);
+        });
       };
 
       return DecorView;

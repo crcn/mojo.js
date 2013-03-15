@@ -1,0 +1,32 @@
+{
+  "name": "jquery-transit",
+  "version": "0.9.9",
+  "description": "jQuery Transit is a plugin for to help you do CSS transformations and transitions in jQuery.",
+  "homepage": "https://github.com/rstacruz/jquery.transit",
+  "keywords": [
+    "css3",
+    "transforms",
+    "translate",
+    "jquery"
+  ],
+  "jam": {
+    "dependencies": {
+      "jquery": ">1.4.3"
+    },
+    "main": "jquery.transit.js",
+    "shim": {
+      "deps": ["jquery"]
+    }
+  },
+  "licenses": [{
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php"
+    }
+  ],
+  "repositories": [{
+      "type": "git", 
+      "url": "https://github.com/rstacruz/jquery.transit.git"
+    }
+  ],
+  "github": "https://github.com/rstacruz/jquery.transit"
+}

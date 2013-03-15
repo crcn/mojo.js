@@ -13,11 +13,10 @@ define ["./html", "outcome"], (HtmlViewDecorator, outcome) ->
         callback()
 
 
-
     ###
     ###
 
-    templateData: () -> @view.get()
+    templateData: () -> @view.get "data"
 
 
 

@@ -9,7 +9,7 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore", "../util
 
       # the model consists of THIS object, along with the options provided
       @options   = new Model _.extend {}, options, @
-      compose @, @options, ["get", "has", "set", "bind"]
+      compose @, @options, ["get", "has", "set", "bind", "glue"]
 
       @decorator = new ViewDecorator @
 
@@ -29,8 +29,12 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore", "../util
 
     init: (options) ->
 
+      options.set "data.view", @
+
       throw new Error("already initialized") if @_initialized
       @_initialized = true
+
+      # options.bind "data", @
 
     ###
      returns a search for a particular element
@@ -60,6 +64,8 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore", "../util
     ###
 
     rerender: (callback = ()->) =>
+      if typeof callback isnt "function"
+        callback = (() ->)
       return callback() if not @selector
       @attach @selector, callback
 

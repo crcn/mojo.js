@@ -21,7 +21,7 @@
         this.rerender = __bind(this.rerender, this);
 
         this.options = new Model(_.extend({}, options, this));
-        compose(this, this.options, ["get", "has", "set", "bind"]);
+        compose(this, this.options, ["get", "has", "set", "bind", "glue"]);
         this.decorator = new ViewDecorator(this);
         this._o = outcome.e(this);
         this.init(this.options);
@@ -33,6 +33,7 @@
 
 
       BaseView.prototype.init = function(options) {
+        options.set("data.view", this);
         if (this._initialized) {
           throw new Error("already initialized");
         }
@@ -76,6 +77,9 @@
       BaseView.prototype.rerender = function(callback) {
         if (callback == null) {
           callback = function() {};
+        }
+        if (typeof callback !== "function") {
+          callback = (function() {});
         }
         if (!this.selector) {
           return callback();

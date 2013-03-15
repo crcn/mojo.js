@@ -96,7 +96,7 @@ define ["underscore",
 
         if @_changed
           @_changed = false
-          @_decorArray = _.values(@_decorators).sort (a, b) -> if a.priority > b.priority then -1 else 1
+          @_decorArray = _.values(@_decorators).sort (a, b) -> if a.priority > b.priority then 1 else -1
 
 
 

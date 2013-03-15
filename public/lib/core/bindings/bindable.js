@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./eventTree", "./binding", "events", "dref"], function(EventTree, Binding, events, dref) {
+  define(["./eventTree", "./binding", "./glue", "events", "dref"], function(EventTree, Binding, Glue, events, dref) {
     var Bindable;
     return Bindable = (function(_super) {
 
@@ -55,7 +55,7 @@
       };
 
       /*
-           called immediately
+           binds a property to a listener. This is called immediately if there's a value
       */
 
 
@@ -64,7 +64,33 @@
           listener = property;
           property = void 0;
         }
-        return this._emitter.on(property, new Binding(this, property, listener).listener);
+        return this.watch(property, new Binding(this, property, listener).listener);
+      };
+
+      /*
+           Glues two bindable items together
+      */
+
+
+      Bindable.prototype.glue = function(fromProperty, to, toProperty) {
+        if (arguments.length === 2) {
+          toProperty = to;
+          to = this;
+        }
+        return new Glue(this, fromProperty, to, toProperty);
+      };
+
+      /*
+           watches for any change in the bindable data. This is ONLY called on change
+      */
+
+
+      Bindable.prototype.watch = function(property, listener) {
+        if (arguments.length === 1) {
+          listener = property;
+          property = void 0;
+        }
+        return this._emitter.on(property, listener);
       };
 
       return Bindable;

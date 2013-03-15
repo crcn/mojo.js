@@ -1,4 +1,4 @@
-define ["./eventTree", "./binding", "events", "dref"], (EventTree, Binding, events, dref) ->
+define ["./eventTree", "./binding", "./glue", "events", "dref"], (EventTree, Binding, Glue, events, dref) ->
   
   class Bindable extends events.EventEmitter
 
@@ -37,7 +37,7 @@ define ["./eventTree", "./binding", "events", "dref"], (EventTree, Binding, even
 
 
     ###
-     called immediately
+     binds a property to a listener. This is called immediately if there's a value
     ###
 
     bind: (property, listener) ->
@@ -45,8 +45,33 @@ define ["./eventTree", "./binding", "events", "dref"], (EventTree, Binding, even
       if arguments.length is 1
         listener = property
         property = undefined
+  
+      @watch property, new Binding(@, property, listener).listener
 
-      @_emitter.on property, new Binding(@, property, listener).listener
+    ###
+     Glues two bindable items together
+    ###
+
+    glue: (fromProperty, to, toProperty) ->
+
+      if arguments.length is 2
+        toProperty = to
+        to = @
+
+      new Glue @, fromProperty, to, toProperty
+
+
+    ###
+     watches for any change in the bindable data. This is ONLY called on change
+    ###
+
+    watch: (property, listener) ->
+
+      if arguments.length is 1
+        listener = property
+        property = undefined
+
+      @_emitter.on property, listener
 
 
 

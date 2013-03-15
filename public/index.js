@@ -1,47 +1,26 @@
-require(["lib/core/bindings/bindable", 
-  "lib/core/templates/factory", 
-  "lib/core/views/item",
-  "lib/core/views/container",
+require(["lib/core/templates/factory", 
+  "require-css!css/main.css",
   "lib/core/views/state",
-  "jquery",
-  "structr"], 
-  function(Binding, TemplateFactory, ItemView, ContainerView, StateView, $, structr) {
-
+  "lib/core/views/base",
+  "jquery"], 
+  function(TemplateFactory, css, StateView, View, $) {
 
   var tf = new TemplateFactory();
 
-  var PersonView = structr(ItemView, {
-    template: tf.get("test")
+  var v = new View({
+    template: tf.get("modal"),
+    transition: {
+      element: ".modal-container",
+      enter: {
+        from: { opacity: 0, top: 50 },
+        to: { opacity: 1, top: 100 }
+      },
+      exit: {
+        to: { opacity: 0, top: 300 }
+      }
+    }
   });
 
 
-  /*
-  
-  var sv = new StateView({
-    states: [
-      new ItemView({ 
-
-      })
-    ]
-  })
-
-  */
-
-  var cv = new StateView({
-    states: [
-      new PersonView({
-        name: "john"
-      }),
-      new PersonView({
-        name: "craig"
-      })
-    ]
-  });
-
-
-  cv.attach("#container");
-
-  setTimeout(function() {
-    cv.set("currentIndex", 1)
-  }, 1000);
+  v.attach("#application");
 });

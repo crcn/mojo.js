@@ -11,4 +11,16 @@ define ["../bindings/bindable"], (Bindable) ->
           @set key, defaults[key]
 
 
+    ###
+    ###
+
+    validate: (callback) ->
+
+
+    ###
+    ###
+
+    save: (callback) ->
+
+
 

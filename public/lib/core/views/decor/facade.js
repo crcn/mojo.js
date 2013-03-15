@@ -110,9 +110,9 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
           this._changed = false;
           return this._decorArray = _.values(this._decorators).sort(function(a, b) {
             if (a.priority > b.priority) {
-              return -1;
-            } else {
               return 1;
+            } else {
+              return -1;
             }
           });
         }
