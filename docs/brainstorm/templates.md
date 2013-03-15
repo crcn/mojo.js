@@ -40,6 +40,8 @@ define ["templates/factory.js"], (TemplateFactory) ->
     titleBar: templates.get("titleBar")
   }
 
+```
+
 
 ## API
 
