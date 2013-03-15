@@ -7,18 +7,17 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
     ###
     ###
 
-    constructor: (@options = {}) ->
+    init: (options) ->
 
       super options
 
-      _.defaults(options, {
+      options.defaults {
         childrenElement: ".children",
         childElement: "div"
-      })  
+      }
 
       @children = new Collection()
-
-      @children.source(@options.children or [])
+      @children.source(options.get("children") or [])
 
     ###
     ###
@@ -79,11 +78,11 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
     ###
 
     _attachChild: (child, callback = (() ->)) =>
-      child.attach @_childElement().append("<#{@options.childElement} />").children().last()
+      child.attach @_childElement().append("<#{@get("childElement")} />").children().last()
 
     ###
     ###
 
-    _childElement: () -> if @options.childrenElement then @$ @options.childrenElement else @element
+    _childElement: () -> if @get("childrenElement") then @$ @get("childrenElement") else @element
 
 

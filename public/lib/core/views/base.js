@@ -4,7 +4,7 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "events", "outcome"], function($, events, outcome) {
+  define(["jquery", "events", "../models/base", "outcome", "underscore"], function($, events, Model, outcome, _) {
     var BaseView;
     return BaseView = (function(_super) {
 
@@ -15,11 +15,41 @@
 
 
       function BaseView(options) {
-        this.options = options != null ? options : {};
+        if (options == null) {
+          options = {};
+        }
         this.rerender = __bind(this.rerender, this);
 
+        this._options = new Model(options);
         this._o = outcome.e(this);
+        this.init(this._options);
       }
+
+      /*
+      */
+
+
+      BaseView.prototype.get = function() {
+        return this._options.get.apply(this._options, arguments);
+      };
+
+      BaseView.prototype.set = function() {
+        return this._options.set.apply(this._options, arguments);
+      };
+
+      BaseView.prototype.bind = function() {
+        return this._options.bind.apply(this._options, arguments);
+      };
+
+      /*
+      */
+
+
+      BaseView.prototype.init = function(options) {
+        if (options.template) {
+          return this.template = options.template;
+        }
+      };
 
       /*
            returns a search for a particular element
@@ -43,7 +73,7 @@
         }
         this.element = typeof selectorOrElement === "string" ? $(selectorOrElement) : selectorOrElement;
         this.selector = selectorOrElement;
-        if (!this.options.template) {
+        if (!this.template) {
           return callback();
         }
         return this.renderTemplate(this._o.e(callback).s(function(content) {
@@ -73,7 +103,7 @@
 
 
       BaseView.prototype.templateData = function() {
-        return this.options.data || {};
+        return this.get("data") || {};
       };
 
       /*
@@ -82,10 +112,10 @@
 
 
       BaseView.prototype.renderTemplate = function(callback) {
-        if (!this.options.template) {
+        if (!this.template) {
           return callback(null, "");
         }
-        return this.options.template.render(this.templateData(), callback);
+        return this.template.render(this.templateData(), callback);
       };
 
       return BaseView;

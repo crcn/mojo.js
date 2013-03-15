@@ -10,24 +10,26 @@
 
       __extends(ContainerView, _super);
 
+      function ContainerView() {
+        this._attachChild = __bind(this._attachChild, this);
+
+        this._onChildrenUpdated = __bind(this._onChildrenUpdated, this);
+        return ContainerView.__super__.constructor.apply(this, arguments);
+      }
+
       /*
       */
 
 
-      function ContainerView(options) {
-        this.options = options != null ? options : {};
-        this._attachChild = __bind(this._attachChild, this);
-
-        this._onChildrenUpdated = __bind(this._onChildrenUpdated, this);
-
-        ContainerView.__super__.constructor.call(this, options);
-        _.defaults(options, {
+      ContainerView.prototype.init = function(options) {
+        ContainerView.__super__.init.call(this, options);
+        options.defaults({
           childrenElement: ".children",
           childElement: "div"
         });
         this.children = new Collection();
-        this.children.source(this.options.children || []);
-      }
+        return this.children.source(options.get("children") || []);
+      };
 
       /*
       */
@@ -107,7 +109,7 @@
         if (callback == null) {
           callback = (function() {});
         }
-        return child.attach(this._childElement().append("<" + this.options.childElement + " />").children().last());
+        return child.attach(this._childElement().append("<" + (this.get("childElement")) + " />").children().last());
       };
 
       /*
@@ -115,8 +117,8 @@
 
 
       ContainerView.prototype._childElement = function() {
-        if (this.options.childrenElement) {
-          return this.$(this.options.childrenElement);
+        if (this.get("childrenElement")) {
+          return this.$(this.get("childrenElement"));
         } else {
           return this.element;
         }

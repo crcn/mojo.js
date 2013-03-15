@@ -2,18 +2,36 @@ require(["lib/core/bindings/bindable",
   "lib/core/templates/factory", 
   "lib/core/views/item",
   "lib/core/views/container",
-  "jquery"], 
-  function(Binding, TemplateFactory, ItemView, ContainerView) {
+  "jquery",
+  "structr"], 
+  function(Binding, TemplateFactory, ItemView, ContainerView, $, structr) {
 
-  var tf = new TemplateFactory(),
-  cv = new ContainerView({
+
+  var tf = new TemplateFactory();
+
+  var PersonView = structr(ItemView, {
+    template: tf.get("test")
+  });
+
+
+  /*
+  
+  var sv = new StateView({
+    states: [
+      new ItemView({ 
+
+      })
+    ]
+  })
+
+  */
+
+  var cv = new ContainerView({
     children: [
-      new ItemView({
-        template: tf.get("test"),
+      new PersonView({
         data: { name: "john" }
       }),
       new ItemView({
-        template: tf.get("test"),
         data: { name: "craig" }
       })
     ]
@@ -25,9 +43,8 @@ require(["lib/core/bindings/bindable",
   var i = 0;
 
   setInterval(function() {
-    
-    cv.children.addItem(new ItemView({
-      template: tf.get("test"),
+
+    cv.children.addItem(new PersonView({
       data: { name: String(i++) }
     }));
 

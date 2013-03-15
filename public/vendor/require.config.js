@@ -56,6 +56,11 @@ var jam = {
             "main": "./lib/step.js"
         },
         {
+            "name": "structr",
+            "location": "vendor/structr",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "text",
             "location": "vendor/text",
             "main": "text.js"
@@ -141,6 +146,11 @@ if (typeof require !== "undefined" && require.config) {
             "main": "./lib/step.js"
         },
         {
+            "name": "structr",
+            "location": "vendor/structr",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "text",
             "location": "vendor/text",
             "main": "text.js"
@@ -223,6 +233,11 @@ else {
             "name": "step",
             "location": "vendor/step",
             "main": "./lib/step.js"
+        },
+        {
+            "name": "structr",
+            "location": "vendor/structr",
+            "main": "./lib/index.js"
         },
         {
             "name": "text",

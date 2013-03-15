@@ -13,6 +13,23 @@
         return Model.__super__.constructor.apply(this, arguments);
       }
 
+      /*
+      */
+
+
+      Model.prototype.defaults = function(defaults) {
+        var key, _results;
+        _results = [];
+        for (key in defaults) {
+          if (!this.get(key)) {
+            _results.push(this.set(key, defaults[key]));
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      };
+
       return Model;
 
     })(Bindable);

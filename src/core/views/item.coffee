@@ -5,9 +5,9 @@ define ["./base", "../models/base"], (BaseView, BaseModel) ->
     ###
     ###
 
-    constructor: (options = {}) ->
+    init: (options) ->
       super options
-      @source options.data or {}
+      @source options.get("data") or {}
 
     ###
     ###

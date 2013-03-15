@@ -10,19 +10,19 @@
 
       __extends(ItemView, _super);
 
+      function ItemView() {
+        this._onTargetUpdate = __bind(this._onTargetUpdate, this);
+        return ItemView.__super__.constructor.apply(this, arguments);
+      }
+
       /*
       */
 
 
-      function ItemView(options) {
-        if (options == null) {
-          options = {};
-        }
-        this._onTargetUpdate = __bind(this._onTargetUpdate, this);
-
-        ItemView.__super__.constructor.call(this, options);
-        this.source(options.data || {});
-      }
+      ItemView.prototype.init = function(options) {
+        ItemView.__super__.init.call(this, options);
+        return this.source(options.get("data") || {});
+      };
 
       /*
       */
