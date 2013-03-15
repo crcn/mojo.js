@@ -10,7 +10,8 @@
     "dependencies": {
       "jquery": "1.7.x",
       "underscore": "*",
-      "events": "0.0.x"
+      "events": "0.0.x",
+      "async": "0.2.x"
     },
     "config": {
       "paths": {
@@ -23,7 +24,7 @@
     "comerr": "0.0.x",
     "sift": "0.0.x",
     "cstep": "0.0.x",
-    "asyngleton": "0.0.x",
+    "asyngleton": "0.1.x",
     "outcome": "0.0.x",
     "step": "0.0.x"
   }

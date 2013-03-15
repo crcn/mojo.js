@@ -21,7 +21,7 @@ function singleton(fn) {
 		var args, cb, callback = arguments[arguments.length - 1];
 
 		if(!(typeof callback == "function")) {
-			callback = function(){};
+			callback = function(){ };
 		}
 
 		//result already set? return the value
@@ -57,6 +57,7 @@ function singleton(fn) {
 
 		//returned a value? Then it's not async...
 		fn.apply(this, args);
+
 		return this;
 	};
 

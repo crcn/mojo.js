@@ -13,7 +13,7 @@ define ["jquery", "events", "outcome"], ($, events, outcome) ->
      returns a search for a particular element
     ###
 
-    $: (search) -> $.find search
+    $: (search) -> @element?.find search
 
     ###
      attaches to an element
@@ -24,9 +24,11 @@ define ["jquery", "events", "outcome"], ($, events, outcome) ->
       @element  = if typeof selectorOrElement is "string" then $(selectorOrElement) else selectorOrElement
       @selector = selectorOrElement
 
+      return callback() if not @options.template
+
       @renderTemplate @_o.e(callback).s (content) =>
         @element.html content
-        callback
+        callback()
 
     ###
      re-renders an element

@@ -36,5 +36,4 @@ define ["./base", "../models/base"], (BaseView, BaseModel) ->
     ###
 
     _onTargetUpdate: () =>
-      console.log @_target.get()
       @rerender()

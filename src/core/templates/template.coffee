@@ -19,7 +19,7 @@ define ["require", "jquery", "asyngleton"], (require, $, asyngleton) ->
     render: (options, callback) ->
 
       # load will be skipped if the template is already loaded
-      @load () =>
+      @load () => 
         @_renderer.render options, callback
 
       @
@@ -32,6 +32,7 @@ define ["require", "jquery", "asyngleton"], (require, $, asyngleton) ->
     load: asyngleton (callback) ->
 
       return callback null, @source if @source
+
 
       # first load the engine
       require ["./engines/#{@_engine}"], (engine) =>

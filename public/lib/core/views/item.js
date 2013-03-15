@@ -55,7 +55,6 @@
 
 
       ItemView.prototype._onTargetUpdate = function() {
-        console.log(this._target.get());
         return this.rerender();
       };
 

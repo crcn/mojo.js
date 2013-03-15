@@ -27,7 +27,8 @@
 
 
       BaseView.prototype.$ = function(search) {
-        return $.find(search);
+        var _ref;
+        return (_ref = this.element) != null ? _ref.find(search) : void 0;
       };
 
       /*
@@ -42,9 +43,12 @@
         }
         this.element = typeof selectorOrElement === "string" ? $(selectorOrElement) : selectorOrElement;
         this.selector = selectorOrElement;
+        if (!this.options.template) {
+          return callback();
+        }
         return this.renderTemplate(this._o.e(callback).s(function(content) {
           _this.element.html(content);
-          return callback;
+          return callback();
         }));
       };
 

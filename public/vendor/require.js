@@ -2004,6 +2004,11 @@ var requirejs, require, define;
 var jam = {
     "packages": [
         {
+            "name": "async",
+            "location": "vendor/async",
+            "main": "lib/async.js"
+        },
+        {
             "name": "asyngleton",
             "location": "vendor/asyngleton",
             "main": "./lib/index.js"
@@ -2084,6 +2089,11 @@ if (typeof require !== "undefined" && require.config) {
     },
     "packages": [
         {
+            "name": "async",
+            "location": "vendor/async",
+            "main": "lib/async.js"
+        },
+        {
             "name": "asyngleton",
             "location": "vendor/asyngleton",
             "main": "./lib/index.js"
@@ -2162,6 +2172,11 @@ else {
         "templates": "public/templates"
     },
     "packages": [
+        {
+            "name": "async",
+            "location": "vendor/async",
+            "main": "lib/async.js"
+        },
         {
             "name": "asyngleton",
             "location": "vendor/asyngleton",

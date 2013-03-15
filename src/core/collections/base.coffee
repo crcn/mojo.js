@@ -1,4 +1,4 @@
-define ["events", "_"], (events, _) ->
+define ["events", "underscore"], (events, _) ->
   
   class BaseCollection extends events.EventEmitter
 
@@ -13,6 +13,11 @@ define ["events", "_"], (events, _) ->
     ###
 
     source: (value) ->
+
+      # bind
+      #if value instanceof BaseCollection
+
+
       return @_source.concat() if not arguments.length
       @_emit "reset", { source: @_source = value }
 
@@ -21,6 +26,11 @@ define ["events", "_"], (events, _) ->
 
     addItem: (item) ->
       @addItemAt item, @_source.length
+
+    ###
+    ###
+
+    getItemAt: (index) -> @_source[index]
 
     ###
     ###
