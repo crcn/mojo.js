@@ -17,9 +17,5 @@
   "readme": "### Example\n\n```javascript\n\nvar asyngleton = require('../'),\nfs = require('fs');\n\n//called ONCE\nvar readDir = asyngleton(function(callback) {\n\tfs.readdir(__dirname, callback);\n})\n\n//initializes the singleton method above\nreadDir(function(err, files) {\n\t//do stuff\n})\n\n//called after there's a result\nreadDir(function(err, files) {\n\t//do stuff\n});\n\n```\n\n\n### API\n\n#### asyngleton(factory)\n\nCreates a new asyngleton function.\n\n- `factory` - the factory method for creating the singleton. This is called ONCE.\n\n#### .reset()\n\nResets the target asyngleton so the factory can be called again.\n\n```javascript\n\nvar fs     = require('fs'),\nasyngleton = require('asyngleton');\n\nvar readDir = asyngleton(function(callback) {\n\tfs.readdir(__dirname, callback);\n});\n\nreadDir(function(err, files) {\n\t\n\t//make the readDir factory callable again\n\treadDir.reset();\n\n\t//do stuff...\n});\n\n```\n\n#### .dictionary()\n\ncreates a dictionary of singletons\n\n```javascript\n\nvar dict = require('asyngleton').dictionary(),\nfs = require('fs');\n\nvar readThisDir = dict.get(\"readThisDir\", function(onSingleton) {\n\tfs.read(__dirname, onSingleton);\n});\n\nvar readLibDir = dict.get(\"readLibDir\", function(onSingleton) {\n\tfs.read(__dirname + \"/lib\", onSingleton);\n})\n\nreadThisDir(function(err, files) {\n\t//do stuff\n});\n\nreadLibDir(function(err, files) {\n\t//do stuff\n});\n```\n\n#### dictionary.get(name, factory)\n\n- `name` - the name of the singleton in the dictionary\n- `factory` - the factory method incase the singleton doesn't exist",
   "readmeFilename": "README.md",
   "_id": "asyngleton@0.0.2",
-  "dist": {
-    "shasum": "f4b9f1108baf28c681d6491c5338820de43b6de5"
-  },
-  "_from": "asyngleton@",
-  "_resolved": "http://registry.npmjs.org/asyngleton/-/asyngleton-0.0.2.tgz"
+  "_from": "asyngleton@0.0.x"
 }

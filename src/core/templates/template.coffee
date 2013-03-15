@@ -1,6 +1,6 @@
-define ["require", "jquery", "events"], (require, $, events) ->
+define ["require", "jquery", "asyngleton"], (require, $, asyngleton) ->
   
-  class Template extends events.EventEmitter
+  class Template
 
     ###
     ###
@@ -30,15 +30,7 @@ define ["require", "jquery", "events"], (require, $, events) ->
      Loads the template source
     ###
 
-    load: (callback = (()->)) ->
-
-      if @_loaded 
-        return callback null, @source
-
-      # template can only be loaded once
-      @once "loaded", callback
-      return @ if @_loading
-      @_loading = true
+    load: asyngleton (callback) ->
 
       # first load the engine
       require ["./engines/#{@_engine}"], (engine) =>
@@ -46,14 +38,10 @@ define ["require", "jquery", "events"], (require, $, events) ->
         # then load the template source
         require ["text!#{@_baseDir}/#{@_engine}/#{@name}.#{engine.extension}"], (@source) =>  
 
-          @_loading = false
-          @_loaded  = true
-
           # grab the renderer
           @_renderer = engine.compile source
 
-          # emit the source
-          @emit "loaded", null, source
+          callback null, source
 
 
       @

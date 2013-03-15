@@ -26,14 +26,14 @@ function singleton(fn) {
 
 		//result already set? return the value
 		if(singletonArgs) {
-			callback.apply(null, singletonArgs);
+			callback.apply(this, singletonArgs);
 
 			//return the value if there is one
 			return ret;
 		}
 
 
-		em.on("singleton", callback);
+		em.once("singleton", callback);
 
 		//still loading? add listener to event emitter
 		if(loading) {
@@ -46,9 +46,6 @@ function singleton(fn) {
 		cb = function() {
 			singletonArgs = Array.prototype.slice.call(arguments, 0);
 			em.emit.apply(em, ["singleton"].concat(singletonArgs));
-
-			//dispose
-			em.removeAllListeners("singleton");
 		};
 
 
@@ -59,12 +56,8 @@ function singleton(fn) {
 		args.push(cb);
 
 		//returned a value? Then it's not async...
-		if (ret = fn.apply(this, args)) {
-			cb(ret);
-			return ret;
-		}
-
-
+		fn.apply(this, args);
+		return this;
 	};
 
 

@@ -76,6 +76,9 @@ var jam = {
 
 if (typeof require !== "undefined" && require.config) {
     require.config({
+    "paths": {
+        "templates": "public/templates"
+    },
     "packages": [
         {
             "name": "asyngleton",
@@ -152,6 +155,9 @@ if (typeof require !== "undefined" && require.config) {
 }
 else {
     var require = {
+    "paths": {
+        "templates": "public/templates"
+    },
     "packages": [
         {
             "name": "asyngleton",
