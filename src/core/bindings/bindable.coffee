@@ -1,6 +1,6 @@
-define ["./eventTree", "./binding", "dref"], (EventTree, Binding, dref) ->
+define ["./eventTree", "./binding", "events", "dref"], (EventTree, Binding, events, dref) ->
   
-  class Bindable
+  class Bindable extends events.EventEmitter
 
     ###
     ###
@@ -12,21 +12,36 @@ define ["./eventTree", "./binding", "dref"], (EventTree, Binding, dref) ->
     ###
     ###
 
-    get: (key) -> dref.get @data, key
+    get: (key) -> 
+      return @data if not key
+      dref.get @data, key
 
 
     ###
     ###
 
     set: (key, value) -> 
-      dref.set @data, key, value
+
+      if arguments.length is 1
+        @data = value
+      else 
+        dref.set @data, key, value
+
       @_emitter.emit key
+
+      @emit "update", { key: key, value: value }
+
 
     ###
      called immediately
     ###
 
     bind: (property, listener) ->
+
+      if arguments.length is 1
+        listener = property
+        property = undefined
+
       @_emitter.on property, new Binding(@, property, listener).listener
 
 

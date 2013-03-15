@@ -23,7 +23,7 @@ define () ->
     ###
     ###
 
-    constructor: ()  ->
+    constructor: (@parent)  ->
       @_listeners = []
       @_leafs = {}
 
@@ -96,7 +96,7 @@ define () ->
     ###
 
     _leaf: (name) -> 
-      @_leafs[name] or (@_leafs[name] = new EventTree())
+      @_leafs[name] or (@_leafs[name] = new EventTree(@))
 
 
     ###

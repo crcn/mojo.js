@@ -8,8 +8,6 @@ define ["dref"],  (dref) ->
     constructor: (@bindable, @key, @callback) -> 
       @listener()
 
-
-
     ###
     ###
 

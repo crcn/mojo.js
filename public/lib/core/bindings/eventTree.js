@@ -25,7 +25,8 @@
       /*
       */
 
-      function EventTree() {
+      function EventTree(parent) {
+        this.parent = parent;
         this._listeners = [];
         this._leafs = {};
       }
@@ -110,7 +111,7 @@
 
 
       EventTree.prototype._leaf = function(name) {
-        return this._leafs[name] || (this._leafs[name] = new EventTree());
+        return this._leafs[name] || (this._leafs[name] = new EventTree(this));
       };
 
       /*

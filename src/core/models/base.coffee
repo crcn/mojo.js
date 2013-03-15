@@ -1,4 +1,4 @@
-define ["bindings/bindable"], (Bindable) ->
+define ["../bindings/bindable"], (Bindable) ->
   
   class Model extends Bindable
 

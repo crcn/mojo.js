@@ -32,7 +32,8 @@ define ["jquery", "events", "outcome"], ($, events, outcome) ->
      re-renders an element
     ###
 
-    rerender: (callback) ->
+    rerender: (callback = ()->) =>
+      return callback() if not @selector
       @attach @selector, callback
 
 
