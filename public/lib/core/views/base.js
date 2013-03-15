@@ -20,7 +20,7 @@
         }
         this.rerender = __bind(this.rerender, this);
 
-        this._options = new Model(options);
+        this._options = new Model(_["extends"]({}, this, options));
         this._o = outcome.e(this);
         this.init(this._options);
       }
@@ -46,9 +46,11 @@
 
 
       BaseView.prototype.init = function(options) {
-        if (options.template) {
-          return this.template = options.template;
+        if (this._initialized) {
+          throw new Error("already initialized");
         }
+        this._initialized = true;
+        return this.bind("template", this.rerender);
       };
 
       /*
@@ -112,10 +114,10 @@
 
 
       BaseView.prototype.renderTemplate = function(callback) {
-        if (!this.template) {
+        if (!this.get("template")) {
           return callback(null, "");
         }
-        return this.template.render(this.templateData(), callback);
+        return this.get("template").render(this.templateData(), callback);
       };
 
       return BaseView;

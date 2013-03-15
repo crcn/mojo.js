@@ -6,9 +6,14 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
     ###
 
     constructor: (options = {}) ->
-      @_options = new Model options
 
+      # the model consists of THIS object, along with the options provided
+      @_options = new Model _.extends {}, @, options
+
+      # outcome is flow-control for errors
       @_o = outcome.e @
+
+      # initialize the options
       @init @_options
 
     ###
@@ -22,8 +27,12 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
     ###
 
     init: (options) ->
-      @template = options.template if options.template
-      # OVERRIDE ME
+
+      throw new Error("already initialized") if @_initialized
+      @_initialized = true
+
+      # if the template changes, re-render
+      @bind "template", @rerender
 
     ###
      returns a search for a particular element
@@ -67,7 +76,7 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
     ###
 
     renderTemplate: (callback) ->
-      return callback null, "" if not @template
-      @template.render @templateData(), callback
+      return callback null, "" if not @get("template")
+      @get("template").render @templateData(), callback
 
 
