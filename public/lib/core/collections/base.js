@@ -13,9 +13,9 @@
       */
 
 
-      function BaseCollection() {
+      function BaseCollection(source) {
         BaseCollection.__super__.constructor.call(this);
-        this._source = [];
+        this._source = source || [];
       }
 
       /*

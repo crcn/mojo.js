@@ -5,9 +5,9 @@ define ["events", "underscore"], (events, _) ->
     ###
     ###
 
-    constructor: () ->
+    constructor: (source) ->
       super()
-      @_source = []
+      @_source = source or []
 
     ###
     ###

@@ -20,7 +20,7 @@
         }
         this.rerender = __bind(this.rerender, this);
 
-        this._options = new Model(_["extends"]({}, this, options));
+        this._options = new Model(_.extend({}, options, this));
         this._o = outcome.e(this);
         this.init(this._options);
       }
@@ -49,8 +49,7 @@
         if (this._initialized) {
           throw new Error("already initialized");
         }
-        this._initialized = true;
-        return this.bind("template", this.rerender);
+        return this._initialized = true;
       };
 
       /*
@@ -69,18 +68,24 @@
 
 
       BaseView.prototype.attach = function(selectorOrElement, callback) {
-        var _this = this;
+        var complete,
+          _this = this;
         if (callback == null) {
           callback = (function() {});
         }
+        this.remove();
+        complete = function() {
+          callback();
+          return _this._attached();
+        };
         this.element = typeof selectorOrElement === "string" ? $(selectorOrElement) : selectorOrElement;
         this.selector = selectorOrElement;
-        if (!this.template) {
-          return callback();
+        if (!this.get("template")) {
+          return complete();
         }
         return this.renderTemplate(this._o.e(callback).s(function(content) {
           _this.element.html(content);
-          return callback();
+          return complete();
         }));
       };
 
@@ -98,6 +103,12 @@
         }
         return this.attach(this.selector, callback);
       };
+
+      /*
+      */
+
+
+      BaseView.prototype._attached = function() {};
 
       /*
            returns the template data
@@ -118,6 +129,22 @@
           return callback(null, "");
         }
         return this.get("template").render(this.templateData(), callback);
+      };
+
+      /*
+      */
+
+
+      BaseView.prototype.remove = function(callback) {
+        if (callback == null) {
+          callback = (function() {});
+        }
+        if (!this.element) {
+          return callback();
+        }
+        this.element.unbind("*");
+        this.element.detach();
+        return callback();
       };
 
       return BaseView;

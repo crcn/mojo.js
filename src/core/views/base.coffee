@@ -8,7 +8,7 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
     constructor: (options = {}) ->
 
       # the model consists of THIS object, along with the options provided
-      @_options = new Model _.extends {}, @, options
+      @_options = new Model _.extend {}, options, @
 
       # outcome is flow-control for errors
       @_o = outcome.e @
@@ -32,7 +32,7 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
       @_initialized = true
 
       # if the template changes, re-render
-      @bind "template", @rerender
+      # @bind "template", @rerender
 
     ###
      returns a search for a particular element
@@ -46,14 +46,24 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
 
     attach: (selectorOrElement, callback = (() ->)) ->
 
+      # remove incase it's been added elsewhere
+      @remove()
+
+      complete = () =>
+        callback()
+        @_attached()
+
+
       @element  = if typeof selectorOrElement is "string" then $(selectorOrElement) else selectorOrElement
       @selector = selectorOrElement
 
-      return callback() if not @template
+
+      return complete() if not @get("template")
 
       @renderTemplate @_o.e(callback).s (content) =>
+
         @element.html content
-        callback()
+        complete()
 
     ###
      re-renders an element
@@ -62,6 +72,13 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
     rerender: (callback = ()->) =>
       return callback() if not @selector
       @attach @selector, callback
+
+
+    ###
+    ###
+
+    _attached: () ->
+      # OVERRIDE ME
 
 
     ###
@@ -78,5 +95,15 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
     renderTemplate: (callback) ->
       return callback null, "" if not @get("template")
       @get("template").render @templateData(), callback
+
+
+    ###
+    ###
+
+    remove: (callback = (() ->)) ->
+      return callback() if not @element
+      @element.unbind("*")
+      @element.detach()
+      callback()
 
 

@@ -2,9 +2,10 @@ require(["lib/core/bindings/bindable",
   "lib/core/templates/factory", 
   "lib/core/views/item",
   "lib/core/views/container",
+  "lib/core/views/state",
   "jquery",
   "structr"], 
-  function(Binding, TemplateFactory, ItemView, ContainerView, $, structr) {
+  function(Binding, TemplateFactory, ItemView, ContainerView, StateView, $, structr) {
 
 
   var tf = new TemplateFactory();
@@ -26,12 +27,14 @@ require(["lib/core/bindings/bindable",
 
   */
 
-  var cv = new ContainerView({
-    children: [
+  var cv = new StateView({
+    states: [
       new PersonView({
+        title: "john",
         data: { name: "john" }
       }),
-      new ItemView({
+      new PersonView({
+        title: "craig",
         data: { name: "craig" }
       })
     ]
@@ -40,14 +43,7 @@ require(["lib/core/bindings/bindable",
 
   cv.attach("#container");
 
-  var i = 0;
-
-  setInterval(function() {
-
-    cv.children.addItem(new PersonView({
-      data: { name: String(i++) }
-    }));
-
-    cv.children.removeItemAt(0)
-  }, 500)
+  setTimeout(function() {
+    cv.set("currentIndex", 1)
+  }, 1000);
 });

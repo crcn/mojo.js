@@ -34,7 +34,7 @@ var _findValues = function(keyParts, target, create, index, values) {
 			}
 			return values;
 		} else
-		if(!ct) {
+		if(ct == undefined || ct == null) {
 			if(!create) return values;
 			ct = pt[kp] = {};
 		}
