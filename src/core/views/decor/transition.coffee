@@ -1,4 +1,4 @@
-define ["./base", "underscore", "jquery-transit", "jquery"], (BaseViewDecorator, _, transit, $) ->
+define ["./base", "underscore", "jquery-transit", "jquery", "async"], (BaseViewDecorator, _, transit, $, async) ->
   
   class TransitionDecorator extends BaseViewDecorator
 
@@ -7,9 +7,7 @@ define ["./base", "underscore", "jquery-transit", "jquery"], (BaseViewDecorator,
     ###
 
     setup: (callback) -> 
-      enter = @view.get("transition.enter")
-      return callback if not enter
-      @transition enter, callback
+      @_transitionAll "enter", callback
     
 
     ###
@@ -17,16 +15,22 @@ define ["./base", "underscore", "jquery-transit", "jquery"], (BaseViewDecorator,
 
 
     teardown: (callback)  -> 
-      exit = @view.get("transition.exit")
-      return callback if not exit
-      @transition exit, callback
+      @_transitionAll "exit", callback
 
 
     ###
     ###
 
-    transition: (transition, callback) ->
-      element = @element()
+    _transitionAll: (type, callback) ->
+      async.forEach @_filterTransitions(type), ((transition, next) =>
+        @_transition @_element(transition), transition[type], next
+      ), callback
+
+
+    ###
+    ###
+
+    _transition: (element, transition, callback) ->
 
       if transition.from
         element.css transition.from
@@ -34,13 +38,38 @@ define ["./base", "underscore", "jquery-transit", "jquery"], (BaseViewDecorator,
       element.transit transition.to or transition, callback
 
 
+    ###
+    ###
+
+    _transitions: () ->
+      transition = @view.get("transition")
+      if transition.enter or transition.exit
+        return [transition]
+
+
+      transitions = []
+
+      for selector of transition
+        trans = transition[selector]
+        trans.selector = selector
+        transitions.push trans
+
+
+      transitions
 
     ###
     ###
 
-    element: () -> 
-      selector = @view.get("transition.selector") or @view.get("transition.element") 
-      return if selector then @view.element.find(selector) else view.element
+    _filterTransitions: (type) ->
+      return @_transitions().filter (trans) -> !!trans[type]
+
+
+    ###
+    ###
+
+    _element: (transition) -> 
+      selector = transition.selector or transition.element
+      return if selector then @view.element.find(selector) else @view.element
 
 
 

@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./base", "underscore", "jquery-transit", "jquery"], function(BaseViewDecorator, _, transit, $) {
+  define(["./base", "underscore", "jquery-transit", "jquery", "async"], function(BaseViewDecorator, _, transit, $, async) {
     var TransitionDecorator;
     TransitionDecorator = (function(_super) {
 
@@ -18,12 +18,7 @@
 
 
       TransitionDecorator.prototype.setup = function(callback) {
-        var enter;
-        enter = this.view.get("transition.enter");
-        if (!enter) {
-          return callback;
-        }
-        return this.transition(enter, callback);
+        return this._transitionAll("enter", callback);
       };
 
       /*
@@ -31,21 +26,25 @@
 
 
       TransitionDecorator.prototype.teardown = function(callback) {
-        var exit;
-        exit = this.view.get("transition.exit");
-        if (!exit) {
-          return callback;
-        }
-        return this.transition(exit, callback);
+        return this._transitionAll("exit", callback);
       };
 
       /*
       */
 
 
-      TransitionDecorator.prototype.transition = function(transition, callback) {
-        var element;
-        element = this.element();
+      TransitionDecorator.prototype._transitionAll = function(type, callback) {
+        var _this = this;
+        return async.forEach(this._filterTransitions(type), (function(transition, next) {
+          return _this._transition(_this._element(transition), transition[type], next);
+        }), callback);
+      };
+
+      /*
+      */
+
+
+      TransitionDecorator.prototype._transition = function(element, transition, callback) {
         if (transition.from) {
           element.css(transition.from);
         }
@@ -56,13 +55,42 @@
       */
 
 
-      TransitionDecorator.prototype.element = function() {
+      TransitionDecorator.prototype._transitions = function() {
+        var selector, trans, transition, transitions;
+        transition = this.view.get("transition");
+        if (transition.enter || transition.exit) {
+          return [transition];
+        }
+        transitions = [];
+        for (selector in transition) {
+          trans = transition[selector];
+          trans.selector = selector;
+          transitions.push(trans);
+        }
+        return transitions;
+      };
+
+      /*
+      */
+
+
+      TransitionDecorator.prototype._filterTransitions = function(type) {
+        return this._transitions().filter(function(trans) {
+          return !!trans[type];
+        });
+      };
+
+      /*
+      */
+
+
+      TransitionDecorator.prototype._element = function(transition) {
         var selector;
-        selector = this.view.get("transition.selector") || this.view.get("transition.element");
+        selector = transition.selector || transition.element;
         if (selector) {
           return this.view.element.find(selector);
         } else {
-          return view.element;
+          return this.view.element;
         }
       };
 

@@ -10,17 +10,33 @@ require(["lib/core/templates/factory",
   var v = new View({
     template: tf.get("modal"),
     transition: {
-      element: ".modal-container",
-      enter: {
-        from: { opacity: 0, top: 50 },
-        to: { opacity: 1, top: 100 }
+      ".modal-container": {
+        enter: {
+          from: { opacity: 0, top: 50 },
+          to: { opacity: 1, top: 100 }
+        },
+        exit: {
+          to: { opacity: 0, top: 300 }
+        }
       },
-      exit: {
-        to: { opacity: 0, top: 300 }
+      ".modal-window-background": {
+        enter: {
+          from: { opacity: 0 },
+          to: { opacity: 0.75 }
+        },
+        exit: {
+          to: { opacity: 0 }
+        }
       }
     }
   });
 
 
   v.attach("#application");
+
+
+  setTimeout(function() {
+    console.log("REMOVE");
+    v.remove();
+  }, 1000);
 });

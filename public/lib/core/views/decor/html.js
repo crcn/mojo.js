@@ -22,15 +22,6 @@
         return callback();
       };
 
-      /*
-      */
-
-
-      HtmlDecorator.prototype.teardown = function(callback) {
-        this.view.element.html("");
-        return callback();
-      };
-
       return HtmlDecorator;
 
     })(BaseDecorator);

@@ -11,13 +11,6 @@ define ["./base"], (BaseDecorator) ->
       callback()
 
 
-    ###
-    ###
-
-    teardown: (callback) ->
-      @view.element.html ""
-      callback()
-
   HtmlDecorator.test = (view) ->
     view.has "html"
 
