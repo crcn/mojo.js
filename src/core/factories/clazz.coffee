@@ -10,6 +10,9 @@ define ["factories/base"], (BaseFactory) ->
     ###
     ###
 
+    createItem: (options) -> return new clazz(options)
+
+
 
   ClassFactory.test = (item) ->
     return typeof item is "function" and !!item.prototype

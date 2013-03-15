@@ -98,6 +98,7 @@
         if (callback == null) {
           callback = function() {};
         }
+        console.log(callback);
         if (!this.selector) {
           return callback();
         }
@@ -116,7 +117,7 @@
 
 
       BaseView.prototype.templateData = function() {
-        return this.get("data") || {};
+        return this.get();
       };
 
       /*
@@ -143,7 +144,7 @@
           return callback();
         }
         this.element.unbind("*");
-        this.element.detach();
+        this.element.html("");
         return callback();
       };
 

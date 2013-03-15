@@ -30,12 +30,10 @@ require(["lib/core/bindings/bindable",
   var cv = new StateView({
     states: [
       new PersonView({
-        title: "john",
-        data: { name: "john" }
+        name: "john"
       }),
       new PersonView({
-        title: "craig",
-        data: { name: "craig" }
+        name: "craig"
       })
     ]
   });

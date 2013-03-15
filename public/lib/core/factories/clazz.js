@@ -19,6 +19,10 @@
       */
 
 
+      ClassFactory.prototype.createItem = function(options) {
+        return new clazz(options);
+      };
+
       return ClassFactory;
 
     })(BaseFactory);

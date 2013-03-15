@@ -31,9 +31,6 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
       throw new Error("already initialized") if @_initialized
       @_initialized = true
 
-      # if the template changes, re-render
-      # @bind "template", @rerender
-
     ###
      returns a search for a particular element
     ###
@@ -70,6 +67,7 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
     ###
 
     rerender: (callback = ()->) =>
+      console.log callback
       return callback() if not @selector
       @attach @selector, callback
 
@@ -85,8 +83,7 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
      returns the template data
     ###
 
-    templateData: () -> 
-      @get("data") or { }
+    templateData: () -> @get()
 
     ###
      renders the template if it exists
@@ -103,7 +100,7 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
     remove: (callback = (() ->)) ->
       return callback() if not @element
       @element.unbind("*")
-      @element.detach()
+      @element.html("")
       callback()
 
 

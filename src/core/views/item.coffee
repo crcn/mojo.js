@@ -2,38 +2,9 @@ define ["./base", "../models/base"], (BaseView, BaseModel) ->
 
   class ItemView extends BaseView
 
-    ###
-    ###
-
     init: (options) ->
-      super options
-      @source options.get("data") or {}
+      
+      # if the template changes, re-render
+      # @bind "template", @rerender
 
-    ###
-    ###
-
-    source: (value) ->  
-      return @_target if not arguments.length
-
-      if not value
-        value = {}
-
-      if @_updateListener 
-        @_updateListener.dispose()
-
-      # if the item is a regular object, then turn it into a model
-      @_target = if value.hasOwnProperty("get") then value else new BaseModel(value)
-
-      #re-render the template after the item changes
-      @_updateListener = @_target.on "update", @_onTargetUpdate
-
-    ###
-    ###
-
-    templateData: () -> @_target.get()
-
-    ###
-    ###
-
-    _onTargetUpdate: () =>
-      @rerender()
+      options.on "update", () => @rerender()
