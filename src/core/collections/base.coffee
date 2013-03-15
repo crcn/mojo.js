@@ -1,4 +1,4 @@
-define ["events", "underscore"], (events, _) ->
+define ["events", "underscore", "./binder"], (events, _, Binder) ->
   
   class BaseCollection extends events.EventEmitter
 
@@ -12,10 +12,30 @@ define ["events", "underscore"], (events, _) ->
     ###
     ###
 
+    clone: (bind) ->
+      clone = new @prototype.constructor()
+
+      if bind isnt false
+        @bindTo clone
+
+      clone
+
+    ###
+    ###
+
+    bindTo: (target) ->
+      new Binder @, target
+      @
+
+    ###
+    ###
+
     source: (value) ->
 
-      # bind
-      #if value instanceof BaseCollection
+      # bind instead of setting the source
+      if value instanceof BaseCollection
+        value.bindTo @
+        return @
 
 
       return @_source.concat() if not arguments.length
