@@ -1,8 +1,9 @@
 all:
-	coffee -o lib -c src	
+	coffee -o public/lib -cw src;
+	jam rebuild;
 
 clean:
-	rm -rf lib
+	rm -rf public/lib
 
 
 test: 

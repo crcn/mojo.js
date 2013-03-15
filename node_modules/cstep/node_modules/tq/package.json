@@ -1,0 +1,14 @@
+{
+  "name": "tq",
+  "description": "tiny queue",
+  "version": "0.0.4",
+  "repository": {},
+  "engines": {},
+  "dependencies": {},
+  "devDependencies": {},
+  "main": "./lib/index.js",
+  "readme": "## Example\n\n```javascript\n\nvar queue = require('tq').queue();\n\n\n\nqueue.push(function() {\n\tconsole.log('next');\n\n\tthis();\n\n}).\npush(function() {\n\t\n\tconsole.log(\"next\");\n\n\tthis();\n}).\nstart();\n\n```\n\nAnother variation\n\n```javascript\nvar queue = require('tq').queue();\n\n\n[\n\tfunction() {\n\t\tthis();\n\t},\n\tfunction() {\n\t\tthis()\n\t},\n\tfunction() {\n\t\tthis();\n\t}\n].forEach(queue.push);\n\nqueue.start();\n```\n\n\n## Api\n\n\n### queue.push \npushes a queue to the end\n\n### queue.unshift\npushes a queue to the beginning (next up)\n\n### queue.start\nstarts a queue\n\n### queue.stop\nstops a queue",
+  "readmeFilename": "README.md",
+  "_id": "tq@0.0.4",
+  "_from": "tq@0.0.x"
+}
