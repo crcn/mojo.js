@@ -22,6 +22,9 @@
     "dref": "0.0.x",
     "comerr": "0.0.x",
     "sift": "0.0.x",
-    "cstep": "0.0.x"
+    "cstep": "0.0.x",
+    "asyngleton": "0.0.x",
+    "outcome": "0.0.x",
+    "step": "0.0.x"
   }
 }
