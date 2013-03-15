@@ -5,8 +5,12 @@ define ["require", "jquery", "events"], (require, $, events) ->
     ###
     ###
 
-    constructor: (@factory, @name) ->
-      @_engine = @factory.engine()
+    constructor: (@options) ->
+
+      @_engine  = options.engine
+      @_baseDir = options.directory
+      @name     = options.name
+
 
 
     ###
@@ -28,15 +32,27 @@ define ["require", "jquery", "events"], (require, $, events) ->
 
     load: (callback = (()->)) ->
 
+      if @_loaded 
+        return callback null, @source
 
+      # template can only be loaded once
       @once "loaded", callback
       return @ if @_loading
       @_loading = true
 
-
+      # first load the engine
       require ["./engines/#{@_engine}"], (engine) =>
-        require ["text!/templates/#{@_engine}/#{@name}.#{engine.extension}"], (@source) =>
+
+        # then load the template source
+        require ["text!#{@_baseDir}/#{@_engine}/#{@name}.#{engine.extension}"], (@source) =>  
+
+          @_loading = false
+          @_loaded  = true
+
+          # grab the renderer
           @_renderer = engine.compile source
+
+          # emit the source
           @emit "loaded", null, source
 
 

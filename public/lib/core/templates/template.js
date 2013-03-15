@@ -13,10 +13,11 @@
       */
 
 
-      function Template(factory, name) {
-        this.factory = factory;
-        this.name = name;
-        this._engine = this.factory.engine();
+      function Template(options) {
+        this.options = options;
+        this._engine = options.engine;
+        this._baseDir = options.directory;
+        this.name = options.name;
       }
 
       /*
@@ -42,14 +43,19 @@
         if (callback == null) {
           callback = (function() {});
         }
+        if (this._loaded) {
+          return callback(null, this.source);
+        }
         this.once("loaded", callback);
         if (this._loading) {
           return this;
         }
         this._loading = true;
         require(["./engines/" + this._engine], function(engine) {
-          return require(["text!/templates/" + _this._engine + "/" + _this.name + "." + engine.extension], function(source) {
+          return require(["text!" + _this._baseDir + "/" + _this._engine + "/" + _this.name + "." + engine.extension], function(source) {
             _this.source = source;
+            _this._loading = false;
+            _this._loaded = true;
             _this._renderer = engine.compile(source);
             return _this.emit("loaded", null, source);
           });
