@@ -7,4 +7,4 @@ define ["./base", "../models/base"], (BaseView, BaseModel) ->
       # if the template changes, re-render
       # @bind "template", @rerender
 
-      options.on "update", () => @rerender()
+      options.on "data.*", () => @rerender()

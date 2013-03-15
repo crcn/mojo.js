@@ -4,7 +4,7 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "events", "../models/base", "outcome", "underscore"], function($, events, Model, outcome, _) {
+  define(["jquery", "events", "../models/base", "outcome", "underscore", "../utils/compose", "./decor/facade"], function($, events, Model, outcome, _, compose, ViewDecorator) {
     var BaseView;
     return BaseView = (function(_super) {
 
@@ -20,26 +20,13 @@
         }
         this.rerender = __bind(this.rerender, this);
 
-        this._options = new Model(_.extend({}, options, this));
+        this.options = new Model(_.extend({}, options, this));
+        compose(this, this.options, ["get", "has", "set", "bind"]);
+        this.decorator = new ViewDecorator(this);
         this._o = outcome.e(this);
-        this.init(this._options);
+        this.init(this.options);
+        this.options.set("initialized", true);
       }
-
-      /*
-      */
-
-
-      BaseView.prototype.get = function() {
-        return this._options.get.apply(this._options, arguments);
-      };
-
-      BaseView.prototype.set = function() {
-        return this._options.set.apply(this._options, arguments);
-      };
-
-      BaseView.prototype.bind = function() {
-        return this._options.bind.apply(this._options, arguments);
-      };
 
       /*
       */
@@ -68,24 +55,16 @@
 
 
       BaseView.prototype.attach = function(selectorOrElement, callback) {
-        var complete,
-          _this = this;
+        var _this = this;
         if (callback == null) {
           callback = (function() {});
         }
         this.remove();
-        complete = function() {
-          callback();
-          return _this._attached();
-        };
         this.element = typeof selectorOrElement === "string" ? $(selectorOrElement) : selectorOrElement;
         this.selector = selectorOrElement;
-        if (!this.get("template")) {
-          return complete();
-        }
-        return this.renderTemplate(this._o.e(callback).s(function(content) {
-          _this.element.html(content);
-          return complete();
+        return this.decorator.setup(this._o.e(callback).s(function() {
+          callback();
+          return _this._attached();
         }));
       };
 
@@ -98,7 +77,6 @@
         if (callback == null) {
           callback = function() {};
         }
-        console.log(callback);
         if (!this.selector) {
           return callback();
         }
@@ -112,40 +90,22 @@
       BaseView.prototype._attached = function() {};
 
       /*
-           returns the template data
-      */
-
-
-      BaseView.prototype.templateData = function() {
-        return this.get();
-      };
-
-      /*
-           renders the template if it exists
-      */
-
-
-      BaseView.prototype.renderTemplate = function(callback) {
-        if (!this.get("template")) {
-          return callback(null, "");
-        }
-        return this.get("template").render(this.templateData(), callback);
-      };
-
-      /*
       */
 
 
       BaseView.prototype.remove = function(callback) {
+        var _this = this;
         if (callback == null) {
           callback = (function() {});
         }
         if (!this.element) {
           return callback();
         }
-        this.element.unbind("*");
-        this.element.html("");
-        return callback();
+        return this.decorator.teardown(this._o.e(callback).s(function() {
+          _this.element.unbind("*");
+          _this.element.html("");
+          return callback();
+        }));
       };
 
       return BaseView;

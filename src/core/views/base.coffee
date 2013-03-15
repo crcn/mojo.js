@@ -1,4 +1,4 @@
-define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, events, Model, outcome, _) ->
+define ["jquery", "events", "../models/base" , "outcome", "underscore", "../utils/compose", "./decor/facade"], ($, events, Model, outcome, _, compose, ViewDecorator) ->
 
   class BaseView extends events.EventEmitter
 
@@ -8,20 +8,21 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
     constructor: (options = {}) ->
 
       # the model consists of THIS object, along with the options provided
-      @_options = new Model _.extend {}, options, @
+      @options   = new Model _.extend {}, options, @
+      compose @, @options, ["get", "has", "set", "bind"]
+
+      @decorator = new ViewDecorator @
 
       # outcome is flow-control for errors
       @_o = outcome.e @
 
+
       # initialize the options
-      @init @_options
+      @init @options
 
-    ###
-    ###
+      # after init, set to initialized
+      @options.set "initialized", true
 
-    get: () -> @_options.get.apply @_options, arguments
-    set: () -> @_options.set.apply @_options, arguments
-    bind: () -> @_options.bind.apply @_options, arguments
 
     ###
     ###
@@ -46,28 +47,19 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
       # remove incase it's been added elsewhere
       @remove()
 
-      complete = () =>
-        callback()
-        @_attached()
-
-
       @element  = if typeof selectorOrElement is "string" then $(selectorOrElement) else selectorOrElement
       @selector = selectorOrElement
 
+      @decorator.setup @_o.e(callback).s () =>
+        callback()
+        @_attached()
 
-      return complete() if not @get("template")
-
-      @renderTemplate @_o.e(callback).s (content) =>
-
-        @element.html content
-        complete()
 
     ###
      re-renders an element
     ###
 
     rerender: (callback = ()->) =>
-      console.log callback
       return callback() if not @selector
       @attach @selector, callback
 
@@ -80,27 +72,13 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore"], ($, eve
 
 
     ###
-     returns the template data
-    ###
-
-    templateData: () -> @get()
-
-    ###
-     renders the template if it exists
-    ###
-
-    renderTemplate: (callback) ->
-      return callback null, "" if not @get("template")
-      @get("template").render @templateData(), callback
-
-
-    ###
     ###
 
     remove: (callback = (() ->)) ->
       return callback() if not @element
-      @element.unbind("*")
-      @element.html("")
-      callback()
+      @decorator.teardown @_o.e(callback).s () =>
+        @element.unbind("*")
+        @element.html("")
+        callback()
 
 

@@ -33,6 +33,14 @@
       */
 
 
+      Bindable.prototype.has = function(key) {
+        return !!this.get(key);
+      };
+
+      /*
+      */
+
+
       Bindable.prototype.set = function(key, value) {
         if (arguments.length === 1) {
           this.data = value;

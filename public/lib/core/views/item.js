@@ -15,7 +15,7 @@
 
       ItemView.prototype.init = function(options) {
         var _this = this;
-        return options.on("update", function() {
+        return options.on("data.*", function() {
           return _this.rerender();
         });
       };

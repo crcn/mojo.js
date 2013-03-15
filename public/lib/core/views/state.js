@@ -24,7 +24,6 @@
         options.defaults({
           currentIndex: 0
         });
-        console.log(options);
         return this.states = new Collection(options.get("states") || []);
       };
 

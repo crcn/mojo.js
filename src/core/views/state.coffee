@@ -13,8 +13,6 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
         currentIndex: 0
       }
 
-      console.log options
-
       @states = new Collection options.get("states") or []
 
 

@@ -35,13 +35,13 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
     ###
     ###
 
-    _onChildrenUpdated: (event) =>
+    _onChildrenUpdated: (event) =>  
       @["_" + event.type](event)
 
     ###
     ###
 
-    _reset: (event) ->
+    _reset: (event) -> 
       @_attachChildren()
 
     ###

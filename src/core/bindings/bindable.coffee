@@ -16,6 +16,10 @@ define ["./eventTree", "./binding", "events", "dref"], (EventTree, Binding, even
       return @data if not key
       dref.get @data, key
 
+    ###
+    ###
+
+    has: (key) -> !!@get key
 
     ###
     ###
