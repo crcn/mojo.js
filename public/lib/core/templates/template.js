@@ -11,6 +11,7 @@
         this.options = options;
         this._engine = options.engine;
         this._baseDir = options.directory;
+        this.source = options.source;
         this.name = options.name;
       }
 
@@ -34,6 +35,9 @@
 
       Template.prototype.load = asyngleton(function(callback) {
         var _this = this;
+        if (this.source) {
+          return callback(null, this.source);
+        }
         require(["./engines/" + this._engine], function(engine) {
           return require(["text!" + _this._baseDir + "/" + _this._engine + "/" + _this.name + "." + engine.extension], function(source) {
             _this.source = source;

@@ -43,6 +43,15 @@
       */
 
 
+      TemplateFactory.prototype.fromSource = function(source, options) {
+        options.source = source;
+        return this.get(source, options);
+      };
+
+      /*
+      */
+
+
       TemplateFactory.prototype.get = function(name, options) {
         if (options == null) {
           options = {};

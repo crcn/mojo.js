@@ -1,6 +1,5 @@
 define ["./template", "asyngleton", "underscore"], (Template, asyngleton, _) ->
 
-
   
   class TemplateFactory
 
@@ -11,7 +10,6 @@ define ["./template", "asyngleton", "underscore"], (Template, asyngleton, _) ->
       @_engine    = options.engine    or "handlebars"
       @_directory = options.directory or "/templates"
       @_templates = {}
-
 
     ###
      Sets the target template engine
@@ -28,6 +26,12 @@ define ["./template", "asyngleton", "underscore"], (Template, asyngleton, _) ->
       return @_directory if not arguments.length
       @_directroy = value
 
+    ###
+    ###
+
+    fromSource: (source, options) -> 
+      options.source = source
+      @get source, options
 
     ###
     ###

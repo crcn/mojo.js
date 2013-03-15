@@ -1,18 +1,18 @@
-require(["lib/core/bindings/bindable", "lib/core/templates/factory"], function(Binding, TemplateFactory) {
+require(["lib/core/bindings/bindable", 
+  "lib/core/templates/factory", 
+  "lib/core/views/base",
+  "jquery"], 
+  function(Binding, TemplateFactory, BaseView) {
 
   var tf = new TemplateFactory();
 
-  tf.get("test").render({ name: "craig" }, function(err, data) {
-    console.log(data);
-  }).render({ name: "john"}, function(err, data) {
-    console.log(data);
+  var cv = new BaseView({
+    template: tf.get("test"),
+    data: {
+      name: "craig"
+    }
   })
 
-  var et = new Binding({ name: {first:"john"}});
-  et.bind("name.first", function(value) {
-    console.log(value)
-  });
-
-  et.set("name", { first: "craig" });
+  cv.attach($("#container"));
 
 });

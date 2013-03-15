@@ -37,7 +37,8 @@ define ["templates/factory.js"], (TemplateFactory) ->
   
   return {
     homePage: templates.get("homePage"),
-    titleBar: templates.get("titleBar")
+    titleBar: templates.get("titleBar"),
+    button: templates.fromSource("<a>{{name}}</a>")
   }
 
 ```

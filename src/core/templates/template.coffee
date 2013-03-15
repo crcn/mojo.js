@@ -9,9 +9,8 @@ define ["require", "jquery", "asyngleton"], (require, $, asyngleton) ->
 
       @_engine  = options.engine
       @_baseDir = options.directory
+      @source   = options.source
       @name     = options.name
-
-
 
     ###
      renders the template with the given options
@@ -31,6 +30,8 @@ define ["require", "jquery", "asyngleton"], (require, $, asyngleton) ->
     ###
 
     load: asyngleton (callback) ->
+
+      return callback null, @source if @source
 
       # first load the engine
       require ["./engines/#{@_engine}"], (engine) =>
