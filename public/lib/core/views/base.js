@@ -96,9 +96,7 @@
         if (callback == null) {
           callback = function() {};
         }
-        if (typeof callback !== "function") {
-          callback = (function() {});
-        }
+        callback = this._fixCallback(callback);
         if (!this.selector) {
           return callback();
         }
@@ -120,14 +118,28 @@
         if (callback == null) {
           callback = (function() {});
         }
+        callback = this._fixCallback(callback);
         if (!this.element) {
           return callback();
         }
         return this.decorator.teardown(this._o.e(callback).s(function() {
           _this.element.unbind("*");
           _this.element.html("");
-          return callback();
+          callback();
+          return _this.emit("removed");
         }));
+      };
+
+      /*
+           Fixes the callback incase it's not a function
+      */
+
+
+      BaseView.prototype._fixCallback = function(callback) {
+        if (typeof callback !== "function") {
+          callback = (function() {});
+        }
+        return callback;
       };
 
       return BaseView;

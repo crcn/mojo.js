@@ -80,8 +80,7 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore", "../util
 
     rerender: (callback = ()->) =>
 
-      if typeof callback isnt "function"
-        callback = (() ->)
+      callback = @_fixCallback callback
 
       return callback() if not @selector
       @attach @selector, callback
@@ -98,10 +97,26 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore", "../util
     ###
 
     remove: (callback = (() ->)) ->
+
+      callback = @_fixCallback callback
+
       return callback() if not @element
       @decorator.teardown @_o.e(callback).s () =>
         @element.unbind("*")
         @element.html("")
         callback()
+        @emit "removed"
+
+
+    ###
+     Fixes the callback incase it's not a function
+    ###
+
+    _fixCallback: (callback) ->
+
+      if typeof callback isnt "function"
+        callback = (() ->)
+
+      callback
 
 
