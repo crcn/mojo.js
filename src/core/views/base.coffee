@@ -1,4 +1,22 @@
-define ["jquery", "events", "../models/base" , "outcome", "underscore", "../utils/compose", "./decor/facade"], ($, events, Model, outcome, _, compose, ViewDecorator) ->
+define ["jquery", "events", "../models/base" , "outcome", "underscore", "../utils/compose", "./decor/facade", "rivets"], ($, events, Model, outcome, _, compose, ViewDecorator, rivets) ->
+
+
+  rivets.configure({
+    adapter: {
+      subscribe: (obj, keypath, callback) ->
+        obj.bind keypath.replace(/,/g, "."), callback
+
+      unsubscribe: (obj, keypath, callback) ->
+        obj.unbind keypath.replace(/,/g, "."), callback
+
+      read: (obj, keypath) ->
+        obj.get keypath.replace(/,/g, ".")
+
+      publish: (obj, keypath, value) ->
+        obj.set keypath.replace(/,/g, "."), value
+    }
+  })
+
 
   class BaseView extends events.EventEmitter
 
@@ -24,6 +42,7 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore", "../util
       @options.set "initialized", true
 
 
+
     ###
     ###
 
@@ -33,8 +52,6 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore", "../util
 
       throw new Error("already initialized") if @_initialized
       @_initialized = true
-
-      # options.bind "data", @
 
     ###
      returns a search for a particular element
@@ -48,15 +65,13 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore", "../util
 
     attach: (selectorOrElement, callback = (() ->)) ->
 
-      # remove incase it's been added elsewhere
-      @remove()
-
       @element  = if typeof selectorOrElement is "string" then $(selectorOrElement) else selectorOrElement
       @selector = selectorOrElement
 
       @decorator.setup @_o.e(callback).s () =>
         callback()
         @_attached()
+        rivets.bind @element, { data: @options }
 
 
     ###
@@ -64,8 +79,10 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore", "../util
     ###
 
     rerender: (callback = ()->) =>
+
       if typeof callback isnt "function"
         callback = (() ->)
+
       return callback() if not @selector
       @attach @selector, callback
 

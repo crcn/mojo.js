@@ -3,20 +3,27 @@ define(["require", "/vendor/events/index.js"], function(require) {
     var __dirname = "/vendor/asyngleton/lib",
     __filename    = "/vendor/asyngleton/lib/index.js",
     module        = { exports: {} },
-    exports       = module.exports;
+    exports       = module.exports,
+    define        = undefined,
+    window        = exports;
 
     
 
     var EventEmitter = require("/vendor/events/index.js").EventEmitter;
+
+var singletonIndex = 0;
 
 /**
  */
 
 function singleton(fn) {
 
-	var em = new EventEmitter(), singletonArgs, loading, ret;
+	var _id = singletonIndex++;
 
 	var asyngleton = function() {
+
+		var asyng = asyngleton.info.call(this);
+
 
 		var args, cb, callback = arguments[arguments.length - 1];
 
@@ -25,27 +32,25 @@ function singleton(fn) {
 		}
 
 		//result already set? return the value
-		if(singletonArgs) {
-			callback.apply(this, singletonArgs);
-
-			//return the value if there is one
-			return ret;
+		if(asyng.result) {
+			callback.apply(this, asyng.result);
+			return this;
 		}
 
 
-		em.once("singleton", callback);
+		asyng.em.once("singleton", callback);
 
 		//still loading? add listener to event emitter
-		if(loading) {
-			return;
+		if(asyng.loading) {
+			return this;
 		}
 
-		loading = true;
+		asyng.loading = true;
 
 		args = Array.prototype.slice.call(arguments, 0);
 		cb = function() {
-			singletonArgs = Array.prototype.slice.call(arguments, 0);
-			em.emit.apply(em, ["singleton"].concat(singletonArgs));
+			asyng.result = Array.prototype.slice.call(arguments, 0);
+			asyng.em.emit.apply(asyng.em, ["singleton"].concat(asyng.result));
 		};
 
 
@@ -64,16 +69,37 @@ function singleton(fn) {
 
 	asyngleton.reset = function() {
 
-		loading       = false;
-		ret           = undefined;
-		singletonArgs = undefined;
+		var asyng = asyngleton.info.call(this);
+
+		asyng.loading = false;
+		asyng.result  = undefined;
 
 		return asyngleton;
 	};
 
+
+	asyngleton.info = function() {
+		if(!this._asyngleton) {
+			this._asyngleton = {
+			};
+		}
+
+
+		var asyng;
+
+		if(!(asyng = this._asyngleton[_id])) {
+			asyng = this._asyngleton[_id] = {
+				result: null,
+				loading: false,
+				em: new EventEmitter()
+			}
+		}
+
+		return asyng;
+	}
+
 	return asyngleton;
 }
-
 /**
  */
 

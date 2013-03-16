@@ -1,123 +1,41 @@
-###
- creates a tree that's bindable
-
- tree = new EventTree();
-
- tree.on(function() {
+define ["eventemitter2"], (events) ->
   
- });
-
- tree.on("name.first", function() {
-    
- });
-
- tree.emit("name", { first: "craig" });
-
-###
-
-define () ->
-
   class EventTree
 
+    ###
+    ###
+
+    constructor: () ->
+      @_em = new events.EventEmitter2({
+        wildcard: true
+      })
+
 
     ###
     ###
 
-    constructor: (@parent)  ->
-      @_listeners = []
-      @_leafs = {}
+    on: (key, callback) ->
+      @_em.on @_getEvent(key), callback
 
 
     ###
     ###
 
+    once: (key, callback) ->
+      @_em.once @_getEvent(key), callback
+
+    ##
+    ##
 
     emit: (key, value) ->
-      leaf = @_findLeaf(key)
-      leaf._emit(key)
+      @_em.emit key, value
 
     ###
     ###
 
-    _emit: (value) ->
-      for listener in @_listeners
-        listener(value)
-
-      for leafName of @_leafs
-        @_leafs[leafName]._emit value
-
-
-
-    ###
-    ###
-
-    on: (key, value) ->
-
-      if arguments.length is 1
-        value = key
-        key   = undefined
-
-
-
-
-      @_findLeaf(key)._addListener value
-
-
-    ###
-    ###
-
-    once: (key, value) ->
-      disposable = @on key, () ->
-        disposable.dispose()
-        value.apply this, arguments
-
-
-    ###
-    ###
-
-    _findLeaf: (key) -> @_findLeafs(key).pop()
-
-
-    ###
-    ###
-
-    _findLeafs: (key) ->
-      keyParts = if key then key.split "." else []
-      current = @
-      leafs = [current]
-
-      while keyParts.length
-        leafs.push current = current._leaf keyParts.shift()
-
-      return leafs
-
-
-    ###
-    ###
-
-    _leaf: (name) -> 
-      @_leafs[name] or (@_leafs[name] = new EventTree(@))
-
-
-    ###
-    ###
-
-    _addListener: (value) -> 
-      @_listeners.push value
-
-      {
-        dispose: () =>
-          i = @_listeners.indexOf value
-          return if not ~i
-          @_listeners.splice i, 1
-      }
-
-
-
-  EventTree
-
-
-
-
+    _getEvent: (key) ->
+      return "**" if not key
+      return key if ~key.indexOf "*"
+      return "#{key}.**"
 
 

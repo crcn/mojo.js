@@ -23,6 +23,11 @@ define ["events", "underscore", "./binder"], (events, _, Binder) ->
     ###
     ###
 
+    length: () -> @_source.length
+
+    ###
+    ###
+
     bindTo: (target) ->
       new Binder @, target
       @

@@ -11,6 +11,8 @@
       __extends(StateView, _super);
 
       function StateView() {
+        this._onStatesChange = __bind(this._onStatesChange, this);
+
         this._onIndexChange = __bind(this._onIndexChange, this);
         return StateView.__super__.constructor.apply(this, arguments);
       }
@@ -24,7 +26,8 @@
         options.defaults({
           currentIndex: 0
         });
-        return this.states = new Collection(options.get("states") || []);
+        this.states = new Collection(options.get("states") || []);
+        return this.states.on("updated", this._onStatesChange);
       };
 
       /*
@@ -42,6 +45,9 @@
       StateView.prototype._onIndexChange = function(index) {
         var self;
         self = this;
+        if (!self.states.length() || !this.element) {
+          return;
+        }
         return step((function() {
           if (!self._currentView) {
             return this();
@@ -49,8 +55,35 @@
           return self._currentView.remove(this);
         }), (function() {
           self._currentView = self.states.getItemAt(index);
-          return self._currentView.attach(self.element.append("<div />").children().last());
+          self._currentView.attach(self._childrenElement().append("<div />").children().last());
+          return self.glue("modelLocator", self._currentView, "modelLocator");
         }));
+      };
+
+      /*
+      */
+
+
+      StateView.prototype._childrenElement = function() {
+        var childrenElement;
+        childrenElement = this.get("childrenElement");
+        if (!childrenElement) {
+          return this.element;
+        }
+        return this.element.find(childrenElement);
+      };
+
+      /*
+           if the states change then make sure the current state is synced as well
+      */
+
+
+      StateView.prototype._onStatesChange = function() {
+        var currentView;
+        currentView = this.states.getItemAt(this.get("currentIndex"));
+        if (this._currentView !== currentView) {
+          return this._onIndexChange(this.get("currentIndex"));
+        }
       };
 
       return StateView;

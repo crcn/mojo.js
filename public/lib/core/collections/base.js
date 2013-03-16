@@ -35,6 +35,14 @@
       */
 
 
+      BaseCollection.prototype.length = function() {
+        return this._source.length;
+      };
+
+      /*
+      */
+
+
       BaseCollection.prototype.bindTo = function(target) {
         new Binder(this, target);
         return this;

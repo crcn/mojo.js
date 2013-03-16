@@ -1,4 +1,4 @@
-define ["./base", "underscore", "jquery-transit", "jquery", "async"], (BaseViewDecorator, _, transit, $, async) ->
+define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "async"], (comerr, BaseViewDecorator, _, transit, $, async) ->
   
   class TransitionDecorator extends BaseViewDecorator
 
@@ -31,6 +31,9 @@ define ["./base", "underscore", "jquery-transit", "jquery", "async"], (BaseViewD
     ###
 
     _transition: (element, transition, callback) ->
+
+      # if the element doesn't exist, then return an error
+      return callback(new comerr.NotFound("element does not exist")) if not element.length
 
       if transition.from
         element.css transition.from

@@ -1,42 +1,72 @@
 require(["lib/core/templates/factory", 
   "require-css!css/main.css",
+  "require-css!css/style.css",
+  "require-css!bootstrap/css/bootstrap.min.css",
   "lib/core/views/state",
   "lib/core/views/base",
   "jquery"], 
-  function(TemplateFactory, css, StateView, View, $) {
+  function() {
+
+  var TemplateFactory = require("lib/core/templates/factory"),
+  StateView = require("lib/core/views/state"),
+  View = require("lib/core/views/base");
+
+
 
   var tf = new TemplateFactory();
 
-  var v = new View({
-    template: tf.get("modal"),
+
+  var v = new StateView({
+    template: tf.get("add-class-wizard"),
+    childrenElement: ".modal-container",
+    events: {
+      ".close click": "remove"
+    },
     transition: {
-      ".modal-container": {
+      ".confirmation-dailog": {
         enter: {
-          from: { opacity: 0, top: 50 },
-          to: { opacity: 1, top: 100 }
+          from: { opacity:0,  scale: 0.5 },
+          to: { opacity: 1,  scale: 1 }
         },
         exit: {
-          to: { opacity: 0, top: 300 }
+          to: { opacity: 0,  scale: 1.5, rotateY: 500 }
         }
       },
-      ".modal-window-background": {
+      ".modal-backdrop": {
         enter: {
           from: { opacity: 0 },
           to: { opacity: 0.75 }
         },
         exit: {
-          to: { opacity: 0 }
+          to: { opacity: 0  }
         }
       }
     }
   });
 
 
-  v.attach("#application");
+  v.set("name.title", "FISH!");
 
+  var i = 0;
 
   setTimeout(function() {
-    console.log("REMOVE");
-    v.remove();
-  }, 1000);
+    v.set("name.title", "craig");
+  }, 10);
+
+  v.states.addItem(new View({
+    template: tf.get("add-class")
+  }));
+
+  v.states.addItem(new View({
+    template: tf.get("add-class")
+  }));
+
+
+  // v.setCurrentState(1);
+
+
+
+
+
+  v.attach("#application");
 });

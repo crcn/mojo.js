@@ -21,6 +21,11 @@ var jam = {
             "main": "./lib/index.js"
         },
         {
+            "name": "crema",
+            "location": "vendor/crema",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "cstep",
             "location": "vendor/cstep",
             "main": "./lib/index.js"
@@ -31,9 +36,19 @@ var jam = {
             "main": "./lib/index.js"
         },
         {
+            "name": "dolce",
+            "location": "vendor/dolce",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "dref",
             "location": "vendor/dref",
             "main": "./lib/index.js"
+        },
+        {
+            "name": "eventemitter2",
+            "location": "vendor/eventemitter2",
+            "main": "./lib/eventemitter2.js"
         },
         {
             "name": "events",
@@ -66,6 +81,11 @@ var jam = {
             "main": "css.js"
         },
         {
+            "name": "rivets",
+            "location": "vendor/rivets",
+            "main": "./lib/rivets.js"
+        },
+        {
             "name": "sift",
             "location": "vendor/sift",
             "main": "./sift.js"
@@ -74,6 +94,11 @@ var jam = {
             "name": "step",
             "location": "vendor/step",
             "main": "./lib/step.js"
+        },
+        {
+            "name": "strscanner",
+            "location": "vendor/strscanner",
+            "main": "./lib/index.js"
         },
         {
             "name": "structr",
@@ -133,6 +158,11 @@ if (typeof require !== "undefined" && require.config) {
             "main": "./lib/index.js"
         },
         {
+            "name": "crema",
+            "location": "vendor/crema",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "cstep",
             "location": "vendor/cstep",
             "main": "./lib/index.js"
@@ -143,9 +173,19 @@ if (typeof require !== "undefined" && require.config) {
             "main": "./lib/index.js"
         },
         {
+            "name": "dolce",
+            "location": "vendor/dolce",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "dref",
             "location": "vendor/dref",
             "main": "./lib/index.js"
+        },
+        {
+            "name": "eventemitter2",
+            "location": "vendor/eventemitter2",
+            "main": "./lib/eventemitter2.js"
         },
         {
             "name": "events",
@@ -178,6 +218,11 @@ if (typeof require !== "undefined" && require.config) {
             "main": "css.js"
         },
         {
+            "name": "rivets",
+            "location": "vendor/rivets",
+            "main": "./lib/rivets.js"
+        },
+        {
             "name": "sift",
             "location": "vendor/sift",
             "main": "./sift.js"
@@ -186,6 +231,11 @@ if (typeof require !== "undefined" && require.config) {
             "name": "step",
             "location": "vendor/step",
             "main": "./lib/step.js"
+        },
+        {
+            "name": "strscanner",
+            "location": "vendor/strscanner",
+            "main": "./lib/index.js"
         },
         {
             "name": "structr",
@@ -244,6 +294,11 @@ else {
             "main": "./lib/index.js"
         },
         {
+            "name": "crema",
+            "location": "vendor/crema",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "cstep",
             "location": "vendor/cstep",
             "main": "./lib/index.js"
@@ -254,9 +309,19 @@ else {
             "main": "./lib/index.js"
         },
         {
+            "name": "dolce",
+            "location": "vendor/dolce",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "dref",
             "location": "vendor/dref",
             "main": "./lib/index.js"
+        },
+        {
+            "name": "eventemitter2",
+            "location": "vendor/eventemitter2",
+            "main": "./lib/eventemitter2.js"
         },
         {
             "name": "events",
@@ -289,6 +354,11 @@ else {
             "main": "css.js"
         },
         {
+            "name": "rivets",
+            "location": "vendor/rivets",
+            "main": "./lib/rivets.js"
+        },
+        {
             "name": "sift",
             "location": "vendor/sift",
             "main": "./sift.js"
@@ -297,6 +367,11 @@ else {
             "name": "step",
             "location": "vendor/step",
             "main": "./lib/step.js"
+        },
+        {
+            "name": "strscanner",
+            "location": "vendor/strscanner",
+            "main": "./lib/index.js"
         },
         {
             "name": "structr",

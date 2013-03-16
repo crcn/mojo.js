@@ -48,6 +48,13 @@ define ["./eventTree", "./binding", "./glue", "events", "dref"], (EventTree, Bin
   
       @watch property, new Binding(@, property, listener).listener
 
+
+    ###
+    ###
+
+    unbind: (property, listener) ->
+      throw new Error("not implemented yet")
+
     ###
      Glues two bindable items together
     ###

@@ -4,8 +4,24 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "events", "../models/base", "outcome", "underscore", "../utils/compose", "./decor/facade"], function($, events, Model, outcome, _, compose, ViewDecorator) {
+  define(["jquery", "events", "../models/base", "outcome", "underscore", "../utils/compose", "./decor/facade", "rivets"], function($, events, Model, outcome, _, compose, ViewDecorator, rivets) {
     var BaseView;
+    rivets.configure({
+      adapter: {
+        subscribe: function(obj, keypath, callback) {
+          return obj.bind(keypath.replace(/,/g, "."), callback);
+        },
+        unsubscribe: function(obj, keypath, callback) {
+          return obj.unbind(keypath.replace(/,/g, "."), callback);
+        },
+        read: function(obj, keypath) {
+          return obj.get(keypath.replace(/,/g, "."));
+        },
+        publish: function(obj, keypath, value) {
+          return obj.set(keypath.replace(/,/g, "."), value);
+        }
+      }
+    });
     return BaseView = (function(_super) {
 
       __extends(BaseView, _super);
@@ -60,12 +76,14 @@
         if (callback == null) {
           callback = (function() {});
         }
-        this.remove();
         this.element = typeof selectorOrElement === "string" ? $(selectorOrElement) : selectorOrElement;
         this.selector = selectorOrElement;
         return this.decorator.setup(this._o.e(callback).s(function() {
           callback();
-          return _this._attached();
+          _this._attached();
+          return rivets.bind(_this.element, {
+            data: _this.options
+          });
         }));
       };
 

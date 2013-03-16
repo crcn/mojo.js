@@ -68,6 +68,14 @@
       };
 
       /*
+      */
+
+
+      Bindable.prototype.unbind = function(property, listener) {
+        throw new Error("not implemented yet");
+      };
+
+      /*
            Glues two bindable items together
       */
 

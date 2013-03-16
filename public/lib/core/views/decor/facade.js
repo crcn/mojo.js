@@ -14,12 +14,13 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["underscore", "cstep", "async", "outcome", "./base", "./template", "./transition", "./html"], function(_, cstep, async, outcome, BaseViewDecorator, TemplateDecorator, TransitionDecorator, HtmlDecorator) {
+  define(["underscore", "cstep", "async", "outcome", "./base", "./template", "./events", "./transition", "./html"], function(_, cstep, async, outcome, BaseViewDecorator, TemplateDecorator, EventsDecorator, TransitionDecorator, HtmlDecorator) {
     var ViewDecorator, availableDecorators;
     availableDecorators = {
       "template": TemplateDecorator,
       "html": HtmlDecorator,
-      "transition": TransitionDecorator
+      "transition": TransitionDecorator,
+      "events": EventsDecorator
     };
     return ViewDecorator = (function(_super) {
 

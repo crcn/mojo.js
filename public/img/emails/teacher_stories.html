@@ -1,0 +1,490 @@
+<html>
+  <head>
+
+    <!-- we'll process and inline styles before sending -->
+    <style>
+      h1 { font-size: 48px; font-family: "Georgia" serif ; color: #1a1a1a;}
+      h2 { font-size: 18px; color: silver;}
+      h3 {
+        font-size: 28px ; 
+        color : #1a1a1a; 
+        margin-bottom: 10px ;
+      }
+
+      .read-more-btn { 
+        text-align: left; 
+        font-size: 14px; 
+        text-shadow: 0px -1px 2px #666; 
+        background: #29ABE2; 
+        border-radius: 3px; 
+        background-image: url(http://pstatic.classdojo.com/img/emails/btn-read-more-blue.png); 
+        background-repeat: no-repeat; 
+        height: 37px; 
+        line-height: 35px; 
+        color: white;
+        display:block;
+        font-weight: normal;
+      }
+
+      .cta-btn { 
+        text-align: center; 
+        font-size: 24px; 
+        text-shadow: 0px -1px 2px #999999; 
+        background: orange; 
+        border-radius: 3px; 
+        background-image: url(http://pstatic.classdojo.com/img/emails/btn-bg.png); 
+        background-repeat: no-repeat; 
+        height: 68px; 
+        line-height: 68px; 
+        color: white;
+        display:block;
+        font-weight: bold;
+
+      }
+
+      a {  color:#165E8E; text-decoration:none; font-family: "Lucida Grande", arial, sans-serif; }
+
+      p { font-family: "Lucida Grande", 'arial', sans-serif; line-height: 1.4em; font-size: 16px;}
+
+      .center { text-align: center; }
+
+      .teacher-signature { font-size: 12px;  }
+      .quote { font-size: 14px ; }
+
+      .left-spacer { width :  50px ; } 
+      .right-spacer { width: 50px ; }
+    </style>
+
+  </head>
+
+  <body style='font-size: 17px; font-family: "Lucida Grande", Arial, sans-serif; color: #4d4d4d; margin: 0; background: url(http://pstatic.classdojo.com/img/emails/bg-texture1.png); padding: 20px 0px ;'> 
+    <table style='width: 620px; margin:auto' cellspacing="0">
+      <tbody>
+        <!-- LOGO --> 
+        <tr>
+          <td class='center'>
+            <a href="#"><img src="http://pstatic.classdojo.com/img/emails/trigger-email-logo.png" width="300" alt="ClassDojo"></a>
+          </td>
+        </tr>
+        <!-- END LOGO --> 
+
+
+        <!-- SPACER -->
+        <tr>
+          <td class='center'>
+            <div style='height:20px'></div>
+          </td>
+        </tr>
+        <!-- end spacer --> 
+
+        <!-- TOP OF BODY --> 
+        <tr>
+          <td style='background: url(http://pstatic.classdojo.com/img/emails/background-top.png) no-repeat'>
+            <div style='height:19px'></div>
+          </td>
+        </tr>
+        <!-- end top of body --> 
+
+
+        <!-- MIDDLE OF BODY --> 
+        <tr>
+          <td style='background: url(http://pstatic.classdojo.com/img/emails/background-middle.png) repeat-y'>
+
+            <!-- THE CONTENT --> 
+            <table>
+              <tbody>
+
+                <!-- HEADLINE AND TEXT -->
+                <tr>
+                  <td class='left-spacer'></td>
+                  <td>
+                    <h1 class='center' style='margin: 25px auto 15px auto; font-weight:normal'>
+                      Surprisingly effective secrets for using ClassDojo
+                    </h1>
+                    <p>
+                      {{ content }}
+                    </p>
+                  </td>
+                  <td class='right-spacer'></td>
+                </tr>
+
+                <!-- SPACER -->
+                <tr>
+                  <td class='center'>
+                    <div style='height:35px'></div>
+                  </td>
+                </tr>
+                <!-- end spacer -->
+
+                <!-- DIVIDER LINE --> 
+                <tr>
+                  <td class='left-spacer'></td>
+                  <td class='center'>
+                    <div style='border-bottom:1px solid #ccc'></div>
+                  </td>
+                  <td class='right-spacer'></td>
+                </tr>
+                <!-- end divider line -->  
+
+
+                <!-- SPACER -->
+                <tr>
+                  <td class='center'>
+                    <div style='height:35px'></div>
+                  </td>
+                </tr>
+                <!-- end spacer -->
+
+
+                <!-- TEACHER STORY --> 
+                <!-- headline -->
+                <tr> 
+                  <td class='left-spacer'></td> 
+                  <td class='center'> 
+                    <h3>Earning classroom privileges with Dojo points!</h3> 
+                  </td>
+                  <td class='right-spacer'></td> 
+                </tr>
+
+                <tr> 
+                  <td class='left-spacer'></td>
+                  <td>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <img width='200px' src ='http://pstatic.classdojo.com/img/emails/teacher-adrienne.png' alt="Adrienne's story" />
+                          </td>
+                          <td>
+                            <div class='teacher-signature'>
+                              <strong>by Adrienne Wiggins</strong>, 
+                              3rd grade educator
+                            </div>
+
+                            <p class='quote'>
+                              "When I started using ClassDojo with my students, I had no idea my entire world was about to be 
+                              turned upside down.  Within 2 days of starting with ClassDojo, all my students were behaving..."
+                            </p>
+
+                            <div class='center'>
+                              <table>
+                                <tbody> 
+                                  <tr>
+                                    <td style='width: 50px;'></td>
+                                    <td style='width: 125px;'>
+                                      <a href='http://stories.classdojo.com/tying-real-world-rewards-to-dojo-points/' style='color:white'>
+                                        <span class='read-more-btn' style='padding-left:12px' >
+                                          Read more
+                                        </span>
+                                      </a>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td class='right-spacer'></td> 
+                </tr>
+                <!-- end teacher story --> 
+
+                <!-- SPACER -->
+                <tr>
+                  <td class='center'>
+                    <div style='height:42px'></div>
+                  </td>
+                </tr>
+                <!-- end spacer --> 
+
+
+                <!-- DIVIDER LINE --> 
+                <tr>
+                  <td class='left-spacer'></td>
+                  <td class='center'>
+                    <div style='border-bottom:1px solid #ccc'></div>
+                  </td>
+                  <td class='right-spacer'></td>
+                </tr>
+                <!-- end divider line -->  
+
+
+                <!-- SPACER -->
+                <tr>
+                  <td class='center'>
+                    <div style='height:35px'></div>
+                  </td>
+                </tr>
+                <!-- end spacer -->
+
+
+                <!-- TEACHER STORY --> 
+                <!-- headline -->
+                <tr> 
+                  <td class='left-spacer'></td> 
+                  <td class='center'> 
+                    <h3>Reinforcing good behavior with ClassDojo</h3> 
+                  </td>
+                  <td class='right-spacer'></td> 
+                </tr>
+
+                <tr> 
+                  <td class='left-spacer'></td>
+                  <td>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <div class='teacher-signature'>
+                              <strong>by Sally Harris</strong>, 
+                              5th/6th grade educator
+                            </div>
+
+                            <p class='quote'>
+                              "I am very fortunate to teach at a school that has very high expectations of student behaviour.  As a result, student behaviour is very positive.  Even though there are very few behaviour issues, I have still found ways to use ClassDojo... "
+                            </p>
+
+                            <div class='center'>
+                              <table>
+                                <tbody> 
+                                  <tr>
+                                    <td style='width: 50px;'></td>
+                                    <td style='width: 125px;'>
+                                      <a href='http://stories.classdojo.com/using-classdojo-to-reinforce-good-behaviour/' style='color:white'>
+                                        <span class='read-more-btn' style='padding-left:12px' >
+                                          Read more
+                                        </span>
+                                      </a>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div> 
+                          </td>
+                          <td>
+                            <img width='200px' src ='http://pstatic.classdojo.com/img/emails/teacher-sally.png' alt="Sally's story" />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td class='right-spacer'></td> 
+                </tr>
+                <!-- end teacher story --> 
+
+
+
+                 <!-- SPACER -->
+                <tr>
+                  <td class='center'>
+                    <div style='height:42px'></div>
+                  </td>
+                </tr>
+                <!-- end spacer --> 
+
+
+                <!-- DIVIDER LINE --> 
+                <tr>
+                  <td class='left-spacer'></td>
+                  <td class='center'>
+                    <div style='border-bottom:1px solid #ccc'></div>
+                  </td>
+                  <td class='right-spacer'></td>
+                </tr>
+                <!-- end divider line -->  
+
+
+                <!-- SPACER -->
+                <tr>
+                  <td class='center'>
+                    <div style='height:42px'></div>
+                  </td>
+                </tr>
+                <!-- end spacer --> 
+
+
+
+                <!-- TEACHER STORY --> 
+                <!-- headline -->
+                <tr> 
+                  <td class='left-spacer'></td> 
+                  <td class='center'> 
+                    <h3>Helping students recognize their learning habits</h3> 
+                  </td>
+                  <td class='right-spacer'></td> 
+                </tr>
+
+                <tr> 
+                  <td class='left-spacer'></td>
+                  <td>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <img width='200px' src ='http://pstatic.classdojo.com/img/emails/teacher-jason.png' alt='Adriennes story' />
+                          </td>
+                          <td>
+                            <div class='teacher-signature'>
+                              <strong>by Jason Whitaker</strong>, 
+                              2nd grade educator
+                            </div>
+
+                            <p class='quote'>
+                              "My name is Jason Whitaker and I'm a 2nd grade teacher at the wonderful Perkerson Elementary School in Atlanta Public School System. I have the best group of 2nd graders around. They've embraced ClassDojo quite quickly. I use it in three particular ways..."
+                            </p>
+
+                            <div class='center'>
+                              <table>
+                                <tbody> 
+                                  <tr>
+                                    <td style='width: 50px;'></td>
+                                    <td style='width: 125px;'>
+                                      <a href='http://stories.classdojo.com/how-jason-whitaker-uses-classdojo-to-help-students-recognize-their-learning-habits/' style='color:white'>
+                                        <span class='read-more-btn' style='padding-left:12px' >
+                                          Read more
+                                        </span>
+                                      </a>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td class='right-spacer'></td> 
+                </tr>
+                <!-- end teacher story --> 
+
+
+
+
+
+                <!-- THE CTA BUTTON --> 
+                <tr>
+                  <td style='width:50px;'></td>
+                  <td>
+                    <table width='100%' style='margin-top: 35px;'>
+                      <tbody>
+                        <tr>
+                          <td style='width: 77px'></td>
+                          <td class='center'> 
+                            <h2>Ready to start using ClassDojo?</h2> 
+                          </td> 
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td style='width:77px;'></td>
+                          <td class='center'>
+                            <a href='http://teach.classdojo.com/#!/launchpad/add' style='color:white'>
+                              <span class='cta-btn'>
+                                Add Your Class!
+                              </span>
+                            </a>
+                          </td>
+                          <td style='width: 77px;'></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td style='width: 50px;'></td>
+                </tr>
+                <!-- end cta button -->
+
+                <!-- SPACER -->
+                <tr>
+                  <td class='center'>
+                    <div style='height:20px'></div>
+                  </td>
+                </tr>
+                <!-- end spacer --> 
+
+
+
+              </tbody>
+            </table>
+            <!-- end the content -->
+
+          </td>
+
+        </tr>
+        <!-- middle of body --> 
+
+
+        <!-- BOTTOM OF BODY --> 
+        <tr>
+          <td class='' style='background: url(http://pstatic.classdojo.com/img/emails/background-bottom.png) no-repeat'>
+            <div style='height:31px'></div>
+          </td>
+        </tr>
+        <!-- end bottom of body --> 
+
+        <!-- SPACER -->
+        <tr>
+          <td class='center'>
+            <div style='height:20px'></div>
+          </td>
+        </tr>
+        <!-- end spacer --> 
+
+
+        <!-- LIST OF LINKS -->
+        <tr>
+          <td style='font-size:14px;text-align:center; color: #ccc'>
+            <a href='http://www.classdojo.com/about' >How to use ClassDojo</a> 
+            &nbsp; &bull;  &nbsp;
+            <a href='http://www.classdojo.com/privacy' >Privacy policy</a> 
+            &nbsp; &bull;  &nbsp;
+            <a href='http://teachersupport.classdojo.com' >Help</a> 
+            &nbsp; &bull;  &nbsp;
+            <a href="{% unsubscribe_url %}">Unsubscribe</a> 
+          </td>
+        </tr>
+        <!-- end list of links --> 
+
+
+        <!-- SPACER -->
+        <tr>
+          <td class='center'>
+            <div style='height:20px'></div>
+          </td>
+        </tr>
+        <!-- end spacer --> 
+
+
+        <!-- ADDRESS --> 
+        <tr>
+          <td style='text-align: center; font-size: 12px; font-family: "Lucida Grande", arial, sans-serif;'>
+            395 Page Mill Rd &bull; Suite 140 &bull; Palo Alto CA 94306           
+          </td>
+        </tr>
+        <!-- end of address --> 
+
+
+        <!-- SPACER -->
+        <tr>
+          <td class='center'>
+            <div style='height:20px'></div>
+          </td>
+        </tr>
+        <!-- end spacer --> 
+
+
+        <!-- APP STORE ICON --> 
+        <tr>
+          <td class='center'>
+            <a href='http://classdojo.com/ios'><img src='http://pstatic.classdojo.com/img/emails/btn-app-store.png' /></a>
+          </td>
+        </tr>
+        <!-- end app store icon --> 
+
+      </tbody>
+    </table>
+  </body>
+
+
+</html>

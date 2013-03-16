@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./base", "underscore", "jquery-transit", "jquery", "async"], function(BaseViewDecorator, _, transit, $, async) {
+  define(["comerr", "./base", "underscore", "jquery-transit", "jquery", "async"], function(comerr, BaseViewDecorator, _, transit, $, async) {
     var TransitionDecorator;
     TransitionDecorator = (function(_super) {
 
@@ -45,6 +45,9 @@
 
 
       TransitionDecorator.prototype._transition = function(element, transition, callback) {
+        if (!element.length) {
+          return callback(new comerr.NotFound("element does not exist"));
+        }
         if (transition.from) {
           element.css(transition.from);
         }
