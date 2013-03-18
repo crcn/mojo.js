@@ -49,7 +49,7 @@
         var ni;
         ni = this.get("currentIndex") + 1;
         if (ni > this.states.length() - 1) {
-          return this._endOfStates();
+          return this.emit("noMoreStates");
         }
         return this.set("currentIndex", Math.min(this.get("currentIndex") + 1, this.states.length() - 1));
       };
@@ -61,12 +61,6 @@
       StateView.prototype.prevState = function() {
         return this.set("currentIndex", Math.max(this.get("currentIndex") - 1, 0));
       };
-
-      /*
-      */
-
-
-      StateView.prototype._endOfStates = function() {};
 
       /*
       */

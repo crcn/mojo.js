@@ -47,9 +47,7 @@
         selectorParts = selector.split(" ");
         action = selectorParts.shift();
         selectors = selectorParts.join(",");
-        elements = this.view.element.find(selectors);
-        console.log(action);
-        elements.bind(action.toLowerCase(), cb = function() {
+        cb = function() {
           var ref;
           if (typeof viewMethod === "function") {
             ref = viewMethod;
@@ -57,7 +55,12 @@
             ref = _this.view[viewMethod];
           }
           return ref.apply(_this.view, arguments);
-        });
+        };
+        if (!selectors.length) {
+          return this._disposable.add(this.view.on(action, cb));
+        }
+        elements = this.view.element.find(selectors);
+        elements.bind(action.toLowerCase(), cb);
         return this._disposable.add(function() {
           return elements.unbind(action, cb);
         });

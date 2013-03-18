@@ -31,7 +31,7 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
       ni = @get("currentIndex") + 1
 
       if ni > @states.length() - 1
-        return @_endOfStates()
+        return @emit "noMoreStates"
 
       @set "currentIndex", Math.min @get("currentIndex") + 1, @states.length() - 1
 
@@ -40,13 +40,6 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
 
     prevState: () ->
       @set "currentIndex", Math.max @get("currentIndex") - 1, 0
-
-
-    ###
-    ###
-
-    _endOfStates: () ->
-
 
     ###
     ###

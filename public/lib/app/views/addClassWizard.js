@@ -66,7 +66,8 @@
 
 
       AddClassWizardView.prototype.events = {
-        "mouseOver .close .cancel-btn": "remove",
+        "noMoreStates": "remove",
+        "click .close .cancel-btn": "remove",
         "click .confirm-positive": "nextState"
       };
 

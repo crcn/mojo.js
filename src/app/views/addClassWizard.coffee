@@ -41,7 +41,8 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     ###
 
     events: {
-      "mouseOver .close .cancel-btn": "remove",
+      "noMoreStates": "remove",
+      "click .close .cancel-btn": "remove",
       "click .confirm-positive": "nextState"
     },
 
