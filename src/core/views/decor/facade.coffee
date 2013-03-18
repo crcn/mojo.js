@@ -10,7 +10,7 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
 
 define ["underscore",
 "cstep",
-"async",
+"../../utils/async",
 "outcome",
 "./base", 
 "./template",
@@ -23,9 +23,9 @@ define ["underscore",
     availableDecorators = {
       "template": TemplateDecorator,
       "html": HtmlDecorator,
+      "bindings": BindingsDecorator,
       "transition": TransitionDecorator,
-      "events": EventsDecorator,
-      "bindings": BindingsDecorator
+      "events": EventsDecorator
     }
 
     

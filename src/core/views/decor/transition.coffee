@@ -1,4 +1,4 @@
-define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "async"], (comerr, BaseViewDecorator, _, transit, $, async) ->
+define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../utils/async"], (comerr, BaseViewDecorator, _, transit, $, async) ->
   
   class TransitionDecorator extends BaseViewDecorator
 
@@ -48,7 +48,6 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "async"], 
       transition = @view.get("transition")
       if transition.enter or transition.exit
         return [transition]
-
 
       transitions = []
 

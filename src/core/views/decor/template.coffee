@@ -3,7 +3,6 @@ define ["./html", "outcome"], (HtmlViewDecorator, outcome) ->
   
   class TemplateViewDecorator extends HtmlViewDecorator
 
-
     ###
     ###
 
@@ -17,8 +16,6 @@ define ["./html", "outcome"], (HtmlViewDecorator, outcome) ->
     ###
 
     templateData: () -> @view.get "data"
-
-
 
 
 

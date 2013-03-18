@@ -5,7 +5,6 @@ define ["./base", "rivets"], (BaseViewDecorator, rivets) ->
   rivets.configure({
     adapter: {
       subscribe: (obj, keypath, callback) ->
-
         obj.on "change:" + keypath.replace(/,/g, "."), callback
 
       unsubscribe: (obj, keypath, callback) ->
