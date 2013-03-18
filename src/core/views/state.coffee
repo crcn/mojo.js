@@ -28,6 +28,11 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
     ###
 
     nextState: () ->
+      ni = @get("currentIndex") + 1
+
+      if ni > @states.length() - 1
+        return @_endOfStates()
+
       @set "currentIndex", Math.min @get("currentIndex") + 1, @states.length() - 1
 
     ###
@@ -35,6 +40,12 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
 
     prevState: () ->
       @set "currentIndex", Math.max @get("currentIndex") - 1, 0
+
+
+    ###
+    ###
+
+    _endOfStates: () ->
 
 
     ###
@@ -61,7 +72,7 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
           self._currentView = self.states.getItemAt(index)
           self.set "currentView", self._currentView
           self._currentView.attach self._childrenElement().append("<div />").children().last()
-          self._currentView.set "modelLocator", @get "modelLocator"
+          self._currentView.set "modelLocator", self.get "modelLocator"
         )
       )
 

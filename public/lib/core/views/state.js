@@ -46,6 +46,11 @@
 
 
       StateView.prototype.nextState = function() {
+        var ni;
+        ni = this.get("currentIndex") + 1;
+        if (ni > this.states.length() - 1) {
+          return this._endOfStates();
+        }
         return this.set("currentIndex", Math.min(this.get("currentIndex") + 1, this.states.length() - 1));
       };
 
@@ -56,6 +61,12 @@
       StateView.prototype.prevState = function() {
         return this.set("currentIndex", Math.max(this.get("currentIndex") - 1, 0));
       };
+
+      /*
+      */
+
+
+      StateView.prototype._endOfStates = function() {};
 
       /*
       */
@@ -76,7 +87,7 @@
           self._currentView = self.states.getItemAt(index);
           self.set("currentView", self._currentView);
           self._currentView.attach(self._childrenElement().append("<div />").children().last());
-          return self._currentView.set("modelLocator", this.get("modelLocator"));
+          return self._currentView.set("modelLocator", self.get("modelLocator"));
         }));
       };
 

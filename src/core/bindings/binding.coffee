@@ -7,8 +7,6 @@ define ["dref"],  (dref) ->
 
     constructor: (@bindable, @key, @callback) -> 
 
-      console.log key
-
       # run the listener
       @_listen()
 

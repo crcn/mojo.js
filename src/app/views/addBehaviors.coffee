@@ -1,12 +1,18 @@
 define ["../../core/views/base", "../core/templates"], (View, templates) ->
   
-  class AddClassView extends View
+  class AddBehaviors extends View
+
+
+    ###
+    ###
+
+    title: "Add Behaviors"
 
     ###
     ###
 
 
-    template: templates.addClass
+    template: templates.addBehaviors
 
 
   

@@ -5,11 +5,6 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     ###
     ###
 
-    title: "Add A Class"
-
-    ###
-    ###
-
     template: templates.addClassWizard,
 
     ###
@@ -46,8 +41,8 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     ###
 
     events: {
-      "click .close": "remove",
-      ""
+      "click .close .cancel-btn": "remove",
+      "click .confirm-positive": "nextState"
     },
 
     ###
@@ -56,7 +51,9 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     constructor: () ->
       super {
         states: [
-          new AddClassView()
+          new AddClassView(),
+          new AddStudentsView(),
+          new AddBehaviorsView()
         ]
       }
 
@@ -66,6 +63,13 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     init: () ->
       super()
       @glue "currentView.title", "title"
+
+
+    ###
+    ###
+
+    _endOfStates: () ->
+      @remove()
   
 
 

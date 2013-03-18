@@ -13,12 +13,6 @@
       */
 
 
-      AddClassWizardView.prototype.title = "Add A Class";
-
-      /*
-      */
-
-
       AddClassWizardView.prototype.template = templates.addClassWizard;
 
       /*
@@ -72,8 +66,8 @@
 
 
       AddClassWizardView.prototype.events = {
-        "click .close": "remove",
-        "": ""
+        "click .close .cancel-btn": "remove",
+        "click .confirm-positive": "nextState"
       };
 
       /*
@@ -82,7 +76,7 @@
 
       function AddClassWizardView() {
         AddClassWizardView.__super__.constructor.call(this, {
-          states: [new AddClassView()]
+          states: [new AddClassView(), new AddStudentsView(), new AddBehaviorsView()]
         });
       }
 
@@ -93,6 +87,14 @@
       AddClassWizardView.prototype.init = function() {
         AddClassWizardView.__super__.init.call(this);
         return this.glue("currentView.title", "title");
+      };
+
+      /*
+      */
+
+
+      AddClassWizardView.prototype._endOfStates = function() {
+        return this.remove();
       };
 
       return AddClassWizardView;

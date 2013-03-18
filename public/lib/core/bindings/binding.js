@@ -14,7 +14,6 @@
         this.callback = callback;
         this._onChange = __bind(this._onChange, this);
 
-        console.log(key);
         this._listen();
       }
 
