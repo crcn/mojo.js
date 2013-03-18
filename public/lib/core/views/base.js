@@ -39,7 +39,7 @@
         BaseView.__super__.constructor.call(this, options);
         this.decorator = new ViewDecorator(this);
         this._o = outcome.e(this);
-        this.init(this);
+        this.init();
         this.set("initialized", true);
       }
 
@@ -60,8 +60,8 @@
       */
 
 
-      BaseView.prototype.init = function(options) {
-        options.set("data.view", this);
+      BaseView.prototype.init = function() {
+        this.set("data.view", this);
         if (this._initialized) {
           throw new Error("already initialized");
         }

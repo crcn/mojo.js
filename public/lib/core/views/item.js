@@ -13,8 +13,12 @@
         return ItemView.__super__.constructor.apply(this, arguments);
       }
 
+      /*
+      */
+
+
       ItemView.prototype.init = function(options) {
-        return options.bind("data", this.rerender);
+        return options.bind("data.**", this.rerender);
       };
 
       return ItemView;

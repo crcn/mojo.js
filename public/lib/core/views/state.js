@@ -21,12 +21,15 @@
       */
 
 
+      StateView.prototype.currentIndex = 0;
+
+      /*
+      */
+
+
       StateView.prototype.init = function(options) {
         StateView.__super__.init.call(this, options);
-        options.defaults({
-          currentIndex: 0
-        });
-        this.states = new Collection(options.get("states") || []);
+        this.states = new Collection(this.get("states") || []);
         return this.states.on("updated", this._onStatesChange);
       };
 

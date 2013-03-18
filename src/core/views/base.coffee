@@ -32,9 +32,8 @@ define ["jquery", "dref", "events", "../models/base", "../bindings/bindable", "o
       # outcome is flow-control for errors
       @_o = outcome.e @
 
-
       # initialize the options
-      @init @
+      @init()
 
       # after init, set to initialized
       @set "initialized", true
@@ -52,9 +51,9 @@ define ["jquery", "dref", "events", "../models/base", "../bindings/bindable", "o
     ###
     ###
 
-    init: (options) ->
+    init: () ->
 
-      options.set "data.view", @
+      @set "data.view", @
 
       throw new Error("already initialized") if @_initialized
       @_initialized = true

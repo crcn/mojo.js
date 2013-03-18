@@ -23,12 +23,20 @@
       */
 
 
-      ContainerView.prototype.init = function(options) {
-        ContainerView.__super__.init.call(this, options);
-        options.defaults({
-          childrenElement: ".children",
-          childElement: "div"
-        });
+      ContainerView.prototype.childrenElement = ".children";
+
+      /*
+      */
+
+
+      ContainerView.prototype.childElement = "div";
+
+      /*
+      */
+
+
+      ContainerView.prototype.init = function() {
+        ContainerView.__super__.init.call(this);
         this.children = new Collection();
         this.children.source(options.get("children") || []);
         return this.bind("modelLocator", this._setModelLocator);

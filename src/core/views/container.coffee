@@ -6,15 +6,19 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
 
     ###
     ###
+    
+    childrenElement: ".children",
 
-    init: (options) ->
+    ###
+    ###
 
-      super options
+    childElement: "div"
 
-      options.defaults {
-        childrenElement: ".children",
-        childElement: "div"
-      }
+    ###
+    ###
+
+    init: () ->
+      super()
 
       # these are the children of this container
       @children = new Collection()

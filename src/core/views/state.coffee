@@ -5,15 +5,16 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
     ###
     ###
 
+    currentIndex: 0
+
+    ###
+    ###
+
     init: (options) ->
 
       super options
 
-      options.defaults {
-        currentIndex: 0
-      }
-
-      @states = new Collection options.get("states") or []
+      @states = new Collection @get("states") or []
       @states.on "updated", @_onStatesChange
 
     ###
