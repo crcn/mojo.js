@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./binding", "./glue", "eventemitter2", "dref"], function(Binding, Glue, events, dref) {
+  define(["./binding", "./glue", "./eventEmitter", "dref", "disposable"], function(Binding, Glue, EventEmitter, dref, disposable) {
     var Bindable;
     return Bindable = (function(_super) {
       var bindable;
@@ -55,20 +55,6 @@
       };
 
       /*
-      */
-
-
-      Bindable.prototype.on = function(key, listener) {
-        var _this = this;
-        Bindable.__super__.on.call(this, key, listener);
-        return {
-          dispose: function() {
-            return _this.off(key, listener);
-          }
-        };
-      };
-
-      /*
            binds a property to a listener. This is called immediately if there's a value
       */
 
@@ -98,7 +84,7 @@
 
       return Bindable;
 
-    })(events.EventEmitter2);
+    })(EventEmitter);
   });
 
 }).call(this);

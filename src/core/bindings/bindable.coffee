@@ -1,7 +1,7 @@
-define ["./binding", "./glue", "eventemitter2", "dref"], (Binding, Glue, events, dref) ->
+define ["./binding", "./glue", "./eventEmitter", "dref", "disposable"], (Binding, Glue, EventEmitter, dref, disposable) ->
 
   
-  class Bindable extends events.EventEmitter2
+  class Bindable extends EventEmitter
 
     ###
     ###
@@ -37,17 +37,6 @@ define ["./binding", "./glue", "eventemitter2", "dref"], (Binding, Glue, events,
       @emit "change", value
 
 
-
-    ###
-    ###
-
-    on: (key, listener) ->
-
-      super key, listener
-
-      
-      dispose: () =>
-        @off key, listener
 
 
     ###
