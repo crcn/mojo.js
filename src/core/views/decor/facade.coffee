@@ -46,7 +46,7 @@ define ["underscore",
       init: () =>
 
         # if the options change in the view, then update the decorators as well
-        @view.options.on "update", @_setupDecorators
+        @view.on "change", @_setupDecorators
 
         # setup the decorators immediately
         @_setupDecorators()

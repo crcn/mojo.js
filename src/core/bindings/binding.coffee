@@ -6,6 +6,8 @@ define ["dref"],  (dref) ->
     ###
 
     constructor: (@bindable, @key, @callback) -> 
+
+      # run the listener
       @listener()
 
     ###
@@ -13,10 +15,13 @@ define ["dref"],  (dref) ->
 
     listener: () =>
 
+      # fetch the current value of the bound item
       newValue = @bindable.get @key
 
+      # if the item is new, then callback the function
       if @oldValue isnt newValue
         @callback @oldValue = newValue, @oldValue
+
 
 
 

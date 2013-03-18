@@ -45,7 +45,7 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
 
 
       ViewDecorator.prototype.init = function() {
-        this.view.options.on("update", this._setupDecorators);
+        this.view.on("change", this._setupDecorators);
         return this._setupDecorators();
       };
 

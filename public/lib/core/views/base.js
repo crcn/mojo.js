@@ -4,15 +4,15 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "events", "../models/base", "outcome", "underscore", "../utils/compose", "./decor/facade", "rivets"], function($, events, Model, outcome, _, compose, ViewDecorator, rivets) {
+  define(["jquery", "dref", "events", "../models/base", "../bindings/bindable", "outcome", "underscore", "../utils/compose", "./decor/facade", "rivets"], function($, dref, events, Model, Bindable, outcome, _, compose, ViewDecorator, rivets) {
     var BaseView;
     rivets.configure({
       adapter: {
         subscribe: function(obj, keypath, callback) {
-          return obj.bind(keypath.replace(/,/g, "."), callback);
+          return obj.on("change:" + keypath.replace(/,/g, "."), callback);
         },
         unsubscribe: function(obj, keypath, callback) {
-          return obj.unbind(keypath.replace(/,/g, "."), callback);
+          return obj.off("change:" + keypath.replace(/,/g, "."), callback);
         },
         read: function(obj, keypath) {
           return obj.get(keypath.replace(/,/g, "."));
@@ -36,13 +36,25 @@
         }
         this.rerender = __bind(this.rerender, this);
 
-        this.options = new Model(_.extend({}, options, this));
-        compose(this, this.options, ["get", "has", "set", "bind", "glue"]);
+        BaseView.__super__.constructor.call(this, options);
         this.decorator = new ViewDecorator(this);
         this._o = outcome.e(this);
-        this.init(this.options);
-        this.options.set("initialized", true);
+        this.init(this);
+        this.set("initialized", true);
       }
+
+      /*
+           override key so the view data can be fetched as well. Makes it a bit easier extending
+           a view class.
+      */
+
+
+      BaseView.prototype.get = function(key) {
+        if (!arguments.length) {
+          return BaseView.__super__.get.call(this);
+        }
+        return BaseView.__super__.get.call(this, key) || dref.get(this, key);
+      };
 
       /*
       */
@@ -82,7 +94,7 @@
           callback();
           _this._attached();
           return rivets.bind(_this.element, {
-            data: _this.options
+            data: _this
           });
         }));
       };
@@ -144,7 +156,7 @@
 
       return BaseView;
 
-    })(events.EventEmitter);
+    })(Model);
   });
 
 }).call(this);

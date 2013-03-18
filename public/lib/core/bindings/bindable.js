@@ -3,9 +3,10 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./eventTree", "./binding", "./glue", "events", "dref"], function(EventTree, Binding, Glue, events, dref) {
+  define(["./binding", "./glue", "eventemitter2", "dref"], function(Binding, Glue, events, dref) {
     var Bindable;
     return Bindable = (function(_super) {
+      var bindable;
 
       __extends(Bindable, _super);
 
@@ -15,7 +16,9 @@
 
       function Bindable(data) {
         this.data = data != null ? data : {};
-        this._emitter = new EventTree();
+        Bindable.__super__.constructor.call(this, {
+          wildcard: true
+        });
       }
 
       /*
@@ -47,11 +50,22 @@
         } else {
           dref.set(this.data, key, value);
         }
-        this._emitter.emit(key);
-        return this.emit("update", {
-          key: key,
-          value: value
-        });
+        this.emit("change:" + key, value);
+        return this.emit("change", value);
+      };
+
+      /*
+      */
+
+
+      Bindable.prototype.on = function(key, listener) {
+        var _this = this;
+        Bindable.__super__.on.call(this, key, listener);
+        return {
+          dispose: function() {
+            return _this.off(key, listener);
+          }
+        };
       };
 
       /*
@@ -60,19 +74,7 @@
 
 
       Bindable.prototype.bind = function(property, listener) {
-        if (arguments.length === 1) {
-          listener = property;
-          property = void 0;
-        }
-        return this.watch(property, new Binding(this, property, listener).listener);
-      };
-
-      /*
-      */
-
-
-      Bindable.prototype.unbind = function(property, listener) {
-        throw new Error("not implemented yet");
+        return this.on("change:" + property, new Binding(this, property.replace(/\.\*\*/g, ""), listener).listener);
       };
 
       /*
@@ -88,22 +90,15 @@
         return new Glue(this, fromProperty, to, toProperty);
       };
 
-      /*
-           watches for any change in the bindable data. This is ONLY called on change
-      */
+      bindable = new Bindable();
 
+      bindable.set("name.first", "craig");
 
-      Bindable.prototype.watch = function(property, listener) {
-        if (arguments.length === 1) {
-          listener = property;
-          property = void 0;
-        }
-        return this._emitter.on(property, listener);
-      };
+      console.log("B");
 
       return Bindable;
 
-    })(events.EventEmitter);
+    })(events.EventEmitter2);
   });
 
 }).call(this);

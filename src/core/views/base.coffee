@@ -1,13 +1,13 @@
-define ["jquery", "events", "../models/base" , "outcome", "underscore", "../utils/compose", "./decor/facade", "rivets"], ($, events, Model, outcome, _, compose, ViewDecorator, rivets) ->
+define ["jquery", "dref", "events", "../models/base", "../bindings/bindable", "outcome", "underscore", "../utils/compose", "./decor/facade", "rivets"], ($, dref, events, Model, Bindable, outcome, _, compose, ViewDecorator, rivets) ->
 
 
   rivets.configure({
     adapter: {
       subscribe: (obj, keypath, callback) ->
-        obj.bind keypath.replace(/,/g, "."), callback
+        obj.on "change:" + keypath.replace(/,/g, "."), callback
 
       unsubscribe: (obj, keypath, callback) ->
-        obj.unbind keypath.replace(/,/g, "."), callback
+        obj.off "change:" + keypath.replace(/,/g, "."), callback
 
       read: (obj, keypath) ->
         obj.get keypath.replace(/,/g, ".")
@@ -18,16 +18,14 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore", "../util
   })
 
 
-  class BaseView extends events.EventEmitter
+  class BaseView extends Model
 
     ###
     ###
 
     constructor: (options = {}) ->
 
-      # the model consists of THIS object, along with the options provided
-      @options   = new Model _.extend {}, options, @
-      compose @, @options, ["get", "has", "set", "bind", "glue"]
+      super options
 
       @decorator = new ViewDecorator @
 
@@ -36,12 +34,20 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore", "../util
 
 
       # initialize the options
-      @init @options
+      @init @
 
       # after init, set to initialized
-      @options.set "initialized", true
+      @set "initialized", true
 
 
+    ###
+     override key so the view data can be fetched as well. Makes it a bit easier extending
+     a view class.
+    ###
+
+    get: (key) ->
+      return super() if not arguments.length
+      return super(key) or dref.get @, key
 
     ###
     ###
@@ -71,7 +77,7 @@ define ["jquery", "events", "../models/base" , "outcome", "underscore", "../util
       @decorator.setup @_o.e(callback).s () =>
         callback()
         @_attached()
-        rivets.bind @element, { data: @options }
+        rivets.bind @element, { data: @ }
 
 
     ###

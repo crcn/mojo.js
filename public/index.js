@@ -29,7 +29,7 @@ require(["lib/core/templates/factory",
           to: { opacity: 1,  scale: 1 }
         },
         exit: {
-          to: { opacity: 0,  scale: 1.5, rotateY: 500 }
+          to: { opacity: 0,  scale: 1.5 }
         }
       },
       ".modal-backdrop": {
