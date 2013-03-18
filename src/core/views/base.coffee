@@ -39,7 +39,16 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
       @set "data.view", @
 
       throw new Error("already initialized") if @_initialized
-      @_initialized = true
+      @_initialized = true  
+
+      # on added to the stage
+      @on "attached", @_onAttached
+
+      # on removed from the stage
+      @on "removed", @_onRemoved
+
+      # on data change
+      @on "change", @_onChanged
 
     ###
      returns a search for a particular element
@@ -58,7 +67,7 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
 
       @decorator.setup @_o.e(callback).s () =>
         callback()
-        @_attached()
+        @emit "attached"
 
 
     ###
@@ -71,13 +80,6 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
 
       return callback() if not @selector
       @attach @selector, callback
-
-
-    ###
-    ###
-
-    _attached: () ->
-      # OVERRIDE ME
 
 
     ###
@@ -105,5 +107,13 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
         callback = (() ->)
 
       callback
+
+
+    ###
+    ###
+
+    _onAttached: () ->
+    _onRemoved: () ->
+    _onChanged: () ->
 
 

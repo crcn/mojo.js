@@ -46,7 +46,10 @@
         if (this._initialized) {
           throw new Error("already initialized");
         }
-        return this._initialized = true;
+        this._initialized = true;
+        this.on("attached", this._onAttached);
+        this.on("removed", this._onRemoved);
+        return this.on("change", this._onChanged);
       };
 
       /*
@@ -73,7 +76,7 @@
         this.selector = selectorOrElement;
         return this.decorator.setup(this._o.e(callback).s(function() {
           callback();
-          return _this._attached();
+          return _this.emit("attached");
         }));
       };
 
@@ -92,12 +95,6 @@
         }
         return this.attach(this.selector, callback);
       };
-
-      /*
-      */
-
-
-      BaseView.prototype._attached = function() {};
 
       /*
       */
@@ -131,6 +128,16 @@
         }
         return callback;
       };
+
+      /*
+      */
+
+
+      BaseView.prototype._onAttached = function() {};
+
+      BaseView.prototype._onRemoved = function() {};
+
+      BaseView.prototype._onChanged = function() {};
 
       return BaseView;
 

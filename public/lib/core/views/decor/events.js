@@ -49,7 +49,13 @@
         selectors = selectorParts.join(",");
         elements = this.view.element.find(selectors);
         elements.bind(action, cb = function() {
-          return _this.view[viewMethod].apply(_this.view, arguments);
+          var ref;
+          if (typeof viewMethod === "function") {
+            ref = viewMethod;
+          } else {
+            ref = _this.view[viewMethod];
+          }
+          return ref.apply(_this.view, arguments);
         });
         return this._disposable.add(function() {
           return elements.unbind(action, cb);

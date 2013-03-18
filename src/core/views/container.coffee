@@ -6,7 +6,7 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
 
     ###
     ###
-    
+
     childrenElement: ".children",
 
     ###
@@ -95,7 +95,6 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
     ###
 
     _childElement: () -> if @get("childrenElement") then @$ @get("childrenElement") else @element
-
 
     ###
     ###

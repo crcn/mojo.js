@@ -20,7 +20,7 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
     ###
     ###
 
-    _attached: () ->  
+    _onAttached: () ->  
       @bind "currentIndex", @_onIndexChange
 
 

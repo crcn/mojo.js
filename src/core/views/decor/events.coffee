@@ -13,12 +13,9 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
       @_disposable = disposable.create()
 
 
-
-
       for selector of e 
         @_addBinding selector, e[selector]
 
-        
 
       callback()
 
@@ -42,14 +39,18 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
       elements = @view.element.find(selectors)
       # throw new Error("element method #{action} does not exist") 
       elements.bind(action, cb = () =>
-        @view[viewMethod].apply(@view, arguments)
+
+        if typeof viewMethod is "function"
+          ref = viewMethod
+        else 
+          ref = @view[viewMethod]
+
+        ref.apply(@view, arguments)
       )
 
       @_disposable.add(() ->
         elements.unbind action, cb
       )
-
-
 
 
     ###

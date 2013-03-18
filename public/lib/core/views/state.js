@@ -37,7 +37,7 @@
       */
 
 
-      StateView.prototype._attached = function() {
+      StateView.prototype._onAttached = function() {
         return this.bind("currentIndex", this._onIndexChange);
       };
 
