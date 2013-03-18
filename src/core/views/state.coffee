@@ -27,6 +27,19 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
     ###
     ###
 
+    nextState: () ->
+      @set "currentIndex", Math.min @get("currentIndex") + 1, @states.length() - 1
+
+    ###
+    ###
+
+    prevState: () ->
+      @set "currentIndex", Math.max @get("currentIndex") - 1, 0
+
+
+    ###
+    ###
+
     _onIndexChange: (index) =>
 
       self = @

@@ -33,7 +33,7 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     _addBinding: (selector, viewMethod) ->
 
       selectorParts = selector.split " "
-      action = selectorParts.pop()
+      action = selectorParts.shift()
       selectors = selectorParts.join(",")
 
       elements = @view.element.find(selectors)

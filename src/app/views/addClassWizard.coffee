@@ -17,6 +17,39 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
 
     childrenElement: ".modal-body",
 
+
+    ###
+    ###
+
+    transition: {
+      ".confirmation-dailog": {
+        enter: {
+          from: { opacity: 0,  scale: 0.5 },
+          to: { opacity: 1,  scale: 1 }
+        },
+        exit: {
+          to: { opacity: 0,  scale: 1.5 }
+        }
+      },
+      ".modal-backdrop": {
+        enter: {
+          from: { opacity: 0 },
+          to: { opacity: 0.75 }
+        },
+        exit: {
+          to: { opacity: 0  }
+        }
+      }
+    },
+
+    ###
+    ###
+
+    events: {
+      "click .close": "remove",
+      ""
+    },
+
     ###
     ###
 

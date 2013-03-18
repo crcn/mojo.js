@@ -32,6 +32,7 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
 
     _transition: (element, transition, callback) ->
 
+
       # if the element doesn't exist, then return an error
       return callback(new comerr.NotFound("element does not exist")) if not element.length
 

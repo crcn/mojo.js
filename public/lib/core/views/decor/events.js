@@ -45,7 +45,7 @@
         var action, cb, elements, selectorParts, selectors,
           _this = this;
         selectorParts = selector.split(" ");
-        action = selectorParts.pop();
+        action = selectorParts.shift();
         selectors = selectorParts.join(",");
         elements = this.view.element.find(selectors);
         elements.bind(action, cb = function() {

@@ -31,6 +31,55 @@
       */
 
 
+      AddClassWizardView.prototype.transition = {
+        ".confirmation-dailog": {
+          enter: {
+            from: {
+              opacity: 0,
+              scale: 0.5
+            },
+            to: {
+              opacity: 1,
+              scale: 1
+            }
+          },
+          exit: {
+            to: {
+              opacity: 0,
+              scale: 1.5
+            }
+          }
+        },
+        ".modal-backdrop": {
+          enter: {
+            from: {
+              opacity: 0
+            },
+            to: {
+              opacity: 0.75
+            }
+          },
+          exit: {
+            to: {
+              opacity: 0
+            }
+          }
+        }
+      };
+
+      /*
+      */
+
+
+      AddClassWizardView.prototype.events = {
+        "click .close": "remove",
+        "": ""
+      };
+
+      /*
+      */
+
+
       function AddClassWizardView() {
         AddClassWizardView.__super__.constructor.call(this, {
           states: [new AddClassView()]
