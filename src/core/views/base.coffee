@@ -1,4 +1,4 @@
-define ["jquery", "dref", "events", "../models/base", "../bindings/bindable", "outcome", "underscore", "../utils/compose", "./decor/facade", "rivets"], ($, dref, events, Model, Bindable, outcome, _, compose, ViewDecorator, rivets) ->
+define ["jquery", "dref", "events", "../models/base", "../bindings/bindable", "outcome", "underscore", "../utils/compose", "./decor/facade", "rivets"], ($, dref, events, Bindable, outcome, _, compose, ViewDecorator, rivets) ->
 
 
   rivets.configure({
@@ -18,7 +18,7 @@ define ["jquery", "dref", "events", "../models/base", "../bindings/bindable", "o
   })
 
 
-  class BaseView extends Model
+  class BaseView extends Bindable
 
     ###
     ###
