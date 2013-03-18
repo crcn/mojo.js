@@ -15,8 +15,9 @@ define ["underscore",
 "./base", 
 "./template",
 "./events",
+"./bindings",
 "./transition",
-"./html"], (_, cstep, async, outcome, BaseViewDecorator, TemplateDecorator, EventsDecorator, TransitionDecorator, HtmlDecorator) ->
+"./html"], (_, cstep, async, outcome, BaseViewDecorator, TemplateDecorator, EventsDecorator, BindingsDecorator, TransitionDecorator, HtmlDecorator) ->
 
 
     availableDecorators = {

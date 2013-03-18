@@ -4,24 +4,8 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "dref", "events", "../models/base", "../bindings/bindable", "outcome", "underscore", "../utils/compose", "./decor/facade", "rivets"], function($, dref, events, Bindable, outcome, _, compose, ViewDecorator, rivets) {
+  define(["jquery", "dref", "events", "../models/base", "../bindings/bindable", "outcome", "underscore", "../utils/compose", "./decor/facade"], function($, dref, events, Bindable, outcome, _, compose, ViewDecorator) {
     var BaseView;
-    rivets.configure({
-      adapter: {
-        subscribe: function(obj, keypath, callback) {
-          return obj.on("change:" + keypath.replace(/,/g, "."), callback);
-        },
-        unsubscribe: function(obj, keypath, callback) {
-          return obj.off("change:" + keypath.replace(/,/g, "."), callback);
-        },
-        read: function(obj, keypath) {
-          return obj.get(keypath.replace(/,/g, "."));
-        },
-        publish: function(obj, keypath, value) {
-          return obj.set(keypath.replace(/,/g, "."), value);
-        }
-      }
-    });
     return BaseView = (function(_super) {
 
       __extends(BaseView, _super);

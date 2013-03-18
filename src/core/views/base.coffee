@@ -1,21 +1,5 @@
-define ["jquery", "dref", "events", "../models/base", "../bindings/bindable", "outcome", "underscore", "../utils/compose", "./decor/facade", "rivets"], ($, dref, events, Bindable, outcome, _, compose, ViewDecorator, rivets) ->
+define ["jquery", "dref", "events", "../models/base", "../bindings/bindable", "outcome", "underscore", "../utils/compose", "./decor/facade"], ($, dref, events, Bindable, outcome, _, compose, ViewDecorator) ->
 
-
-  rivets.configure({
-    adapter: {
-      subscribe: (obj, keypath, callback) ->
-        obj.on "change:" + keypath.replace(/,/g, "."), callback
-
-      unsubscribe: (obj, keypath, callback) ->
-        obj.off "change:" + keypath.replace(/,/g, "."), callback
-
-      read: (obj, keypath) ->
-        obj.get keypath.replace(/,/g, ".")
-
-      publish: (obj, keypath, value) ->
-        obj.set keypath.replace(/,/g, "."), value
-    }
-  })
 
 
   class BaseView extends Bindable
