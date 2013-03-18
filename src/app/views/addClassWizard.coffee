@@ -41,7 +41,7 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     ###
 
     events: {
-      "click .close .cancel-btn": "remove",
+      "mouseOver .close .cancel-btn": "remove",
       "click .confirm-positive": "nextState"
     },
 
@@ -64,12 +64,10 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
       super()
       @glue "currentView.title", "title"
 
-
     ###
     ###
 
-    _endOfStates: () ->
-      @remove()
+    _endOfStates: () -> @remove()
   
 
 

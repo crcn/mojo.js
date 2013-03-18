@@ -18,7 +18,6 @@ define ["disposable"],  (disposable) ->
       @_disposable.add(to.bind(toProperty, @_onToChange))
       @
 
-
     ###
     ###
 
@@ -33,7 +32,6 @@ define ["disposable"],  (disposable) ->
     _onToChange: (value) ->
       if @from.get(@fromProperty) isnt value
         @from.set @fromProperty, value
-
 
     ###
     ###

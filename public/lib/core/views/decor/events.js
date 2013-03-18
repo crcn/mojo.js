@@ -48,7 +48,8 @@
         action = selectorParts.shift();
         selectors = selectorParts.join(",");
         elements = this.view.element.find(selectors);
-        elements.bind(action, cb = function() {
+        console.log(action);
+        elements.bind(action.toLowerCase(), cb = function() {
           var ref;
           if (typeof viewMethod === "function") {
             ref = viewMethod;

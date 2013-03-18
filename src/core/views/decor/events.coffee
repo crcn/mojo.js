@@ -37,8 +37,9 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
       selectors = selectorParts.join(",")
 
       elements = @view.element.find(selectors)
+      console.log action
       # throw new Error("element method #{action} does not exist") 
-      elements.bind(action, cb = () =>
+      elements.bind(action.toLowerCase(), cb = () =>
 
         if typeof viewMethod is "function"
           ref = viewMethod
