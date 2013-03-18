@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./html", "outcome"], function(HtmlViewDecorator, outcome) {
+  define(["./base", "outcome"], function(BaseViewDecorator, outcome) {
     var TemplateViewDecorator;
     TemplateViewDecorator = (function(_super) {
 
@@ -17,12 +17,21 @@
       */
 
 
-      TemplateViewDecorator.prototype.setup = function(callback) {
+      TemplateViewDecorator.prototype.load = function(callback) {
         var _this = this;
         return this.view.get("template").render(this.templateData(), outcome.e(callback).s(function(content) {
-          _this.view.element.html(content);
+          _this.view.set("html", content);
           return callback();
         }));
+      };
+
+      /*
+      */
+
+
+      TemplateViewDecorator.prototype.attach = function(callback) {
+        this.view.element.html(this.view.get("html"));
+        return callback();
       };
 
       /*
@@ -35,7 +44,7 @@
 
       return TemplateViewDecorator;
 
-    })(HtmlViewDecorator);
+    })(BaseViewDecorator);
     TemplateViewDecorator.test = function(view) {
       return view.has("template");
     };

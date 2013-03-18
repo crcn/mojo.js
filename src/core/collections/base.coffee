@@ -1,6 +1,11 @@
-define ["events", "underscore", "./binder"], (events, _, Binder) ->
+define ["../bindings/eventEmitter", "underscore", "./glue", "dref"], (EventEmitter, _, Glue, dref) ->
   
-  class BaseCollection extends events.EventEmitter
+  _id = 0
+
+  generateId = () -> _id++
+
+  
+  class BaseCollection extends EventEmitter
 
     ###
     ###
@@ -8,6 +13,7 @@ define ["events", "underscore", "./binder"], (events, _, Binder) ->
     constructor: (source) ->
       super()
       @_source = source or []
+      @_itemsById = {}
 
     ###
     ###
@@ -28,9 +34,7 @@ define ["events", "underscore", "./binder"], (events, _, Binder) ->
     ###
     ###
 
-    bindTo: (target) ->
-      new Binder @, target
-      @
+    glue: (target) -> new Glue @, target
 
     ###
     ###
@@ -44,7 +48,15 @@ define ["events", "underscore", "./binder"], (events, _, Binder) ->
 
 
       return @_source.concat() if not arguments.length
-      @_emit "reset", { source: @_source = value }
+      @_emit "reset", { oldSource: @_source, source: @_source = value }
+
+
+    ###
+    ###
+
+    addItems: (source) ->
+      for item in source
+        @addItem item
 
     ###
     ###
@@ -61,8 +73,17 @@ define ["events", "underscore", "./binder"], (events, _, Binder) ->
     ###
 
     addItemAt: (item, index) ->
+
+      if not dref.get item, "_id"
+        dref.set item, "_id", generateId()
+
+      if @_itemsById[dref.get(item, "_id")]
+        return false
+
+      @_itemsById[dref.get(item, "_id")] = item
+
       @_source.splice index, 0, @_addItem item
-      @_emit "add", { item: item, index: index }
+      @_emit "add", { item: item, index: index, _id: dref.get(item, "_id") }
 
     ###
     ###
@@ -76,24 +97,19 @@ define ["events", "underscore", "./binder"], (events, _, Binder) ->
     removeItemAt: (index) ->
       return false if not ~index
       item = @_source[index]
+      delete @_itemsById[dref.get(item, "_id")]
       @_removeItem item
       @_source.splice index, 1
-      @_emit "remove", { item: item, index: index }
+      @_emit "remove", { item: item, index: index, _id: dref.get(item, "_id")  }
+
 
     ###
     ###
 
-    replaceItem: (oldItem, newItem) ->
-      @replaceItemAt @_source.indexOf oldItem
-
-    ###
-    ###
-
-    replaceItemAt: (newItem, index) ->
-      return false if not ~index
-      oldItem = @_source[index]
-      @_source.splice index, 1, @_addItem newItem
-      @_emit "replace", { oldItem: oldItem, newItem: newItem, index: index }
+    removeItemById: (id) ->
+      item = @_itemsById[id]
+      return false if not item
+      @removeItem item
 
     ###
     ###

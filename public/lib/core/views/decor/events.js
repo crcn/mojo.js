@@ -17,7 +17,7 @@
       */
 
 
-      EventsDecorator.prototype.setup = function(callback) {
+      EventsDecorator.prototype.attach = function(callback) {
         var e, selector;
         e = this._events();
         this._disposeBindings();
@@ -32,7 +32,7 @@
       */
 
 
-      EventsDecorator.prototype.teardown = function(callback) {
+      EventsDecorator.prototype.remove = function(callback) {
         this._disposeBindings();
         return callback();
       };

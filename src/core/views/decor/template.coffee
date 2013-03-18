@@ -1,15 +1,23 @@
 
-define ["./html", "outcome"], (HtmlViewDecorator, outcome) ->
+define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
   
-  class TemplateViewDecorator extends HtmlViewDecorator
+  class TemplateViewDecorator extends BaseViewDecorator
 
     ###
     ###
 
-    setup: (callback) ->  
-      @view.get("template").render @templateData(), outcome.e(callback).s (content) =>
-        @view.element.html content
+    load: (callback) ->  
+      @view.get("template").render @templateData(), outcome.e(callback).s (content) => 
+        @view.set "html", content
         callback()
+
+
+    ###
+    ###
+
+    attach: (callback) ->
+      @view.element.html @view.get "html"
+      callback()
 
 
     ###

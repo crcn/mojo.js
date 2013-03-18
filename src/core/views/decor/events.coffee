@@ -6,7 +6,7 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     ###
     ###
 
-    setup: (callback) ->
+    attach: (callback) ->
 
       e = @_events()
       @_disposeBindings()
@@ -22,7 +22,7 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     ###
     ###
 
-    teardown: (callback) ->
+    remove: (callback) ->
       @_disposeBindings()
       callback()
 

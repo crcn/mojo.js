@@ -6,7 +6,7 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
     ###
 
-    setup: (callback) -> 
+    attach: (callback) -> 
       @_transitionAll "enter", callback
     
 
@@ -14,7 +14,7 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
 
 
-    teardown: (callback)  -> 
+    remove: (callback)  -> 
       @_transitionAll "exit", callback
 
 

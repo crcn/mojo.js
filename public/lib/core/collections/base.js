@@ -3,8 +3,12 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["events", "underscore", "./binder"], function(events, _, Binder) {
-    var BaseCollection;
+  define(["../bindings/eventEmitter", "underscore", "./glue", "dref"], function(EventEmitter, _, Glue, dref) {
+    var BaseCollection, generateId, _id;
+    _id = 0;
+    generateId = function() {
+      return _id++;
+    };
     return BaseCollection = (function(_super) {
 
       __extends(BaseCollection, _super);
@@ -16,6 +20,7 @@
       function BaseCollection(source) {
         BaseCollection.__super__.constructor.call(this);
         this._source = source || [];
+        this._itemsById = {};
       }
 
       /*
@@ -43,9 +48,8 @@
       */
 
 
-      BaseCollection.prototype.bindTo = function(target) {
-        new Binder(this, target);
-        return this;
+      BaseCollection.prototype.glue = function(target) {
+        return new Glue(this, target);
       };
 
       /*
@@ -61,8 +65,23 @@
           return this._source.concat();
         }
         return this._emit("reset", {
+          oldSource: this._source,
           source: this._source = value
         });
+      };
+
+      /*
+      */
+
+
+      BaseCollection.prototype.addItems = function(source) {
+        var item, _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = source.length; _i < _len; _i++) {
+          item = source[_i];
+          _results.push(this.addItem(item));
+        }
+        return _results;
       };
 
       /*
@@ -86,10 +105,18 @@
 
 
       BaseCollection.prototype.addItemAt = function(item, index) {
+        if (!dref.get(item, "_id")) {
+          dref.set(item, "_id", generateId());
+        }
+        if (this._itemsById[dref.get(item, "_id")]) {
+          return false;
+        }
+        this._itemsById[dref.get(item, "_id")] = item;
         this._source.splice(index, 0, this._addItem(item));
         return this._emit("add", {
           item: item,
-          index: index
+          index: index,
+          _id: dref.get(item, "_id")
         });
       };
 
@@ -111,11 +138,13 @@
           return false;
         }
         item = this._source[index];
+        delete this._itemsById[dref.get(item, "_id")];
         this._removeItem(item);
         this._source.splice(index, 1);
         return this._emit("remove", {
           item: item,
-          index: index
+          index: index,
+          _id: dref.get(item, "_id")
         });
       };
 
@@ -123,26 +152,13 @@
       */
 
 
-      BaseCollection.prototype.replaceItem = function(oldItem, newItem) {
-        return this.replaceItemAt(this._source.indexOf(oldItem));
-      };
-
-      /*
-      */
-
-
-      BaseCollection.prototype.replaceItemAt = function(newItem, index) {
-        var oldItem;
-        if (!~index) {
+      BaseCollection.prototype.removeItemById = function(id) {
+        var item;
+        item = this._itemsById[id];
+        if (!item) {
           return false;
         }
-        oldItem = this._source[index];
-        this._source.splice(index, 1, this._addItem(newItem));
-        return this._emit("replace", {
-          oldItem: oldItem,
-          newItem: newItem,
-          index: index
-        });
+        return this.removeItem(item);
       };
 
       /*
@@ -170,7 +186,7 @@
 
       return BaseCollection;
 
-    })(events.EventEmitter);
+    })(EventEmitter);
   });
 
 }).call(this);

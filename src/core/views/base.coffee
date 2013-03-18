@@ -1,4 +1,4 @@
-define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./decor/facade"], ($, events, Bindable, outcome, _, ViewDecorator) ->
+define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./decor/facade", "asyngleton", "../collections/concrete", "../utils/async"], ($, events, Bindable, outcome, _, ViewDecorator, asyngleton, Collection, async) ->
 
 
   class BaseView extends Bindable
@@ -13,6 +13,9 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
       # controls bindings, events, templates, transitions based on the given options.
       @decorator = new ViewDecorator @
 
+      # items to load with the view
+      @loadables = new Collection([@decorator])
+
       # outcome is flow-control for errors
       @_o = outcome.e @
 
@@ -21,6 +24,7 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
 
       # after init, set to initialized
       @set "initialized", true
+
 
 
     ###
@@ -36,8 +40,6 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
 
     init: () ->
 
-      @set "data.view", @
-
       throw new Error("already initialized") if @_initialized
       @_initialized = true  
 
@@ -49,6 +51,9 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
 
       # on data change
       @on "change", @_onChanged
+
+      # all additional bindings should go here
+      @once "loaded", @_onLoaded
 
     ###
      returns a search for a particular element
@@ -65,9 +70,10 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
       @element  = if typeof selectorOrElement is "string" then $(selectorOrElement) else selectorOrElement
       @selector = selectorOrElement
 
-      @decorator.setup @_o.e(callback).s () =>
-        callback()
-        @emit "attached"
+      @load () => 
+        @decorator.attach @_o.e(callback).s () =>
+          callback()
+          @emit "attached"
 
 
     ###
@@ -90,11 +96,21 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
       callback = @_fixCallback callback
 
       return callback() if not @element
-      @decorator.teardown @_o.e(callback).s () =>
+      @decorator.remove @_o.e(callback).s () =>
         @element.unbind("*")
         @element.html("")
         callback()
         @emit "removed"
+
+    ###
+    ###
+
+    load: asyngleton (callback) -> 
+      async.eachSeries @loadables.source(), ((loadable, next) ->
+        loadable.load next
+      ), @_o.e(callback).s () =>
+        callback()
+        @emit "loaded"
 
 
     ###
@@ -115,5 +131,6 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
     _onAttached: () ->
     _onRemoved: () ->
     _onChanged: () ->
+    _onLoaded: () ->
 
 

@@ -33,7 +33,7 @@
       */
 
 
-      BindingsDecorator.prototype.setup = function(callback) {
+      BindingsDecorator.prototype.attach = function(callback) {
         rivets.bind(this.view.element, {
           data: this.view
         });

@@ -17,7 +17,7 @@
       */
 
 
-      TransitionDecorator.prototype.setup = function(callback) {
+      TransitionDecorator.prototype.attach = function(callback) {
         return this._transitionAll("enter", callback);
       };
 
@@ -25,7 +25,7 @@
       */
 
 
-      TransitionDecorator.prototype.teardown = function(callback) {
+      TransitionDecorator.prototype.remove = function(callback) {
         return this._transitionAll("exit", callback);
       };
 

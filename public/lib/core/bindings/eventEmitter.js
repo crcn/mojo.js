@@ -27,13 +27,12 @@
         var disposables, k, listeners,
           _this = this;
         disposables = disposable.create();
-        if (arguments.length === 0) {
+        if (arguments.length === 1) {
           listeners = key;
           for (k in listeners) {
             disposables.add(this.on(k, listeners[k]));
           }
-          disposables;
-
+          return disposables;
         }
         key.split(" ").forEach(function(key) {
           EventEmitter.__super__.on.call(_this, key, listener);

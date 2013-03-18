@@ -16,11 +16,14 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
 
       @states = new Collection @get("states") or []
       @states.on "updated", @_onStatesChange
+      @states.glue @loadables
+
+
 
     ###
     ###
 
-    _onAttached: () ->  
+    _onLoaded: () =>  
       @bind "currentIndex", @_onIndexChange
 
 

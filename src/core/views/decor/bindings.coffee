@@ -24,7 +24,7 @@ define ["./base", "rivets"], (BaseViewDecorator, rivets) ->
     ###
     ###
 
-    setup: (callback) ->
+    attach: (callback) ->
       rivets.bind @view.element, { data: @view }
       callback()
 

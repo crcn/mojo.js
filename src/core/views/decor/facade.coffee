@@ -16,13 +16,11 @@ define ["underscore",
 "./template",
 "./events",
 "./bindings",
-"./transition",
-"./html"], (_, cstep, async, outcome, BaseViewDecorator, TemplateDecorator, EventsDecorator, BindingsDecorator, TransitionDecorator, HtmlDecorator) ->
+"./transition"], (_, cstep, async, outcome, BaseViewDecorator, TemplateDecorator, EventsDecorator, BindingsDecorator, TransitionDecorator) ->
 
 
     availableDecorators = {
       "template": TemplateDecorator,
-      "html": HtmlDecorator,
       "bindings": BindingsDecorator,
       "transition": TransitionDecorator,
       "events": EventsDecorator
@@ -56,17 +54,18 @@ define ["underscore",
       ###
       ###
 
-      setup: (callback) -> @_callDecorFn "setup", callback
+      load: (callback) -> @_callDecorFn "load", callback
 
       ###
       ###
 
-      resetup: (callback) -> @_callDecorFn "resetup", callback
+      attach: (callback) -> @_callDecorFn "attach", callback
+
 
       ###
       ###
 
-      teardown: (callback) -> @_callDecorFn "teardown", callback
+      remove: (callback) -> @_callDecorFn "remove", callback
 
       ###
       ###

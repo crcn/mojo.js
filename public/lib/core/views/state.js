@@ -14,6 +14,8 @@
         this._onStatesChange = __bind(this._onStatesChange, this);
 
         this._onIndexChange = __bind(this._onIndexChange, this);
+
+        this._onLoaded = __bind(this._onLoaded, this);
         return StateView.__super__.constructor.apply(this, arguments);
       }
 
@@ -30,14 +32,15 @@
       StateView.prototype.init = function(options) {
         StateView.__super__.init.call(this, options);
         this.states = new Collection(this.get("states") || []);
-        return this.states.on("updated", this._onStatesChange);
+        this.states.on("updated", this._onStatesChange);
+        return this.states.glue(this.loadables);
       };
 
       /*
       */
 
 
-      StateView.prototype._onAttached = function() {
+      StateView.prototype._onLoaded = function() {
         return this.bind("currentIndex", this._onIndexChange);
       };
 

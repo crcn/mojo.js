@@ -18,11 +18,11 @@ define ["disposable", "eventemitter2"], (disposable, events) ->
       disposables = disposable.create()
 
       # ability to have multiple listeners as key
-      if arguments.length is 0
+      if arguments.length is 1
         listeners = key
-        for k of listeners 
+        for k of listeners  
           disposables.add @on k, listeners[k]
-        disposables
+        return disposables
 
 
       # ability to specify multiple keys for a given listener

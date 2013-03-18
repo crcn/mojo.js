@@ -12,20 +12,19 @@
       }
 
       /*
-           called when the view is added to an element
       */
 
 
-      ViewDecorator.prototype.setup = function(callback) {
+      ViewDecorator.prototype.load = function(callback) {
         return callback();
       };
 
       /*
-           called after re-render
+           called when the view is added to an element
       */
 
 
-      ViewDecorator.prototype.resetup = function(callback) {
+      ViewDecorator.prototype.attach = function(callback) {
         return callback();
       };
 
@@ -34,7 +33,7 @@
       */
 
 
-      ViewDecorator.prototype.teardown = function(callback) {
+      ViewDecorator.prototype.remove = function(callback) {
         return callback();
       };
 
