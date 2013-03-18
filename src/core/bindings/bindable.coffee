@@ -1,4 +1,4 @@
-define ["./binding", "./glue", "./eventEmitter", "dref", "disposable"], (Binding, Glue, EventEmitter, dref, disposable) ->
+define ["./binding", "./glue", "./eventEmitter", "dref"], (Binding, Glue, EventEmitter, dref) ->
 
   
   class Bindable extends EventEmitter
@@ -15,8 +15,7 @@ define ["./binding", "./glue", "./eventEmitter", "dref", "disposable"], (Binding
     ###
 
     get: (key) -> 
-      return @data if not key
-      dref.get @data, key
+      @_ref @data, key
 
     ###
     ###
@@ -59,12 +58,13 @@ define ["./binding", "./glue", "./eventEmitter", "dref", "disposable"], (Binding
 
       new Glue @, fromProperty, to, toProperty
 
+    ###
+    ###
 
-    bindable = new Bindable()
+    _ref: (context, key) -> 
+      return context if not key
+      dref.get context, key
 
-    bindable.set "name.first", "craig"
-
-    console.log("B")
 
 
 

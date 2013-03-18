@@ -45,8 +45,7 @@ define ["jquery", "dref", "events", "../models/base", "../bindings/bindable", "o
     ###
 
     get: (key) ->
-      return super() if not arguments.length
-      return super(key) or dref.get @, key
+      return super(key) or @_ref @, key
 
     ###
     ###

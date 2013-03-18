@@ -51,7 +51,7 @@ require(["lib/core/templates/factory",
 
   setTimeout(function() {
     v.set("name.title", "craig");
-  }, 10);
+  }, 2000);
 
   v.states.addItem(new View({
     template: tf.get("add-class")

@@ -50,10 +50,7 @@
 
 
       BaseView.prototype.get = function(key) {
-        if (!arguments.length) {
-          return BaseView.__super__.get.call(this);
-        }
-        return BaseView.__super__.get.call(this, key) || dref.get(this, key);
+        return BaseView.__super__.get.call(this, key) || this._ref(this, key);
       };
 
       /*

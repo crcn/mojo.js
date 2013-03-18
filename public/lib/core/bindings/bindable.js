@@ -3,10 +3,9 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./binding", "./glue", "./eventEmitter", "dref", "disposable"], function(Binding, Glue, EventEmitter, dref, disposable) {
+  define(["./binding", "./glue", "./eventEmitter", "dref"], function(Binding, Glue, EventEmitter, dref) {
     var Bindable;
     return Bindable = (function(_super) {
-      var bindable;
 
       __extends(Bindable, _super);
 
@@ -26,10 +25,7 @@
 
 
       Bindable.prototype.get = function(key) {
-        if (!key) {
-          return this.data;
-        }
-        return dref.get(this.data, key);
+        return this._ref(this.data, key);
       };
 
       /*
@@ -76,11 +72,16 @@
         return new Glue(this, fromProperty, to, toProperty);
       };
 
-      bindable = new Bindable();
+      /*
+      */
 
-      bindable.set("name.first", "craig");
 
-      console.log("B");
+      Bindable.prototype._ref = function(context, key) {
+        if (!key) {
+          return context;
+        }
+        return dref.get(context, key);
+      };
 
       return Bindable;
 
