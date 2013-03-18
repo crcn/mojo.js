@@ -29,8 +29,10 @@ define ["dref"],  (dref) ->
 
       # start from the ROOT property
       event = "change:#{keyParts.shift()}.**"
-      console.log keyParts, event
+
       @_listener = @bindable.on event, @_onChange
+
+      # call immediately
       @_onChange()
 
 

@@ -37,7 +37,6 @@
         var event, keyParts;
         keyParts = this.key.split(".");
         event = "change:" + (keyParts.shift()) + ".**";
-        console.log(keyParts, event);
         this._listener = this.bindable.on(event, this._onChange);
         return this._onChange();
       };
