@@ -4,7 +4,7 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "dref", "events", "../models/base", "../bindings/bindable", "outcome", "underscore", "../utils/compose", "./decor/facade"], function($, dref, events, Bindable, outcome, _, compose, ViewDecorator) {
+  define(["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./decor/facade"], function($, events, Bindable, outcome, _, ViewDecorator) {
     var BaseView;
     return BaseView = (function(_super) {
 
@@ -73,10 +73,7 @@
         this.selector = selectorOrElement;
         return this.decorator.setup(this._o.e(callback).s(function() {
           callback();
-          _this._attached();
-          return rivets.bind(_this.element, {
-            data: _this
-          });
+          return _this._attached();
         }));
       };
 

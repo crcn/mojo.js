@@ -24,7 +24,8 @@ define ["underscore",
       "template": TemplateDecorator,
       "html": HtmlDecorator,
       "transition": TransitionDecorator,
-      "events": EventsDecorator
+      "events": EventsDecorator,
+      "bindings": BindingsDecorator
     }
 
     

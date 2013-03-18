@@ -1,4 +1,4 @@
-define ["jquery", "dref", "events", "../models/base", "../bindings/bindable", "outcome", "underscore", "../utils/compose", "./decor/facade"], ($, dref, events, Bindable, outcome, _, compose, ViewDecorator) ->
+define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./decor/facade"], ($, events, Bindable, outcome, _, ViewDecorator) ->
 
 
 
@@ -59,7 +59,6 @@ define ["jquery", "dref", "events", "../models/base", "../bindings/bindable", "o
       @decorator.setup @_o.e(callback).s () =>
         callback()
         @_attached()
-        rivets.bind @element, { data: @ }
 
 
     ###

@@ -20,7 +20,8 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
       "template": TemplateDecorator,
       "html": HtmlDecorator,
       "transition": TransitionDecorator,
-      "events": EventsDecorator
+      "events": EventsDecorator,
+      "bindings": BindingsDecorator
     };
     return ViewDecorator = (function(_super) {
 

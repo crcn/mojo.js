@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./base", "rivets"], function(BaseDecorator, rivets) {
+  define(["./base", "rivets"], function(BaseViewDecorator, rivets) {
     var BindingsDecorator;
     rivets.configure({
       adapter: {
@@ -29,11 +29,22 @@
         return BindingsDecorator.__super__.constructor.apply(this, arguments);
       }
 
+      /*
+      */
+
+
+      BindingsDecorator.prototype.setup = function(callback) {
+        rivets.bind(this.view.element, {
+          data: this.view
+        });
+        return callback();
+      };
+
       return BindingsDecorator;
 
     })(BaseViewDecorator);
     BindingsDecorator.test = function(view) {
-      return view.has("bindings");
+      return true;
     };
     return BindingsDecorator;
   });

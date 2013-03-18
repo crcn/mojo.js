@@ -1,10 +1,11 @@
-define ["./base", "rivets"], (BaseDecorator, rivets) ->
+define ["./base", "rivets"], (BaseViewDecorator, rivets) ->
 
 
 
   rivets.configure({
     adapter: {
       subscribe: (obj, keypath, callback) ->
+
         obj.on "change:" + keypath.replace(/,/g, "."), callback
 
       unsubscribe: (obj, keypath, callback) ->
@@ -17,10 +18,22 @@ define ["./base", "rivets"], (BaseDecorator, rivets) ->
         obj.set keypath.replace(/,/g, "."), value
     }
   })
+
   
   class BindingsDecorator extends BaseViewDecorator
 
+    ###
+    ###
+
+    setup: (callback) ->
+      rivets.bind @view.element, { data: @view }
+      callback()
+
+
+
+
   BindingsDecorator.test = (view) ->
-    return view.has("bindings")
+    #return view.has("bindings")
+    true
 
   BindingsDecorator
