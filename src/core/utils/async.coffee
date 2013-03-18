@@ -37,8 +37,9 @@ define () ->
 
       finish = () ->
 
+
         # return if already finished, or there are no more running items
-        return if finished or (!--numRunning and not err)
+        return if finished or (numRunning and not err)
         finished = true
         next err
 
@@ -47,21 +48,25 @@ define () ->
         # finish if we're at the end
         return finish() if (currentIndex >= items.length) or err
 
-        # increment the number of running items - this gets decremented on finish()
+        # increment the number of running items
         numRunning++
         item = items[currentIndex++]
 
 
         each item, (e) ->
           err = e
+          numRunning--
           return nextItem()
 
         # can we have an unlimited number of parallel processes, or is the num running less than the max allowed?
         if !~limit or numRunning < limit
+
+          # then 
           nextItem()
 
 
       nextItem()
+
 
 
   

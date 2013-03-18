@@ -39,7 +39,7 @@ this library is used over async.js since it doesn't use setImmediate, which caus
         err = null;
         finished = false;
         finish = function() {
-          if (finished || (!--numRunning && !err)) {
+          if (finished || (numRunning && !err)) {
             return;
           }
           finished = true;
@@ -54,6 +54,7 @@ this library is used over async.js since it doesn't use setImmediate, which caus
           item = items[currentIndex++];
           each(item, function(e) {
             err = e;
+            numRunning--;
             return nextItem();
           });
           if (!~limit || numRunning < limit) {
