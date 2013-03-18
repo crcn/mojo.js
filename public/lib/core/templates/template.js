@@ -12,6 +12,7 @@
         this._engine = options.engine;
         this._baseDir = options.directory;
         this.source = options.source;
+        this.extension = options.extension;
         this.name = options.name;
       }
 
@@ -39,7 +40,7 @@
           return callback(null, this.source);
         }
         require(["./engines/" + this._engine], function(engine) {
-          return require(["text!" + _this._baseDir + "/" + _this._engine + "/" + _this.name + "." + engine.extension], function(source) {
+          return require(["text!" + _this._baseDir + "/" + _this.name + "." + (_this.extension || engine.extension)], function(source) {
             _this.source = source;
             _this._renderer = engine.compile(source);
             return callback(null, source);

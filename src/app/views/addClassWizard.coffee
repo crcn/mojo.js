@@ -5,15 +5,34 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     ###
     ###
 
+    title: "Add A Class"
+
+    ###
+    ###
+
+    template: templates.addClassWizard,
+
+    ###
+    ###
+
+    childrenElement: ".modal-body",
+
+    ###
+    ###
+
     constructor: () ->
       super {
-        template: templates.addClassModal,
         states: [
-          new AddClassView(),
-          new AddStudentsView(),
-          new AddBehaviorsView()
+          new AddClassView()
         ]
       }
+
+    ###
+    ###
+
+    init: () ->
+      super()
+      @glue "currentView.title", "title"
   
 
 

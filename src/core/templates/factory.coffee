@@ -9,6 +9,7 @@ define ["./template", "asyngleton", "underscore"], (Template, asyngleton, _) ->
     constructor: (options = {}) ->
       @_engine    = options.engine    or "handlebars"
       @_directory = options.directory or "/templates"
+      @_extension = options.extension
       @_templates = {}
 
     ###
@@ -41,6 +42,7 @@ define ["./template", "asyngleton", "underscore"], (Template, asyngleton, _) ->
       _.defaults(options, {
         engine: @_engine,
         directory: @_directory,
+        extension: @_extension,
         name: name
       })
 

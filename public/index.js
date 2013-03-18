@@ -4,10 +4,20 @@ require(["lib/core/templates/factory",
   "require-css!bootstrap/css/bootstrap.min.css",
   "lib/core/views/state",
   "lib/core/views/base",
+  "lib/app/views/addClassWizard",
   "jquery"], 
   function() {
 
-  var TemplateFactory = require("lib/core/templates/factory"),
+
+  var AddClassWizard = require("lib/app/views/addClassWizard");
+
+
+  var wizard = new AddClassWizard();
+
+  wizard.attach("#application")
+
+
+  /*var TemplateFactory = require("lib/core/templates/factory"),
   StateView = require("lib/core/views/state"),
   View = require("lib/core/views/base");
 
@@ -68,5 +78,7 @@ require(["lib/core/templates/factory",
 
 
 
-  v.attach("#application");
+  v.attach("#application");*/
+
+
 });

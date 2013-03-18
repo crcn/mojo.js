@@ -31,8 +31,6 @@ define ["./base", "rivets"], (BaseViewDecorator, rivets) ->
 
 
 
-  BindingsDecorator.test = (view) ->
-    #return view.has("bindings")
-    true
+  BindingsDecorator.test = (view) -> true
 
   BindingsDecorator

@@ -13,6 +13,7 @@
         }
         this._engine = options.engine || "handlebars";
         this._directory = options.directory || "/templates";
+        this._extension = options.extension;
         this._templates = {};
       }
 
@@ -59,6 +60,7 @@
         _.defaults(options, {
           engine: this._engine,
           directory: this._directory,
+          extension: this._extension,
           name: name
         });
         return this._templates[name] || (this._templates[name] = new Template(options));

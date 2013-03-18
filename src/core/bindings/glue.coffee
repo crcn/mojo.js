@@ -23,7 +23,7 @@ define ["disposable"],  (disposable) ->
     ###
 
     _onFromChange: (value) =>
-      if @to.get @toProperty isnt value
+      if @to.get(@toProperty) isnt value
         @to.set @toProperty, value
 
     ###
@@ -31,7 +31,7 @@ define ["disposable"],  (disposable) ->
 
 
     _onToChange: (value) ->
-      if @from.get @fromProperty isnt value
+      if @from.get(@fromProperty) isnt value
         @from.set @fromProperty, value
 
 

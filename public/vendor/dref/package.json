@@ -4,7 +4,7 @@
   },
   "name": "dref",
   "description": "deep object refs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repository": {
     "type": "git",
     "url": "git://github.com/crcn/dref.js.git"
@@ -15,10 +15,14 @@
     "dref": "0.0.x"
   },
   "devDependencies": {
-    "vows": "0.6.8"
+    "mocha": "1.8.x",
+    "expect.js": "0.2.x"
+  },
+  "scripts": {
+    "test": "mocha --reporter min"
   },
   "readme": "### Features\n\n- Ability to deep reference an object\n- Ability to scan arrays, and return an array of values, e.g, `users.$.name`.\n\n\n### Usage\n\n```javascript\n\nvar dref = require(\"dref\");\n\nvar target = [\n\t{\n\t\tname: \"Craig\", \n\t\tlocation: {\n\t\t\tcity: \"minneapolis\"\n\t\t}\n\t},\n\t{\n\t\tname: \"Tim\", \n\t\tlocation: {\n\t\t\tcity: \"St. Paul\"\n\t\t}\n\t}\n];\n\n\nconsole.log(dref.get(target, '$.name')); //[\"Craig\", \"Tim\"]\nconsole.log(dref.get(target, '$.location.city')); //[\"Minneapolis\", \"St. Paul\"]\ndref.set(target, '$.name', \"BLAH\");\nconsole.log(dref.get(target, '$.name')); //[\"BLAH\", \"BLAH\"]\n```\n",
   "readmeFilename": "README.md",
-  "_id": "dref@0.0.3",
+  "_id": "dref@0.0.4",
   "_from": "dref@0.0.x"
 }

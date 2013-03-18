@@ -5,6 +5,17 @@
 
   define(["./binding", "./glue", "./eventEmitter", "dref"], function(Binding, Glue, EventEmitter, dref) {
     var Bindable;
+    dref.use({
+      test: function(item) {
+        return item.get && item.set;
+      },
+      get: function(item, key) {
+        return item.data[key] || item[key];
+      },
+      set: function(item, key, value) {
+        return item.set(key, value);
+      }
+    });
     return Bindable = (function(_super) {
 
       __extends(Bindable, _super);
@@ -56,7 +67,7 @@
 
 
       Bindable.prototype.bind = function(property, listener) {
-        return this.on("change:" + property, new Binding(this, property.replace(/\.\*\*/g, ""), listener).listener);
+        return new Binding(this, property, listener);
       };
 
       /*

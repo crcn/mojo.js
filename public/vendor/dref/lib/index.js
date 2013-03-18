@@ -9,7 +9,52 @@ define(["require"], function(require) {
 
     
 
-    /**
+    var _gss = [];
+
+/**
+ */
+
+var _gs = function(context) {
+	for(var i = _gss.length; i--;) {
+		var gs = _gss[i];
+		if(gs.test(context)) {
+			return gs;
+		}
+	}
+}
+
+/**
+ */
+
+var _length = function(context) {
+	var gs = _gs(context);
+
+	return gs ? gs.length(context) : context.length;
+}
+
+
+/**
+ */
+
+var _get = function(context, key) {
+
+	var gs = _gs(context);
+
+	return gs ? gs.get(context, key) : context[key];
+}
+
+
+/**
+ */
+
+var _set = function(context, key, value) {
+
+	var gs = _gs(context);
+
+	return gs ? gs.set(context, key, value) : (context[key] = value);
+}
+
+/**
  * finds references
  */
 
@@ -28,17 +73,20 @@ var _findValues = function(keyParts, target, create, index, values) {
 
 	for(;i < n; i++) {
 		kp = keyParts[i];
-		ct = pt[kp];
+		ct = _get(pt, kp);
+
 
 		if(kp == '$') {
-			for(j = pt.length; j--;) {
-				_findValues(keyParts, pt[j], create, i + 1, values);
+
+			for(j = _length(pt); j--;) {
+				_findValues(keyParts, _get(pt, j), create, i + 1, values);
 			}
 			return values;
 		} else
 		if(ct == undefined || ct == null) {
 			if(!create) return values;
-			ct = pt[kp] = {};
+			_set(pt, kp, { });
+			ct = _get(pt, kp);
 		}
 
 		pt = ct;
@@ -58,6 +106,7 @@ var _findValues = function(keyParts, target, create, index, values) {
  */
 
 var getValue = function(target, key) {
+	key = String(key);
 	var values =  _findValues(key, target);
 
 	return key.indexOf('.$.') == -1 ? values[0] : values;
@@ -67,6 +116,7 @@ var getValue = function(target, key) {
  */
 
 var setValue = function(target, key, newValue) {
+	key = String(key);
 	var keyParts = key.split("."),
 	keySet = keyParts.pop();
 
@@ -78,7 +128,8 @@ var setValue = function(target, key, newValue) {
 
 
 	for(var i = values.length; i--;) {
-		values[i][keySet] = newValue;
+		// values[i][keySet] = newValue;
+		_set(values[i], keySet, newValue);
 	}
 
 }
@@ -86,6 +137,11 @@ var setValue = function(target, key, newValue) {
 
 exports.get = getValue;
 exports.set = setValue;
+exports.use = function(gs) {
+	_gss.push(gs);
+}
+
+
 
 
     return module.exports;

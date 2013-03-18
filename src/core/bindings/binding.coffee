@@ -7,13 +7,37 @@ define ["dref"],  (dref) ->
 
     constructor: (@bindable, @key, @callback) -> 
 
+      console.log key
+
       # run the listener
-      @listener()
+      @_listen()
 
     ###
     ###
 
-    listener: () =>
+    dispose: () ->
+      return if not @_listener
+      @_listener.dispose()
+
+
+
+    ###
+    ###
+
+    _listen: () ->
+      keyParts = @key.split "."
+
+      # start from the ROOT property
+      event = "change:#{keyParts.shift()}.**"
+      console.log keyParts, event
+      @_listener = @bindable.on event, @_onChange
+      @_onChange()
+
+
+    ###
+    ###
+
+    _onChange: () =>
 
       # fetch the current value of the bound item
       newValue = @bindable.get @key

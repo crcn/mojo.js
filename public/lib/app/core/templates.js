@@ -5,12 +5,11 @@
     var templates;
     templates = new TemplatesFactory({
       "/": "/",
-      engine: "none"
+      engine: "none",
+      extension: "tpl.html"
     });
     return {
-      addClassModal: templates.get("add-class-modal", {
-        directory: "/templatesfdsfsd/"
-      }),
+      addClassWizard: templates.get("add-class-wizard"),
       addClass: templates.get("add-class"),
       addStudents: templates.get("add-students"),
       addBehaviors: templates.get("add-behaviors")

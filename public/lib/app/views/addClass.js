@@ -3,26 +3,31 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["../../core/views/state", "../core/templates", "./addClass", "./addStudents", "./addBehaviors"], function(StateView, templates) {
-    var AddClassWizardView;
-    return AddClassWizardView = (function(_super) {
+  define(["../../core/views/base", "../core/templates"], function(View, templates) {
+    var AddClassView;
+    return AddClassView = (function(_super) {
 
-      __extends(AddClassWizardView, _super);
+      __extends(AddClassView, _super);
+
+      function AddClassView() {
+        return AddClassView.__super__.constructor.apply(this, arguments);
+      }
 
       /*
       */
 
 
-      function AddClassWizardView() {
-        AddClassWizardView.__super__.constructor.call(this, {
-          template: templates.addClassModal,
-          states: [new AddClassView(), new AddStudentsView(), new AddBehaviorsView()]
-        });
-      }
+      AddClassView.prototype.title = "Add Class";
 
-      return AddClassWizardView;
+      /*
+      */
 
-    })(StateView);
+
+      AddClassView.prototype.template = templates.addClass;
+
+      return AddClassView;
+
+    })(View);
   });
 
 }).call(this);

@@ -2,7 +2,6 @@ define ["./base"], (BaseDecorator) ->
   
   class HtmlDecorator extends BaseDecorator
 
-
     ###
     ###
 

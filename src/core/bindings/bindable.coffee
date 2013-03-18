@@ -1,5 +1,11 @@
 define ["./binding", "./glue", "./eventEmitter", "dref"], (Binding, Glue, EventEmitter, dref) ->
 
+  dref.use {
+    test: (item) -> item.get && item.set
+    get: (item, key) -> item.data[key] or item[key]
+    set: (item, key, value) -> item.set key, value
+  }
+
   
   class Bindable extends EventEmitter
 
@@ -42,8 +48,7 @@ define ["./binding", "./glue", "./eventEmitter", "dref"], (Binding, Glue, EventE
      binds a property to a listener. This is called immediately if there's a value
     ###
 
-    bind: (property, listener) -> 
-      @on "change:#{property}", new Binding(@, property.replace(/\.\*\*/g, ""), listener).listener
+    bind: (property, listener) -> new Binding @, property, listener
 
 
     ###

@@ -12,16 +12,41 @@
         this.bindable = bindable;
         this.key = key;
         this.callback = callback;
-        this.listener = __bind(this.listener, this);
+        this._onChange = __bind(this._onChange, this);
 
-        this.listener();
+        console.log(key);
+        this._listen();
       }
 
       /*
       */
 
 
-      Binding.prototype.listener = function() {
+      Binding.prototype.dispose = function() {
+        if (!this._listener) {
+          return;
+        }
+        return this._listener.dispose();
+      };
+
+      /*
+      */
+
+
+      Binding.prototype._listen = function() {
+        var event, keyParts;
+        keyParts = this.key.split(".");
+        event = "change:" + (keyParts.shift()) + ".**";
+        console.log(keyParts, event);
+        this._listener = this.bindable.on(event, this._onChange);
+        return this._onChange();
+      };
+
+      /*
+      */
+
+
+      Binding.prototype._onChange = function() {
         var newValue;
         newValue = this.bindable.get(this.key);
         if (this.oldValue !== newValue) {

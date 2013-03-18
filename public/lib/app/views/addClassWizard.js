@@ -13,12 +13,38 @@
       */
 
 
+      AddClassWizardView.prototype.title = "Add A Class";
+
+      /*
+      */
+
+
+      AddClassWizardView.prototype.template = templates.addClassWizard;
+
+      /*
+      */
+
+
+      AddClassWizardView.prototype.childrenElement = ".modal-body";
+
+      /*
+      */
+
+
       function AddClassWizardView() {
         AddClassWizardView.__super__.constructor.call(this, {
-          template: templates.addClassModal,
-          states: [new AddClassView(), new AddStudentsView(), new AddBehaviorsView()]
+          states: [new AddClassView()]
         });
       }
+
+      /*
+      */
+
+
+      AddClassWizardView.prototype.init = function() {
+        AddClassWizardView.__super__.init.call(this);
+        return this.glue("currentView.title", "title");
+      };
 
       return AddClassWizardView;
 

@@ -1,19 +1,20 @@
-define ["../../core/views/state", "../core/templates", "./addClass", "./addStudents", "./addBehaviors"], (StateView, templates) ->
+define ["../../core/views/base", "../core/templates"], (View, templates) ->
   
-  class AddClassWizardView extends StateView
+  class AddClassView extends View
+
 
     ###
     ###
 
-    constructor: () ->
-      super {
-        template: templates.addClassModal,
-        states: [
-          new AddClassView(),
-          new AddStudentsView(),
-          new AddBehaviorsView()
-        ]
-      }
+    title: "Add Class"
+
+    ###
+    ###
+
+
+    template: templates.addClass
+
+
   
 
 

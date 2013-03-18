@@ -37,7 +37,7 @@
 
 
       Glue.prototype._onFromChange = function(value) {
-        if (this.to.get(this.toProperty !== value)) {
+        if (this.to.get(this.toProperty) !== value) {
           return this.to.set(this.toProperty, value);
         }
       };
@@ -47,7 +47,7 @@
 
 
       Glue.prototype._onToChange = function(value) {
-        if (this.from.get(this.fromProperty !== value)) {
+        if (this.from.get(this.fromProperty) !== value) {
           return this.from.set(this.fromProperty, value);
         }
       };

@@ -1,7 +1,6 @@
 define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./decor/facade"], ($, events, Bindable, outcome, _, ViewDecorator) ->
 
 
-
   class BaseView extends Bindable
 
     ###
@@ -11,6 +10,7 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
 
       super options
 
+      # controls bindings, events, templates, transitions based on the given options.
       @decorator = new ViewDecorator @
 
       # outcome is flow-control for errors

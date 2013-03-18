@@ -58,8 +58,9 @@
           return self._currentView.remove(this);
         }), (function() {
           self._currentView = self.states.getItemAt(index);
+          self.set("currentView", self._currentView);
           self._currentView.attach(self._childrenElement().append("<div />").children().last());
-          return self.glue("modelLocator", self._currentView, "modelLocator");
+          return self._currentView.set("modelLocator", this.get("modelLocator"));
         }));
       };
 

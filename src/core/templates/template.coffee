@@ -7,10 +7,11 @@ define ["require", "jquery", "asyngleton"], (require, $, asyngleton) ->
 
     constructor: (@options) ->
 
-      @_engine  = options.engine
-      @_baseDir = options.directory
-      @source   = options.source
-      @name     = options.name
+      @_engine   = options.engine
+      @_baseDir  = options.directory
+      @source    = options.source
+      @extension = options.extension
+      @name      = options.name
 
     ###
      renders the template with the given options
@@ -38,7 +39,7 @@ define ["require", "jquery", "asyngleton"], (require, $, asyngleton) ->
       require ["./engines/#{@_engine}"], (engine) =>
 
         # then load the template source
-        require ["text!#{@_baseDir}/#{@_engine}/#{@name}.#{engine.extension}"], (@source) =>  
+        require ["text!#{@_baseDir}/#{@name}.#{@extension || engine.extension}"], (@source) =>  
 
           # grab the renderer
           @_renderer = engine.compile source

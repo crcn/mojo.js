@@ -31,6 +31,7 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
 
       self = @
 
+
       return if not self.states.length() or not @element
 
       step(
@@ -45,8 +46,9 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
         # after removal, add the new state
         (() ->
           self._currentView = self.states.getItemAt(index)
+          self.set "currentView", self._currentView
           self._currentView.attach self._childrenElement().append("<div />").children().last()
-          self.glue "modelLocator", self._currentView, "modelLocator"
+          self._currentView.set "modelLocator", @get "modelLocator"
         )
       )
 
