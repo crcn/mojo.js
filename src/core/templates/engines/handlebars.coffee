@@ -2,8 +2,19 @@ define ["./base", "handlebars"], (Base, Handlebars) ->
 
   class HandlebarsEngine extends Base
 
-    constructor: () ->
-      super "hb"
+    extension: "hb"
+
+    ###
+    ###
+
+    init: () ->
+      @factory.plugins.forEach (plugin) =>
+        return if not plugin.templateHelper
+        helper = plugin.templateHelper()
+        Handlebars.registerHelper helper.name, (getText) ->
+          return helper.render(getText())
+
+        
 
     ###
     ###
@@ -17,5 +28,3 @@ define ["./base", "handlebars"], (Base, Handlebars) ->
           callback null, template options
       }
 
-
-  new HandlebarsEngine()

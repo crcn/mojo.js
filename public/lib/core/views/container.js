@@ -107,6 +107,12 @@
 
 
       ContainerView.prototype._attachChildren = function(callback) {
+        var form;
+        form = new FormView({
+          fields: {
+            name: "select"
+          }
+        });
         this._childElement().children().unbind("*");
         this._childElement().html("");
         return async.forEach(this.children.source(), this._attachChild, callback);

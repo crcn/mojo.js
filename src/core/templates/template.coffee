@@ -1,4 +1,4 @@
-define ["require", "asyngleton"], (require, asyngleton) ->
+define ["require", "asyngleton", "outcome"], (require, asyngleton, outcome) ->
   
   class Template
 
@@ -11,6 +11,7 @@ define ["require", "asyngleton"], (require, asyngleton) ->
       @_baseDir  = options.directory
       @source    = options.source
       @extension = options.extension
+      @factory   = options.factory
       @name      = options.name
 
     ###
@@ -21,7 +22,6 @@ define ["require", "asyngleton"], (require, asyngleton) ->
 
       # load will be skipped if the template is already loaded
       @load () => 
-        return callback null, @source
         @_renderer.render options, callback
 
       @
@@ -33,10 +33,8 @@ define ["require", "asyngleton"], (require, asyngleton) ->
 
     load: asyngleton (callback) ->
 
-
-
       # first load the engine
-      require ["./engines/#{@_engine}"], (engine) =>
+      @factory.loadEngine @_engine, outcome.s (engine) =>
 
         onSource = (@source) =>
 

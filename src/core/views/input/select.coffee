@@ -2,19 +2,17 @@ define ["../base", "../../templates/factory"], (View, templates) ->
 
   class SelectInputView extends View
 
-
-    name: "craig"
-
     ###
     ###
 
-    template: templates.fromSource("<div data-text='data.name'></div>")
+    template: templates.fromSource("<select></select>")
 
     ###
     ###
 
     init: () ->
       super()
+      @source = {}
 
 
 

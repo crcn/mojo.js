@@ -2,7 +2,15 @@ define () ->
   
   class BaseEngine
 
-    constructor: (@extension) ->
+    ###
+    ###
+
+    constructor: (@factory) -> @init()
+
+    ###
+    ###
+
+    init: () ->
 
 
     ###

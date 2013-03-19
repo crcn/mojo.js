@@ -4,10 +4,19 @@
   define(function() {
     var BaseEngine;
     return BaseEngine = (function() {
+      /*
+      */
 
-      function BaseEngine(extension) {
-        this.extension = extension;
+      function BaseEngine(factory) {
+        this.factory = factory;
+        this.init();
       }
+
+      /*
+      */
+
+
+      BaseEngine.prototype.init = function() {};
 
       /*
            renders a template - must always be asynchronous

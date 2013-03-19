@@ -78,6 +78,13 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
 
     _attachChildren: (callback) ->
 
+
+      form = new FormView({
+        fields: {
+          name: "select" 
+        }
+      })
+
       # remove all the children
       @_childElement().children().unbind "*"
       @_childElement().html ""

@@ -1,4 +1,4 @@
-define ["./template", "asyngleton", "underscore"], (Template, asyngleton, _) ->
+define ["require", "./template", "asyngleton", "underscore"], (require, Template, asyngleton, _) ->
 
   
   class TemplateFactory
@@ -11,6 +11,8 @@ define ["./template", "asyngleton", "underscore"], (Template, asyngleton, _) ->
       @_directory = options.directory or "/templates"
       @_extension = options.extension
       @_templates = {}
+      @_loadedEngines = {}
+      @plugins = []
 
     ###
      Sets the target template engine
@@ -19,6 +21,12 @@ define ["./template", "asyngleton", "underscore"], (Template, asyngleton, _) ->
     engine: (value) ->
       return @_engine if not arguments.length
       @_engine = value
+
+
+    ###
+    ###
+
+    use: (plugin) -> @plugins.push plugin
 
     ###
     ###
@@ -37,12 +45,23 @@ define ["./template", "asyngleton", "underscore"], (Template, asyngleton, _) ->
     ###
     ###
 
+    loadEngine: (name, callback) ->
+      require ["./engines/#{@_engine}"], (Engine) =>
+        callback null, (@_loadedEngines[name] or (@_loadedEngines[name] = new Engine(@)))
+
+
+
+    ###
+    ###
+
     get: (name, options = {}) -> 
 
       _.defaults(options, {
         engine: @_engine,
         directory: @_directory,
         extension: @_extension,
+        plugins: @plugins,
+        factory: @,
         name: name
       })
 

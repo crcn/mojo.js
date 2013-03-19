@@ -14,6 +14,3 @@ define ["./base"], (Base) ->
         render: (options, callback) ->
           callback null, source
       }
-
-
-  new VanillaEngine()

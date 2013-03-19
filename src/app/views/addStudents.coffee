@@ -1,4 +1,4 @@
-define ["../../core/views/base", "../core/templates"], (View, templates) ->
+define ["../../core/views/base", "../core/templates", "../../core/i18n/translate"], (View, templates, t) ->
   
   class AddStudents extends View
 
@@ -6,7 +6,7 @@ define ["../../core/views/base", "../core/templates"], (View, templates) ->
     ###
     ###
 
-    title: "Add Students"
+    title: t("Add Students")
 
     ###
     ###

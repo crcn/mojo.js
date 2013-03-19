@@ -13,20 +13,19 @@
         return SelectInputView.__super__.constructor.apply(this, arguments);
       }
 
-      SelectInputView.prototype.name = "craig";
-
       /*
       */
 
 
-      SelectInputView.prototype.template = templates.fromSource("<div data-text='data.name'></div>");
+      SelectInputView.prototype.template = templates.fromSource("<select></select>");
 
       /*
       */
 
 
       SelectInputView.prototype.init = function() {
-        return SelectInputView.__super__.init.call(this);
+        SelectInputView.__super__.init.call(this);
+        return this.source = {};
       };
 
       return SelectInputView;

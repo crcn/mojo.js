@@ -5,13 +5,33 @@
 
   define(["./base", "handlebars"], function(Base, Handlebars) {
     var HandlebarsEngine;
-    HandlebarsEngine = (function(_super) {
+    return HandlebarsEngine = (function(_super) {
 
       __extends(HandlebarsEngine, _super);
 
       function HandlebarsEngine() {
-        HandlebarsEngine.__super__.constructor.call(this, "hb");
+        return HandlebarsEngine.__super__.constructor.apply(this, arguments);
       }
+
+      HandlebarsEngine.prototype.extension = "hb";
+
+      /*
+      */
+
+
+      HandlebarsEngine.prototype.init = function() {
+        var _this = this;
+        return this.factory.plugins.forEach(function(plugin) {
+          var helper;
+          if (!plugin.templateHelper) {
+            return;
+          }
+          helper = plugin.templateHelper();
+          return Handlebars.registerHelper(helper.name, function(getText) {
+            return helper.render(getText());
+          });
+        });
+      };
 
       /*
       */
@@ -30,7 +50,6 @@
       return HandlebarsEngine;
 
     })(Base);
-    return new HandlebarsEngine();
   });
 
 }).call(this);

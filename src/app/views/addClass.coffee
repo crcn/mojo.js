@@ -1,4 +1,4 @@
-define ["../../core/views/base", "../../core/views/container", "../../core/views/input/select", "../core/templates"], (View, ContainerView, SelectInputView, templates) ->
+define ["../../core/views/base", "../../core/views/container", "../../core/views/input/select", "../core/templates", "../core/modelLocator", "../../core/i18n/translate"], (View, ContainerView, SelectInputView, templates, modelLocator, t) ->
   
   class AddClassView extends View
 
@@ -13,7 +13,7 @@ define ["../../core/views/base", "../../core/views/container", "../../core/views
     ###
     ###
 
-    title: "Add Class"
+    title: t("Add Class")
 
     ###
     ###

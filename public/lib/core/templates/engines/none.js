@@ -5,7 +5,7 @@
 
   define(["./base"], function(Base) {
     var VanillaEngine;
-    VanillaEngine = (function(_super) {
+    return VanillaEngine = (function(_super) {
 
       __extends(VanillaEngine, _super);
 
@@ -28,7 +28,6 @@
       return VanillaEngine;
 
     })(Base);
-    return new VanillaEngine();
   });
 
 }).call(this);
