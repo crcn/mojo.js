@@ -2,8 +2,8 @@
 (function() {
 
   define(["./template", "asyngleton", "underscore"], function(Template, asyngleton, _) {
-    var TemplateFactory;
-    return TemplateFactory = (function() {
+    var TemplateFactory, mainFactory;
+    TemplateFactory = (function() {
       /*
       */
 
@@ -45,6 +45,9 @@
 
 
       TemplateFactory.prototype.fromSource = function(source, options) {
+        if (options == null) {
+          options = {};
+        }
         options.source = source;
         return this.get(source, options);
       };
@@ -69,6 +72,11 @@
       return TemplateFactory;
 
     })();
+    mainFactory = new TemplateFactory();
+    TemplateFactory.fromSource = function() {
+      return mainFactory.fromSource.apply(mainFactory, arguments);
+    };
+    return TemplateFactory;
   });
 
 }).call(this);

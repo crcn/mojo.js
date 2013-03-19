@@ -1,1 +1,29 @@
-ADD A CLASS
+<script type="text/html" id="#test-template">
+  Hello world!
+</script>
+
+
+<div style="width: 250px; margin: 0 auto;">
+  <div id="create-class-step" class="middle clearfix">
+    <div id="class_icon" data-icon="2" style="background-image: url(http://teach.classdojo.dev/img/dojo_bootstrap/class-icons/rect-big-2.png); float: left;" class="class_icon"></div>
+    <label for="class_icon" style="width: 250px; text-align: center; font-style: italic; margin-bottom: 20px;">Click to change class icon!</label>
+    <p id="year_warning" style="color: #f44; margin-top: -26px; display: none">Please select a year</p>
+    <label for="class_year" style="float: none; margin: auto">Year</label>
+    <!--select id="class_year" name="class_year">
+      <option value="101">Select year</option>
+      <option value="-1">Pre-school</option>
+      <option value="0">Kindergarten</option>
+      <option value="1">1st Grade</option>
+    </select-->
+    <!--select data-each-classyear="classyears">
+      <option value=""></option>
+    </select-->
+    <div id="select-class-year-container"></div>
+
+    <!--div data-each-classyear="data.classyears">
+      <span data-text="classyear.value"></span>
+    </div-->
+    <label>Name your class </label>
+    <input id="class_name" type="text" name="class_name" placeholder="Name your class">
+  </div>
+</div>

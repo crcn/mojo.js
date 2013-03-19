@@ -43,7 +43,7 @@ define ["../bindings/eventEmitter", "underscore", "./glue", "dref"], (EventEmitt
 
       # bind instead of setting the source
       if value instanceof BaseCollection
-        value.bindTo @
+        value.glue @
         return @
 
 

@@ -14,16 +14,30 @@ define ["underscore",
 "outcome",
 "./base", 
 "./template",
+"./children",
 "./events",
 "./bindings",
-"./transition"], (_, cstep, async, outcome, BaseViewDecorator, TemplateDecorator, EventsDecorator, BindingsDecorator, TransitionDecorator) ->
+"./transition"], (_, cstep, async, outcome, BaseViewDecorator, TemplateDecorator, ChildrenDecorator, EventsDecorator, BindingsDecorator, TransitionDecorator) ->
 
-
+  
+    # decorators are loaded in this order. Note that the order is important.
     availableDecorators = {
+
+      # template must be loaded first because the following decorators handle an element
       "template": TemplateDecorator,
+
+      # parent bindings must be set before child bindings
       "bindings": BindingsDecorator,
-      "transition": TransitionDecorator,
-      "events": EventsDecorator
+
+
+      # children must be loaded before the transition starts, otherwise there might be a delay
+      "children": ChildrenDecorator,
+
+      # events can go anywhere really
+      "events": EventsDecorator,
+
+      # transition should be the last-ish item since it adds a delay to everything else
+      "transition": TransitionDecorator
     }
 
     

@@ -1,4 +1,4 @@
-define ["require", "jquery", "asyngleton"], (require, $, asyngleton) ->
+define ["require", "asyngleton"], (require, asyngleton) ->
   
   class Template
 
@@ -21,6 +21,7 @@ define ["require", "jquery", "asyngleton"], (require, $, asyngleton) ->
 
       # load will be skipped if the template is already loaded
       @load () => 
+        return callback null, @source
         @_renderer.render options, callback
 
       @
@@ -32,14 +33,12 @@ define ["require", "jquery", "asyngleton"], (require, $, asyngleton) ->
 
     load: asyngleton (callback) ->
 
-      return callback null, @source if @source
 
 
       # first load the engine
       require ["./engines/#{@_engine}"], (engine) =>
 
-        # then load the template source
-        require ["text!#{@_baseDir}/#{@name}.#{@extension || engine.extension}"], (@source) =>  
+        onSource = (@source) =>
 
           # grab the renderer
           @_renderer = engine.compile source
@@ -47,6 +46,21 @@ define ["require", "jquery", "asyngleton"], (require, $, asyngleton) ->
           callback null, source
 
 
+        if @source
+          return onSource @source
+
+        @_loadFromFile onSource
+
+
       @
+
+
+    ###
+    ###
+
+    _loadFromFile: (callback) ->
+      require ["text!#{@_baseDir}/#{@name}.#{@extension || engine.extension}"], callback
+
+
 
 

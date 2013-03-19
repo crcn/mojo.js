@@ -38,7 +38,7 @@
       ContainerView.prototype.init = function() {
         ContainerView.__super__.init.call(this);
         this.children = new Collection();
-        this.children.source(options.get("children") || []);
+        this.children.source(this.get("children") || []);
         return this.bind("modelLocator", this._setModelLocator);
       };
 

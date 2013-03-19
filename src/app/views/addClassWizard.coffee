@@ -19,11 +19,11 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     transition: {
       ".confirmation-dailog": {
         enter: {
-          from: { opacity: 0,  scale: 0.5 },
+          from: { opacity: 0,  scale: 0.9 },
           to: { opacity: 1,  scale: 1 }
         },
         exit: {
-          to: { opacity: 0,  scale: 1.5 }
+          to: { opacity: 0,  scale: 1.1 }
         }
       },
       ".modal-backdrop": {

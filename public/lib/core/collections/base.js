@@ -58,7 +58,7 @@
 
       BaseCollection.prototype.source = function(value) {
         if (value instanceof BaseCollection) {
-          value.bindTo(this);
+          value.glue(this);
           return this;
         }
         if (!arguments.length) {

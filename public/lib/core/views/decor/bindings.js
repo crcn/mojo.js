@@ -3,21 +3,25 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./base", "rivets"], function(BaseViewDecorator, rivets) {
+  define(["./base", "rivets", "dref"], function(BaseViewDecorator, rivets, dref) {
     var BindingsDecorator;
     rivets.configure({
       adapter: {
         subscribe: function(obj, keypath, callback) {
-          return obj.on("change:" + keypath.replace(/,/g, "."), callback);
+          if (obj.on) {
+            return obj.on("change:" + keypath.replace(/,/g, "."), callback);
+          }
         },
         unsubscribe: function(obj, keypath, callback) {
-          return obj.off("change:" + keypath.replace(/,/g, "."), callback);
+          if (obj.on) {
+            return obj.off("change:" + keypath.replace(/,/g, "."), callback);
+          }
         },
         read: function(obj, keypath) {
-          return obj.get(keypath.replace(/,/g, "."));
+          return dref.get(obj, keypath.replace(/,/g, "."));
         },
         publish: function(obj, keypath, value) {
-          return obj.set(keypath.replace(/,/g, "."), value);
+          return dref.set(obj, keypath.replace(/,/g, "."), value);
         }
       }
     });

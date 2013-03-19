@@ -22,7 +22,7 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
 
       # these are the children of this container
       @children = new Collection()
-      @children.source(options.get("children") or [])
+      @children.source(@get("children") or [])
 
       # bind the model model locator which contains all bindable data. This is important so that
       # data is easily bindable without making it a singleton item

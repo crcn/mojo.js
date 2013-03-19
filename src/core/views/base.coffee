@@ -1,4 +1,4 @@
-define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./decor/facade", "asyngleton", "../collections/concrete", "../utils/async"], ($, events, Bindable, outcome, _, ViewDecorator, asyngleton, Collection, async) ->
+define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./decor/facade", "asyngleton", "../collections/concrete", "../utils/async", "structr"], ($, events, Bindable, outcome, _, ViewDecorator, asyngleton, Collection, async, structr) ->
 
 
   class BaseView extends Bindable
@@ -132,5 +132,8 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
     _onRemoved: () ->
     _onChanged: () ->
     _onLoaded: () ->
+
+    structr BaseView
+
 
 

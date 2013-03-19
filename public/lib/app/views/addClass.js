@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["../../core/views/base", "../core/templates"], function(View, templates) {
+  define(["../../core/views/base", "../../core/views/container", "../../core/views/input/select", "../core/templates"], function(View, ContainerView, SelectInputView, templates) {
     var AddClassView;
     return AddClassView = (function(_super) {
 
@@ -17,6 +17,16 @@
       */
 
 
+      AddClassView.prototype.classyears = [
+        {
+          value: 2005
+        }
+      ];
+
+      /*
+      */
+
+
       AddClassView.prototype.title = "Add Class";
 
       /*
@@ -24,6 +34,22 @@
 
 
       AddClassView.prototype.template = templates.addClass;
+
+      /*
+      */
+
+
+      AddClassView.prototype.children = {
+        "#select-class-year-container": SelectInputView
+      };
+
+      /*
+      */
+
+
+      AddClassView.prototype.init = function() {
+        return AddClassView.__super__.init.call(this);
+      };
 
       return AddClassView;
 

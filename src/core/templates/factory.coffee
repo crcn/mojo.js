@@ -30,7 +30,7 @@ define ["./template", "asyngleton", "underscore"], (Template, asyngleton, _) ->
     ###
     ###
 
-    fromSource: (source, options) -> 
+    fromSource: (source, options = {}) -> 
       options.source = source
       @get source, options
 
@@ -47,4 +47,10 @@ define ["./template", "asyngleton", "underscore"], (Template, asyngleton, _) ->
       })
 
       @_templates[name] or (@_templates[name] = new Template(options))
+
+
+  mainFactory = new TemplateFactory()
+  TemplateFactory.fromSource = () -> mainFactory.fromSource.apply mainFactory, arguments
+
+  TemplateFactory
 

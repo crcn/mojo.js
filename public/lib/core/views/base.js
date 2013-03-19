@@ -4,7 +4,7 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./decor/facade", "asyngleton", "../collections/concrete", "../utils/async"], function($, events, Bindable, outcome, _, ViewDecorator, asyngleton, Collection, async) {
+  define(["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./decor/facade", "asyngleton", "../collections/concrete", "../utils/async", "structr"], function($, events, Bindable, outcome, _, ViewDecorator, asyngleton, Collection, async, structr) {
     var BaseView;
     return BaseView = (function(_super) {
 
@@ -157,6 +157,8 @@
       BaseView.prototype._onChanged = function() {};
 
       BaseView.prototype._onLoaded = function() {};
+
+      structr(BaseView);
 
       return BaseView;
 

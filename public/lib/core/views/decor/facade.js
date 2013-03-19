@@ -14,13 +14,14 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["underscore", "cstep", "../../utils/async", "outcome", "./base", "./template", "./events", "./bindings", "./transition"], function(_, cstep, async, outcome, BaseViewDecorator, TemplateDecorator, EventsDecorator, BindingsDecorator, TransitionDecorator) {
+  define(["underscore", "cstep", "../../utils/async", "outcome", "./base", "./template", "./children", "./events", "./bindings", "./transition"], function(_, cstep, async, outcome, BaseViewDecorator, TemplateDecorator, ChildrenDecorator, EventsDecorator, BindingsDecorator, TransitionDecorator) {
     var ViewDecorator, availableDecorators;
     availableDecorators = {
       "template": TemplateDecorator,
       "bindings": BindingsDecorator,
-      "transition": TransitionDecorator,
-      "events": EventsDecorator
+      "children": ChildrenDecorator,
+      "events": EventsDecorator,
+      "transition": TransitionDecorator
     };
     return ViewDecorator = (function(_super) {
 
