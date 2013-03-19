@@ -15,7 +15,7 @@
 
   define(function() {
     var FactoryFactory;
-    return FactoryFactory = (function() {
+    FactoryFactory = (function() {
       /*
       */
 
@@ -69,11 +69,10 @@
         }
       };
 
-      new FactoryFactory();
-
       return FactoryFactory;
 
     })();
+    return new FactoryFactory();
   });
 
 }).call(this);

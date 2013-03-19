@@ -56,6 +56,6 @@ define () ->
           return factoryClass
 
 
-    new FactoryFactory()
+  new FactoryFactory()
 
 

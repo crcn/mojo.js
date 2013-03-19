@@ -1,4 +1,4 @@
-define ["./base"], (BaseFactory) ->
+define ["./base", "./factory"], (BaseFactory, factoryFactory) ->
   
   class ClassFactory extends BaseFactory
 
@@ -23,5 +23,17 @@ define ["./base"], (BaseFactory) ->
     ###
 
     createItem: (options) -> return new @clazz(options)
+
+
+
+  ClassFactory.test = (item) ->
+    return (typeof item == "function") && item.prototype
+
+
+  factoryFactory.addFactoryClass ClassFactory
+
+
+  ClassFactory
+
 
     

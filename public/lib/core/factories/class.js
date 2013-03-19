@@ -3,9 +3,9 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./base"], function(BaseFactory) {
+  define(["./base", "./factory"], function(BaseFactory, factoryFactory) {
     var ClassFactory;
-    return ClassFactory = (function(_super) {
+    ClassFactory = (function(_super) {
 
       __extends(ClassFactory, _super);
 
@@ -43,6 +43,11 @@
       return ClassFactory;
 
     })(BaseFactory);
+    ClassFactory.test = function(item) {
+      return (typeof item === "function") && item.prototype;
+    };
+    factoryFactory.addFactoryClass(ClassFactory);
+    return ClassFactory;
   });
 
 }).call(this);
