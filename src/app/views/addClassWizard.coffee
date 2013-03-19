@@ -29,7 +29,7 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
       ".modal-backdrop": {
         enter: {
           from: { opacity: 0 },
-          to: { opacity: 0.75 }
+          to: { opacity: 0.25 }
         },
         exit: {
           to: { opacity: 0  }

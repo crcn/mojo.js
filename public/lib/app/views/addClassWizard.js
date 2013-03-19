@@ -50,7 +50,7 @@
               opacity: 0
             },
             to: {
-              opacity: 0.75
+              opacity: 0.25
             }
           },
           exit: {
