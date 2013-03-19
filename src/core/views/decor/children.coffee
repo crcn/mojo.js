@@ -47,7 +47,9 @@ define ["./base", "outcome", "../../utils/async"], (BaseViewDecorator, outcome, 
 
 
   ChildrenDecorator.test = (view) ->
-    return view.has("children")
+
+    # make sure children is present, and that it's an object
+    return view.has("children") && !view.get("children")._events
 
 
   ChildrenDecorator

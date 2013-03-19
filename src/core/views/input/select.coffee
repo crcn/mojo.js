@@ -1,6 +1,6 @@
-define ["../base", "../../templates/factory"], (View, templates) ->
+define ["../list", "../base", "../../templates/factory"], (ListView, View, templates) ->
 
-  class SelectInputView extends View
+  class SelectInputView extends ListView
 
     ###
     ###
@@ -10,9 +10,33 @@ define ["../base", "../../templates/factory"], (View, templates) ->
     ###
     ###
 
+    childrenElement: "select"
+
+    ###
+    ###
+
+    childTemplate: templates.fromSource("<option value='{{value}}'>{{label}}</option>", { engine: "handlebars" })
+
+    ###
+    ###
+
+    childViewClass: View
+
+    ###
+    ###
+
     init: () ->
       super()
-      @source = {}
+      @source.addItem { value: "test", label: "tacos" }
+
+
+
+
+    ###
+    ###
+
+    _onAttached: () =>
+      super()
 
 
 

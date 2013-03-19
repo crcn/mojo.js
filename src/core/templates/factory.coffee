@@ -22,7 +22,6 @@ define ["require", "./template", "asyngleton", "underscore"], (require, Template
       return @_engine if not arguments.length
       @_engine = value
 
-
     ###
     ###
 
@@ -48,8 +47,6 @@ define ["require", "./template", "asyngleton", "underscore"], (require, Template
     loadEngine: (name, callback) ->
       require ["./engines/#{@_engine}"], (Engine) =>
         callback null, (@_loadedEngines[name] or (@_loadedEngines[name] = new Engine(@)))
-
-
 
     ###
     ###

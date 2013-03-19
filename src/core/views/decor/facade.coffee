@@ -11,36 +11,39 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
 define ["underscore",
 "cstep",
 "../../utils/async",
+"../../factories/either",
+"../../factories/class",
 "outcome",
 "./base", 
 "./template",
 "./children",
+"./listChildren",
 "./events",
 "./bindings",
-"./transition"], (_, cstep, async, outcome, BaseViewDecorator, TemplateDecorator, ChildrenDecorator, EventsDecorator, BindingsDecorator, TransitionDecorator) ->
-
-  
+"./transition"], (_, cstep, async, EitherFactory, ClassFactory, outcome, BaseViewDecorator, 
+  TemplateDecorator, ChildrenDecorator, ListChildrenDecorator, 
+  EventsDecorator, BindingsDecorator, TransitionDecorator) ->
+    
     # decorators are loaded in this order. Note that the order is important.
     availableDecorators = {
 
       # template must be loaded first because the following decorators handle an element
-      "template": TemplateDecorator,
+      "template": new ClassFactory(TemplateDecorator),
 
       # parent bindings must be set before child bindings
-      "bindings": BindingsDecorator,
-
+      "bindings": new ClassFactory(BindingsDecorator),
 
       # children must be loaded before the transition starts, otherwise there might be a delay
-      "children": ChildrenDecorator,
+      "children": new EitherFactory(new ClassFactory(ChildrenDecorator), new ClassFactory(ListChildrenDecorator)),
 
       # events can go anywhere really
-      "events": EventsDecorator,
+      "events": new ClassFactory(EventsDecorator),
 
       # transition should be the last-ish item since it adds a delay to everything else
-      "transition": TransitionDecorator
+      "transition": new ClassFactory(TransitionDecorator)
     }
 
-    
+
     
     class ViewDecorator extends BaseViewDecorator
   
@@ -122,8 +125,8 @@ define ["underscore",
 
       _removeDecorators: () ->
         for name of availableDecorators
-          clazz = availableDecorators[name]
-          if not clazz.test(@view) and @_decorators[name]
+          factory = availableDecorators[name]
+          if not factory.test(@view) and @_decorators[name]
             @_changed = true
             @_decorators[name].dispose()
             delete @_decorators[name]
@@ -138,9 +141,9 @@ define ["underscore",
         priority = 0
         for name of availableDecorators
           priority++
-          clazz = availableDecorators[name]
-          if clazz.test(@view) and not @_decorators[name]
-            @_decorators[name] = new clazz @view
+          factory = availableDecorators[name]
+          if factory.test(@view) and not @_decorators[name]
+            @_decorators[name] = factory.createItem @view
             @_decorators[name].priority = priority
             @_changed = true
 

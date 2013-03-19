@@ -14,6 +14,19 @@
       }
 
       /*
+           transforms an object with different properties
+      */
+
+
+      ConcreteCollection.prototype.transformer = function(value) {
+        if (!arguments.length) {
+          return this._transformer;
+        }
+        this._transformer = value;
+        return this;
+      };
+
+      /*
       */
 
 

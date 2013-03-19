@@ -1,22 +1,27 @@
-define ["factories/base"], (BaseFactory) ->
+define ["./base"], (BaseFactory) ->
   
   class ClassFactory extends BaseFactory
 
     ###
     ###
 
-    constructor: (clazz) ->
+    constructor: (@clazz, @_test) ->
 
     ###
     ###
 
-    createItem: (options) -> return new clazz(options)
+    test: (item) -> 
+      if @clazz.test
+        return @clazz.test(item)
 
+      if @_test
+        return @_test(item)
 
+      return true
 
-  ClassFactory.test = (item) ->
-    return typeof item is "function" and !!item.prototype
+    ###
+    ###
 
-  ClassFactory
+    createItem: (options) -> return new @clazz(options)
 
     

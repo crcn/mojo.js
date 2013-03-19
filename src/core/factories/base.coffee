@@ -1,6 +1,6 @@
 define () ->
   
-  class 
+  class Base
 
     ###
     ###

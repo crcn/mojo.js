@@ -42,7 +42,7 @@ define ["jquery", "underscore", "asyngleton", "events", "../utils/async"], ($, _
 
     load: asyngleton (callback) ->
 
-      # there might be some overlap with certain languages, such as en-us, and en-gb
+      # there might be some overlap with certain languages, such as en-us, and en-gb, en
       load = [@options.language, @options.language.split("-").shift()]
 
 

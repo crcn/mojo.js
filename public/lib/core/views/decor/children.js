@@ -65,7 +65,7 @@
 
     })(BaseViewDecorator);
     ChildrenDecorator.test = function(view) {
-      return view.has("children");
+      return view.has("children") && !view.get("children")._events;
     };
     return ChildrenDecorator;
   });

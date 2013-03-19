@@ -12,10 +12,6 @@
 
       function ContainerView() {
         this._setModelLocator = __bind(this._setModelLocator, this);
-
-        this._attachChild = __bind(this._attachChild, this);
-
-        this._onChildrenUpdated = __bind(this._onChildrenUpdated, this);
         return ContainerView.__super__.constructor.apply(this, arguments);
       }
 
@@ -39,95 +35,8 @@
         ContainerView.__super__.init.call(this);
         this.children = new Collection();
         this.children.source(this.get("children") || []);
+        this.source = new Collection();
         return this.bind("modelLocator", this._setModelLocator);
-      };
-
-      /*
-      */
-
-
-      ContainerView.prototype.attach = function(selector, callback) {
-        var _this = this;
-        if (callback == null) {
-          callback = (function() {});
-        }
-        return ContainerView.__super__.attach.call(this, selector, function() {
-          if (!_this._listening) {
-            _this._listening = true;
-            _this.children.on("updated", _this._onChildrenUpdated);
-          }
-          return _this._attachChildren(callback);
-        });
-      };
-
-      /*
-      */
-
-
-      ContainerView.prototype._onChildrenUpdated = function(event) {
-        return this["_" + event.type](event);
-      };
-
-      /*
-      */
-
-
-      ContainerView.prototype._reset = function(event) {
-        return this._attachChildren();
-      };
-
-      /*
-      */
-
-
-      ContainerView.prototype._replace = function(event) {
-        throw new Error("cannot replace right now");
-      };
-
-      /*
-      */
-
-
-      ContainerView.prototype._remove = function(event) {
-        var $el;
-        $el = $(this._childElement().children()[event.index]);
-        return $el.detach();
-      };
-
-      /*
-      */
-
-
-      ContainerView.prototype._add = function(event) {
-        return this._attachChild(event.item);
-      };
-
-      /*
-      */
-
-
-      ContainerView.prototype._attachChildren = function(callback) {
-        var form;
-        form = new FormView({
-          fields: {
-            name: "select"
-          }
-        });
-        this._childElement().children().unbind("*");
-        this._childElement().html("");
-        return async.forEach(this.children.source(), this._attachChild, callback);
-      };
-
-      /*
-      */
-
-
-      ContainerView.prototype._attachChild = function(child, callback) {
-        if (callback == null) {
-          callback = (function() {});
-        }
-        child.attach(this._childElement().append("<" + (this.get("childElement")) + " />").children().last());
-        return this._setChildModelLocator(child);
       };
 
       /*

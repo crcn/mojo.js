@@ -111,8 +111,9 @@
         if (this._itemsById[dref.get(item, "_id")]) {
           return false;
         }
+        item = this._addItem(item);
         this._itemsById[dref.get(item, "_id")] = item;
-        this._source.splice(index, 0, this._addItem(item));
+        this._source.splice(index, 0, item);
         return this._emit("add", {
           item: item,
           index: index,

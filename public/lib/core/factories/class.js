@@ -3,9 +3,9 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["factories/base"], function(BaseFactory) {
+  define(["./base"], function(BaseFactory) {
     var ClassFactory;
-    ClassFactory = (function(_super) {
+    return ClassFactory = (function(_super) {
 
       __extends(ClassFactory, _super);
 
@@ -13,23 +13,36 @@
       */
 
 
-      function ClassFactory(clazz) {}
+      function ClassFactory(clazz, _test) {
+        this.clazz = clazz;
+        this._test = _test;
+      }
+
+      /*
+      */
+
+
+      ClassFactory.prototype.test = function(item) {
+        if (this.clazz.test) {
+          return this.clazz.test(item);
+        }
+        if (this._test) {
+          return this._test(item);
+        }
+        return true;
+      };
 
       /*
       */
 
 
       ClassFactory.prototype.createItem = function(options) {
-        return new clazz(options);
+        return new this.clazz(options);
       };
 
       return ClassFactory;
 
     })(BaseFactory);
-    ClassFactory.test = function(item) {
-      return typeof item === "function" && !!item.prototype;
-    };
-    return ClassFactory;
   });
 
 }).call(this);

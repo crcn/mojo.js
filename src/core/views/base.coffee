@@ -70,7 +70,7 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
       @element  = if typeof selectorOrElement is "string" then $(selectorOrElement) else selectorOrElement
       @selector = selectorOrElement
 
-      @load () => 
+      @load () =>   
         @decorator.attach @_o.e(callback).s () =>
           callback()
           @emit "attached"

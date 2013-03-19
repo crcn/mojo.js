@@ -9,7 +9,14 @@
 
       function ViewDecorator(view) {
         this.view = view;
+        this.init();
       }
+
+      /*
+      */
+
+
+      ViewDecorator.prototype.init = function() {};
 
       /*
       */

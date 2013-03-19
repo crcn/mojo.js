@@ -2,11 +2,12 @@
 (function() {
 
   define(function() {
-    return (function() {
+    var Base;
+    return Base = (function() {
       /*
       */
 
-      function _Class(options) {
+      function Base(options) {
         this.options = options;
       }
 
@@ -15,9 +16,9 @@
       */
 
 
-      _Class.prototype.createItem = function(options) {};
+      Base.prototype.createItem = function(options) {};
 
-      return _Class;
+      return Base;
 
     })();
   });

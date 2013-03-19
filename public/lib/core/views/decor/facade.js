@@ -14,14 +14,14 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["underscore", "cstep", "../../utils/async", "outcome", "./base", "./template", "./children", "./events", "./bindings", "./transition"], function(_, cstep, async, outcome, BaseViewDecorator, TemplateDecorator, ChildrenDecorator, EventsDecorator, BindingsDecorator, TransitionDecorator) {
+  define(["underscore", "cstep", "../../utils/async", "../../factories/either", "../../factories/class", "outcome", "./base", "./template", "./children", "./listChildren", "./events", "./bindings", "./transition"], function(_, cstep, async, EitherFactory, ClassFactory, outcome, BaseViewDecorator, TemplateDecorator, ChildrenDecorator, ListChildrenDecorator, EventsDecorator, BindingsDecorator, TransitionDecorator) {
     var ViewDecorator, availableDecorators;
     availableDecorators = {
-      "template": TemplateDecorator,
-      "bindings": BindingsDecorator,
-      "children": ChildrenDecorator,
-      "events": EventsDecorator,
-      "transition": TransitionDecorator
+      "template": new ClassFactory(TemplateDecorator),
+      "bindings": new ClassFactory(BindingsDecorator),
+      "children": new EitherFactory(new ClassFactory(ChildrenDecorator), new ClassFactory(ListChildrenDecorator)),
+      "events": new ClassFactory(EventsDecorator),
+      "transition": new ClassFactory(TransitionDecorator)
     };
     return ViewDecorator = (function(_super) {
 
@@ -125,11 +125,11 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
 
 
       ViewDecorator.prototype._removeDecorators = function() {
-        var clazz, name, _results;
+        var factory, name, _results;
         _results = [];
         for (name in availableDecorators) {
-          clazz = availableDecorators[name];
-          if (!clazz.test(this.view) && this._decorators[name]) {
+          factory = availableDecorators[name];
+          if (!factory.test(this.view) && this._decorators[name]) {
             this._changed = true;
             this._decorators[name].dispose();
             _results.push(delete this._decorators[name]);
@@ -145,14 +145,14 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
 
 
       ViewDecorator.prototype._addDecorators = function() {
-        var clazz, name, priority, _results;
+        var factory, name, priority, _results;
         priority = 0;
         _results = [];
         for (name in availableDecorators) {
           priority++;
-          clazz = availableDecorators[name];
-          if (clazz.test(this.view) && !this._decorators[name]) {
-            this._decorators[name] = new clazz(this.view);
+          factory = availableDecorators[name];
+          if (factory.test(this.view) && !this._decorators[name]) {
+            this._decorators[name] = factory.createItem(this.view);
             this._decorators[name].priority = priority;
             _results.push(this._changed = true);
           } else {

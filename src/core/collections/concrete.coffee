@@ -3,6 +3,16 @@ define ["./base"], (BaseCollection) ->
   class ConcreteCollection extends BaseCollection
 
     ###
+     transforms an object with different properties
+    ###
+
+    transformer: (value) ->
+      return @_transformer if not arguments.length
+      @_transformer = value
+      @
+
+    ###
+     
     ###
 
     itemFactory: (value) ->

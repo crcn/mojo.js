@@ -80,9 +80,11 @@ define ["../bindings/eventEmitter", "underscore", "./glue", "dref"], (EventEmitt
       if @_itemsById[dref.get(item, "_id")]
         return false
 
+      item = @_addItem item
+
       @_itemsById[dref.get(item, "_id")] = item
 
-      @_source.splice index, 0, @_addItem item
+      @_source.splice index, 0, item
       @_emit "add", { item: item, index: index, _id: dref.get(item, "_id") }
 
     ###
