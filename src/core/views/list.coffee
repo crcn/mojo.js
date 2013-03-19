@@ -20,11 +20,16 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
     init: () ->
       super()
 
+      childrenSource = @get("children")
+      sourceSource   = @get("source")
+
       # these are the children of this container
       @children = new Collection()
-      @children.source @get("children") or []
+      @children.source childrenSource or []
 
       @source = new Collection()
+      @source.source sourceSource or []
+
 
       # bind the model model locator which contains all bindable data. This is important so that
       # data is easily bindable without making it a singleton item

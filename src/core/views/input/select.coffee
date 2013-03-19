@@ -27,9 +27,6 @@ define ["../list", "../base", "../../templates/factory"], (ListView, View, templ
 
     init: () ->
       super()
-      @source.addItem { value: "test", label: "tacos" }
-
-
 
 
     ###

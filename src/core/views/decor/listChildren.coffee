@@ -34,7 +34,6 @@ define ["./base",
         @_children.on "updated", @_onChildrenUpdated
         callback.apply this, arguments
 
-
     ###
     ###
 
@@ -70,8 +69,6 @@ define ["./base",
         child.attach @_childrenElement().append(child.get("parentTplContent")).children().last()
         next()
 
-
-
     ###
     ###
 
@@ -102,12 +99,6 @@ define ["./base",
       return @view.element if not @view.has "childrenElement"
 
       @view.element.find @view.get "childrenElement"
-
-
-
-
-
-
 
 
 

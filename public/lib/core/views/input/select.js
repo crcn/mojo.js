@@ -46,11 +46,7 @@
 
 
       SelectInputView.prototype.init = function() {
-        SelectInputView.__super__.init.call(this);
-        return this.source.addItem({
-          value: "test",
-          label: "tacos"
-        });
+        return SelectInputView.__super__.init.call(this);
       };
 
       /*

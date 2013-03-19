@@ -32,10 +32,14 @@
 
 
       ContainerView.prototype.init = function() {
+        var childrenSource, sourceSource;
         ContainerView.__super__.init.call(this);
+        childrenSource = this.get("children");
+        sourceSource = this.get("source");
         this.children = new Collection();
-        this.children.source(this.get("children") || []);
+        this.children.source(childrenSource || []);
         this.source = new Collection();
+        this.source.source(sourceSource || []);
         return this.bind("modelLocator", this._setModelLocator);
       };
 

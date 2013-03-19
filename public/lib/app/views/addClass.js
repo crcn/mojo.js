@@ -4,7 +4,32 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(["../../core/views/base", "../../core/views/input/select", "../core/templates", "../core/modelLocator", "../../core/i18n/translate"], function(View, SelectInputView, templates, modelLocator, t) {
-    var AddClassView;
+    var AddClassView, SelectClassesView;
+    SelectClassesView = (function(_super) {
+
+      __extends(SelectClassesView, _super);
+
+      function SelectClassesView() {
+        return SelectClassesView.__super__.constructor.apply(this, arguments);
+      }
+
+      /*
+      */
+
+
+      SelectClassesView.prototype.source = [
+        {
+          label: "hello",
+          value: "world"
+        }, {
+          label: "new",
+          value: "world"
+        }
+      ];
+
+      return SelectClassesView;
+
+    })(SelectInputView);
     return AddClassView = (function(_super) {
 
       __extends(AddClassView, _super);
@@ -40,7 +65,7 @@
 
 
       AddClassView.prototype.children = {
-        "#select-class-year-container": SelectInputView
+        "#select-class-year-container": SelectClassesView
       };
 
       /*
