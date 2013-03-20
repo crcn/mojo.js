@@ -43,7 +43,11 @@
 
 
       TextInputView.prototype["_onInputChange"] = function() {
-        return this.set("value", this.element.find("input").val());
+        this.set("value", this.element.find("input").val());
+        return this.element.trigger("data", {
+          name: this.get("name"),
+          value: this.get("value")
+        });
       };
 
       /*

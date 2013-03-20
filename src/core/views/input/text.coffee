@@ -26,6 +26,7 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
 
     "_onInputChange": () ->
       @set "value", @element.find("input").val()
+      @element.trigger "data", { name: @get("name"), value: @get("value") }
 
     ###
     ###

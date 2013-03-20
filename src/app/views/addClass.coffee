@@ -91,6 +91,15 @@ define ["../../core/views/base",
     init: () ->
       super()
 
+    ###
+    ###
+
+    _onAttached: () =>
+      super()
+
+      @element.bind "data", (e, data) ->
+        console.log data
+
 
   
 

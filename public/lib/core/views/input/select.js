@@ -96,7 +96,11 @@
         if (index === void 0) {
           return this.deselect();
         }
-        return this.set("selectedItem", this.source.getItemAt(index));
+        this.set("selectedItem", this.source.getItemAt(index));
+        return this.element.trigger("data", {
+          name: this.get("name"),
+          value: this.get("selectedItem").data
+        });
       };
 
       /*

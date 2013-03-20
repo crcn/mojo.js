@@ -66,6 +66,8 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
 
       @set "selectedItem", @source.getItemAt index
 
+      @element.trigger "data", { name: @get("name"), value: @get("selectedItem").data }
+
     ###
      deselects the item
     ###
