@@ -35,7 +35,7 @@
       */
 
 
-      SelectClassesView.prototype.source = "modelLocator.clazz.types";
+      SelectClassesView.prototype.source = "modelLocator.classTypes";
 
       return SelectClassesView;
 

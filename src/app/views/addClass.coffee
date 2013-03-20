@@ -30,7 +30,7 @@ define ["../../core/views/base",
     ###
     ###
 
-    source: "modelLocator.clazz.types"
+    source: "modelLocator.classTypes"
 
 
 

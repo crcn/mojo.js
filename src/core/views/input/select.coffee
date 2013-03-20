@@ -40,6 +40,37 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
       @children.addItemAt(new View { label: @get("selectLabel") }, 0)
 
 
+    ###
+    ###
+
+    events: {
+      "change select": (event) ->
+        selectedVal = @element.find(":selected").val()
+
+        # de-select the item
+        if not selectedVal.length
+          return @deselect()
+
+        @select Number selectedVal
+    }
+
+    ###
+     Selects an item based on the index
+    ###
+
+    select: (index) ->
+      if index is undefined
+        return @deselect()
+
+      @set "selectedItem", @source.getItemAt index
+
+    ###
+     deselects the item
+    ###
+
+    deselect: () ->
+      @set "selectedItem", null
+
 
     ###
     ###
@@ -47,8 +78,17 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
     _onAttached: () =>
       super()
 
+    ###
+    ###
+
+    _onLoaded: () =>
+      super()
+
+      # listen for any changes in the selected item so it can be reflected in the drop menu
+      @bind "selectedItem", @_onSelectedItemChange
 
     ###
+     transforms the source to something the drop menu can use
     ###
 
     _transformSelectItem: (item, index) =>
@@ -65,5 +105,19 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
       source = super()
       source.transform @_transformSelectItem
       source
+
+
+    ###
+    ###
+
+    _onSelectedItemChange: (item) =>
+
+      index = 0
+      if not item
+        index = 0
+      else
+        index = item.value
+
+      @element.find("select").children().eq(index).attr("selected", "selected")
 
 

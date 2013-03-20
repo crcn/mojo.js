@@ -11,7 +11,11 @@
       __extends(SelectInputView, _super);
 
       function SelectInputView() {
+        this._onSelectedItemChange = __bind(this._onSelectedItemChange, this);
+
         this._transformSelectItem = __bind(this._transformSelectItem, this);
+
+        this._onLoaded = __bind(this._onLoaded, this);
 
         this._onAttached = __bind(this._onAttached, this);
         return SelectInputView.__super__.constructor.apply(this, arguments);
@@ -70,11 +74,57 @@
       */
 
 
+      SelectInputView.prototype.events = {
+        "change select": function(event) {
+          var selectedVal;
+          selectedVal = this.element.find(":selected").val();
+          if (!selectedVal.length) {
+            return this.deselect();
+          }
+          return this.select(Number(selectedVal));
+        }
+      };
+
+      /*
+           Selects an item based on the index
+      */
+
+
+      SelectInputView.prototype.select = function(index) {
+        if (index === void 0) {
+          return this.deselect();
+        }
+        return this.set("selectedItem", this.source.getItemAt(index));
+      };
+
+      /*
+           deselects the item
+      */
+
+
+      SelectInputView.prototype.deselect = function() {
+        return this.set("selectedItem", null);
+      };
+
+      /*
+      */
+
+
       SelectInputView.prototype._onAttached = function() {
         return SelectInputView.__super__._onAttached.call(this);
       };
 
       /*
+      */
+
+
+      SelectInputView.prototype._onLoaded = function() {
+        SelectInputView.__super__._onLoaded.call(this);
+        return this.bind("selectedItem", this._onSelectedItemChange);
+      };
+
+      /*
+           transforms the source to something the drop menu can use
       */
 
 
@@ -94,6 +144,21 @@
         source = SelectInputView.__super__._createSource.call(this);
         source.transform(this._transformSelectItem);
         return source;
+      };
+
+      /*
+      */
+
+
+      SelectInputView.prototype._onSelectedItemChange = function(item) {
+        var index;
+        index = 0;
+        if (!item) {
+          index = 0;
+        } else {
+          index = item.value;
+        }
+        return this.element.find("select").children().eq(index).attr("selected", "selected");
       };
 
       return SelectInputView;

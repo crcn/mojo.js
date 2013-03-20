@@ -4,7 +4,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(["../../core/models/base", "../../core/collections/concrete"], function(Model, Collection) {
-    var ModelLocator;
+    var ModelLocator, ml;
     ModelLocator = (function(_super) {
 
       __extends(ModelLocator, _super);
@@ -17,18 +17,16 @@
       */
 
 
-      ModelLocator.prototype.clazz = {
-        types: new Collection(["Pre-school", "Kindergarten", "1st Grade", "2nd Grade", "3rd Grade", "4th Grade", "5th Grade", "6th Grade", "7th Grade", "8th Grade", "9th Grade", "10th Grade", "11th Grade", "12th Grade", "Other"].map(function(label) {
-          return {
-            name: label
-          };
-        }))
-      };
+      ModelLocator.prototype.classTypes = new Collection(["Pre-school", "Kindergarten", "1st Grade", "2nd Grade", "3rd Grade", "4th Grade", "5th Grade", "6th Grade", "7th Grade", "8th Grade", "9th Grade", "10th Grade", "11th Grade", "12th Grade", "Other"].map(function(label) {
+        return {
+          name: label
+        };
+      }));
 
       return ModelLocator;
 
     })(Model);
-    return new ModelLocator();
+    return ml = new ModelLocator();
   });
 
 }).call(this);

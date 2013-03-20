@@ -42,8 +42,8 @@
       */
 
 
-      ConcreteCollection.prototype._addItem = function(item) {
-        item = this._transform(item);
+      ConcreteCollection.prototype._addItem = function(item, index) {
+        item = this._transform(item, index);
         if (!this._itemFactory) {
           return item;
         }
@@ -54,11 +54,11 @@
       */
 
 
-      ConcreteCollection.prototype._transform = function(item) {
+      ConcreteCollection.prototype._transform = function(item, index) {
         if (!this._transformer) {
           return item;
         }
-        return this._transformer(item);
+        return this._transformer(item, index);
       };
 
       return ConcreteCollection;

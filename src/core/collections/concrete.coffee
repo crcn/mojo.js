@@ -22,8 +22,8 @@ define ["./base"], (BaseCollection) ->
     ###
     ###
 
-    _addItem: (item) ->
-      item = @_transform item
+    _addItem: (item, index) ->
+      item = @_transform item, index
       return item if not @_itemFactory
       @_itemFactory.createItem item
 
@@ -31,7 +31,7 @@ define ["./base"], (BaseCollection) ->
     ###
     ###
 
-    _transform: (item) ->
+    _transform: (item, index) ->
       return item if not @_transformer
-      @_transformer item
+      @_transformer item, index
 
