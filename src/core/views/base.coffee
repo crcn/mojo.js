@@ -43,7 +43,7 @@ define ["jquery",
       @_o = outcome.e @
 
       # initialize the options
-      @init()
+      @_init()
 
       # after init, set to initialized
       @set "initialized", true
@@ -53,9 +53,15 @@ define ["jquery",
     ###
 
     init: () ->
+      # OVERRIDE ME
 
+
+    ###
+    ###
+
+    _init: () ->
       throw new Error("already initialized") if @get("initialized")
-
+      @init()
       @_listen()
 
 

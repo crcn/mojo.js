@@ -36,7 +36,7 @@
         this.decorator = new ViewDecorator(this);
         this.loadables = new Collection([this.decorator]);
         this._o = outcome.e(this);
-        this.init();
+        this._init();
         this.set("initialized", true);
       }
 
@@ -44,10 +44,17 @@
       */
 
 
-      BaseView.prototype.init = function() {
+      BaseView.prototype.init = function() {};
+
+      /*
+      */
+
+
+      BaseView.prototype._init = function() {
         if (this.get("initialized")) {
           throw new Error("already initialized");
         }
+        this.init();
         return this._listen();
       };
 
