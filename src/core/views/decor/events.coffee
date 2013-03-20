@@ -36,8 +36,6 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
       actions = selectorParts.shift().split(/\|/g).join(" ")
       selectors = selectorParts.join(",")
 
-      console.log actions
-
       cb = () =>
 
         if typeof viewMethod is "function"

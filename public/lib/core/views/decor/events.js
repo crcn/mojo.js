@@ -47,7 +47,6 @@
         selectorParts = selector.split(" ");
         actions = selectorParts.shift().split(/\|/g).join(" ");
         selectors = selectorParts.join(",");
-        console.log(actions);
         cb = function() {
           var ref;
           if (typeof viewMethod === "function") {
