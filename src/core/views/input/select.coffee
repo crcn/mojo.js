@@ -1,4 +1,4 @@
-define ["../list", "../base", "../../templates/factory"], (ListView, View, templates) ->
+define ["../list", "../base", "../../templates/factory", "dref"], (ListView, View, templates, dref) ->
 
   class SelectInputView extends ListView
 
@@ -20,6 +20,16 @@ define ["../list", "../base", "../../templates/factory"], (ListView, View, templ
     ###
     ###
 
+    selectLabel: "Select"
+
+    ###
+    ###
+
+    itemLabel: "label"
+
+    ###
+    ###
+
     childViewClass: View
 
     ###
@@ -27,6 +37,8 @@ define ["../list", "../base", "../../templates/factory"], (ListView, View, templ
 
     init: () ->
       super()
+      @children.addItemAt(new View { label: @get("selectLabel") }, 0)
+
 
 
     ###
@@ -35,5 +47,24 @@ define ["../list", "../base", "../../templates/factory"], (ListView, View, templ
     _onAttached: () =>
       super()
 
+
+    ###
+    ###
+
+    _transformSelectItem: (item, index) =>
+      console.log item
+      {
+        value: index,
+        label: dref.get item, @get("itemLabel")
+      }
+
+
+    ###
+    ###
+
+    _createSource: () ->
+      source = super()
+      source.transform @_transformSelectItem
+      source
 
 

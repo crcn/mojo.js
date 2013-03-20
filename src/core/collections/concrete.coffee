@@ -6,13 +6,12 @@ define ["./base"], (BaseCollection) ->
      transforms an object with different properties
     ###
 
-    transformer: (value) ->
+    transform: (value) ->
       return @_transformer if not arguments.length
       @_transformer = value
       @
 
     ###
-     
     ###
 
     itemFactory: (value) ->
@@ -24,6 +23,15 @@ define ["./base"], (BaseCollection) ->
     ###
 
     _addItem: (item) ->
+      item = @_transform item
       return item if not @_itemFactory
-      @_itemFactory.createItem(item)
+      @_itemFactory.createItem item
+
+
+    ###
+    ###
+
+    _transform: (item) ->
+      return item if not @_transformer
+      @_transformer item
 

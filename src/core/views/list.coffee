@@ -24,10 +24,10 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
       sourceSource   = @get("source")
 
       # these are the children of this container
-      @children = new Collection()
+      @children = @_createChildren()
       @children.source childrenSource or []
 
-      @source = new Collection()
+      @source = @_createSource()
       @source.source sourceSource or []
 
 
@@ -53,5 +53,16 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
 
     _setChildModelLocator: (child) ->
       child.set "modelLocator", @get "modelLocator"
+
+
+    ###
+    ###
+
+    _createSource: () -> new Collection()
+
+    ###
+    ###
+
+    _createChildren: () -> new Collection()
 
 

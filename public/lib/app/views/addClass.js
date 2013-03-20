@@ -17,15 +17,19 @@
       */
 
 
-      SelectClassesView.prototype.source = [
-        {
-          label: "hello",
-          value: "world"
-        }, {
-          label: "new",
-          value: "world"
-        }
-      ];
+      SelectClassesView.prototype.selectLabel = "Select year";
+
+      /*
+      */
+
+
+      SelectClassesView.prototype.itemLabel = "name";
+
+      /*
+      */
+
+
+      SelectClassesView.prototype.source = "modelLocator.student.grades";
 
       return SelectClassesView;
 

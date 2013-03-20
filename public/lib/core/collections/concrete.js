@@ -18,7 +18,7 @@
       */
 
 
-      ConcreteCollection.prototype.transformer = function(value) {
+      ConcreteCollection.prototype.transform = function(value) {
         if (!arguments.length) {
           return this._transformer;
         }
@@ -43,10 +43,22 @@
 
 
       ConcreteCollection.prototype._addItem = function(item) {
+        item = this._transform(item);
         if (!this._itemFactory) {
           return item;
         }
         return this._itemFactory.createItem(item);
+      };
+
+      /*
+      */
+
+
+      ConcreteCollection.prototype._transform = function(item) {
+        if (!this._transformer) {
+          return item;
+        }
+        return this._transformer(item);
       };
 
       return ConcreteCollection;

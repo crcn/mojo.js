@@ -48,7 +48,20 @@ define ["../bindings/eventEmitter", "underscore", "./glue", "dref"], (EventEmitt
 
 
       return @_source.concat() if not arguments.length
-      @_emit "reset", { oldSource: @_source, source: @_source = value }
+      @_emit "reset", { oldSource: @_source, source: @_source = @_addChildren(value) }
+
+
+    ###
+    ###
+
+    _addChildren: (source) ->
+      transformed = []
+
+      for item, i in source
+        transformed.push @_addItem item, i
+
+
+      transformed
 
 
     ###
@@ -80,18 +93,23 @@ define ["../bindings/eventEmitter", "underscore", "./glue", "dref"], (EventEmitt
       if @_itemsById[dref.get(item, "_id")]
         return false
 
-      item = @_addItem item
 
+
+
+      item = @_addItem item, index
+
+      # shove the raw data into items by id
       @_itemsById[dref.get(item, "_id")] = item
 
       @_source.splice index, 0, item
-      @_emit "add", { item: item, index: index, _id: dref.get(item, "_id") }
+      @_emit "add", { item: item, index: index + 1, _id: dref.get(item, "_id") }
 
     ###
     ###
 
     removeItem: (item) ->
       @removeItemAt @_source.indexOf item
+
 
     ###
     ###
@@ -123,8 +141,8 @@ define ["../bindings/eventEmitter", "underscore", "./glue", "dref"], (EventEmitt
     ###
     ###
 
-    _addItem: (item) -> item
-    _removeItem: (item) -> item
+    _addItem: (item, index) -> item
+    _removeItem: (item, index) -> item
 
 
 

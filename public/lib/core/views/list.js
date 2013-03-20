@@ -36,9 +36,9 @@
         ContainerView.__super__.init.call(this);
         childrenSource = this.get("children");
         sourceSource = this.get("source");
-        this.children = new Collection();
+        this.children = this._createChildren();
         this.children.source(childrenSource || []);
-        this.source = new Collection();
+        this.source = this._createSource();
         this.source.source(sourceSource || []);
         return this.bind("modelLocator", this._setModelLocator);
       };
@@ -76,6 +76,22 @@
 
       ContainerView.prototype._setChildModelLocator = function(child) {
         return child.set("modelLocator", this.get("modelLocator"));
+      };
+
+      /*
+      */
+
+
+      ContainerView.prototype._createSource = function() {
+        return new Collection();
+      };
+
+      /*
+      */
+
+
+      ContainerView.prototype._createChildren = function() {
+        return new Collection();
       };
 
       return ContainerView;

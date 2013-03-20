@@ -66,8 +66,22 @@
         }
         return this._emit("reset", {
           oldSource: this._source,
-          source: this._source = value
+          source: this._source = this._addChildren(value)
         });
+      };
+
+      /*
+      */
+
+
+      BaseCollection.prototype._addChildren = function(source) {
+        var i, item, transformed, _i, _len;
+        transformed = [];
+        for (i = _i = 0, _len = source.length; _i < _len; i = ++_i) {
+          item = source[i];
+          transformed.push(this._addItem(item, i));
+        }
+        return transformed;
       };
 
       /*
@@ -111,12 +125,12 @@
         if (this._itemsById[dref.get(item, "_id")]) {
           return false;
         }
-        item = this._addItem(item);
+        item = this._addItem(item, index);
         this._itemsById[dref.get(item, "_id")] = item;
         this._source.splice(index, 0, item);
         return this._emit("add", {
           item: item,
-          index: index,
+          index: index + 1,
           _id: dref.get(item, "_id")
         });
       };
@@ -177,11 +191,11 @@
       */
 
 
-      BaseCollection.prototype._addItem = function(item) {
+      BaseCollection.prototype._addItem = function(item, index) {
         return item;
       };
 
-      BaseCollection.prototype._removeItem = function(item) {
+      BaseCollection.prototype._removeItem = function(item, index) {
         return item;
       };
 
