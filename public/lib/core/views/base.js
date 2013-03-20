@@ -48,10 +48,12 @@
         if (this.get("initialized")) {
           throw new Error("already initialized");
         }
-        this.on("attached", this._onAttached);
-        this.on("removed", this._onRemoved);
-        this.on("change", this._onChanged);
-        return this.once("loaded", this._onLoaded);
+        return this.on({
+          attached: this._onAttached,
+          removed: this._onRemoved,
+          change: this._onChanged,
+          loaded: this._onLoaded
+        });
       };
 
       /*

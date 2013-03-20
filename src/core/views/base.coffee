@@ -56,17 +56,11 @@ define ["jquery",
 
       throw new Error("already initialized") if @get("initialized")
 
-      # on added to the stage
-      @on "attached", @_onAttached
-
-      # on removed from the stage
-      @on "removed", @_onRemoved
-
-      # on data change
-      @on "change", @_onChanged
-
-      # all additional bindings should go here
-      @once "loaded", @_onLoaded
+      @on 
+        attached: @_onAttached
+        removed: @_onRemoved
+        change: @_onChanged
+        loaded: @_onLoaded
 
     ###
      returns a search for a particular element
