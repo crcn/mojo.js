@@ -42,11 +42,12 @@
 
 
       EventsDecorator.prototype._addBinding = function(selector, viewMethod) {
-        var action, cb, elements, selectorParts, selectors,
+        var actions, cb, elements, selectorParts, selectors,
           _this = this;
         selectorParts = selector.split(" ");
-        action = selectorParts.shift();
+        actions = selectorParts.shift().split(/\|/g).join(" ");
         selectors = selectorParts.join(",");
+        console.log(actions);
         cb = function() {
           var ref;
           if (typeof viewMethod === "function") {
@@ -57,12 +58,12 @@
           return ref.apply(_this.view, arguments);
         };
         if (!selectors.length) {
-          return this._disposable.add(this.view.on(action, cb));
+          return this._disposable.add(this.view.on(actions, cb));
         }
         elements = this.view.element.find(selectors);
-        elements.bind(action.toLowerCase(), cb);
+        elements.bind(actions.toLowerCase(), cb);
         return this._disposable.add(function() {
-          return elements.unbind(action, cb);
+          return elements.unbind(actions, cb);
         });
       };
 

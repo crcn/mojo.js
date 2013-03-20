@@ -33,8 +33,10 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     _addBinding: (selector, viewMethod) ->
 
       selectorParts = selector.split " "
-      action = selectorParts.shift()
+      actions = selectorParts.shift().split(/\|/g).join(" ")
       selectors = selectorParts.join(",")
+
+      console.log actions
 
       cb = () =>
 
@@ -47,14 +49,14 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
 
 
       if !selectors.length
-        return @_disposable.add(@view.on(action, cb))
+        return @_disposable.add(@view.on(actions, cb))
 
       elements = @view.element.find(selectors)
 
-      elements.bind(action.toLowerCase(), cb)
+      elements.bind(actions.toLowerCase(), cb)
 
       @_disposable.add(() ->
-        elements.unbind action, cb
+        elements.unbind actions, cb
       )
 
 
