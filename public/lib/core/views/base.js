@@ -4,11 +4,22 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./decor/facade", "asyngleton", "../collections/concrete", "../utils/async", "structr"], function($, events, Bindable, outcome, _, ViewDecorator, asyngleton, Collection, async, structr) {
+  define(["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./decor/facade", "asyngleton", "../collections/concrete", "../models/locator", "../utils/async", "structr"], function($, events, Bindable, outcome, _, ViewDecorator, asyngleton, Collection, modelLocator, async, structr) {
     var BaseView;
     return BaseView = (function(_super) {
 
       __extends(BaseView, _super);
+
+      /*
+           may seem a bit antipattern-ish to use a singleton object like this for all views, bit 
+           it makes data-binding to one object a helluvalot easier, and it also promotes good use by making it
+           easier for developer to reuse global data. 
+      
+           This also reduces the amount of written code tremendously.
+      */
+
+
+      BaseView.prototype.modelLocator = modelLocator;
 
       /*
       */
@@ -34,10 +45,9 @@
 
 
       BaseView.prototype.init = function() {
-        if (this._initialized) {
+        if (this.get("initialized")) {
           throw new Error("already initialized");
         }
-        this._initialized = true;
         this.on("attached", this._onAttached);
         this.on("removed", this._onRemoved);
         this.on("change", this._onChanged);

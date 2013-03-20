@@ -1,7 +1,29 @@
-define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./decor/facade", "asyngleton", "../collections/concrete", "../utils/async", "structr"], ($, events, Bindable, outcome, _, ViewDecorator, asyngleton, Collection, async, structr) ->
+define ["jquery", 
+"events", 
+"../bindings/bindable", 
+"outcome", 
+"underscore", 
+"./decor/facade",
+"asyngleton", 
+"../collections/concrete", 
+"../models/locator",
+"../utils/async", 
+"structr"], ($, events, Bindable, outcome, _, 
+  ViewDecorator, asyngleton, 
+  Collection, modelLocator, async, structr) ->
 
 
   class BaseView extends Bindable
+
+    ###
+     may seem a bit antipattern-ish to use a singleton object like this for all views, bit 
+     it makes data-binding to one object a helluvalot easier, and it also promotes good use by making it
+     easier for developer to reuse global data. 
+
+     This also reduces the amount of written code tremendously.
+    ###
+
+    modelLocator: modelLocator
 
     ###
     ###
@@ -9,7 +31,7 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
     constructor: (options = {}) ->
 
       options.view = @
-      
+
       super options
 
       # controls bindings, events, templates, transitions based on the given options.
@@ -33,8 +55,7 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
 
     init: () ->
 
-      throw new Error("already initialized") if @_initialized
-      @_initialized = true  
+      throw new Error("already initialized") if @get("initialized")
 
       # on added to the stage
       @on "attached", @_onAttached
