@@ -131,7 +131,8 @@
       SelectInputView.prototype._transformSelectItem = function(item, index) {
         return {
           value: index,
-          label: dref.get(item, this.get("itemLabel"))
+          label: dref.get(item, this.get("itemLabel")),
+          data: item
         };
       };
 

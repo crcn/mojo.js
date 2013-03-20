@@ -96,7 +96,8 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
     _transformSelectItem: (item, index) =>
       {
         value: index,
-        label: dref.get item, @get("itemLabel")
+        label: dref.get(item, @get("itemLabel")),
+        data: item
       }
 
 
