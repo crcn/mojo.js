@@ -37,9 +37,9 @@
         childrenSource = this.get("children");
         sourceSource = this.get("source");
         this.children = this._createChildren();
-        this.children.source(childrenSource || []);
+        this.children.glueFrom(childrenSource || [], this);
         this.source = this._createSource();
-        this.source.source(sourceSource || []);
+        this.source.glueFrom(sourceSource || [], this);
         return this.bind("modelLocator", this._setModelLocator);
       };
 

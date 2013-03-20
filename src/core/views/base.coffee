@@ -24,16 +24,7 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
 
       # after init, set to initialized
       @set "initialized", true
-
-
-
-    ###
-     override key so the view data can be fetched as well. Makes it a bit easier extending
-     a view class.
-    ###
-
-    get: (key) ->
-      return super(key) or @_ref @, key
+      
 
     ###
     ###

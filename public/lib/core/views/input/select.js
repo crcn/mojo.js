@@ -79,7 +79,6 @@
 
 
       SelectInputView.prototype._transformSelectItem = function(item, index) {
-        console.log(item);
         return {
           value: index,
           label: dref.get(item, this.get("itemLabel"))

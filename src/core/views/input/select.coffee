@@ -52,7 +52,6 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
     ###
 
     _transformSelectItem: (item, index) =>
-      console.log item
       {
         value: index,
         label: dref.get item, @get("itemLabel")

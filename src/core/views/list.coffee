@@ -25,10 +25,10 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
 
       # these are the children of this container
       @children = @_createChildren()
-      @children.source childrenSource or []
+      @children.glueFrom (childrenSource or []), @
 
       @source = @_createSource()
-      @source.source sourceSource or []
+      @source.glueFrom (sourceSource or []), @
 
 
       # bind the model model locator which contains all bindable data. This is important so that

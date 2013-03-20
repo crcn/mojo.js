@@ -21,7 +21,7 @@ define ["./binding", "./glue", "./eventEmitter", "dref"], (Binding, Glue, EventE
     ###
 
     get: (key) -> 
-      @_ref @data, key
+      @_ref(@data, key) or @_ref @, key
 
     ###
     ###

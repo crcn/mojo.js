@@ -36,7 +36,7 @@
 
 
       Bindable.prototype.get = function(key) {
-        return this._ref(this.data, key);
+        return this._ref(this.data, key) || this._ref(this, key);
       };
 
       /*

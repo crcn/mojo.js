@@ -29,7 +29,13 @@
       */
 
 
-      SelectClassesView.prototype.source = "modelLocator.student.grades";
+      SelectClassesView.prototype.modelLocator = modelLocator;
+
+      /*
+      */
+
+
+      SelectClassesView.prototype.source = "modelLocator.clazz.types";
 
       return SelectClassesView;
 

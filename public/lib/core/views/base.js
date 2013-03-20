@@ -29,16 +29,6 @@
       }
 
       /*
-           override key so the view data can be fetched as well. Makes it a bit easier extending
-           a view class.
-      */
-
-
-      BaseView.prototype.get = function(key) {
-        return BaseView.__super__.get.call(this, key) || this._ref(this, key);
-      };
-
-      /*
       */
 
 

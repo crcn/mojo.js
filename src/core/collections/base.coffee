@@ -1,4 +1,4 @@
-define ["../bindings/eventEmitter", "underscore", "./glue", "dref"], (EventEmitter, _, Glue, dref) ->
+define ["../bindings/eventEmitter", "underscore", "./bindings/glue", "dref"], (EventEmitter, _, Glue, dref) ->
   
   _id = 0
 
@@ -35,6 +35,13 @@ define ["../bindings/eventEmitter", "underscore", "./glue", "dref"], (EventEmitt
     ###
 
     glue: (target) -> new Glue @, target
+
+    ###
+    ###
+
+    glueFrom: (source, context) ->
+      new Glue source, @, context
+
 
     ###
     ###

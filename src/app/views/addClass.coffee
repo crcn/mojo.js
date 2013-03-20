@@ -14,15 +14,24 @@ define ["../../core/views/base",
     selectLabel: "Select year"
 
 
+
     ###
     ###
 
     itemLabel: "name"
 
+
     ###
     ###
 
-    source: "modelLocator.student.grades"
+    modelLocator: modelLocator
+
+
+    ###
+    ###
+
+    source: "modelLocator.clazz.types"
+
 
 
   class AddClassView extends View
