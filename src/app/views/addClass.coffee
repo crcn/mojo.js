@@ -1,9 +1,10 @@
 define ["../../core/views/base", 
 "../../core/views/input/select", 
 "../../core/views/input/text", 
+"../../core/views/input/form", 
 "../core/templates", 
 "../core/modelLocator", 
-"../../core/i18n/translate"], (View, SelectInputView, TextInputView, templates, modelLocator, t) ->
+"../../core/i18n/translate"], (View, SelectInputView, TextInputView, FormView, templates, modelLocator, t) ->
         
 
     
@@ -54,7 +55,7 @@ define ["../../core/views/base",
 
 
 
-  class AddClassView extends View
+  class AddClassView extends FormView
 
     ###
     ###
@@ -97,8 +98,8 @@ define ["../../core/views/base",
     _onAttached: () =>
       super()
 
-      @element.bind "data", (e, data) ->
-        console.log data
+      @on "change:data.**", (data) =>
+        console.log @get "data"
 
 
   

@@ -16,9 +16,6 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
     _onAttached: () =>
       super()
 
-      data = {}
-
-      @element.bind "data", (e, d) ->
+      @element.bind "data", (e, d) =>
         e.stopPropagation()
-        data[d.name] = d.value
-        console.log data
+        @set "data.#{d.name}", d.value

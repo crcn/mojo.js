@@ -29,13 +29,11 @@
 
 
       FormView.prototype._onAttached = function() {
-        var data;
+        var _this = this;
         FormView.__super__._onAttached.call(this);
-        data = {};
         return this.element.bind("data", function(e, d) {
           e.stopPropagation();
-          data[d.name] = d.value;
-          return console.log(data);
+          return _this.set("data." + d.name, d.value);
         });
       };
 
