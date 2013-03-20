@@ -53,7 +53,7 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
 
     events: {
       "change select": (event) ->
-        selected    = @element.find(":selected")
+        selected    = @$(":selected")
         selectedVal = selected.val()
 
         # de-select the item
@@ -131,6 +131,6 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
       else
         index = @source.getItemIndex(item) + 1
 
-      @element.find("select").children().eq(index).attr("selected", "selected")
+      @$("select").children().eq(index).attr("selected", "selected")
 
 

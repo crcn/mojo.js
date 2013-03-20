@@ -77,7 +77,7 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
     _childrenElement: () -> 
       childrenElement = @get "childrenElement"
       return @element if not childrenElement
-      return @element.find childrenElement
+      return @$ childrenElement
 
 
     ###

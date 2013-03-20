@@ -49,7 +49,7 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
       if !selectors.length
         return @_disposable.add(@view.on(actions, cb))
 
-      elements = @view.element.find(selectors)
+      elements = @view.$(selectors)
 
       elements.bind(actions.toLowerCase(), cb)
 

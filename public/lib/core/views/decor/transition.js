@@ -91,7 +91,7 @@
         var selector;
         selector = transition.selector || transition.element;
         if (selector) {
-          return this.view.element.find(selector);
+          return this.view.$(selector);
         } else {
           return this.view.element;
         }

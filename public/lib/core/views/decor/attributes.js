@@ -75,7 +75,7 @@
         if (!this.view.has("attributesElement")) {
           return this.view.element;
         }
-        return this.view.element.find(this.view.get("attributesElement"));
+        return this.view.$(this.view.get("attributesElement"));
       };
 
       return EventsDecorator;

@@ -49,7 +49,7 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
 
     _targetElement: () ->
       return @view.element if not @view.has "attributesElement"
-      return @view.element.find @view.get "attributesElement"
+      return @view.$ @view.get "attributesElement"
 
 
   EventsDecorator.test = (view) ->

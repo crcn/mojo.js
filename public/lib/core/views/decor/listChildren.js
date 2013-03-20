@@ -120,7 +120,7 @@
         if (!this.view.has("childrenElement")) {
           return this.view.element;
         }
-        return this.view.element.find(this.view.get("childrenElement"));
+        return this.view.$(this.view.get("childrenElement"));
       };
 
       return ListChildrenDecorator;

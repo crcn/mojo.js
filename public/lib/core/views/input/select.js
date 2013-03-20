@@ -85,7 +85,7 @@
       SelectInputView.prototype.events = {
         "change select": function(event) {
           var selected, selectedVal;
-          selected = this.element.find(":selected");
+          selected = this.$(":selected");
           selectedVal = selected.val();
           if (!selectedVal.length) {
             return this.deselect();
@@ -172,7 +172,7 @@
         } else {
           index = this.source.getItemIndex(item) + 1;
         }
-        return this.element.find("select").children().eq(index).attr("selected", "selected");
+        return this.$("select").children().eq(index).attr("selected", "selected");
       };
 
       return SelectInputView;

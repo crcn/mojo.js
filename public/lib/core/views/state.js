@@ -97,7 +97,7 @@
         if (!childrenElement) {
           return this.element;
         }
-        return this.element.find(childrenElement);
+        return this.$(childrenElement);
       };
 
       /*

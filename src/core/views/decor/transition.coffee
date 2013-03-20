@@ -72,7 +72,7 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
 
     _element: (transition) -> 
       selector = transition.selector or transition.element
-      return if selector then @view.element.find(selector) else @view.element
+      return if selector then @view.$(selector) else @view.element
 
 
 

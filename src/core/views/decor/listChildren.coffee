@@ -98,7 +98,7 @@ define ["./base",
 
       return @view.element if not @view.has "childrenElement"
 
-      @view.element.find @view.get "childrenElement"
+      @view.$ @view.get "childrenElement"
 
 
 

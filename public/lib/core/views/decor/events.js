@@ -59,7 +59,7 @@
         if (!selectors.length) {
           return this._disposable.add(this.view.on(actions, cb));
         }
-        elements = this.view.element.find(selectors);
+        elements = this.view.$(selectors);
         elements.bind(actions.toLowerCase(), cb);
         return this._disposable.add(function() {
           return elements.unbind(actions, cb);

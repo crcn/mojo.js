@@ -25,7 +25,7 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
     ###
 
     "_onInputChange": () ->
-      @set "value", @element.find("input").val()
+      @set "value", @$("input").val()
       @element.trigger "data", { name: @get("name"), value: @get("value") }
 
     ###
@@ -40,5 +40,5 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
     ###
 
     "_onValueChange": (value) =>
-      @element.find("input").val value
+      @$("input").val value
 
