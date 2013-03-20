@@ -8,7 +8,7 @@ class CreateClassForm extends Form
    server.
   ###
 
-  schema: ClassSchema
+  modelClass: Classroom
 
   ###
    The element used to trigger submit. This is disabled until validation is complete.
