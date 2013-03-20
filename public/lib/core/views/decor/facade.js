@@ -34,8 +34,6 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
 
       function ViewDecorator(view) {
         this.view = view;
-        this._setupDecorators = __bind(this._setupDecorators, this);
-
         this.init = __bind(this.init, this);
 
         this.dispose();
@@ -47,8 +45,7 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
 
 
       ViewDecorator.prototype.init = function() {
-        this.view.on("change", this._setupDecorators);
-        return this._setupDecorators();
+        return this._addDecorators();
       };
 
       /*
@@ -106,61 +103,24 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
       */
 
 
-      ViewDecorator.prototype._setupDecorators = function() {
-        this._removeDecorators();
-        this._addDecorators();
-        if (this._changed) {
-          this._changed = false;
-          return this._decorArray = _.values(this._decorators).sort(function(a, b) {
-            if (a.priority > b.priority) {
-              return 1;
-            } else {
-              return -1;
-            }
-          });
-        }
-      };
-
-      /*
-      */
-
-
-      ViewDecorator.prototype._removeDecorators = function() {
-        var factory, name, _results;
-        _results = [];
-        for (name in availableDecorators) {
-          factory = availableDecorators[name];
-          if (!factory.test(this.view) && this._decorators[name]) {
-            this._changed = true;
-            this._decorators[name].dispose();
-            _results.push(delete this._decorators[name]);
-          } else {
-            _results.push(void 0);
-          }
-        }
-        return _results;
-      };
-
-      /*
-      */
-
-
       ViewDecorator.prototype._addDecorators = function() {
-        var factory, name, priority, _results;
+        var factory, name, priority;
         priority = 0;
-        _results = [];
         for (name in availableDecorators) {
           priority++;
           factory = availableDecorators[name];
           if (factory.test(this.view) && !this._decorators[name]) {
             this._decorators[name] = factory.createItem(this.view);
             this._decorators[name].priority = priority;
-            _results.push(this._changed = true);
-          } else {
-            _results.push(void 0);
           }
         }
-        return _results;
+        return this._decorArray = _.values(this._decorators).sort(function(a, b) {
+          if (a.priority > b.priority) {
+            return 1;
+          } else {
+            return -1;
+          }
+        });
       };
 
       return ViewDecorator;

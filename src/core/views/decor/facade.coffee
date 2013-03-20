@@ -67,11 +67,8 @@ define ["underscore",
 
       init: () =>
 
-        # if the options change in the view, then update the decorators as well
-        @view.on "change", @_setupDecorators
-
         # setup the decorators immediately
-        @_setupDecorators()
+        @_addDecorators()
 
       ###
       ###
@@ -115,32 +112,6 @@ define ["underscore",
       ###
       ###
 
-      _setupDecorators: () =>
-        @_removeDecorators()
-        @_addDecorators()
-
-        if @_changed
-          @_changed = false
-          @_decorArray = _.values(@_decorators).sort (a, b) -> if a.priority > b.priority then 1 else -1
-
-
-
-      ###
-      ###
-
-      _removeDecorators: () ->
-        for name of availableDecorators
-          factory = availableDecorators[name]
-          if not factory.test(@view) and @_decorators[name]
-            @_changed = true
-            @_decorators[name].dispose()
-            delete @_decorators[name]
-            
-
-
-      ###
-      ###
-
       _addDecorators: () ->
 
         priority = 0
@@ -150,7 +121,9 @@ define ["underscore",
           if factory.test(@view) and not @_decorators[name]
             @_decorators[name] = factory.createItem @view
             @_decorators[name].priority = priority
-            @_changed = true
+
+        
+        @_decorArray = _.values(@_decorators).sort (a, b) -> if a.priority > b.priority then 1 else -1
 
 
 
