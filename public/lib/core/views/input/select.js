@@ -59,6 +59,12 @@
       */
 
 
+      SelectInputView.prototype.itemValue = "_id";
+
+      /*
+      */
+
+
       SelectInputView.prototype.childViewClass = View;
 
       /*
@@ -99,7 +105,7 @@
         this.set("selectedItem", this.source.getItemAt(index));
         return this.element.trigger("data", {
           name: this.get("name"),
-          value: this.get("selectedItem").data
+          value: this.get("selectedItem").value
         });
       };
 
@@ -136,7 +142,7 @@
 
       SelectInputView.prototype._transformSelectItem = function(item, index) {
         return {
-          value: index,
+          value: dref.get(item, this.get("itemValue")) || index,
           label: dref.get(item, this.get("itemLabel")),
           data: item
         };

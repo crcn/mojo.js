@@ -27,6 +27,12 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
 
     itemLabel: "label"
 
+
+    ###
+    ###
+
+    itemValue: "_id"
+
     ###
     ###
 
@@ -66,7 +72,7 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
 
       @set "selectedItem", @source.getItemAt index
 
-      @element.trigger "data", { name: @get("name"), value: @get("selectedItem").data }
+      @element.trigger "data", { name: @get("name"), value: @get("selectedItem").value }
 
     ###
      deselects the item
@@ -97,7 +103,7 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
 
     _transformSelectItem: (item, index) =>
       {
-        value: index,
+        value: (dref.get(item, @get("itemValue")) or index),
         label: dref.get(item, @get("itemLabel")),
         data: item
       }
