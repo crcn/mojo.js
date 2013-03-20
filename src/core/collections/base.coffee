@@ -106,8 +106,6 @@ define ["../bindings/eventEmitter", "underscore", "./bindings/glue", "dref"], (E
         return false
 
 
-
-
       item = @_addItem item, index
 
       # shove the raw data into items by id

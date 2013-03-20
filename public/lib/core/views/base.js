@@ -78,6 +78,9 @@
 
       BaseView.prototype.$ = function(search) {
         var _ref;
+        if (search.substr(0, 1) === "#") {
+          return $(search);
+        }
         return (_ref = this.element) != null ? _ref.find(search) : void 0;
       };
 
