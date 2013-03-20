@@ -18,10 +18,12 @@ define ["underscore",
 "./template",
 "./children",
 "./listChildren",
+"./attributes",
 "./events",
 "./bindings",
 "./transition"], (_, cstep, async, EitherFactory, ClassFactory, outcome, BaseViewDecorator, 
   TemplateDecorator, ChildrenDecorator, ListChildrenDecorator, 
+  AttributesDecorator,
   EventsDecorator, BindingsDecorator, TransitionDecorator) ->
     
     # decorators are loaded in this order. Note that the order is important.
@@ -29,6 +31,9 @@ define ["underscore",
 
       # template must be loaded first because the following decorators handle an element
       "template": new ClassFactory(TemplateDecorator),
+
+      # element attributes
+      "attributes": new ClassFactory(AttributesDecorator),
 
       # parent bindings must be set before child bindings
       "bindings": new ClassFactory(BindingsDecorator),

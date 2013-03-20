@@ -17,7 +17,15 @@
       */
 
 
-      TextInputView.prototype.template = templates.fromSource("<input type='text' name='{{view.name}}'></input>");
+      TextInputView.prototype.template = templates.fromSource("<input type='text' name='{{view.name}}'></input>", {
+        engine: "handlebars"
+      });
+
+      /*
+      */
+
+
+      TextInputView.prototype.attributesElement = "input";
 
       return TextInputView;
 

@@ -5,4 +5,11 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
     ###
     ###
 
-    template: templates.fromSource("<input type='text' name='{{view.name}}'></input>")
+    template: templates.fromSource("<input type='text' name='{{view.name}}'></input>", { engine: "handlebars" })
+
+
+    ###
+    ###
+
+    attributesElement: "input"
+

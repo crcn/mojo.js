@@ -14,10 +14,11 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["underscore", "cstep", "../../utils/async", "../../factories/either", "../../factories/class", "outcome", "./base", "./template", "./children", "./listChildren", "./events", "./bindings", "./transition"], function(_, cstep, async, EitherFactory, ClassFactory, outcome, BaseViewDecorator, TemplateDecorator, ChildrenDecorator, ListChildrenDecorator, EventsDecorator, BindingsDecorator, TransitionDecorator) {
+  define(["underscore", "cstep", "../../utils/async", "../../factories/either", "../../factories/class", "outcome", "./base", "./template", "./children", "./listChildren", "./attributes", "./events", "./bindings", "./transition"], function(_, cstep, async, EitherFactory, ClassFactory, outcome, BaseViewDecorator, TemplateDecorator, ChildrenDecorator, ListChildrenDecorator, AttributesDecorator, EventsDecorator, BindingsDecorator, TransitionDecorator) {
     var ViewDecorator, availableDecorators;
     availableDecorators = {
       "template": new ClassFactory(TemplateDecorator),
+      "attributes": new ClassFactory(AttributesDecorator),
       "bindings": new ClassFactory(BindingsDecorator),
       "children": new EitherFactory(new ClassFactory(ChildrenDecorator), new ClassFactory(ListChildrenDecorator)),
       "events": new ClassFactory(EventsDecorator),

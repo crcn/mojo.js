@@ -1,8 +1,9 @@
 define ["../../core/views/base", 
 "../../core/views/input/select", 
+"../../core/views/input/text", 
 "../core/templates", 
 "../core/modelLocator", 
-"../../core/i18n/translate"], (View, SelectInputView, templates, modelLocator, t) ->
+"../../core/i18n/translate"], (View, SelectInputView, TextInputView, templates, modelLocator, t) ->
         
 
     
@@ -37,6 +38,21 @@ define ["../../core/views/base",
     source: "modelLocator.grades"
 
 
+  class NameClassInputView extends TextInputView
+
+    ###
+    ###
+
+    name: "class_name"
+
+    ###
+    ###
+
+    attributes: {
+        placeholder: "Name your class"
+    }
+
+
 
   class AddClassView extends View
 
@@ -64,7 +80,8 @@ define ["../../core/views/base",
     ###
 
     children: {
-      "#select-class-year-container": SelectClassesView
+      "#select-class-year-container": SelectClassesView,
+      "#add-name-container": NameClassInputView
     },
 
 
