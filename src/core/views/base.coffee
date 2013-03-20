@@ -56,6 +56,13 @@ define ["jquery",
 
       throw new Error("already initialized") if @get("initialized")
 
+      @_listen()
+
+
+    ###
+    ###
+
+    _listen: () ->
       @on 
         attached: @_onAttached
         removed: @_onRemoved

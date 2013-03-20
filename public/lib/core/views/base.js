@@ -48,6 +48,14 @@
         if (this.get("initialized")) {
           throw new Error("already initialized");
         }
+        return this._listen();
+      };
+
+      /*
+      */
+
+
+      BaseView.prototype._listen = function() {
         return this.on({
           attached: this._onAttached,
           removed: this._onRemoved,
