@@ -92,6 +92,11 @@ define ["../bindings/eventEmitter", "underscore", "./bindings/glue", "dref"], (E
     ###
     ###
 
+    getItemIndex: (item) -> @_source.indexOf item
+
+    ###
+    ###
+
     addItemAt: (item, index) ->
 
       if not dref.get item, "_id"

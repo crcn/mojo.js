@@ -126,6 +126,14 @@
       */
 
 
+      BaseCollection.prototype.getItemIndex = function(item) {
+        return this._source.indexOf(item);
+      };
+
+      /*
+      */
+
+
       BaseCollection.prototype.addItemAt = function(item, index) {
         if (!dref.get(item, "_id")) {
           dref.set(item, "_id", generateId());

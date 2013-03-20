@@ -53,13 +53,15 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
 
     events: {
       "change select": (event) ->
-        selectedVal = @element.find(":selected").val()
+        selected    = @element.find(":selected")
+        selectedVal = selected.val()
 
         # de-select the item
         if not selectedVal.length
           return @deselect()
 
-        @select Number selectedVal
+        # need to offset the default value
+        @select selected.index() - 1
     }
 
     ###
@@ -67,8 +69,9 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
     ###
 
     select: (index) ->
-      if index is undefined
+      if !~index
         return @deselect()
+
 
       @set "selectedItem", @source.getItemAt index
 
@@ -108,7 +111,6 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
         data: item
       }
 
-
     ###
     ###
 
@@ -127,7 +129,7 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
       if not item
         index = 0
       else
-        index = item.value
+        index = @source.getItemIndex(item) + 1
 
       @element.find("select").children().eq(index).attr("selected", "selected")
 

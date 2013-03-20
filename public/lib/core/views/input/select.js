@@ -84,12 +84,13 @@
 
       SelectInputView.prototype.events = {
         "change select": function(event) {
-          var selectedVal;
-          selectedVal = this.element.find(":selected").val();
+          var selected, selectedVal;
+          selected = this.element.find(":selected");
+          selectedVal = selected.val();
           if (!selectedVal.length) {
             return this.deselect();
           }
-          return this.select(Number(selectedVal));
+          return this.select(selected.index() - 1);
         }
       };
 
@@ -99,7 +100,7 @@
 
 
       SelectInputView.prototype.select = function(index) {
-        if (index === void 0) {
+        if (!~index) {
           return this.deselect();
         }
         this.set("selectedItem", this.source.getItemAt(index));
@@ -169,7 +170,7 @@
         if (!item) {
           index = 0;
         } else {
-          index = item.value;
+          index = this.source.getItemIndex(item) + 1;
         }
         return this.element.find("select").children().eq(index).attr("selected", "selected");
       };
