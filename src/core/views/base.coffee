@@ -7,10 +7,9 @@ define ["jquery",
 "asyngleton", 
 "../collections/concrete", 
 "../models/locator",
-"../utils/async", 
-"structr"], ($, events, Bindable, outcome, _, 
+"../utils/async"], ($, events, Bindable, outcome, _, 
   ViewDecorator, asyngleton, 
-  Collection, modelLocator, async, structr) ->
+  Collection, modelLocator, async) ->
 
 
   class BaseView extends Bindable
@@ -146,8 +145,6 @@ define ["jquery",
     _onRemoved: () ->
     _onChanged: () ->
     _onLoaded: () ->
-
-    structr BaseView
 
 
 
