@@ -37,6 +37,8 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
 
     init: () ->
       super()
+
+      # add the initial child so the default option is visible
       @children.addItemAt(new View { label: @get("selectLabel") }, 0)
 
 
