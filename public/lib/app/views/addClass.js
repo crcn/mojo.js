@@ -4,7 +4,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(["../../core/views/base", "../../core/views/input/select", "../../core/views/input/text", "../../core/views/input/form", "../core/templates", "../core/modelLocator", "../../core/i18n/translate"], function(View, SelectInputView, TextInputView, FormView, templates, modelLocator, t) {
+  define(["../../core/views/base", "../../core/views/input/select", "../../core/views/input/text", "../../core/views/input/form", "../core/templates", "../../core/i18n/translate"], function(View, SelectInputView, TextInputView, FormView, templates, t) {
     var AddClassView, NameClassInputView, SelectClassesView;
     SelectClassesView = (function(_super) {
 
@@ -25,12 +25,6 @@
 
 
       SelectClassesView.prototype.itemLabel = "name";
-
-      /*
-      */
-
-
-      SelectClassesView.prototype.modelLocator = modelLocator;
 
       /*
       */

@@ -1,10 +1,9 @@
-define ["../../core/models/base", "../../core/collections/concrete"], (Model, Collection) ->
-
-  class ModelLocator extends Model
+define ["../../core/models/locator", "../../core/collections/concrete"], (modelLocator, Collection) ->
+  
+  modelLocator.set
 
     ###
     ###
-
     grades: new Collection([
       "Pre-school",
       "Kindergarten",
@@ -27,5 +26,4 @@ define ["../../core/models/base", "../../core/collections/concrete"], (Model, Co
       }
     ))
 
-
-  ml = new ModelLocator()
+  modelLocator

@@ -52,11 +52,14 @@
 
 
       Bindable.prototype.set = function(key, value) {
+        var k;
         if (arguments.length === 1) {
-          this.data = value;
-        } else {
-          dref.set(this.data, key, value);
+          for (k in key) {
+            this.set(k, key[k]);
+          }
+          return;
         }
+        dref.set(this.data, key, value);
         this.emit("change:" + key, value);
         return this.emit("change", value);
       };

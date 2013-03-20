@@ -3,8 +3,7 @@ define ["../../core/views/base",
 "../../core/views/input/text", 
 "../../core/views/input/form", 
 "../core/templates", 
-"../core/modelLocator", 
-"../../core/i18n/translate"], (View, SelectInputView, TextInputView, FormView, templates, modelLocator, t) ->
+"../../core/i18n/translate"], (View, SelectInputView, TextInputView, FormView, templates, t) ->
         
 
     
@@ -15,18 +14,10 @@ define ["../../core/views/base",
 
     selectLabel: "Select year"
 
-
-
     ###
     ###
 
     itemLabel: "name"
-
-
-    ###
-    ###
-
-    modelLocator: modelLocator
 
     ###
     ###

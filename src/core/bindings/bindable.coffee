@@ -35,9 +35,11 @@ define ["./binding", "./glue", "./eventEmitter", "dref"], (Binding, Glue, EventE
     set: (key, value) -> 
 
       if arguments.length is 1
-        @data = value
-      else 
-        dref.set @data, key, value
+        for k of key
+          @set k, key[k]
+        return
+
+      dref.set @data, key, value
 
       @emit "change:#{key}", value
       @emit "change", value

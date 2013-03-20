@@ -83,8 +83,7 @@
         }), (function() {
           self._currentView = self.states.getItemAt(index);
           self.set("currentView", self._currentView);
-          self._currentView.attach(self._childrenElement().append("<div />").children().last());
-          return self._currentView.set("modelLocator", self.get("modelLocator"));
+          return self._currentView.attach(self._childrenElement().append("<div />").children().last());
         }));
       };
 
