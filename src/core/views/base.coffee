@@ -8,6 +8,8 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
 
     constructor: (options = {}) ->
 
+      options.view = @
+      
       super options
 
       # controls bindings, events, templates, transitions based on the given options.
@@ -24,7 +26,7 @@ define ["jquery", "events", "../bindings/bindable", "outcome", "underscore", "./
 
       # after init, set to initialized
       @set "initialized", true
-      
+
 
     ###
     ###

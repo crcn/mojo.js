@@ -35,7 +35,13 @@
       */
 
 
-      SelectClassesView.prototype.source = "modelLocator.classTypes";
+      SelectClassesView.prototype.name = "grade";
+
+      /*
+      */
+
+
+      SelectClassesView.prototype.source = "modelLocator.grades";
 
       return SelectClassesView;
 

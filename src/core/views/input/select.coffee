@@ -5,7 +5,7 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
     ###
     ###
 
-    template: templates.fromSource("<select></select>")
+    template: templates.fromSource("<select name='{{view.name}}'></select>", { engine: "handlebars" })
 
     ###
     ###

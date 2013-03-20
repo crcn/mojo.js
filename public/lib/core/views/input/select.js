@@ -25,7 +25,9 @@
       */
 
 
-      SelectInputView.prototype.template = templates.fromSource("<select></select>");
+      SelectInputView.prototype.template = templates.fromSource("<select name='{{view.name}}'></select>", {
+        engine: "handlebars"
+      });
 
       /*
       */

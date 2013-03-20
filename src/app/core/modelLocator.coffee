@@ -5,7 +5,7 @@ define ["../../core/models/base", "../../core/collections/concrete"], (Model, Co
     ###
     ###
 
-    classTypes: new Collection([
+    grades: new Collection([
       "Pre-school",
       "Kindergarten",
       "1st Grade",

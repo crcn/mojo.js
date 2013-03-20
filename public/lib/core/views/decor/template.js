@@ -39,7 +39,7 @@
 
 
       TemplateViewDecorator.prototype.templateData = function() {
-        return this.view.get("data");
+        return this.view.get();
       };
 
       return TemplateViewDecorator;

@@ -26,11 +26,15 @@ define ["../../core/views/base",
 
     modelLocator: modelLocator
 
+    ###
+    ###
+
+    name: "grade"
 
     ###
     ###
 
-    source: "modelLocator.classTypes"
+    source: "modelLocator.grades"
 
 
 

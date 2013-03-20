@@ -23,7 +23,8 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
     ###
     ###
 
-    templateData: () -> @view.get "data"
+    templateData: () -> 
+      @view.get()
 
 
 

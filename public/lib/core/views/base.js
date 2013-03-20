@@ -20,6 +20,7 @@
         }
         this.rerender = __bind(this.rerender, this);
 
+        options.view = this;
         BaseView.__super__.constructor.call(this, options);
         this.decorator = new ViewDecorator(this);
         this.loadables = new Collection([this.decorator]);
