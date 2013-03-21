@@ -40,7 +40,10 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     _onAttached: () =>
       super()
 
-      @$(@get("submitElement")).bind "click", @_onSubmit
+      submitElement = @get("submitElement")
+
+      if submitElement
+        @$(submitElement).bind "click", @_onSubmit
 
       # listen for any data emitted by child form inputs
       @element.bind "data", (e, d) =>

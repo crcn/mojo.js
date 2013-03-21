@@ -41,6 +41,13 @@
       }
 
       /*
+           visible is a nice toggle which handles events / bindings - and other things
+      */
+
+
+      BaseView.prototype.visible = function() {};
+
+      /*
       */
 
 

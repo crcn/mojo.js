@@ -110,12 +110,6 @@
       */
 
 
-      AddClassView.prototype.submitElement = "#next-class-step";
-
-      /*
-      */
-
-
       AddClassView.prototype.title = t("Add Class");
 
       /*
@@ -123,6 +117,16 @@
 
 
       AddClassView.prototype.template = templates.addClass;
+
+      /*
+      */
+
+
+      AddClassView.prototype.events = {
+        "next": function() {
+          return submit();
+        }
+      };
 
       /*
       */

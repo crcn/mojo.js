@@ -64,9 +64,13 @@
 
 
       FormView.prototype._onAttached = function() {
-        var _this = this;
+        var submitElement,
+          _this = this;
         FormView.__super__._onAttached.call(this);
-        this.$(this.get("submitElement")).bind("click", this._onSubmit);
+        submitElement = this.get("submitElement");
+        if (submitElement) {
+          this.$(submitElement).bind("click", this._onSubmit);
+        }
         return this.element.bind("data", function(e, d) {
           e.stopPropagation();
           return _this.set("data." + d.name, d.value);

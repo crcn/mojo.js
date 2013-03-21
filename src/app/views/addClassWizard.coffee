@@ -43,6 +43,7 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     events: {
       "noMoreStates": "remove",
       "click .close .cancel-btn": "remove"
+      "click #next-class-step": "_next"
     },
 
     ###
@@ -68,6 +69,12 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     ###
 
     _endOfStates: () -> @remove()
+
+    ###
+    ###
+
+    _next: () ->
+      @get("currentView").emit "next"
 
     ###
     ###

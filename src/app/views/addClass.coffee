@@ -67,11 +67,6 @@ define ["../../core/views/base",
 
     modelClass: Classroom
 
-    ###
-    ###
-
-    submitElement: "#next-class-step"
-
 
     ###
     ###
@@ -82,6 +77,13 @@ define ["../../core/views/base",
     ###
 
     template: templates.addClass
+
+    ###
+    ###
+
+    events: {
+        "next": ()-> submit()
+    },
 
     ###
     ###
