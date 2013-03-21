@@ -1,0 +1,29 @@
+{
+  "name": "bindable",
+  "version": "0.1.3",
+  "description": "bindable.js ===========",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "mocha --timeout 100 --reporter min"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/classdojo/bindable.js.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "7edb2889d669a6f42b537b50772f9e86cf6337f1",
+  "dependencies": {
+    "dref": "0.0.x",
+    "eventemitter2": "0.4.x",
+    "disposable": "0.0.x"
+  },
+  "devDependencies": {
+    "mocha": "1.8.x",
+    "expect.js": "0.2.x"
+  },
+  "readme": "## Bindable\n\n\n### Objects\n\n```javascript\nvar Bindable = require(\"bindable\");\n\nvar item = new Bindable({\n  name: \"craig\",\n  last: \"condon\",\n  location: {\n    city: \"San Francisco\"\n  }\n});\n\nitem.bind(\"location.zip\", function(value) {\n  \n});\n\n//triggers the binding\nitem.set(\"location.zip\", \"94102\"); \n\n\n\n//bind location.zip to another property in the model, and do it only once\nitem.bind(\"location.zip\", \"zip\").once()\n\n//bind location.zip to another object, and make it go both ways!\nitem.bind(\"location.zip\").to(anotherModel, \"location.zip\").bothWays();\n\n//chain to multiple items, and limit it!\nitem.bind(\"location.zip\").to(\"property\").to(\"anotherProperty\").to(function(value) {\n  \n}).limit(5)\n\n//you can even bind to values by setting a binding\nanotherModel.set(\"location.zip\", item.bind(\"location.zip\"))\n\n```",
+  "_id": "bindable@0.1.3",
+  "_from": "bindable@"
+}

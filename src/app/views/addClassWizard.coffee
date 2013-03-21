@@ -63,7 +63,7 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
 
     init: () ->
       super()
-      @glue "currentView.title", "title"
+      @bind "currentView.title", "title"
 
     ###
     ###

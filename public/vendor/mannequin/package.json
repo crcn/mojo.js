@@ -1,0 +1,34 @@
+{
+  "name": "mannequin",
+  "version": "0.0.1",
+  "description": "mannequin.js ============",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "mocha . --reporter min"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/classdojo/mannequin.js.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "8932fdf3fafd60ee928d5ab3344620e5da44022e",
+  "dependencies": {
+    "outcome": "0.0.x",
+    "verify": "0.0.x",
+    "dref": "0.0.x",
+    "async": "0.2.x",
+    "underscore": "1.4.x",
+    "toarray": "0.0.x",
+    "bindable": "0.1.x"
+  },
+  "devDependencies": {
+    "mocha": "1.8.x",
+    "expect.js": "0.2.x",
+    "structr": "0.2.x"
+  },
+  "readme": "mannequin.js\n============\n\nmodel / schema library for javascript",
+  "_id": "mannequin@0.0.1",
+  "_from": "mannequin@"
+}

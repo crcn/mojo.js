@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["../bindings/eventEmitter", "underscore", "./bindings/glue", "dref"], function(EventEmitter, _, Glue, dref) {
+  define(["bindable", "underscore", "./bindings/glue", "dref"], function(Bindable, _, Glue, dref) {
     var BaseCollection, generateId, _id;
     _id = 0;
     generateId = function() {
@@ -217,7 +217,7 @@
 
       return BaseCollection;
 
-    })(EventEmitter);
+    })(Bindable.EventEmitter);
   });
 
 }).call(this);

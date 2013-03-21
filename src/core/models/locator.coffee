@@ -1,4 +1,4 @@
-define ["../bindings/bindable"], (Bindable) ->
+define ["bindable"], (Bindable) ->
   
   ###
    core model locator should be vanilla so that the application has the ability to override

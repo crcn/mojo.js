@@ -16,6 +16,11 @@ var jam = {
             "main": "./backbone.js"
         },
         {
+            "name": "bindable",
+            "location": "vendor/bindable",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "comerr",
             "location": "vendor/comerr",
             "main": "./lib/index.js"
@@ -71,6 +76,11 @@ var jam = {
             "main": "jquery.transit.js"
         },
         {
+            "name": "mannequin",
+            "location": "vendor/mannequin",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "outcome",
             "location": "vendor/outcome",
             "main": "./lib/index.js"
@@ -111,6 +121,11 @@ var jam = {
             "main": "text.js"
         },
         {
+            "name": "toarray",
+            "location": "vendor/toarray",
+            "main": "./index.js"
+        },
+        {
             "name": "tq",
             "location": "vendor/tq",
             "main": "./lib/index.js"
@@ -119,6 +134,21 @@ var jam = {
             "name": "underscore",
             "location": "vendor/underscore",
             "main": "./underscore.js"
+        },
+        {
+            "name": "util",
+            "location": "vendor/util",
+            "main": "./index.js"
+        },
+        {
+            "name": "validator",
+            "location": "vendor/validator",
+            "main": "./lib/index.js"
+        },
+        {
+            "name": "verify",
+            "location": "vendor/verify",
+            "main": "./lib/index.js"
         }
     ],
     "version": "0.2.15",
@@ -153,6 +183,11 @@ if (typeof require !== "undefined" && require.config) {
             "main": "./backbone.js"
         },
         {
+            "name": "bindable",
+            "location": "vendor/bindable",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "comerr",
             "location": "vendor/comerr",
             "main": "./lib/index.js"
@@ -208,6 +243,11 @@ if (typeof require !== "undefined" && require.config) {
             "main": "jquery.transit.js"
         },
         {
+            "name": "mannequin",
+            "location": "vendor/mannequin",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "outcome",
             "location": "vendor/outcome",
             "main": "./lib/index.js"
@@ -248,6 +288,11 @@ if (typeof require !== "undefined" && require.config) {
             "main": "text.js"
         },
         {
+            "name": "toarray",
+            "location": "vendor/toarray",
+            "main": "./index.js"
+        },
+        {
             "name": "tq",
             "location": "vendor/tq",
             "main": "./lib/index.js"
@@ -256,6 +301,21 @@ if (typeof require !== "undefined" && require.config) {
             "name": "underscore",
             "location": "vendor/underscore",
             "main": "./underscore.js"
+        },
+        {
+            "name": "util",
+            "location": "vendor/util",
+            "main": "./index.js"
+        },
+        {
+            "name": "validator",
+            "location": "vendor/validator",
+            "main": "./lib/index.js"
+        },
+        {
+            "name": "verify",
+            "location": "vendor/verify",
+            "main": "./lib/index.js"
         }
     ],
     "shim": {
@@ -289,6 +349,11 @@ else {
             "main": "./backbone.js"
         },
         {
+            "name": "bindable",
+            "location": "vendor/bindable",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "comerr",
             "location": "vendor/comerr",
             "main": "./lib/index.js"
@@ -344,6 +409,11 @@ else {
             "main": "jquery.transit.js"
         },
         {
+            "name": "mannequin",
+            "location": "vendor/mannequin",
+            "main": "./lib/index.js"
+        },
+        {
             "name": "outcome",
             "location": "vendor/outcome",
             "main": "./lib/index.js"
@@ -384,6 +454,11 @@ else {
             "main": "text.js"
         },
         {
+            "name": "toarray",
+            "location": "vendor/toarray",
+            "main": "./index.js"
+        },
+        {
             "name": "tq",
             "location": "vendor/tq",
             "main": "./lib/index.js"
@@ -392,6 +467,21 @@ else {
             "name": "underscore",
             "location": "vendor/underscore",
             "main": "./underscore.js"
+        },
+        {
+            "name": "util",
+            "location": "vendor/util",
+            "main": "./index.js"
+        },
+        {
+            "name": "validator",
+            "location": "vendor/validator",
+            "main": "./lib/index.js"
+        },
+        {
+            "name": "verify",
+            "location": "vendor/verify",
+            "main": "./lib/index.js"
         }
     ],
     "shim": {

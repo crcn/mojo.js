@@ -1,6 +1,6 @@
 define ["jquery", 
 "events", 
-"../bindings/bindable", 
+"bindable",
 "outcome", 
 "underscore", 
 "./decor/facade",
@@ -10,8 +10,7 @@ define ["jquery",
 "../utils/async"], ($, events, Bindable, outcome, _, 
   ViewDecorator, asyngleton, 
   Collection, modelLocator, async) ->
-
-
+  
   class BaseView extends Bindable
 
     ###

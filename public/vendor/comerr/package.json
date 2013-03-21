@@ -14,9 +14,5 @@
   "license": "BSD",
   "_id": "comerr@0.0.4",
   "readme": "ERROR: No README.md file found!",
-  "dist": {
-    "shasum": "f4585c490a22ed1376918265f9903be396d51c72"
-  },
-  "_from": "comerr@",
-  "_resolved": "http://registry.npmjs.org/comerr/-/comerr-0.0.4.tgz"
+  "_from": "comerr@0.0.x"
 }

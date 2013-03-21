@@ -1,11 +1,11 @@
-define ["../bindings/eventEmitter", "underscore", "./bindings/glue", "dref"], (EventEmitter, _, Glue, dref) ->
+define ["bindable", "underscore", "./bindings/glue", "dref"], (Bindable, _, Glue, dref) ->
   
   _id = 0
 
   generateId = () -> _id++
 
   
-  class BaseCollection extends EventEmitter
+  class BaseCollection extends Bindable.EventEmitter
 
     ###
     ###

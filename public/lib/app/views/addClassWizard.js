@@ -87,7 +87,7 @@
 
       AddClassWizardView.prototype.init = function() {
         AddClassWizardView.__super__.init.call(this);
-        return this.glue("currentView.title", "title");
+        return this.bind("currentView.title", "title");
       };
 
       /*
