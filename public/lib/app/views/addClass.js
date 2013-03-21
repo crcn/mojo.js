@@ -124,7 +124,7 @@
 
       AddClassView.prototype.events = {
         "next": function() {
-          return submit();
+          return this.submit();
         }
       };
 

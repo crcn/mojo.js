@@ -82,7 +82,7 @@ define ["../../core/views/base",
     ###
 
     events: {
-        "next": ()-> submit()
+        "next": ()-> @submit()
     },
 
     ###
