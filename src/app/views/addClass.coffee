@@ -97,14 +97,6 @@ define ["../../core/views/base",
     init: () ->
       super()
 
-    ###
-    ###
-
-    _onAttached: () =>
-      super()
-
-      @on "change:data.**", (data) =>
-        console.log @get "data"
 
 
   
