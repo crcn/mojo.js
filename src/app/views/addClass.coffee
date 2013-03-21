@@ -2,11 +2,25 @@ define ["../../core/views/base",
 "../../core/views/input/select", 
 "../../core/views/input/text", 
 "../../core/views/input/form", 
+"../../core/models/base", 
+"mannequin", 
 "../core/templates", 
-"../../core/i18n/translate"], (View, SelectInputView, TextInputView, FormView, templates, t) ->
+"../../core/i18n/translate"], (View, SelectInputView, TextInputView, FormView, BaseModel, mannequin, templates, t) ->
         
-
     
+  schema = new mannequin.Schema({
+    grade: { $type: "number", $required: true },
+    class_name: { $type: "string", $required: true }
+  })
+
+  class Classroom extends BaseModel
+
+    ###
+    ###
+
+    schema: schema
+
+
   class SelectClassesView extends SelectInputView
 
     ###
@@ -51,9 +65,12 @@ define ["../../core/views/base",
     ###
     ###
 
-    classyears: [{
-      value: 2005
-    }]
+    modelClass: Classroom
+
+    ###
+    ###
+
+    submitElement: "#next-class-step"
 
 
     ###
@@ -64,9 +81,7 @@ define ["../../core/views/base",
     ###
     ###
 
-
     template: templates.addClass
-
 
     ###
     ###
@@ -75,7 +90,6 @@ define ["../../core/views/base",
       "#select-class-year-container": SelectClassesView,
       "#add-name-container": NameClassInputView
     },
-
 
     ###
     ###

@@ -3,21 +3,21 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["bindable"], function(Bindable) {
-    var Model;
-    return Model = (function(_super) {
+  define(["mannequin", "outcome"], function(mannequin, outcome) {
+    var BaseModel;
+    return BaseModel = (function(_super) {
 
-      __extends(Model, _super);
+      __extends(BaseModel, _super);
 
-      function Model() {
-        return Model.__super__.constructor.apply(this, arguments);
+      function BaseModel() {
+        return BaseModel.__super__.constructor.apply(this, arguments);
       }
 
       /*
       */
 
 
-      Model.prototype.defaults = function(defaults) {
+      BaseModel.prototype.defaults = function(defaults) {
         var key, _results;
         _results = [];
         for (key in defaults) {
@@ -34,17 +34,23 @@
       */
 
 
-      Model.prototype.validate = function(callback) {};
+      BaseModel.prototype.save = function(callback) {};
 
       /*
       */
 
 
-      Model.prototype.save = function(callback) {};
+      BaseModel.prototype.remove = function(callback) {};
 
-      return Model;
+      /*
+      */
 
-    })(Bindable);
+
+      BaseModel.prototype.update = function(callback) {};
+
+      return BaseModel;
+
+    })(mannequin.Model);
   });
 
 }).call(this);

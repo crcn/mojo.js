@@ -30,7 +30,7 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
     ###
     ###
 
-    nextState: () ->
+    nextState: () =>
       ni = @get("currentIndex") + 1
 
       if ni > @states.length() - 1
@@ -41,7 +41,7 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
     ###
     ###
 
-    prevState: () ->
+    prevState: () =>
       @set "currentIndex", Math.max @get("currentIndex") - 1, 0
 
     ###

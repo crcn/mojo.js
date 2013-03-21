@@ -1,6 +1,6 @@
 {
   "name": "mannequin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "mannequin.js ============",
   "main": "./lib/index.js",
   "scripts": {
@@ -29,6 +29,6 @@
     "structr": "0.2.x"
   },
   "readme": "mannequin.js\n============\n\nmodel / schema library for javascript",
-  "_id": "mannequin@0.0.1",
-  "_from": "mannequin@"
+  "_id": "mannequin@0.0.2",
+  "_from": "mannequin@0.0.x"
 }

@@ -28,7 +28,9 @@ define(["require", "/vendor/underscore/underscore.js", "/vendor/bindable/lib/ind
 
 
     function Model(data, options) {
-      this.data = data;
+
+      return Model.__super__.constructor.apply(this, arguments);
+      this.data = data || {};
       if (options == null) {
         options = {};
       }

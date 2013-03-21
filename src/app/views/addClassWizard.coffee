@@ -43,7 +43,7 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     events: {
       "noMoreStates": "remove",
       "click .close .cancel-btn": "remove",
-      "click .confirm-positive": "nextState"
+      "click .confirm-positive": "_waitForComplete"
     },
 
     ###
@@ -69,6 +69,12 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     ###
 
     _endOfStates: () -> @remove()
+
+    ###
+    ###
+
+    _waitForComplete: () ->
+      @get("currentView").once "complete", @nextState
   
 
 

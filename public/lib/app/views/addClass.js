@@ -4,8 +4,35 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(["../../core/views/base", "../../core/views/input/select", "../../core/views/input/text", "../../core/views/input/form", "../core/templates", "../../core/i18n/translate"], function(View, SelectInputView, TextInputView, FormView, templates, t) {
-    var AddClassView, NameClassInputView, SelectClassesView;
+  define(["../../core/views/base", "../../core/views/input/select", "../../core/views/input/text", "../../core/views/input/form", "../../core/models/base", "mannequin", "../core/templates", "../../core/i18n/translate"], function(View, SelectInputView, TextInputView, FormView, BaseModel, mannequin, templates, t) {
+    var AddClassView, Classroom, NameClassInputView, SelectClassesView, schema;
+    schema = new mannequin.Schema({
+      grade: {
+        $type: "number",
+        $required: true
+      },
+      class_name: {
+        $type: "string",
+        $required: true
+      }
+    });
+    Classroom = (function(_super) {
+
+      __extends(Classroom, _super);
+
+      function Classroom() {
+        return Classroom.__super__.constructor.apply(this, arguments);
+      }
+
+      /*
+      */
+
+
+      Classroom.prototype.schema = schema;
+
+      return Classroom;
+
+    })(BaseModel);
     SelectClassesView = (function(_super) {
 
       __extends(SelectClassesView, _super);
@@ -79,11 +106,13 @@
       */
 
 
-      AddClassView.prototype.classyears = [
-        {
-          value: 2005
-        }
-      ];
+      AddClassView.prototype.modelClass = Classroom;
+
+      /*
+      */
+
+
+      AddClassView.prototype.submitElement = "#next-class-step";
 
       /*
       */

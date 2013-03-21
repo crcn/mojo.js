@@ -1,6 +1,6 @@
-define ["bindable"], (Bindable) ->
+define ["mannequin", "outcome"], (mannequin, outcome) ->
   
-  class Model extends Bindable
+  class BaseModel extends mannequin.Model 
 
     ###
     ###
@@ -10,17 +10,22 @@ define ["bindable"], (Bindable) ->
         if not @get key
           @set key, defaults[key]
 
-
-    ###
-    ###
-
-    validate: (callback) ->
-
-
     ###
     ###
 
     save: (callback) ->
+
+    ###
+    ###
+
+    remove: (callback) ->
+
+    ###
+    ###
+
+    update: (callback) ->
+
+
 
 
 

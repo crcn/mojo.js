@@ -15,6 +15,10 @@
 
         this._onIndexChange = __bind(this._onIndexChange, this);
 
+        this.prevState = __bind(this.prevState, this);
+
+        this.nextState = __bind(this.nextState, this);
+
         this._onLoaded = __bind(this._onLoaded, this);
         return StateView.__super__.constructor.apply(this, arguments);
       }
