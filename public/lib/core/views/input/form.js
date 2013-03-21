@@ -18,6 +18,8 @@
 
         this._showErrorMessage = __bind(this._showErrorMessage, this);
 
+        this._onSubmit = __bind(this._onSubmit, this);
+
         this._onAttached = __bind(this._onAttached, this);
 
         this.submit = __bind(this.submit, this);
@@ -40,9 +42,12 @@
       */
 
 
-      FormView.prototype.submit = function(event) {
+      FormView.prototype.submit = function(callback) {
         var model,
           _this = this;
+        if (callback == null) {
+          callback = (function() {});
+        }
         event.stopImmediatePropagation();
         model = this._model();
         model.set(this.get("data"));
@@ -61,11 +66,19 @@
       FormView.prototype._onAttached = function() {
         var _this = this;
         FormView.__super__._onAttached.call(this);
-        this.$(this.get("submitElement")).bind("click", this.submit);
+        this.$(this.get("submitElement")).bind("click", this._onSubmit);
         return this.element.bind("data", function(e, d) {
           e.stopPropagation();
           return _this.set("data." + d.name, d.value);
         });
+      };
+
+      /*
+      */
+
+
+      FormView.prototype._onSubmit = function(event) {
+        return this.submit();
       };
 
       /*

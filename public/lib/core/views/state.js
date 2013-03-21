@@ -13,6 +13,8 @@
       function StateView() {
         this._onStatesChange = __bind(this._onStatesChange, this);
 
+        this._onCurrentStateChange = __bind(this._onCurrentStateChange, this);
+
         this._onIndexChange = __bind(this._onIndexChange, this);
 
         this.prevState = __bind(this.prevState, this);
@@ -87,7 +89,8 @@
         }), (function() {
           self._currentView = self.states.getItemAt(index);
           self.set("currentView", self._currentView);
-          return self._currentView.attach(self._childrenElement().append("<div />").children().last());
+          self._currentView.attach(self._childrenElement().append("<div />").children().last());
+          return self._onCurrentStateChange();
         }));
       };
 
@@ -103,6 +106,12 @@
         }
         return this.$(childrenElement);
       };
+
+      /*
+      */
+
+
+      StateView.prototype._onCurrentStateChange = function() {};
 
       /*
            if the states change then make sure the current state is synced as well

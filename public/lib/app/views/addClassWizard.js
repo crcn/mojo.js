@@ -67,8 +67,7 @@
 
       AddClassWizardView.prototype.events = {
         "noMoreStates": "remove",
-        "click .close .cancel-btn": "remove",
-        "click .confirm-positive": "_waitForComplete"
+        "click .close .cancel-btn": "remove"
       };
 
       /*
@@ -102,7 +101,7 @@
       */
 
 
-      AddClassWizardView.prototype._waitForComplete = function() {
+      AddClassWizardView.prototype._onCurrentStateChange = function() {
         return this.get("currentView").once("complete", this.nextState);
       };
 

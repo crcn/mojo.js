@@ -19,7 +19,8 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     ###
     ###
 
-    submit: (event) =>
+    submit: (callback = (()->)) =>
+
 
       event.stopImmediatePropagation()
 
@@ -33,14 +34,13 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
         @emit "complete"
 
-
     ###
     ###
 
     _onAttached: () =>
       super()
 
-      @$(@get("submitElement")).bind "click", @submit
+      @$(@get("submitElement")).bind "click", @_onSubmit
 
       # listen for any data emitted by child form inputs
       @element.bind "data", (e, d) =>
@@ -50,6 +50,14 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
         # set to THIS data - this will be added to the model later on
         @set "data.#{d.name}", d.value
+
+    ###
+    ###
+
+    _onSubmit: (event) =>
+      @submit()
+
+
 
     ###
     ###
