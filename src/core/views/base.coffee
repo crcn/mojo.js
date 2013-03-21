@@ -89,9 +89,6 @@ define ["jquery",
 
     $: (search) -> 
 
-      # is it an ID? There should only be one item, so search to the global context
-      return $(search) if search.substr(0, 1) is "#"
-
       # otherwise - only look within this element
       @element?.find search
 
