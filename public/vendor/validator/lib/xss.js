@@ -1,18 +1,19 @@
-define(["require", "/vendor/validator/lib/entities.js"], function(require) {
+define(["require", "validator/lib/entities"], function(require) {
 
-    var __dirname = "/vendor/validator/lib",
-    __filename    = "/vendor/validator/lib/xss.js",
+    var __dirname = "validator/lib",
+    __filename    = "validator/lib/xss.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
     //This module is adapted from the CodeIgniter framework
 //The license is available at http://codeigniter.com/
 
-var html_entity_decode = require("/vendor/validator/lib/entities.js").decode;
+var html_entity_decode = require("validator/lib/entities").decode;
 
 var never_allowed_str = {
     'document.cookie':              '',

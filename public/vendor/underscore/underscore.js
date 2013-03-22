@@ -1,11 +1,12 @@
 define(["require"], function(require) {
 
-    var __dirname = "/vendor/underscore",
-    __filename    = "/vendor/underscore/underscore.js",
+    var __dirname = "underscore",
+    __filename    = "underscore/underscore.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 

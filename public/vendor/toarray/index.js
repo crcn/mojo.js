@@ -1,11 +1,12 @@
 define(["require"], function(require) {
 
-    var __dirname = "/vendor/toarray",
-    __filename    = "/vendor/toarray/index.js",
+    var __dirname = "toarray",
+    __filename    = "toarray/index.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 

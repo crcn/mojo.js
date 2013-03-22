@@ -163,6 +163,7 @@ var jam = {
 
 if (typeof require !== "undefined" && require.config) {
     require.config({
+    "repository": "http://npm.classdojo.com:5984/jam",
     "paths": {
         "templates": "public/templates"
     },
@@ -329,6 +330,7 @@ if (typeof require !== "undefined" && require.config) {
 }
 else {
     var require = {
+    "repository": "http://npm.classdojo.com:5984/jam",
     "paths": {
         "templates": "public/templates"
     },

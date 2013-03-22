@@ -1,15 +1,16 @@
-define(["require", "/vendor/dolce/lib/collection.js"], function(require) {
+define(["require", "dolce/lib/collection"], function(require) {
 
-    var __dirname = "/vendor/dolce/lib",
-    __filename    = "/vendor/dolce/lib/index.js",
+    var __dirname = "dolce/lib",
+    __filename    = "dolce/lib/index.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
-    exports.collection = require("/vendor/dolce/lib/collection.js");
+    exports.collection = require("dolce/lib/collection");
 
     return module.exports;
 });

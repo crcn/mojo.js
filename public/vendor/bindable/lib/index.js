@@ -1,11 +1,12 @@
-define(["require", "/vendor/dref/lib/index.js", "/vendor/bindable/lib/core/eventEmitter.js", "/vendor/bindable/lib/binding.js", "/vendor/bindable/lib/shim/dref.js"], function(require) {
+define(["require", "dref", "bindable/lib/core/eventEmitter", "bindable/lib/binding", "bindable/lib/shim/dref"], function(require) {
 
-    var __dirname = "/vendor/bindable/lib",
-    __filename    = "/vendor/bindable/lib/index.js",
+    var __dirname = "bindable/lib",
+    __filename    = "bindable/lib/index.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
@@ -15,13 +16,13 @@ define(["require", "/vendor/dref/lib/index.js", "/vendor/bindable/lib/core/event
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  dref = require("/vendor/dref/lib/index.js");
+  dref = require("dref");
 
-  EventEmitter = require("/vendor/bindable/lib/core/eventEmitter.js");
+  EventEmitter = require("bindable/lib/core/eventEmitter");
 
-  Binding = require("/vendor/bindable/lib/binding.js");
+  Binding = require("bindable/lib/binding");
 
-  dref.use(require("/vendor/bindable/lib/shim/dref.js"));
+  dref.use(require("bindable/lib/shim/dref"));
 
   module.exports = (function(_super) {
 

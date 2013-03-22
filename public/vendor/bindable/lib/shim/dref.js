@@ -1,11 +1,12 @@
 define(["require"], function(require) {
 
-    var __dirname = "/vendor/bindable/lib/shim",
-    __filename    = "/vendor/bindable/lib/shim/dref.js",
+    var __dirname = "bindable/lib/shim",
+    __filename    = "bindable/lib/shim/dref.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 

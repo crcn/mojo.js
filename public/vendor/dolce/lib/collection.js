@@ -1,18 +1,19 @@
-define(["require", "/vendor/crema/lib/index.js", "/vendor/dolce/lib/tree.js", "/vendor/sift/sift.js", "/vendor/underscore/underscore.js"], function(require) {
+define(["require", "crema", "dolce/lib/tree", "sift", "underscore"], function(require) {
 
-    var __dirname = "/vendor/dolce/lib",
-    __filename    = "/vendor/dolce/lib/collection.js",
+    var __dirname = "dolce/lib",
+    __filename    = "dolce/lib/collection.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
-    var crema  = require("/vendor/crema/lib/index.js"),
-tree 	   = require("/vendor/dolce/lib/tree.js"),
-sift 	   = require("/vendor/sift/sift.js"),
-_          = require("/vendor/underscore/underscore.js");
+    var crema  = require("crema"),
+tree 	   = require("dolce/lib/tree"),
+sift 	   = require("sift"),
+_          = require("underscore");
 
 var routeTypes = {
 	'*': 'extend',

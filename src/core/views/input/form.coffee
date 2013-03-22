@@ -30,6 +30,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
       model.validate (err, result) =>
         if err 
+          callback err
           return @_showErrorMessage err
 
         @emit "complete"

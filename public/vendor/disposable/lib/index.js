@@ -1,11 +1,12 @@
 define(["require"], function(require) {
 
-    var __dirname = "/vendor/disposable/lib",
-    __filename    = "/vendor/disposable/lib/index.js",
+    var __dirname = "disposable/lib",
+    __filename    = "disposable/lib/index.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 

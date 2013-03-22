@@ -1,11 +1,12 @@
 define(["require"], function(require) {
 
-    var __dirname = "/vendor/validator/lib",
-    __filename    = "/vendor/validator/lib/entities.js",
+    var __dirname = "validator/lib",
+    __filename    = "validator/lib/entities.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 

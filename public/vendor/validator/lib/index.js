@@ -1,23 +1,24 @@
-define(["require", "/vendor/validator/lib/validator.js", "/vendor/validator/lib/filter.js", "/vendor/validator/lib/validators.js", "/vendor/validator/lib/defaultError.js", "/vendor/validator/lib/entities.js"], function(require) {
+define(["require", "validator/lib/validator", "validator/lib/filter", "validator/lib/validators", "validator/lib/defaultError", "validator/lib/entities"], function(require) {
 
-    var __dirname = "/vendor/validator/lib",
-    __filename    = "/vendor/validator/lib/index.js",
+    var __dirname = "validator/lib",
+    __filename    = "validator/lib/index.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
-    var node_validator = require("/vendor/validator/lib/validator.js");
+    var node_validator = require("validator/lib/validator");
 
 exports.Validator = node_validator.Validator;
 exports.ValidatorError = node_validator.ValidatorError;
-exports.Filter = require("/vendor/validator/lib/filter.js").Filter;
-exports.validators = require("/vendor/validator/lib/validators.js");
-exports.defaultError = require("/vendor/validator/lib/defaultError.js");
+exports.Filter = require("validator/lib/filter").Filter;
+exports.validators = require("validator/lib/validators");
+exports.defaultError = require("validator/lib/defaultError");
 
-exports.entities = require("/vendor/validator/lib/entities.js");
+exports.entities = require("validator/lib/entities");
 
 //Quick access methods
 exports.sanitize = exports.convert = function(str) {

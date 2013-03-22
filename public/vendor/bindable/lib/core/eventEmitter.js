@@ -1,11 +1,12 @@
-define(["require", "/vendor/eventemitter2/lib/eventemitter2.js", "/vendor/disposable/lib/index.js"], function(require) {
+define(["require", "eventemitter2", "disposable"], function(require) {
 
-    var __dirname = "/vendor/bindable/lib/core",
-    __filename    = "/vendor/bindable/lib/core/eventEmitter.js",
+    var __dirname = "bindable/lib/core",
+    __filename    = "bindable/lib/core/eventEmitter.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
@@ -15,9 +16,9 @@ define(["require", "/vendor/eventemitter2/lib/eventemitter2.js", "/vendor/dispos
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  events = require("/vendor/eventemitter2/lib/eventemitter2.js");
+  events = require("eventemitter2");
 
-  disposable = require("/vendor/disposable/lib/index.js");
+  disposable = require("disposable");
 
   module.exports = EventEmitter = (function(_super) {
 

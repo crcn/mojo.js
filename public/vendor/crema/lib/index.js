@@ -1,15 +1,16 @@
-define(["require", "/vendor/strscanner/lib/index.js"], function(require) {
+define(["require", "strscanner"], function(require) {
 
-    var __dirname = "/vendor/crema/lib",
-    __filename    = "/vendor/crema/lib/index.js",
+    var __dirname = "crema/lib",
+    __filename    = "crema/lib/index.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
-    var strscanner = require("/vendor/strscanner/lib/index.js");
+    var strscanner = require("strscanner");
 
 
 function parseTokens(route) {

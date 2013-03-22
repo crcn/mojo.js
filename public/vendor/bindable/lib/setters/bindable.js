@@ -1,11 +1,12 @@
-define(["require", "/vendor/bindable/lib/setters/base.js"], function(require) {
+define(["require", "bindable/lib/setters/base"], function(require) {
 
-    var __dirname = "/vendor/bindable/lib/setters",
-    __filename    = "/vendor/bindable/lib/setters/bindable.js",
+    var __dirname = "bindable/lib/setters",
+    __filename    = "bindable/lib/setters/bindable.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
@@ -15,7 +16,7 @@ define(["require", "/vendor/bindable/lib/setters/base.js"], function(require) {
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  Base = require("/vendor/bindable/lib/setters/base.js");
+  Base = require("bindable/lib/setters/base");
 
   module.exports = (function(_super) {
 

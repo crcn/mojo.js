@@ -1,11 +1,12 @@
 define(["require"], function(require) {
 
-    var __dirname = "/vendor/async/lib",
-    __filename    = "/vendor/async/lib/async.js",
+    var __dirname = "async/lib",
+    __filename    = "async/lib/async.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 

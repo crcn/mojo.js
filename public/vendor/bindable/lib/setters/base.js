@@ -1,11 +1,12 @@
 define(["require"], function(require) {
 
-    var __dirname = "/vendor/bindable/lib/setters",
-    __filename    = "/vendor/bindable/lib/setters/base.js",
+    var __dirname = "bindable/lib/setters",
+    __filename    = "bindable/lib/setters/base.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 

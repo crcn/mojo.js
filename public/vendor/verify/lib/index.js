@@ -1,17 +1,18 @@
-define(["require", "/vendor/verify/lib/defaults.js", "/vendor/verify/lib/check.js", "/vendor/verify/lib/testers.js"], function(require) {
+define(["require", "verify/lib/defaults", "verify/lib/check", "verify/lib/testers"], function(require) {
 
-    var __dirname = "/vendor/verify/lib",
-    __filename    = "/vendor/verify/lib/index.js",
+    var __dirname = "verify/lib",
+    __filename    = "verify/lib/index.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
-    var defaults = require("/vendor/verify/lib/defaults.js"),
-Check = require("/vendor/verify/lib/check.js"),
-Testers = require("/vendor/verify/lib/testers.js");
+    var defaults = require("verify/lib/defaults"),
+Check = require("verify/lib/check"),
+Testers = require("verify/lib/testers");
 
 
 module.exports = function() {

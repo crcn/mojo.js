@@ -1,16 +1,17 @@
-define(["require", "/vendor/validator/lib/entities.js", "/vendor/validator/lib/xss.js"], function(require) {
+define(["require", "validator/lib/entities", "validator/lib/xss"], function(require) {
 
-    var __dirname = "/vendor/validator/lib",
-    __filename    = "/vendor/validator/lib/filter.js",
+    var __dirname = "validator/lib",
+    __filename    = "validator/lib/filter.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
-    var entities = require("/vendor/validator/lib/entities.js");
-var xss = require("/vendor/validator/lib/xss.js");
+    var entities = require("validator/lib/entities");
+var xss = require("validator/lib/xss");
 
 var Filter = exports.Filter = function() {}
 

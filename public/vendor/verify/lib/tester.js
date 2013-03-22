@@ -1,21 +1,22 @@
-define(["require", "/vendor/structr/lib/index.js", "/vendor/verify/lib/sanitizers.js", "/vendor/verify/lib/matchers.js", "/vendor/verify/lib/siblings.js", "/vendor/validator/lib/index.js", "/vendor/toarray/index.js"], function(require) {
+define(["require", "structr", "verify/lib/sanitizers", "verify/lib/matchers", "verify/lib/siblings", "validator", "toarray"], function(require) {
 
-    var __dirname = "/vendor/verify/lib",
-    __filename    = "/vendor/verify/lib/tester.js",
+    var __dirname = "verify/lib",
+    __filename    = "verify/lib/tester.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
-    var structr = require("/vendor/structr/lib/index.js"),
-Sanitizers  = require("/vendor/verify/lib/sanitizers.js"),
-Matchers    = require("/vendor/verify/lib/matchers.js"),
-Siblings    = require("/vendor/verify/lib/siblings.js"),
-validator = require("/vendor/validator/lib/index.js"),
+    var structr = require("structr"),
+Sanitizers  = require("verify/lib/sanitizers"),
+Matchers    = require("verify/lib/matchers"),
+Siblings    = require("verify/lib/siblings"),
+validator = require("validator"),
 check = validator.check,
-toarray = require("/vendor/toarray/index.js");
+toarray = require("toarray");
 
 module.exports = structr({
 

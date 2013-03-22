@@ -1,15 +1,16 @@
-define(["require", "/vendor/events/index.js"], function(require) {
+define(["require", "events"], function(require) {
 
-    var __dirname = "/vendor/asyngleton/lib",
-    __filename    = "/vendor/asyngleton/lib/index.js",
+    var __dirname = "asyngleton/lib",
+    __filename    = "asyngleton/lib/index.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
-    var EventEmitter = require("/vendor/events/index.js").EventEmitter;
+    var EventEmitter = require("events").EventEmitter;
 
 var singletonIndex = 0;
 

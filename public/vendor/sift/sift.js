@@ -1,11 +1,12 @@
 define(["require"], function(require) {
 
-    var __dirname = "/vendor/sift",
-    __filename    = "/vendor/sift/sift.js",
+    var __dirname = "sift",
+    __filename    = "sift/sift.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 

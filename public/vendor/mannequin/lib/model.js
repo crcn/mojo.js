@@ -1,11 +1,12 @@
-define(["require", "/vendor/underscore/underscore.js", "/vendor/bindable/lib/index.js"], function(require) {
+define(["require", "underscore", "bindable"], function(require) {
 
-    var __dirname = "/vendor/mannequin/lib",
-    __filename    = "/vendor/mannequin/lib/model.js",
+    var __dirname = "mannequin/lib",
+    __filename    = "mannequin/lib/model.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
@@ -15,9 +16,9 @@ define(["require", "/vendor/underscore/underscore.js", "/vendor/bindable/lib/ind
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  _ = require("/vendor/underscore/underscore.js");
+  _ = require("underscore");
 
-  Bindable = require("/vendor/bindable/lib/index.js");
+  Bindable = require("bindable");
 
   module.exports = Model = (function(_super) {
 
@@ -28,9 +29,7 @@ define(["require", "/vendor/underscore/underscore.js", "/vendor/bindable/lib/ind
 
 
     function Model(data, options) {
-
-      return Model.__super__.constructor.apply(this, arguments);
-      this.data = data || {};
+      this.data = data;
       if (options == null) {
         options = {};
       }

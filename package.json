@@ -14,11 +14,14 @@
       "async": "0.2.x"
     },
     "config": {
+      "repository":"http://npm.classdojo.com:5984/jam",
       "paths": {
         "templates": "public/templates"
       }
     }
   },
+    "repository":"http://npm.classdojo.com:5984/jam",
+  
   "dependencies": {
     "dref": "0.0.x",
     "comerr": "0.0.x",

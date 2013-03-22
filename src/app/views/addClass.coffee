@@ -71,6 +71,12 @@ define ["../../core/views/base",
     ###
     ###
 
+    # model: Bindings.to("modelLocator.createClassWizard.").bothWays()
+
+
+    ###
+    ###
+
     title: t("Add Class")
 
     ###

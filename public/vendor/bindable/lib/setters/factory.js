@@ -1,11 +1,12 @@
-define(["require", "/vendor/bindable/lib/setters/fn.js", "/vendor/bindable/lib/setters/bindable.js"], function(require) {
+define(["require", "bindable/lib/setters/fn", "bindable/lib/setters/bindable"], function(require) {
 
-    var __dirname = "/vendor/bindable/lib/setters",
-    __filename    = "/vendor/bindable/lib/setters/factory.js",
+    var __dirname = "bindable/lib/setters",
+    __filename    = "bindable/lib/setters/factory.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
@@ -13,9 +14,9 @@ define(["require", "/vendor/bindable/lib/setters/fn.js", "/vendor/bindable/lib/s
 (function() {
   var BindableSetter, FnSetter;
 
-  FnSetter = require("/vendor/bindable/lib/setters/fn.js");
+  FnSetter = require("bindable/lib/setters/fn");
 
-  BindableSetter = require("/vendor/bindable/lib/setters/bindable.js");
+  BindableSetter = require("bindable/lib/setters/bindable");
 
   module.exports = (function() {
 

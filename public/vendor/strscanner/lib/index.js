@@ -1,11 +1,12 @@
 define(["require"], function(require) {
 
-    var __dirname = "/vendor/strscanner/lib",
-    __filename    = "/vendor/strscanner/lib/index.js",
+    var __dirname = "strscanner/lib",
+    __filename    = "strscanner/lib/index.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 

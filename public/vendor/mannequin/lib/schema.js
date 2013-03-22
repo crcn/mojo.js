@@ -1,11 +1,12 @@
-define(["require", "/vendor/mannequin/lib/utils.js", "/vendor/async/lib/async.js", "/vendor/mannequin/lib/propertyDefinition.js"], function(require) {
+define(["require", "mannequin/lib/utils", "async", "mannequin/lib/propertyDefinition"], function(require) {
 
-    var __dirname = "/vendor/mannequin/lib",
-    __filename    = "/vendor/mannequin/lib/schema.js",
+    var __dirname = "mannequin/lib",
+    __filename    = "mannequin/lib/schema.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
@@ -13,11 +14,11 @@ define(["require", "/vendor/mannequin/lib/utils.js", "/vendor/async/lib/async.js
 (function() {
   var PropertyDefinition, Schema, async, utils;
 
-  utils = require("/vendor/mannequin/lib/utils.js");
+  utils = require("mannequin/lib/utils");
 
-  async = require("/vendor/async/lib/async.js");
+  async = require("async");
 
-  PropertyDefinition = require("/vendor/mannequin/lib/propertyDefinition.js");
+  PropertyDefinition = require("mannequin/lib/propertyDefinition");
 
   module.exports = Schema = (function() {
     /*

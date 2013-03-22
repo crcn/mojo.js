@@ -1,15 +1,16 @@
-define(["require", "/vendor/validator/lib/index.js"], function(require) {
+define(["require", "validator"], function(require) {
 
-    var __dirname = "/vendor/verify/lib",
-    __filename    = "/vendor/verify/lib/defaults.js",
+    var __dirname = "verify/lib",
+    __filename    = "verify/lib/defaults.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
-    var validator = require("/vendor/validator/lib/index.js"),
+    var validator = require("validator"),
 check = validator.check;
 
 exports.plugin = function(verify) {

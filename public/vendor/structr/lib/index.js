@@ -1,11 +1,12 @@
 define(["require"], function(require) {
 
-    var __dirname = "/vendor/structr/lib",
-    __filename    = "/vendor/structr/lib/index.js",
+    var __dirname = "structr/lib",
+    __filename    = "structr/lib/index.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 

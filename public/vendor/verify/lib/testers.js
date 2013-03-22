@@ -1,16 +1,17 @@
-define(["require", "/vendor/structr/lib/index.js", "/vendor/verify/lib/tester.js"], function(require) {
+define(["require", "structr", "verify/lib/tester"], function(require) {
 
-    var __dirname = "/vendor/verify/lib",
-    __filename    = "/vendor/verify/lib/testers.js",
+    var __dirname = "verify/lib",
+    __filename    = "verify/lib/testers.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
-    var structr = require("/vendor/structr/lib/index.js"),
-Tester      = require("/vendor/verify/lib/tester.js");
+    var structr = require("structr"),
+Tester      = require("verify/lib/tester");
 
 module.exports = structr({
 

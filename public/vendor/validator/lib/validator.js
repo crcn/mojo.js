@@ -1,17 +1,18 @@
-define(["require", "/vendor/util/index.js", "/vendor/validator/lib/validators.js", "/vendor/validator/lib/defaultError.js"], function(require) {
+define(["require", "util", "validator/lib/validators", "validator/lib/defaultError"], function(require) {
 
-    var __dirname = "/vendor/validator/lib",
-    __filename    = "/vendor/validator/lib/validator.js",
+    var __dirname = "validator/lib",
+    __filename    = "validator/lib/validator.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
-    var util = require("/vendor/util/index.js");
-var validators = require("/vendor/validator/lib/validators.js");
-exports.defaultError = require("/vendor/validator/lib/defaultError.js");
+    var util = require("util");
+var validators = require("validator/lib/validators");
+exports.defaultError = require("validator/lib/defaultError");
 
 var ValidatorError = exports.ValidatorError = function(msg) {
     Error.captureStackTrace(this, this);

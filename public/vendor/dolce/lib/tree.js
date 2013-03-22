@@ -1,15 +1,16 @@
-define(["require", "/vendor/crema/lib/index.js"], function(require) {
+define(["require", "crema"], function(require) {
 
-    var __dirname = "/vendor/dolce/lib",
-    __filename    = "/vendor/dolce/lib/tree.js",
+    var __dirname = "dolce/lib",
+    __filename    = "dolce/lib/tree.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
-    var crema = require("/vendor/crema/lib/index.js");
+    var crema = require("crema");
 
 var tree = module.exports = function(ops) {
 

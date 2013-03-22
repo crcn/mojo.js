@@ -1,11 +1,12 @@
-define(["require", "/vendor/events/index.js"], function(require) {
+define(["require", "events"], function(require) {
 
-    var __dirname = "/vendor/util",
-    __filename    = "/vendor/util/index.js",
+    var __dirname = "util",
+    __filename    = "util/index.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
@@ -30,7 +31,7 @@ define(["require", "/vendor/events/index.js"], function(require) {
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var events = require("/vendor/events/index.js");
+var events = require("events");
 
 
 var formatRegExp = /%[sdj%]/g;

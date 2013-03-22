@@ -1,11 +1,12 @@
-define(["require", "/vendor/dref/lib/index.js", "/vendor/mannequin/lib/utils.js", "/vendor/verify/lib/index.js", "/vendor/async/lib/async.js", "/vendor/toarray/index.js"], function(require) {
+define(["require", "dref", "mannequin/lib/utils", "verify", "async", "toarray"], function(require) {
 
-    var __dirname = "/vendor/mannequin/lib",
-    __filename    = "/vendor/mannequin/lib/propertyDefinition.js",
+    var __dirname = "mannequin/lib",
+    __filename    = "mannequin/lib/propertyDefinition.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 
@@ -13,15 +14,15 @@ define(["require", "/vendor/dref/lib/index.js", "/vendor/mannequin/lib/utils.js"
 (function() {
   var PropertyDefinition, async, dref, toarray, utils, verify;
 
-  dref = require("/vendor/dref/lib/index.js");
+  dref = require("dref");
 
-  utils = require("/vendor/mannequin/lib/utils.js");
+  utils = require("mannequin/lib/utils");
 
-  verify = require("/vendor/verify/lib/index.js")();
+  verify = require("verify")();
 
-  async = require("/vendor/async/lib/async.js");
+  async = require("async");
 
-  toarray = require("/vendor/toarray/index.js");
+  toarray = require("toarray");
 
   /*
   */
