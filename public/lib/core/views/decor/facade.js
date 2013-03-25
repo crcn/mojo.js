@@ -53,6 +53,7 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
 
 
       ViewDecorator.prototype.load = function(callback) {
+        this.view.emit("loadingDecorator");
         return this._callDecorFn("load", callback);
       };
 
@@ -61,6 +62,7 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
 
 
       ViewDecorator.prototype.attach = function(callback) {
+        this.view.emit("attachingDecorator");
         return this._callDecorFn("attach", callback);
       };
 
@@ -69,6 +71,7 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
 
 
       ViewDecorator.prototype.remove = function(callback) {
+        this.view.emit("removingDecorator");
         return this._callDecorFn("remove", callback);
       };
 

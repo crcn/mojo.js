@@ -18,11 +18,10 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
       @states.on "updated", @_onStatesChange
       @states.bind().to @loadables
 
-
     ###
     ###
 
-    _onAttached: () =>  
+    _onHTML: () =>  
       super()
       @bind "currentIndex", @_onIndexChange
 

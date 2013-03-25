@@ -45,7 +45,6 @@ define ["jquery",
       # after init, set to initialized
       @set "initialized", true
 
-
     ###
      visible is a nice toggle which handles events / bindings - and other things
     ###
@@ -53,14 +52,11 @@ define ["jquery",
     visible: () ->
       # TODO
 
-
-
     ###
     ###
 
     init: () ->
       # OVERRIDE ME
-
 
     ###
     ###
@@ -76,6 +72,7 @@ define ["jquery",
 
     _listen: () ->
       @on 
+        html: @_onHTML
         attached: @_onAttached
         removed: @_onRemoved
         change: @_onChanged
@@ -104,7 +101,6 @@ define ["jquery",
           callback()
           @emit "attached"
 
-
     ###
      re-renders an element
     ###
@@ -115,7 +111,6 @@ define ["jquery",
 
       return callback() if not @selector
       @attach @selector, callback
-
 
     ###
     ###
@@ -130,6 +125,13 @@ define ["jquery",
         @element.html("")
         callback()
         @emit "removed"
+
+    ###
+    ###
+
+    html: (content) ->
+      @element.html content
+      @emit "html", content
 
     ###
     ###
@@ -153,14 +155,14 @@ define ["jquery",
 
       callback
 
-
     ###
     ###
 
-    _onAttached: () ->
-    _onRemoved: () ->
-    _onChanged: () ->
-    _onLoaded: () ->
+    _onHTML      : () ->
+    _onAttached  : () ->
+    _onRemoved   : () ->
+    _onChanged   : () ->
+    _onLoaded    : () ->
 
 
 

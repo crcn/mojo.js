@@ -21,7 +21,7 @@
 
         this.nextState = __bind(this.nextState, this);
 
-        this._onAttached = __bind(this._onAttached, this);
+        this._onHTML = __bind(this._onHTML, this);
         return StateView.__super__.constructor.apply(this, arguments);
       }
 
@@ -46,8 +46,8 @@
       */
 
 
-      StateView.prototype._onAttached = function() {
-        StateView.__super__._onAttached.call(this);
+      StateView.prototype._onHTML = function() {
+        StateView.__super__._onHTML.call(this);
         return this.bind("currentIndex", this._onIndexChange);
       };
 

@@ -30,7 +30,7 @@
 
 
       TemplateViewDecorator.prototype.attach = function(callback) {
-        this.view.element.html(this.view.get("html"));
+        this.view.html(this.view.get("html"));
         return callback();
       };
 

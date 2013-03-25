@@ -73,18 +73,24 @@ define ["underscore",
       ###
       ###
 
-      load: (callback) -> @_callDecorFn "load", callback
+      load: (callback) -> 
+        @view.emit "loadingDecorator"
+        @_callDecorFn "load", callback
 
       ###
       ###
 
-      attach: (callback) -> @_callDecorFn "attach", callback
+      attach: (callback) -> 
+        @view.emit "attachingDecorator"
+        @_callDecorFn "attach", callback
 
 
       ###
       ###
 
-      remove: (callback) -> @_callDecorFn "remove", callback
+      remove: (callback) ->
+        @view.emit "removingDecorator"
+        @_callDecorFn "remove", callback
 
       ###
       ###

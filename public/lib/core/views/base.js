@@ -71,6 +71,7 @@
 
       BaseView.prototype._listen = function() {
         return this.on({
+          html: this._onHTML,
           attached: this._onAttached,
           removed: this._onRemoved,
           change: this._onChanged,
@@ -149,6 +150,15 @@
       */
 
 
+      BaseView.prototype.html = function(content) {
+        this.element.html(content);
+        return this.emit("html", content);
+      };
+
+      /*
+      */
+
+
       BaseView.prototype.load = asyngleton(function(callback) {
         var _this = this;
         return async.eachSeries(this.loadables.source(), (function(loadable, next) {
@@ -174,6 +184,8 @@
       /*
       */
 
+
+      BaseView.prototype._onHTML = function() {};
 
       BaseView.prototype._onAttached = function() {};
 

@@ -27,6 +27,7 @@ define ["./base",
 
         binding.to @_children
 
+
       async.eachSeries @_children.source(), ((child, next) =>
         @_loadChild child, next
       ), outcome.e(callback).s () =>
