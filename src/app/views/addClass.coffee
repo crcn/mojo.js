@@ -62,13 +62,6 @@ define ["../../core/views/base",
 
     modelClass: Classroom
 
-
-    ###
-    ###
-
-    # model: Bindings.to("modelLocator.createClassWizard.").bothWays()
-
-
     ###
     ###
 

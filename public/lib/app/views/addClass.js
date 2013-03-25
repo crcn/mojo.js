@@ -95,10 +95,6 @@
       */
 
 
-      /*
-      */
-
-
       AddClassView.prototype.title = t("Add Class");
 
       /*

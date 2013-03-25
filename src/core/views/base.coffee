@@ -83,7 +83,7 @@ define ["jquery",
     ###
 
     $: (search) -> 
-
+    
       # otherwise - only look within this element
       @element?.find search
 
