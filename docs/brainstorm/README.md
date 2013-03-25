@@ -13,7 +13,7 @@ Collections are bindable pieces of data that are inspired by mongodb collections
 var people = new Collection([new Person(), new Person()]);
 
 //for each item in the view children collection, make a personView out of it.
-view.children.itemFactory(PersonView);
+view.children.transform().cast(PersonView);
 
 //glue the people collection to the view children
 people.glue(view.children);
