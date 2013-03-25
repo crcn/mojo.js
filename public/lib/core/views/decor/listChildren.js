@@ -11,7 +11,9 @@
       __extends(ListChildrenDecorator, _super);
 
       function ListChildrenDecorator() {
-        this._onChildrenUpdated = __bind(this._onChildrenUpdated, this);
+        this._removeChild = __bind(this._removeChild, this);
+
+        this._insertChild = __bind(this._insertChild, this);
         return ListChildrenDecorator.__super__.constructor.apply(this, arguments);
       }
 
@@ -36,7 +38,10 @@
         return async.eachSeries(this._children.source(), (function(child, next) {
           return _this._loadChild(child, next);
         }), outcome.e(callback).s(function() {
-          _this._children.on("updated", _this._onChildrenUpdated);
+          _this._children.on({
+            insert: _this._insertChild,
+            remove: _this._removeChild
+          });
           return callback.apply(_this, arguments);
         }));
       };
@@ -66,13 +71,16 @@
       */
 
 
-      ListChildrenDecorator.prototype._onChildrenUpdated = function(event) {
-        var item;
-        if (event.type !== "add") {
-          return;
-        }
-        item = event.item;
+      ListChildrenDecorator.prototype._insertChild = function(item, index) {
         return this._addChild(item);
+      };
+
+      /*
+      */
+
+
+      ListChildrenDecorator.prototype._removeChild = function(item, index) {
+        return console.log("REMOVE CHILD TODO");
       };
 
       /*

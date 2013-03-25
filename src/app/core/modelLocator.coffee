@@ -27,5 +27,9 @@ define ["../../core/models/locator", "bindable"], (modelLocator, bindable) ->
       }
     ))
 
-
+  setTimeout (() ->
+    console.log "PUSH"
+    modelLocator.get("grades").pop()
+    modelLocator.get("grades").push { name: "fdsfsfsfds" }
+  ), 1000
   modelLocator

@@ -56,11 +56,7 @@ define ["underscore",
       ###
 
       constructor: (@view) ->
-
         @dispose()
-
-        # wait for the view to initialize
-        view.bind "initialized", @init
 
       ###
       ###

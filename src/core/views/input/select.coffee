@@ -104,6 +104,7 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
     ###
 
     _transformSelectItem: (item) =>
+      console.log "TRAN"
       {
         value: (dref.get(item, @get("itemValue")) or dref.get(item, @get("itemLabel"))),
         label: dref.get(item, @get("itemLabel")),

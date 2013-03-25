@@ -23,7 +23,8 @@ define ["./base",
         # child view class provided? children 
         if @view.get "childViewClass"
           factory = new ClassFactory @view.get "childViewClass"
-          binding.transform (item) -> factory.createItem item
+          binding.transform (item) -> 
+            factory.createItem item
 
         binding.to @_children
 
@@ -31,7 +32,11 @@ define ["./base",
       async.eachSeries @_children.source(), ((child, next) =>
         @_loadChild child, next
       ), outcome.e(callback).s () =>
-        @_children.on "updated", @_onChildrenUpdated
+
+        @_children.on 
+          insert: @_insertChild
+          remove: @_removeChild
+
         callback.apply this, arguments
 
     ###
@@ -53,10 +58,14 @@ define ["./base",
     ###
     ###
 
-    _onChildrenUpdated: (event) =>
-      return if event.type isnt "add"
-      item = event.item
+    _insertChild: (item, index) =>
       @_addChild item
+
+    ###
+    ###
+
+    _removeChild: (item, index) =>
+      console.log "REMOVE CHILD TODO"
 
     ###
     ###

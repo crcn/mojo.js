@@ -37,7 +37,6 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
         this.init = __bind(this.init, this);
 
         this.dispose();
-        view.bind("initialized", this.init);
       }
 
       /*

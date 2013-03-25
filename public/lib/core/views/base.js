@@ -37,7 +37,7 @@
         this.loadables = new bindable.Collection([this.decorator]);
         this._o = outcome.e(this);
         this._init();
-        this.set("initialized", true);
+        this.decorator.init();
       }
 
       /*
@@ -58,9 +58,6 @@
 
 
       BaseView.prototype._init = function() {
-        if (this.get("initialized")) {
-          throw new Error("already initialized");
-        }
         this.init();
         return this._listen();
       };

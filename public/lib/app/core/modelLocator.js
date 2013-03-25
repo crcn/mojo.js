@@ -12,6 +12,13 @@
         };
       }))
     });
+    setTimeout((function() {
+      console.log("PUSH");
+      modelLocator.get("grades").pop();
+      return modelLocator.get("grades").push({
+        name: "fdsfsfsfds"
+      });
+    }), 1000);
     return modelLocator;
   });
 

@@ -41,9 +41,7 @@ define ["jquery",
 
       # initialize the options
       @_init()
-
-      # after init, set to initialized
-      @set "initialized", true
+      @decorator.init()
 
     ###
      visible is a nice toggle which handles events / bindings - and other things
@@ -62,7 +60,6 @@ define ["jquery",
     ###
 
     _init: () ->
-      throw new Error("already initialized") if @get("initialized")
       @init()
       @_listen()
 

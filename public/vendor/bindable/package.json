@@ -1,6 +1,6 @@
 {
   "name": "bindable",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "bindable.js ===========",
   "main": "./lib/index.js",
   "scripts": {
@@ -29,6 +29,6 @@
     "structr": "0.2.x"
   },
   "readme": "## Bindable\n\n\n### Objects\n\n```javascript\nvar BindableObject = require(\"bindable\").Object;\n\nvar item = new BindableObject({\n  name: \"craig\",\n  last: \"condon\",\n  location: {\n    city: \"San Francisco\"\n  }\n});\n\nitem.bind(\"location.zip\", function(value) {\n  \n});\n\n//triggers the binding\nitem.set(\"location.zip\", \"94102\"); \n\n\n\n//bind location.zip to another property in the model, and do it only once\nitem.bind(\"location.zip\", \"zip\").once()\n\n//bind location.zip to another object, and make it go both ways!\nitem.bind(\"location.zip\").to(anotherModel, \"location.zip\").bothWays();\n\n//chain to multiple items, and limit it!\nitem.bind(\"location.zip\").to(\"property\").to(\"anotherProperty\").to(function(value) {\n  \n}).limit(5)\n\n//you can even bind to values by setting a binding\nanotherModel.set(\"location.zip\", item.bind(\"location.zip\"));\n\n//you can also transform data as it's being bound\nitem.bind(\"name\").transform(function(name) {\n  return name.toUpperCase()\n}).to(\"name2\");\n\n```\n\nDefining bindings in classes\n\n```coffeescript\n\nBindable = require(\"bindable\");\n\nclass Person extends bindable\n\n  name: \"craig\",\n\n  name2: Bindable.from(\"name\")\n\n```\n\n\n### Collections\n\n```javascript\nvar collection = new bindable.Collection([{ name: \"craig\" }, { name: \"sam\" }, { name: \"liam\" }]),\ncollection2 = new bindable.Collection();\n\n//binding to another collection, and transform that value into something else\ncollection.bind().transform(function(item) {\n  return new BindableObject(item);\n}).to(collection2);\n\n//binding to a collection with a filter\ncollection.bind().filter({ name: {$nin: [\"craig\", \"liam\"] }}).to(collection2);\n\n\nvar source = [];\n\ncollection.bind(function(method, item, index) {\n  switch(method) {\n    case \"insert\": \n      source.splice(index, 0, item);\n    break;\n    case \"update\":\n    case \"replace\":\n      source.splice(index, 1, item);\n    break;\n    case \"remove\":\n      source.splice(index, 1);\n    break;\n  }\n});\n\n\n```",
-  "_id": "bindable@0.2.6",
+  "_id": "bindable@0.2.7",
   "_from": "bindable@0.2.x"
 }

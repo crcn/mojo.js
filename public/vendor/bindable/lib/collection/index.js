@@ -225,8 +225,8 @@ define(["require", "dref", "bindable/lib/collection/binding", "bindable/lib/core
 
     _Class.prototype.push = function() {
       var items;
-      items = Array.prototype.slice.call(arguments);
-      this._source.push.apply(this._source, this._transform(items));
+      items = this._transform(Array.prototype.slice.call(arguments));
+      this._source.push.apply(this._source, items);
       return this._insert(items, this._length);
     };
 
@@ -236,8 +236,8 @@ define(["require", "dref", "bindable/lib/collection/binding", "bindable/lib/core
 
     _Class.prototype.unshift = function() {
       var items;
-      items = Array.prototype.slice.call(arguments);
-      this._source.unshift.apply(this._source, this._transform(items));
+      items = this._transform(Array.prototype.slice.call(arguments));
+      this._source.unshift.apply(this._source, items);
       return this._insert(items);
     };
 

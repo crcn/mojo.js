@@ -18,14 +18,16 @@
 
 
       ChildrenDecorator.prototype.load = function(callback) {
-        var children, clazz, selector;
+        var children, clazz, selector, view;
         children = this.view.get("children");
         this._children = [];
         for (selector in children) {
           clazz = children[selector];
+          view = new clazz();
+          children[selector] = view;
           this._children.push({
             selector: selector,
-            view: new clazz()
+            view: view
           });
         }
         return this._callChildFn("load", callback);
