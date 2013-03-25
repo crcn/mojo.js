@@ -11,14 +11,12 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
         @view.set "html", content
         callback()
 
-
     ###
     ###
 
     attach: (callback) ->
       @view.html @view.get "html"
       callback()
-
 
     ###
     ###

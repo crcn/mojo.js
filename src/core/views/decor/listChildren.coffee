@@ -65,7 +65,8 @@ define ["./base",
     ###
 
     _removeChild: (item, index) =>
-      console.log "REMOVE CHILD TODO"
+      item.remove()
+      item.element.remove()
 
     ###
     ###

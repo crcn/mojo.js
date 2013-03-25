@@ -1,12 +1,15 @@
 define ["jquery", 
 "events", 
 "bindable",
+"../collections/index",
+"../utils/idGenerator",
 "outcome", 
+"dref",
 "underscore", 
 "./decor/facade",
 "asyngleton", 
 "../models/locator",
-"../utils/async"], ($, events, bindable, outcome, _, 
+"../utils/async"], ($, events, bindable, Collection, generateId, outcome, dref, _, 
   ViewDecorator, asyngleton, modelLocator, async) ->
   
   class BaseView extends bindable.Object
@@ -27,6 +30,7 @@ define ["jquery",
     constructor: (options = {}) ->
 
       options.view = @
+      options._id = dref.get(options, "_id") or generateId()
 
       super options
 
@@ -34,7 +38,7 @@ define ["jquery",
       @decorator = new ViewDecorator @
 
       # items to load with the view
-      @loadables = new bindable.Collection([@decorator])
+      @loadables = new Collection([@decorator])
 
       # outcome is flow-control for errors
       @_o = outcome.e @

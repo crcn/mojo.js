@@ -80,7 +80,8 @@
 
 
       ListChildrenDecorator.prototype._removeChild = function(item, index) {
-        return console.log("REMOVE CHILD TODO");
+        item.remove();
+        return item.element.remove();
       };
 
       /*

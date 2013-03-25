@@ -58,7 +58,12 @@ define(["require", "dref", "bindable/lib/core/eventEmitter", "bindable/lib/objec
 
 
     Bindable.prototype.get = function(key) {
-      return this._ref(this.data, key) || this._ref(this, key);
+      var result;
+      result = this._ref(this.data, key);
+      if ((result === null) || (result === void 0)) {
+        result = this._ref(this, key);
+      }
+      return result;
     };
 
     /*

@@ -1,11 +1,11 @@
-define ["../../core/models/locator", "bindable"], (modelLocator, bindable) ->
+define ["../../core/models/locator", "../../core/collections/index"], (modelLocator, Collection) ->
   
   modelLocator.set
 
     ###
     ###
 
-    grades: new bindable.Collection([
+    grades: new Collection([
       "Pre-school",
       "Kindergarten",
       "1st Grade",
@@ -23,6 +23,7 @@ define ["../../core/models/locator", "bindable"], (modelLocator, bindable) ->
       "Other"
     ].map((label) ->
       {
+        _id: label,
         name: label
       }
     ))
@@ -30,6 +31,6 @@ define ["../../core/models/locator", "bindable"], (modelLocator, bindable) ->
   setTimeout (() ->
     console.log "PUSH"
     modelLocator.get("grades").pop()
-    modelLocator.get("grades").push { name: "fdsfsfsfds" }
+    modelLocator.get("grades").push { name: "fdsfsfsfds", _id: "5396" }
   ), 1000
   modelLocator

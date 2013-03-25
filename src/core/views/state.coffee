@@ -1,4 +1,4 @@
-define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
+define ["./base",  "bindable", "step", "../collections/index"], (BaseView, bindable, step, Collection) ->
 
   class StateView extends BaseView
 
@@ -14,7 +14,7 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
 
       super options
 
-      @states = new bindable.Collection @get("states") or []
+      @states = new Collection @get("states") or []
       @states.on "updated", @_onStatesChange
       @states.bind().to @loadables
 

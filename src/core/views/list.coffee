@@ -1,4 +1,4 @@
-define ["require", "./base", "bindable", "underscore", "async"], (require, BaseView, bindable, _, async) ->
+define ["require", "./base", "bindable", "underscore", "async", "../collections/index"], (require, BaseView, bindable, _, async, Collection) ->
 
 
 
@@ -25,7 +25,7 @@ define ["require", "./base", "bindable", "underscore", "async"], (require, BaseV
 
       @set("children", undefined)
       @set("source", undefined)
-      
+
       # these are the children of this container
       @children = @_createChildren()
       @children.reset childrenSource
@@ -41,11 +41,11 @@ define ["require", "./base", "bindable", "underscore", "async"], (require, BaseV
     ###
     ###
 
-    _createSource: () -> new bindable.Collection()
+    _createSource: () -> new Collection()
 
     ###
     ###
 
-    _createChildren: () -> new bindable.Collection()
+    _createChildren: () -> new Collection()
 
 

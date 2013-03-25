@@ -13,6 +13,7 @@ define ["underscore",
 "../../utils/async",
 "../../factories/either",
 "../../factories/class",
+"../../utils/idGenerator",
 "outcome",
 "./base", 
 "./template",
@@ -21,7 +22,7 @@ define ["underscore",
 "./attributes",
 "./events",
 "./bindings",
-"./transition"], (_, cstep, async, EitherFactory, ClassFactory, outcome, BaseViewDecorator, 
+"./transition"], (_, cstep, async, EitherFactory, ClassFactory, generateId, outcome, BaseViewDecorator, 
   TemplateDecorator, ChildrenDecorator, ListChildrenDecorator, 
   AttributesDecorator,
   EventsDecorator, BindingsDecorator, TransitionDecorator) ->
@@ -56,6 +57,7 @@ define ["underscore",
       ###
 
       constructor: (@view) ->
+        @_id = generateId()
         @dispose()
 
       ###

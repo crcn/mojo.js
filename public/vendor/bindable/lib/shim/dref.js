@@ -18,7 +18,12 @@ define(["require"], function(require) {
       return item.get && item.set;
     },
     get: function(item, key) {
-      return item.data[key] || item[key];
+      var result;
+      result = item.data[key];
+      if ((result === null) || (result === void 0)) {
+        result = item[key];
+      }
+      return result;
     },
     set: function(item, key, value) {
       return item.set(key, value);

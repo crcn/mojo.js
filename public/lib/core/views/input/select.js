@@ -142,8 +142,8 @@
 
 
       SelectInputView.prototype._transformSelectItem = function(item) {
-        console.log("TRAN");
         return {
+          _id: dref.get(item, "_id"),
           value: dref.get(item, this.get("itemValue")) || dref.get(item, this.get("itemLabel")),
           label: dref.get(item, this.get("itemLabel")),
           data: item

@@ -86,7 +86,7 @@ define(["require", "dref", "bindable/lib/collection/binding", "bindable/lib/core
         return this;
       }
       this._remove(this._source || []);
-      this._insert(this._source = source);
+      this._insert(this._source = this._transform(source));
       return this;
     };
 

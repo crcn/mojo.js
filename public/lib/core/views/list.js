@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["require", "./base", "bindable", "underscore", "async"], function(require, BaseView, bindable, _, async) {
+  define(["require", "./base", "bindable", "underscore", "async", "../collections/index"], function(require, BaseView, bindable, _, async, Collection) {
     var ContainerView;
     return ContainerView = (function(_super) {
 
@@ -59,7 +59,7 @@
 
 
       ContainerView.prototype._createSource = function() {
-        return new bindable.Collection();
+        return new Collection();
       };
 
       /*
@@ -67,7 +67,7 @@
 
 
       ContainerView.prototype._createChildren = function() {
-        return new bindable.Collection();
+        return new Collection();
       };
 
       return ContainerView;

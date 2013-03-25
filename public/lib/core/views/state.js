@@ -4,7 +4,7 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./base", "bindable", "step"], function(BaseView, bindable, step) {
+  define(["./base", "bindable", "step", "../collections/index"], function(BaseView, bindable, step, Collection) {
     var StateView;
     return StateView = (function(_super) {
 
@@ -37,7 +37,7 @@
 
       StateView.prototype.init = function(options) {
         StateView.__super__.init.call(this, options);
-        this.states = new bindable.Collection(this.get("states") || []);
+        this.states = new Collection(this.get("states") || []);
         this.states.on("updated", this._onStatesChange);
         return this.states.bind().to(this.loadables);
       };
