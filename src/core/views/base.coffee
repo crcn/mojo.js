@@ -1,7 +1,6 @@
 define ["jquery", 
 "events", 
 "bindable",
-"../collections/index",
 "../utils/idGenerator",
 "outcome", 
 "dref",
@@ -9,7 +8,7 @@ define ["jquery",
 "./decor/facade",
 "asyngleton", 
 "../models/locator",
-"../utils/async"], ($, events, bindable, Collection, generateId, outcome, dref, _, 
+"../utils/async"], ($, events, bindable, generateId, outcome, dref, _, 
   ViewDecorator, asyngleton, modelLocator, async) ->
   
   class BaseView extends bindable.Object
@@ -38,7 +37,7 @@ define ["jquery",
       @decorator = new ViewDecorator @
 
       # items to load with the view
-      @loadables = new Collection([@decorator])
+      @loadables = new bindable.Collection([@decorator])
 
       # outcome is flow-control for errors
       @_o = outcome.e @

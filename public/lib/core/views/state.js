@@ -4,7 +4,7 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./base", "bindable", "step", "../collections/index"], function(BaseView, bindable, step, Collection) {
+  define(["./base", "bindable", "step"], function(BaseView, bindable, step) {
     var StateView;
     return StateView = (function(_super) {
 
@@ -38,7 +38,7 @@
       StateView.prototype.init = function(options) {
         var states;
         StateView.__super__.init.call(this, options);
-        states = new Collection();
+        states = new bindable.Collection();
         states.transform().map(function(state) {
           if (typeof state === "object") {
             return state;

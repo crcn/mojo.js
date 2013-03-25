@@ -1,4 +1,4 @@
-define ["./base",  "bindable", "step", "../collections/index"], (BaseView, bindable, step, Collection) ->
+define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
 
   class StateView extends BaseView
 
@@ -14,7 +14,7 @@ define ["./base",  "bindable", "step", "../collections/index"], (BaseView, binda
 
       super options
 
-      states = new Collection()
+      states = new bindable.Collection()
 
       states.transform().map (state) ->
         return state if typeof state is "object"

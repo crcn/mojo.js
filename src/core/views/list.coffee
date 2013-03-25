@@ -1,4 +1,4 @@
-define ["require", "./base", "bindable", "underscore", "async", "../collections/index"], (require, BaseView, bindable, _, async, Collection) ->
+define ["require", "./base", "bindable", "underscore", "async"], (require, BaseView, bindable, _, async) ->
 
 
 
@@ -41,11 +41,11 @@ define ["require", "./base", "bindable", "underscore", "async", "../collections/
     ###
     ###
 
-    _createSource: () -> new Collection()
+    _createSource: () -> new bindable.Collection()
 
     ###
     ###
 
-    _createChildren: () -> new Collection()
+    _createChildren: () -> new bindable.Collection()
 
 
