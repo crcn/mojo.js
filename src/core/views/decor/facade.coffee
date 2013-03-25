@@ -77,14 +77,14 @@ define ["underscore",
 
       load: (callback) -> 
         @view.emit "loadingDecorator"
-        @_callDecorFn "load", callback
+        @_callDecorFn "load", false, callback
 
       ###
       ###
 
       attach: (callback) -> 
         @view.emit "attachingDecorator"
-        @_callDecorFn "attach", callback
+        @_callDecorFn "attach", false, callback
 
 
       ###
@@ -92,7 +92,7 @@ define ["underscore",
 
       remove: (callback) ->
         @view.emit "removingDecorator"
-        @_callDecorFn "remove", callback
+        @_callDecorFn "remove", true, callback
 
       ###
       ###
@@ -111,8 +111,11 @@ define ["underscore",
       ###
       ###
 
-      _callDecorFn: cstep (name, callback) ->
-        async.eachSeries @_decorArray, ((decor, next) ->
+      _callDecorFn: cstep (name, reverse, callback) ->
+
+        stack = if reverse then @_decorArray.reverse() else @_decorArray
+
+        async.eachSeries stack, ((decor, next) ->
           decor[name].call decor, next
         ), callback
 
