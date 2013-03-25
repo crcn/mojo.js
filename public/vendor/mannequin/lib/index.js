@@ -1,4 +1,4 @@
-define(["require", "mannequin/lib/schema", "mannequin/lib/model"], function(require) {
+define(["require", "mannequin/lib/schema", "mannequin/lib/dictionary"], function(require) {
 
     var __dirname = "mannequin/lib",
     __filename    = "mannequin/lib/index.js",
@@ -15,7 +15,7 @@ define(["require", "mannequin/lib/schema", "mannequin/lib/model"], function(requ
 
   exports.Schema = require("mannequin/lib/schema");
 
-  exports.Model = require("mannequin/lib/model");
+  exports.dictionary = require("mannequin/lib/dictionary");
 
 }).call(this);
 

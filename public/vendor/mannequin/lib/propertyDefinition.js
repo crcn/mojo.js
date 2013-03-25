@@ -32,10 +32,13 @@ define(["require", "dref", "mannequin/lib/utils", "verify", "async", "toarray"],
     /*
     */
 
-    function PropertyDefinition(schema, key, definition) {
+    function PropertyDefinition(schema, key, options) {
+      var keyParts;
       this.schema = schema;
-      this.key = key;
-      this.definition = this._fixDefnition(definition);
+      keyParts = key.split(" ");
+      this.key = keyParts.pop();
+      this.scope = keyParts.pop() || "private";
+      this.options = this._fixDefnition(options);
       this._validateDefinition();
       this._createValidators();
     }
@@ -48,14 +51,14 @@ define(["require", "dref", "mannequin/lib/utils", "verify", "async", "toarray"],
       var v,
         _this = this;
       v = dref.get(target, this.key) || this._default();
-      if (!v && this.definition.$required) {
+      if (!v && this.options.$required) {
         return callback(new Error("\"" + this.key + "\" must be present"));
       }
       return async.forEach(this._testers, (function(tester, next) {
         return tester(v, next);
       }), function(err) {
         if (err) {
-          return callback(new Error(_this.definition.message || ("\"" + _this.key + "\" is invalid")));
+          return callback(new Error(_this.options.message || ("\"" + _this.key + "\" is invalid")));
         }
         dref.set(target, _this.key, v);
         return callback();
@@ -86,7 +89,7 @@ define(["require", "dref", "mannequin/lib/utils", "verify", "async", "toarray"],
 
 
     PropertyDefinition.prototype._validateDefinition = function() {
-      if (!this.definition.$type) {
+      if (!this.options.$type && !this.options.$ref) {
         throw new Error("definition type must exist for " + this.key);
       }
     };
@@ -96,18 +99,19 @@ define(["require", "dref", "mannequin/lib/utils", "verify", "async", "toarray"],
 
 
     PropertyDefinition.prototype._createValidators = function() {
-      var testers;
+      var testers,
+        _this = this;
       testers = [];
-      if (this.definition.$multi) {
+      if (this.options.$multi) {
         testers.push(verify.tester().is("array"));
       }
-      if (utils.isSchema(this.definition.$type)) {
-        testers.push(this._multi(this.definition.$type));
-      } else {
-        testers.push(this._multi(this._generateTypeTester()));
+      if (this.options.$ref) {
+        testers.push(this._multi(function(item, next) {
+          return _this.schema.dictionary().getSchema(_this.options.$ref).test(item, next);
+        }));
       }
-      if (this.definition.$test) {
-        testers.push(this._multi(this.definition.$test));
+      if (this.options.$type) {
+        testers.push(this._multi(this._generateTypeTester()));
       }
       return this._testers = testers;
     };
@@ -118,14 +122,14 @@ define(["require", "dref", "mannequin/lib/utils", "verify", "async", "toarray"],
 
     PropertyDefinition.prototype._generateTypeTester = function() {
       var k, key, tester;
-      tester = verify.tester().is(this.definition.$type);
-      if (this.definition.$test) {
-        return null;
+      if (this.options.$test) {
+        return this.options.$test;
       }
-      for (key in this.definition) {
+      tester = verify.tester().is(this.options.$type);
+      for (key in this.options) {
         k = key.substr(1);
         if (!!tester[k]) {
-          tester[k].apply(tester, toarray(this.definition[key]));
+          tester[k].apply(tester, toarray(this.options[key]));
         }
       }
       return tester;
@@ -149,13 +153,22 @@ define(["require", "dref", "mannequin/lib/utils", "verify", "async", "toarray"],
 
 
     PropertyDefinition.prototype._default = function() {
-      if (!this.definition.$default) {
+      if (!this.options.$default) {
         return void 0;
       }
-      if (typeof this.definition.$default === "function") {
-        return this.definition.$default();
+      if (typeof this.options.$default === "function") {
+        return this.options.$default();
       }
-      return this.definition.$default;
+      return this.options.$default;
+    };
+
+    /*
+    */
+
+
+    PropertyDefinition.prototype._getSchema = function(value) {
+      var _ref;
+      return (_ref = this.schema.dictionary()) != null ? _ref.getSchema(value) : void 0;
     };
 
     /*

@@ -73,9 +73,9 @@
 
       SelectInputView.prototype.init = function() {
         SelectInputView.__super__.init.call(this);
-        return this.children.addItemAt(new View({
+        return this.children.splice(0, 0, new View({
           label: this.get("selectLabel")
-        }, 0));
+        }));
       };
 
       /*
@@ -103,7 +103,7 @@
         if (!~index) {
           return this.deselect();
         }
-        this.set("selectedItem", this.source.getItemAt(index));
+        this.set("selectedItem", this.source.at(index));
         return this.element.trigger("data", {
           name: this.get("name"),
           value: this.get("selectedItem").value
@@ -141,9 +141,9 @@
       */
 
 
-      SelectInputView.prototype._transformSelectItem = function(item, index) {
+      SelectInputView.prototype._transformSelectItem = function(item) {
         return {
-          value: dref.get(item, this.get("itemValue")) || index,
+          value: dref.get(item, this.get("itemValue")) || dref.get(item, this.get("itemLabel")),
           label: dref.get(item, this.get("itemLabel")),
           data: item
         };
@@ -156,7 +156,7 @@
       SelectInputView.prototype._createSource = function() {
         var source;
         source = SelectInputView.__super__._createSource.call(this);
-        source.transform(this._transformSelectItem);
+        source.transform().map(this._transformSelectItem);
         return source;
       };
 
@@ -170,7 +170,7 @@
         if (!item) {
           index = 0;
         } else {
-          index = this.source.getItemIndex(item) + 1;
+          index = this.source.indexOf(item) + 1;
         }
         return this.$("select").children().eq(index).attr("selected", "selected");
       };

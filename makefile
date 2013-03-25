@@ -1,13 +1,16 @@
 all:
 	coffee -o public/lib -c src;
-	cp -rf public/lib lib;
+	cp -rf public/lib/core lib;
 	jam rebuild;
 
 all-watch:
 	coffee -o public/lib -cw src;
+	cp -rf public/lib/core lib;
+	jam rebuild;
 
 clean:
 	rm -rf public/lib
+	rm -rf lib
 
 
 test: 

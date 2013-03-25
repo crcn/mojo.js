@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["../../core/views/base", "../../core/views/input/select", "../../core/views/input/text", "../../core/views/input/form", "../../core/models/base", "mannequin", "../core/templates", "../../core/i18n/translate"], function(View, SelectInputView, TextInputView, FormView, BaseModel, mannequin, templates, t) {
+  define(["../../core/views/base", "../../core/views/input/select", "../../core/views/input/text", "../../core/views/input/form", "mannequin", "bindable", "../core/templates", "../../core/i18n/translate"], function(View, SelectInputView, TextInputView, FormView, mannequin, bindable, templates, t) {
     var AddClassView, Classroom, NameClassInputView, SelectClassesView, schema;
     schema = new mannequin.Schema({
       grade: {
@@ -15,23 +15,7 @@
         $required: true
       }
     });
-    Classroom = (function(_super) {
-
-      __extends(Classroom, _super);
-
-      function Classroom() {
-        return Classroom.__super__.constructor.apply(this, arguments);
-      }
-
-      /*
-      */
-
-
-      Classroom.prototype.schema = schema;
-
-      return Classroom;
-
-    })(BaseModel);
+    Classroom = mannequin.dictionary().register("classroom", schema).getClass();
     SelectClassesView = (function(_super) {
 
       __extends(SelectClassesView, _super);
@@ -62,7 +46,7 @@
       */
 
 
-      SelectClassesView.prototype.source = "modelLocator.grades";
+      SelectClassesView.prototype.source = bindable.Object.from("modelLocator.grades");
 
       return SelectClassesView;
 

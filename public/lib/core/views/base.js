@@ -4,7 +4,7 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["jquery", "events", "bindable", "outcome", "underscore", "./decor/facade", "asyngleton", "../collections/concrete", "../models/locator", "../utils/async"], function($, events, Bindable, outcome, _, ViewDecorator, asyngleton, Collection, modelLocator, async) {
+  define(["jquery", "events", "bindable", "outcome", "underscore", "./decor/facade", "asyngleton", "../models/locator", "../utils/async"], function($, events, bindable, outcome, _, ViewDecorator, asyngleton, modelLocator, async) {
     var BaseView;
     return BaseView = (function(_super) {
 
@@ -34,7 +34,7 @@
         options.view = this;
         BaseView.__super__.constructor.call(this, options);
         this.decorator = new ViewDecorator(this);
-        this.loadables = new Collection([this.decorator]);
+        this.loadables = new bindable.Collection([this.decorator]);
         this._o = outcome.e(this);
         this._init();
         this.set("initialized", true);
@@ -185,7 +185,7 @@
 
       return BaseView;
 
-    })(Bindable);
+    })(bindable.Object);
   });
 
 }).call(this);

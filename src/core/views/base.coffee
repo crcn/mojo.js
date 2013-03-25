@@ -5,13 +5,11 @@ define ["jquery",
 "underscore", 
 "./decor/facade",
 "asyngleton", 
-"../collections/concrete", 
 "../models/locator",
-"../utils/async"], ($, events, Bindable, outcome, _, 
-  ViewDecorator, asyngleton, 
-  Collection, modelLocator, async) ->
+"../utils/async"], ($, events, bindable, outcome, _, 
+  ViewDecorator, asyngleton, modelLocator, async) ->
   
-  class BaseView extends Bindable
+  class BaseView extends bindable.Object
 
     ###
      may seem a bit antipattern-ish to use a singleton object like this for all views, bit 
@@ -36,7 +34,7 @@ define ["jquery",
       @decorator = new ViewDecorator @
 
       # items to load with the view
-      @loadables = new Collection([@decorator])
+      @loadables = new bindable.Collection([@decorator])
 
       # outcome is flow-control for errors
       @_o = outcome.e @

@@ -1,0 +1,29 @@
+{
+  "name": "stepc",
+  "version": "0.0.3",
+  "description": "A CoffeeScript-safe version of creationix' step",
+  "keywords": [
+    "flow",
+    "step",
+    "control-flow",
+    "coffeescript",
+    "control",
+    "asynchronous",
+    "async"
+  ],
+  "homepage": "https://github.com/akidee/stepc",
+  "author": {
+    "name": "Andreas Kalsch",
+    "url": "http://akidee.de/"
+  },
+  "main": "./lib/step.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=0.2.5"
+  },
+  "readme": "# Step\n\nA simple control-flow library for node.JS that makes parallel execution, serial execution, and error handling painless.\n\n## Installation\n\n```sh\nnpm install stepc\n```\n\n## How to use\n\nThe step library exports a single function I call `Step`.  It accepts any number of functions as arguments and runs them in serial order using the passed in `this` context as the callback to the next step.\n\n    Step(\n      function readSelf() {\n        fs.readFile(__filename, this);\n      },\n      function capitalize(err, text) {\n        if (err) throw err;\n        return text.toUpperCase();\n      },\n      function showIt(err, newText) {\n        if (err) throw err;\n        console.log(newText);\n      }\n    );\n\nNotice that we pass in `this` as the callback to `fs.readFile`.  When the file read completes, step will send the result as the arguments to the next function in the chain.  Then in the `capitalize` function we're doing synchronous work so we can simple return the new value and Step will route it as if we called the callback.\n\nThe first parameter is reserved for errors since this is the node standard.  Also any exceptions thrown are caught and passed as the first argument to the next function.  As long as you don't nest callback functions inline your main functions this prevents there from ever being any uncaught exceptions.  This is very important for long running node.JS servers since a single uncaught exception can bring the whole server down.\n\nAlso there is support for parallel actions:\n\n    Step(\n      // Loads two files in parallel\n      function loadStuff() {\n        fs.readFile(__filename, this.parallel());\n        fs.readFile(\"/etc/passwd\", this.parallel());\n      },\n      // Show the result when done\n      function showStuff(err, code, users) {\n        if (err) throw err;\n        sys.puts(code);\n        sys.puts(users);\n      }\n    )\n\nHere we pass `this.parallel()` instead of `this` as the callback.  It internally keeps track of the number of callbacks issued and preserves their order then giving the result to the next step after all have finished.  If there is an error in any of the parallel actions, it will be passed as the first argument to the next step.\n\nAlso you can use group with a dynamic number of common tasks.\n\n    Step(\n      function readDir() {\n        fs.readdir(__dirname, this);\n      },\n      function readFiles(err, results) {\n        if (err) throw err;\n        // Create a new group\n        var group = this.group();\n        results.forEach(function (filename) {\n          if (/\\.js$/.test(filename)) {\n            fs.readFile(__dirname + \"/\" + filename, 'utf8', group());\n          }\n        });\n      },\n      function showAll(err , files) {\n        if (err) throw err;\n        sys.p(files);\n      }\n    );\n\n*Note* that we both call `this.group()` and `group()`.  The first reserves a slot in the parameters of the next step, then calling `group()` generates the individual callbacks and increments the internal counter.\n\n### Ignore returned values\n\nIt can be useful to ignore the functions' returned values, especially in JavaScript compiled from CoffeeScript, where the result of the last expression is always returned and will trigger the next step while ignoring callbacks. The way to be sure that all steps are asynchronous is:\n\n    Step.async(\n      function () {\n\n        // This is what the CoffeeScript compiler does\n        return fs.readdir(__dirname, this);\n      },\n      function (err, results) {\n        // ...\n      }\n    )\n\n### Preserve context\n\nTo preserve the current context is to pass it to Step() as the first argument. `this` will be the context you provide, your callback is now an additional argument that is passed to every function:\n\n    Step(\n      this,\n      function(e, next) {\n        // You can continue to use `this` here, how you would expect it.\n        doAsync(..., next);\n      },\n      function(e, result, next) {\n        doAsync(..., next.parallel());\n        doAsync(..., next.parallel());\n      },\n      function(e, result1, result2) {\n        // ...\n      }\n    )\n\n`next` can never be the first argument, since, by convention, it points to an error.\n",
+  "readmeFilename": "README.markdown",
+  "_id": "stepc@0.0.3",
+  "_from": "stepc@"
+}

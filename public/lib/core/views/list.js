@@ -3,7 +3,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["require", "./base", "../collections/concrete", "underscore", "async"], function(require, BaseView, Collection, _, async) {
+  define(["require", "./base", "bindable", "underscore", "async"], function(require, BaseView, bindable, _, async) {
     var ContainerView;
     return ContainerView = (function(_super) {
 
@@ -34,10 +34,12 @@
         ContainerView.__super__.init.call(this);
         childrenSource = this.get("children");
         sourceSource = this.get("source");
+        this.set("children", void 0);
+        this.set("source", void 0);
         this.children = this._createChildren();
-        this.children.glueFrom(childrenSource || [], this);
+        this.children.reset(childrenSource);
         this.source = this._createSource();
-        return this.source.glueFrom(sourceSource || [], this);
+        return this.source.reset(sourceSource);
       };
 
       /*
@@ -57,7 +59,7 @@
 
 
       ContainerView.prototype._createSource = function() {
-        return new Collection();
+        return new bindable.Collection();
       };
 
       /*
@@ -65,7 +67,7 @@
 
 
       ContainerView.prototype._createChildren = function() {
-        return new Collection();
+        return new bindable.Collection();
       };
 
       return ContainerView;

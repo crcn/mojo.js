@@ -1,5 +1,5 @@
-define ["./base", "../models/base", "../collections/concrete", "step"], (BaseView, Model, Collection, step) ->
-  
+define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
+
   class StateView extends BaseView
 
     ###
@@ -14,16 +14,16 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
 
       super options
 
-      @states = new Collection @get("states") or []
+      @states = new bindable.Collection @get("states") or []
       @states.on "updated", @_onStatesChange
-      @states.glue @loadables
-
+      @states.bind().to @loadables
 
 
     ###
     ###
 
-    _onLoaded: () =>  
+    _onAttached: () =>  
+      super()
       @bind "currentIndex", @_onIndexChange
 
 
@@ -51,7 +51,6 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
 
       self = @
 
-
       return if not self.states.length() or not @element
 
       step(
@@ -65,7 +64,7 @@ define ["./base", "../models/base", "../collections/concrete", "step"], (BaseVie
 
         # after removal, add the new state
         (() ->
-          self._currentView = self.states.getItemAt(index)
+          self._currentView = self.states.at(index)
           self.set "currentView", self._currentView
           self._currentView.attach self._childrenElement().append("<div />").children().last()
           self._onCurrentStateChange()

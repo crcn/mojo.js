@@ -30,12 +30,12 @@
     "asyngleton": "0.1.x",
     "outcome": "0.0.x",
     "step": "0.0.x",
-    "bindable": "0.1.x",
+    "bindable": "0.2.x",
     "disposable": "0.0.x",
     "eventemitter2": "0.4.x",
     "rivets": "0.3.x",
     "structr": "0.2.x",
     "dolce": "0.0.x",
-    "mannequin": "0.0.x"
+    "mannequin": "0.1.x"
   }
 }

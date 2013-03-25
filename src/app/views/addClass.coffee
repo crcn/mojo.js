@@ -2,10 +2,10 @@ define ["../../core/views/base",
 "../../core/views/input/select", 
 "../../core/views/input/text", 
 "../../core/views/input/form", 
-"../../core/models/base", 
-"mannequin", 
+"mannequin",
+"bindable",
 "../core/templates", 
-"../../core/i18n/translate"], (View, SelectInputView, TextInputView, FormView, BaseModel, mannequin, templates, t) ->
+"../../core/i18n/translate"], (View, SelectInputView, TextInputView, FormView, mannequin, bindable, templates, t) ->
         
     
   schema = new mannequin.Schema({
@@ -13,12 +13,7 @@ define ["../../core/views/base",
     class_name: { $type: "string", $required: true }
   })
 
-  class Classroom extends BaseModel
-
-    ###
-    ###
-
-    schema: schema
+  Classroom = mannequin.dictionary().register("classroom", schema).getClass()
 
 
   class SelectClassesView extends SelectInputView
@@ -41,7 +36,7 @@ define ["../../core/views/base",
     ###
     ###
 
-    source: "modelLocator.grades"
+    source: bindable.Object.from("modelLocator.grades")
 
 
   class NameClassInputView extends TextInputView
@@ -88,7 +83,7 @@ define ["../../core/views/base",
     ###
 
     events: {
-        "next": ()-> @submit()
+        "next": () -> @submit()
     },
 
     ###

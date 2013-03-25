@@ -58,7 +58,26 @@ define(["require", "bindable/lib/setters/base"], function(require) {
 
 
     _Class.prototype.bothWays = function() {
-      return this._disposable = this.to.bind(this.property).to(this.binding.from, this.binding.property);
+      var _this = this;
+      return this._disposable = this.to.bind(this.property).to(function(value) {
+        if (_this.currentValue !== value) {
+          return _this._changeFrom(value);
+        }
+      });
+    };
+
+    /*
+    */
+
+
+    _Class.prototype._changeFrom = function(value) {
+      var _this = this;
+      return this.__transform("from", value, function(err, transformedValue) {
+        if (err) {
+          throw err;
+        }
+        return _this.binding._from.set(_this.binding._property, _this.currentValue = transformedValue);
+      });
     };
 
     return _Class;

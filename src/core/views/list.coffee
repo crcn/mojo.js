@@ -1,4 +1,4 @@
-define ["require", "./base", "../collections/concrete", "underscore", "async"], (require, BaseView, Collection, _, async) ->
+define ["require", "./base", "bindable", "underscore", "async"], (require, BaseView, bindable, _, async) ->
 
 
 
@@ -23,13 +23,15 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
       childrenSource = @get("children")
       sourceSource   = @get("source")
 
+      @set("children", undefined)
+      @set("source", undefined)
+      
       # these are the children of this container
       @children = @_createChildren()
-      @children.glueFrom (childrenSource or []), @
+      @children.reset childrenSource
 
       @source = @_createSource()
-      @source.glueFrom (sourceSource or []), @
-
+      @source.reset sourceSource
 
     ###
     ###
@@ -39,11 +41,11 @@ define ["require", "./base", "../collections/concrete", "underscore", "async"], 
     ###
     ###
 
-    _createSource: () -> new Collection()
+    _createSource: () -> new bindable.Collection()
 
     ###
     ###
 
-    _createChildren: () -> new Collection()
+    _createChildren: () -> new bindable.Collection()
 
 

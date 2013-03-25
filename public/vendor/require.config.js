@@ -66,6 +66,16 @@ var jam = {
             "main": "handlebars.js"
         },
         {
+            "name": "hoist",
+            "location": "vendor/hoist",
+            "main": "./lib/index.js"
+        },
+        {
+            "name": "isa",
+            "location": "vendor/isa",
+            "main": "./isa.js"
+        },
+        {
             "name": "jquery",
             "location": "vendor/jquery",
             "main": "jquery.js"
@@ -103,6 +113,11 @@ var jam = {
         {
             "name": "step",
             "location": "vendor/step",
+            "main": "./lib/step.js"
+        },
+        {
+            "name": "stepc",
+            "location": "vendor/stepc",
             "main": "./lib/step.js"
         },
         {
@@ -234,6 +249,16 @@ if (typeof require !== "undefined" && require.config) {
             "main": "handlebars.js"
         },
         {
+            "name": "hoist",
+            "location": "vendor/hoist",
+            "main": "./lib/index.js"
+        },
+        {
+            "name": "isa",
+            "location": "vendor/isa",
+            "main": "./isa.js"
+        },
+        {
             "name": "jquery",
             "location": "vendor/jquery",
             "main": "jquery.js"
@@ -271,6 +296,11 @@ if (typeof require !== "undefined" && require.config) {
         {
             "name": "step",
             "location": "vendor/step",
+            "main": "./lib/step.js"
+        },
+        {
+            "name": "stepc",
+            "location": "vendor/stepc",
             "main": "./lib/step.js"
         },
         {
@@ -401,6 +431,16 @@ else {
             "main": "handlebars.js"
         },
         {
+            "name": "hoist",
+            "location": "vendor/hoist",
+            "main": "./lib/index.js"
+        },
+        {
+            "name": "isa",
+            "location": "vendor/isa",
+            "main": "./isa.js"
+        },
+        {
             "name": "jquery",
             "location": "vendor/jquery",
             "main": "jquery.js"
@@ -438,6 +478,11 @@ else {
         {
             "name": "step",
             "location": "vendor/step",
+            "main": "./lib/step.js"
+        },
+        {
+            "name": "stepc",
+            "location": "vendor/stepc",
             "main": "./lib/step.js"
         },
         {

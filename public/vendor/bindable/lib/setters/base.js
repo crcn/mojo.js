@@ -19,6 +19,7 @@ define(["require"], function(require) {
 
     function _Class(binding) {
       this.binding = binding;
+      this._transform = this.binding.transform();
       this.init();
     }
 
@@ -27,7 +28,7 @@ define(["require"], function(require) {
 
 
     _Class.prototype.init = function() {
-      return this.change(this.binding.from.get(this.binding.property));
+      return this.change(this.binding._from.get(this.binding._property));
     };
 
     /*
@@ -35,10 +36,16 @@ define(["require"], function(require) {
 
 
     _Class.prototype.change = function(value) {
+      var _this = this;
       if (this.currentValue === value) {
         return false;
       }
-      this._change(this.currentValue = value);
+      this.__transform("to", value, function(err, transformedValue) {
+        if (err) {
+          throw err;
+        }
+        return _this._change(_this.currentValue = transformedValue);
+      });
       return true;
     };
 
@@ -53,6 +60,23 @@ define(["require"], function(require) {
 
 
     _Class.prototype._change = function(value) {};
+
+    /*
+    */
+
+
+    _Class.prototype.__transform = function(method, value, next) {
+      var transform, _ref;
+      transform = (_ref = this._transform) != null ? _ref[method] : void 0;
+      if (!transform) {
+        return next(null, value);
+      }
+      if (transform.length === 1) {
+        return next(null, transform(value));
+      } else {
+        return transform(value, next);
+      }
+    };
 
     return _Class;
 

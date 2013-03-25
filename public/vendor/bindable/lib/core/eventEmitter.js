@@ -39,7 +39,7 @@ define(["require", "eventemitter2", "disposable"], function(require) {
 
 
     EventEmitter.prototype.on = function(key, listener) {
-      var disposables, k, listeners,
+      var disposables, k, keys, listeners,
         _this = this;
       disposables = disposable.create();
       if (arguments.length === 1) {
@@ -49,7 +49,13 @@ define(["require", "eventemitter2", "disposable"], function(require) {
         }
         return disposables;
       }
-      key.split(" ").forEach(function(key) {
+      keys = [];
+      if (typeof key === "string") {
+        keys = key.split(" ");
+      } else {
+        keys = key;
+      }
+      keys.forEach(function(key) {
         EventEmitter.__super__.on.call(_this, key, listener);
         return disposables.add(function() {
           return _this.off(key, listener);

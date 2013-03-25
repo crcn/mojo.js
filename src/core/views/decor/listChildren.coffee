@@ -2,9 +2,9 @@
 define ["./base", 
 "outcome", 
 "../../utils/async", 
-"../../collections/concrete", 
+"bindable",
 "../../factories/class",
-"../../templates/factory"], (BaseViewDecorator, outcome, async, Collection, ClassFactory, templates) ->
+"../../templates/factory"], (BaseViewDecorator, outcome, async, bindable, ClassFactory, templates) ->
   
   class ListChildrenDecorator extends BaseViewDecorator
 
@@ -15,18 +15,17 @@ define ["./base",
     load: (callback) ->  
 
       @_children = children = @view.get "children"
-      @_intermediate = new Collection()
 
-
-      # child view class provided? children 
-      if @view.get "childViewClass"
-        @_intermediate.itemFactory new ClassFactory @view.get "childViewClass"
-        @_intermediate.glue @_children
 
       if @view.get "source"
-        @view.get("source").glue @_intermediate
+        binding = @view.get("source").bind()
 
+        # child view class provided? children 
+        if @view.get "childViewClass"
+          factory = new ClassFactory @view.get "childViewClass"
+          binding.transform (item) -> factory.createItem item
 
+        binding.to @_children
 
       async.eachSeries @_children.source(), ((child, next) =>
         @_loadChild child, next

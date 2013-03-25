@@ -3,13 +3,14 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["bindable"], function(Bindable) {
+  define(["bindable", "outcome"], function(bindable, outcome) {
+    var ModelLocator;
+    outcome.logAllErrors(true);
     /*
        core model locator should be vanilla so that the application has the ability to override
        these values
     */
 
-    var ModelLocator;
     ModelLocator = (function(_super) {
 
       __extends(ModelLocator, _super);
@@ -20,7 +21,7 @@
 
       return ModelLocator;
 
-    })(Bindable);
+    })(bindable.Object);
     return new ModelLocator();
   });
 

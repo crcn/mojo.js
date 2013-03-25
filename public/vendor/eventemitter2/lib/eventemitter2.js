@@ -1,11 +1,12 @@
 define(["require"], function(require) {
 
-    var __dirname = "/vendor/eventemitter2/lib",
-    __filename    = "/vendor/eventemitter2/lib/eventemitter2.js",
+    var __dirname = "eventemitter2/lib",
+    __filename    = "eventemitter2/lib/eventemitter2.js",
     module        = { exports: {} },
     exports       = module.exports,
     define        = undefined,
-    window        = exports;
+    window        = exports,
+    global        = window;
 
     
 

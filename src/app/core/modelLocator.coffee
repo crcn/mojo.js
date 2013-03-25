@@ -1,10 +1,11 @@
-define ["../../core/models/locator", "../../core/collections/concrete"], (modelLocator, Collection) ->
+define ["../../core/models/locator", "bindable"], (modelLocator, bindable) ->
   
   modelLocator.set
 
     ###
     ###
-    grades: new Collection([
+
+    grades: new bindable.Collection([
       "Pre-school",
       "Kindergarten",
       "1st Grade",

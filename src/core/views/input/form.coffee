@@ -8,7 +8,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     ###
     ###
 
-    modelClass: mannequin.Model
+    modelClass: null
 
     ###
     ###
@@ -21,12 +21,8 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
     submit: (callback = (()->)) =>
 
-
-      event.stopImmediatePropagation()
-
       model = @_model()
       model.set @get "data"
-
 
       model.validate (err, result) =>
         if err 

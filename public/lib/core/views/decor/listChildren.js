@@ -4,7 +4,7 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./base", "outcome", "../../utils/async", "../../collections/concrete", "../../factories/class", "../../templates/factory"], function(BaseViewDecorator, outcome, async, Collection, ClassFactory, templates) {
+  define(["./base", "outcome", "../../utils/async", "bindable", "../../factories/class", "../../templates/factory"], function(BaseViewDecorator, outcome, async, bindable, ClassFactory, templates) {
     var ListChildrenDecorator;
     ListChildrenDecorator = (function(_super) {
 
@@ -20,16 +20,18 @@
 
 
       ListChildrenDecorator.prototype.load = function(callback) {
-        var children,
+        var binding, children, factory,
           _this = this;
         this._children = children = this.view.get("children");
-        this._intermediate = new Collection();
-        if (this.view.get("childViewClass")) {
-          this._intermediate.itemFactory(new ClassFactory(this.view.get("childViewClass")));
-          this._intermediate.glue(this._children);
-        }
         if (this.view.get("source")) {
-          this.view.get("source").glue(this._intermediate);
+          binding = this.view.get("source").bind();
+          if (this.view.get("childViewClass")) {
+            factory = new ClassFactory(this.view.get("childViewClass"));
+            binding.transform(function(item) {
+              return factory.createItem(item);
+            });
+          }
+          binding.to(this._children);
         }
         return async.eachSeries(this._children.source(), (function(child, next) {
           return _this._loadChild(child, next);

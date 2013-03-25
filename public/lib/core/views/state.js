@@ -4,7 +4,7 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(["./base", "../models/base", "../collections/concrete", "step"], function(BaseView, Model, Collection, step) {
+  define(["./base", "bindable", "step"], function(BaseView, bindable, step) {
     var StateView;
     return StateView = (function(_super) {
 
@@ -21,7 +21,7 @@
 
         this.nextState = __bind(this.nextState, this);
 
-        this._onLoaded = __bind(this._onLoaded, this);
+        this._onAttached = __bind(this._onAttached, this);
         return StateView.__super__.constructor.apply(this, arguments);
       }
 
@@ -37,16 +37,17 @@
 
       StateView.prototype.init = function(options) {
         StateView.__super__.init.call(this, options);
-        this.states = new Collection(this.get("states") || []);
+        this.states = new bindable.Collection(this.get("states") || []);
         this.states.on("updated", this._onStatesChange);
-        return this.states.glue(this.loadables);
+        return this.states.bind().to(this.loadables);
       };
 
       /*
       */
 
 
-      StateView.prototype._onLoaded = function() {
+      StateView.prototype._onAttached = function() {
+        StateView.__super__._onAttached.call(this);
         return this.bind("currentIndex", this._onIndexChange);
       };
 
@@ -87,7 +88,7 @@
           }
           return self._currentView.remove(this);
         }), (function() {
-          self._currentView = self.states.getItemAt(index);
+          self._currentView = self.states.at(index);
           self.set("currentView", self._currentView);
           self._currentView.attach(self._childrenElement().append("<div />").children().last());
           return self._onCurrentStateChange();

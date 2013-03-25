@@ -30,7 +30,7 @@
       */
 
 
-      FormView.prototype.modelClass = mannequin.Model;
+      FormView.prototype.modelClass = null;
 
       /*
       */
@@ -48,7 +48,6 @@
         if (callback == null) {
           callback = (function() {});
         }
-        event.stopImmediatePropagation();
         model = this._model();
         model.set(this.get("data"));
         return model.validate(function(err, result) {

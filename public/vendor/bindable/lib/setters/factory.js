@@ -38,7 +38,7 @@ define(["require", "bindable/lib/setters/fn", "bindable/lib/setters/bindable"], 
         to = target;
         toProperty = property;
       } else if (typeof target === "string") {
-        to = binding.from;
+        to = binding._from;
         toProperty = target;
       } else if (typeof target === "function") {
         callback = target;

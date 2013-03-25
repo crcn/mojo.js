@@ -45,7 +45,7 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
       super()
 
       # add the initial child so the default option is visible
-      @children.addItemAt(new View { label: @get("selectLabel") }, 0)
+      @children.splice 0, 0, new View { label: @get("selectLabel") }
 
     ###
     ###
@@ -72,7 +72,7 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
         return @deselect()
 
 
-      @set "selectedItem", @source.getItemAt index
+      @set "selectedItem", @source.at index
 
       @element.trigger "data", { name: @get("name"), value: @get("selectedItem").value }
 
@@ -103,9 +103,9 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
      transforms the source to something the drop menu can use
     ###
 
-    _transformSelectItem: (item, index) =>
+    _transformSelectItem: (item) =>
       {
-        value: (dref.get(item, @get("itemValue")) or index),
+        value: (dref.get(item, @get("itemValue")) or dref.get(item, @get("itemLabel"))),
         label: dref.get(item, @get("itemLabel")),
         data: item
       }
@@ -115,7 +115,7 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
 
     _createSource: () ->
       source = super()
-      source.transform @_transformSelectItem
+      source.transform().map @_transformSelectItem
       source
 
 
@@ -128,7 +128,7 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
       if not item
         index = 0
       else
-        index = @source.getItemIndex(item) + 1
+        index = @source.indexOf(item) + 1
 
       @$("select").children().eq(index).attr("selected", "selected")
 

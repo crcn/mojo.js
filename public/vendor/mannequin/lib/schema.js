@@ -48,6 +48,45 @@ define(["require", "mannequin/lib/utils", "async", "mannequin/lib/propertyDefini
     };
 
     /*
+    */
+
+
+    Schema.prototype.refs = function() {
+      var def, refs, _i, _len, _ref;
+      refs = [];
+      _ref = this.definitions;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        def = _ref[_i];
+        if (def.options.$ref) {
+          refs.push(def);
+        }
+      }
+      return refs;
+    };
+
+    /* 
+     Clones the schema. Necessary for the dictionary
+    */
+
+
+    Schema.prototype.clone = function() {
+      return new Schema(this.definition, this.options);
+    };
+
+    /* 
+     Stores information about all registered schemas
+    */
+
+
+    Schema.prototype.dictionary = function(value) {
+      if (!arguments.length) {
+        return this._dictionary;
+      }
+      this._dictionary = value;
+      return this;
+    };
+
+    /*
        synonym for test
     */
 
