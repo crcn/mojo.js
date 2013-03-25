@@ -17,13 +17,14 @@ define ["underscore",
 "outcome",
 "./base", 
 "./template",
+"./default",
 "./children",
 "./listChildren",
 "./attributes",
 "./events",
 "./bindings",
 "./transition"], (_, cstep, async, EitherFactory, ClassFactory, generateId, outcome, BaseViewDecorator, 
-  TemplateDecorator, ChildrenDecorator, ListChildrenDecorator, 
+  TemplateDecorator, DefaultDecorator, ChildrenDecorator, ListChildrenDecorator, 
   AttributesDecorator,
   EventsDecorator, BindingsDecorator, TransitionDecorator) ->
     
@@ -32,6 +33,9 @@ define ["underscore",
 
       # template must be loaded first because the following decorators handle an element
       "template": new ClassFactory(TemplateDecorator),
+
+
+      "default": new ClassFactory(DefaultDecorator),
 
       # element attributes
       "attributes": new ClassFactory(AttributesDecorator),

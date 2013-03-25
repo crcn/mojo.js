@@ -72,7 +72,7 @@ define ["jquery",
 
     _listen: () ->
       @on 
-        html: @_onHTML
+        ready: @_onReady
         attached: @_onAttached
         removed: @_onRemoved
         change: @_onChanged
@@ -129,13 +129,6 @@ define ["jquery",
     ###
     ###
 
-    html: (content) ->
-      @element.html content
-      @emit "html", content
-
-    ###
-    ###
-
     load: asyngleton (callback) -> 
       async.eachSeries @loadables.source(), ((loadable, next) ->
         loadable.load next
@@ -158,7 +151,7 @@ define ["jquery",
     ###
     ###
 
-    _onHTML      : () ->
+    _onReady     : () ->
     _onAttached  : () ->
     _onRemoved   : () ->
     _onChanged   : () ->

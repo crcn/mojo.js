@@ -29,7 +29,7 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
     ###
     ###
 
-    _onHTML: () =>  
+    _onReady: () =>  
       super()
       @bind "currentIndex", @_onIndexChange
 
