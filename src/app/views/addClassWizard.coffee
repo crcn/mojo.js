@@ -49,14 +49,11 @@ define ["../../core/views/state", "../core/templates", "./addClass", "./addStude
     ###
     ###
 
-    constructor: () ->
-      super {
-        states: [
-          new AddClassView(),
-          new AddStudentsView(),
-          new AddBehaviorsView()
-        ]
-      }
+    states: [
+      AddClassView,
+      AddStudentsView,
+      AddBehaviorsView
+    ]
 
     ###
     ###

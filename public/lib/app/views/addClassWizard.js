@@ -9,6 +9,10 @@
 
       __extends(AddClassWizardView, _super);
 
+      function AddClassWizardView() {
+        return AddClassWizardView.__super__.constructor.apply(this, arguments);
+      }
+
       /*
       */
 
@@ -75,11 +79,7 @@
       */
 
 
-      function AddClassWizardView() {
-        AddClassWizardView.__super__.constructor.call(this, {
-          states: [new AddClassView(), new AddStudentsView(), new AddBehaviorsView()]
-        });
-      }
+      AddClassWizardView.prototype.states = [AddClassView, AddStudentsView, AddBehaviorsView];
 
       /*
       */

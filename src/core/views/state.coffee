@@ -14,9 +14,17 @@ define ["./base",  "bindable", "step", "../collections/index"], (BaseView, binda
 
       super options
 
-      @states = new Collection @get("states") or []
-      @states.on "updated", @_onStatesChange
-      @states.bind().to @loadables
+      states = new Collection()
+
+      states.transform().map (state) ->
+        return state if typeof state is "object"
+        return new state()
+
+
+      states.reset @get("states") or []
+      states.on "updated", @_onStatesChange
+      states.bind().to @loadables
+      @states = states
 
     ###
     ###

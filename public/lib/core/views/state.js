@@ -36,10 +36,19 @@
 
 
       StateView.prototype.init = function(options) {
+        var states;
         StateView.__super__.init.call(this, options);
-        this.states = new Collection(this.get("states") || []);
-        this.states.on("updated", this._onStatesChange);
-        return this.states.bind().to(this.loadables);
+        states = new Collection();
+        states.transform().map(function(state) {
+          if (typeof state === "object") {
+            return state;
+          }
+          return new state();
+        });
+        states.reset(this.get("states") || []);
+        states.on("updated", this._onStatesChange);
+        states.bind().to(this.loadables);
+        return this.states = states;
       };
 
       /*
