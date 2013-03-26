@@ -7,7 +7,7 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
     ###
 
     attach: (callback) ->
-      @view.emit "ready"
+      @view.emit "rendered"
       callback()
 
 

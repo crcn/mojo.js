@@ -68,10 +68,9 @@
 
       BaseView.prototype._listen = function() {
         return this.on({
-          ready: this._onReady,
+          rendered: this._onRendered,
           attached: this._onAttached,
           removed: this._onRemoved,
-          change: this._onChanged,
           loaded: this._onLoaded
         });
       };
@@ -174,16 +173,19 @@
       };
 
       /*
+       DEPRECATED
       */
 
 
       BaseView.prototype._onReady = function() {};
 
+      BaseView.prototype._onRendered = function() {
+        return this._onReady();
+      };
+
       BaseView.prototype._onAttached = function() {};
 
       BaseView.prototype._onRemoved = function() {};
-
-      BaseView.prototype._onChanged = function() {};
 
       BaseView.prototype._onLoaded = function() {};
 

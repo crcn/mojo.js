@@ -72,10 +72,17 @@ define ["jquery",
 
     _listen: () ->
       @on 
-        ready: @_onReady
+
+        # emitted after all children have been attached - before transitions & events
+        rendered: @_onRendered
+
+        # emitted after this view has been attached to an element - after transitions & events
         attached: @_onAttached
+
+        # emitted after this view has been completely removed
         removed: @_onRemoved
-        change: @_onChanged
+
+        # emitted after all the children have been loaded
         loaded: @_onLoaded
 
     ###
@@ -149,12 +156,13 @@ define ["jquery",
       callback
 
     ###
+     DEPRECATED
     ###
 
     _onReady     : () ->
+    _onRendered  : () -> @_onReady()
     _onAttached  : () ->
     _onRemoved   : () ->
-    _onChanged   : () ->
     _onLoaded    : () ->
 
 
