@@ -19,12 +19,13 @@
 
 
       ChildrenDecorator.prototype.load = function(callback) {
-        var children, clazz, selector, view;
+        var children, childrenClasses, clazz, selector, view;
 
-        children = this.view.get("children");
+        childrenClasses = this.view.get("children");
+        children = {};
         this._children = [];
-        for (selector in children) {
-          clazz = children[selector];
+        for (selector in childrenClasses) {
+          clazz = childrenClasses[selector];
           view = new clazz();
           children[selector] = view;
           this._children.push({
@@ -32,6 +33,7 @@
             view: view
           });
         }
+        this.view.set("children", this.view.children = children);
         return this._callChildFn("load", callback);
       };
 

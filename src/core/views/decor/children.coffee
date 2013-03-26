@@ -8,16 +8,19 @@ define ["./base", "outcome", "../../utils/async"], (BaseViewDecorator, outcome, 
 
     load: (callback) ->  
 
-      children = @view.get "children"
+      childrenClasses = @view.get "children"
+      children = {}
       @_children = []
 
-      for selector of children
-        clazz = children[selector]
+      for selector of childrenClasses
+        clazz = childrenClasses[selector]
         view = new clazz()
 
         # make the views accesible from the selectors
         children[selector] = view
         @_children.push { selector: selector, view: view }
+
+      @view.set "children", @view.children = children
 
       @_callChildFn "load", callback
 
