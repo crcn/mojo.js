@@ -28,7 +28,7 @@ define ["./base", "outcome", "../../utils/async"], (BaseViewDecorator, outcome, 
     ###
     ###
 
-    attach: (callback) -> @_callChildFn "attach", callback, (child) -> [child.selector]
+    attach: (callback) -> @_callChildFn "attach", callback, (child) => [@view.$(child.selector)]
 
     ###
     ###

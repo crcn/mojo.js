@@ -73,7 +73,7 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
         (() ->
           self._currentView = self.states.at(index)
           self.set "currentView", self._currentView
-          self._currentView.attach self._childrenElement().append("<div />").children().last()
+          self._currentView.attach self._childrenElement()
           self._onCurrentStateChange()
         )
       )

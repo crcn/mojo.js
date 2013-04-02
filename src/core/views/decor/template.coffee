@@ -15,6 +15,8 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
     ###
 
     attach: (callback) ->
+      console.log @view.element
+      console.log @view.get "html"
       @view.element.html @view.get "html"
       callback()
 

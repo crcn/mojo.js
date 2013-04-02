@@ -23,10 +23,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
       model = @_model()
       model.set @get "data"
-
-      console.log model.get()
-      console.log model
-
+      
       model.save (err, result) =>
         if err 
           callback err
