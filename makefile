@@ -4,7 +4,7 @@ all:
 	jam rebuild;
 
 all-watch:
-	coffee -o lib -cw src;
+	coffee -o lib -cw src/core;
 
 clean:
 	rm -rf public/lib
