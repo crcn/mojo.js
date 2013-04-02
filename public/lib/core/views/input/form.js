@@ -47,7 +47,7 @@
         }
         model = this._model();
         model.set(this.get("data"));
-        return model.validate(function(err, result) {
+        return model.save(function(err, result) {
           if (err) {
             callback(err);
             return _this._showErrorMessage(err);

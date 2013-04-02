@@ -24,7 +24,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
       model = @_model()
       model.set @get "data"
 
-      model.validate (err, result) =>
+      model.save (err, result) =>
         if err 
           callback err
           return @_showErrorMessage err
