@@ -6,16 +6,15 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     ###
     ###
 
-    attach: (callback) ->
-
+    render: (callback) ->
       e = @_events()
       @_disposeBindings()
       @_disposable = disposable.create()
 
-
       for selector of e 
         @_addBinding selector, e[selector]
 
+      @view.emit "events"
 
       callback()
 

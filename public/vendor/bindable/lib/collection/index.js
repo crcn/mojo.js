@@ -46,6 +46,7 @@ define(["require", "dref", "bindable/lib/collection/binding", "bindable/lib/core
 
 
     function _Class(source, _id) {
+      this._source = [];
       if (source == null) {
         source = [];
       }

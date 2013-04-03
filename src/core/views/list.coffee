@@ -36,7 +36,7 @@ define ["require", "./base", "bindable", "underscore", "async"], (require, BaseV
     ###
     ###
 
-    _childElement: () -> if @get("childrenElement") then @$ @get("childrenElement") else @element
+    _childElement: () -> if @get("childrenElement") then @$ @get("childrenElement") else @el
 
     ###
     ###

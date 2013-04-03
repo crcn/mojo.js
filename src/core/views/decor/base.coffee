@@ -18,13 +18,16 @@ define () ->
     load: (callback) -> callback()
 
     ###
-     called when the view is added to an element
     ###
 
-    attach: (callback) -> callback()
+    render: (callback) -> callback()
 
     ###
-     called when a view is removed
+    ###
+
+    display: (callback) -> callback()
+
+    ###
     ###
 
     remove: (callback) -> callback()

@@ -2,11 +2,18 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
   
   class TransitionDecorator extends BaseViewDecorator
 
+    ###
+    ###
+
+    render: (callback) ->
+      @view.el.css { "visibility": "hidden" }
+      callback()
 
     ###
     ###
 
-    attach: (callback) -> 
+    display: (callback) -> 
+      @view.el.css { "visibility": "visible" }
       @_transitionAll "enter", callback
     
 
@@ -25,7 +32,6 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
       async.forEach @_filterTransitions(type), ((transition, next) =>
         @_transition @_element(transition), transition[type], next
       ), callback
-
 
     ###
     ###
@@ -71,8 +77,8 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
 
     _element: (transition) -> 
-      selector = transition.selector or transition.element
-      return if selector then @view.$(selector) else @view.element
+      selector = transition.selector or transition.el
+      return if selector then @view.$(selector) else @view.el
 
 
 

@@ -6,18 +6,30 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
     ###
     ###
 
+    init: () ->
+      super()
+      @view.loadables.on "displayed", @_onDisplayed
+
+    ###
+    ###
+
     load: (callback) ->  
       @view.get("template").render @templateData(), outcome.e(callback).s (content) => 
-        @view.set "html", content
+        @_html = content
         callback()
 
     ###
     ###
 
-    attach: (callback) ->
-      console.log @view.element
-      console.log @view.get "html"
-      @view.element.html @view.get "html"
+    render: (callback) ->
+      @view.el.css { "visibility": "hidden" }
+      @view.el.html @_html
+      callback()
+
+    ###
+    ###
+
+    display: (callback) ->
       callback()
 
     ###
@@ -25,6 +37,12 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
 
     templateData: () -> 
       @view.get()
+
+    ###
+    ###
+
+    _onDisplayed: () =>
+      @view.el.css { "visibility": "visible" }
 
 
 

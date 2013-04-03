@@ -5,7 +5,7 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
     ###
     ###
 
-    template: templates.fromSource("<input type='text' name='{{view.name}}'></input>", { engine: "handlebars" })
+    template: templates.fromSource("<input type='text' name='{{view.name}}'>", { engine: "handlebars" })
 
 
     ###
@@ -24,14 +24,14 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
      on input change, set the value of this text input to the element value
     ###
 
-    "_onInputChange": () ->
+    _onInputChange: () ->
       @set "value", @$("input").val()
-      @element.trigger "data", { name: @get("name"), value: @get("value") }
+      @el.trigger "data", { name: @get("name"), value: @get("value") }
 
     ###
     ###
 
-    "_onLoaded": () ->
+    _onRendered: () ->
       super()
       @bind "value", @_onValueChange
 
@@ -40,6 +40,6 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
      Reflect the value change in the text input
     ###
 
-    "_onValueChange": (value) =>
+    _onValueChange: (value) =>
       @$("input").val value
 

@@ -10,10 +10,15 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
     ###
     ###
 
-    init: (options) ->
+    childElement: "div"
 
+    ###
+    ###
+
+    init: (options) ->
       super options
 
+      @children = new bindable.Collection()
       states = new bindable.Collection()
 
       states.transform().map (state) ->
@@ -23,14 +28,8 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
 
       states.reset @get("states") or []
       states.on "updated", @_onStatesChange
-      states.bind().to @loadables
+
       @states = states
-
-    ###
-    ###
-
-    _onReady: () =>  
-      super()
       @bind "currentIndex", @_onIndexChange
 
 
@@ -58,7 +57,8 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
 
       self = @
 
-      return if not self.states.length() or not @element
+      return if not self.states.length()
+      children = @children
 
       step(
 
@@ -66,14 +66,14 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
         # transition?
         (() ->
           return @() if not self._currentView
-          self._currentView.remove @
+          children.shift()
         ),
 
         # after removal, add the new state
         (() ->
           self._currentView = self.states.at(index)
           self.set "currentView", self._currentView
-          self._currentView.attach self._childrenElement()
+          children.push self._currentView
           self._onCurrentStateChange()
         )
       )
@@ -83,7 +83,7 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
 
     _childrenElement: () -> 
       childrenElement = @get "childrenElement"
-      return @element if not childrenElement
+      return @el if not childrenElement
       return @$ childrenElement
 
     ###

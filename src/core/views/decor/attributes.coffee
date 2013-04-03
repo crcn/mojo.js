@@ -6,7 +6,7 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     ###
     ###
 
-    attach: (callback) ->
+    render: (callback) ->
       for props in @_properties()
         for key of props.attributes
           props.element.attr(key, props.attributes[key])
@@ -48,7 +48,7 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     ###
 
     _targetElement: () ->
-      return @view.element if not @view.has "attributesElement"
+      return @view.el if not @view.has "attributesElement"
       return @view.$ @view.get "attributesElement"
 
 

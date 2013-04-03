@@ -71,10 +71,12 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
       if !~index
         return @deselect()
 
+      console.log index, @source.at index
+
 
       @set "selectedItem", @source.at index
 
-      @element.trigger "data", { name: @get("name"), value: @get("selectedItem").value }
+      @el.trigger "data", { name: @get("name"), value: @get("selectedItem").value }
 
     ###
      deselects the item
@@ -87,13 +89,7 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
     ###
     ###
 
-    _onAttached: () =>
-      super()
-
-    ###
-    ###
-
-    _onLoaded: () =>
+    _onRendered: () =>
       super()
 
       # listen for any changes in the selected item so it can be reflected in the drop menu

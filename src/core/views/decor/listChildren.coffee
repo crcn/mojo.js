@@ -4,7 +4,8 @@ define ["./base",
 "../../utils/async", 
 "bindable",
 "../../factories/class",
-"../../templates/factory"], (BaseViewDecorator, outcome, async, bindable, ClassFactory, templates) ->
+"../collection",
+"../../templates/factory"], (BaseViewDecorator, outcome, async, bindable, ClassFactory, Collection, templates) ->
   
   class ListChildrenDecorator extends BaseViewDecorator
 
@@ -14,7 +15,7 @@ define ["./base",
 
     load: (callback) ->  
 
-      @_children = children = @view.get "children"
+      @_children = new Collection @view.get "children"
 
 
       if @view.get "source"
@@ -28,10 +29,8 @@ define ["./base",
 
         binding.to @_children
 
-
-      async.eachSeries @_children.source(), ((child, next) =>
-        @_loadChild child, next
-      ), outcome.e(callback).s () =>
+      
+      @_children.load outcome.e(callback).s () =>
 
         @_children.on 
           insert: @_insertChild
@@ -42,18 +41,23 @@ define ["./base",
     ###
     ###
 
-    attach: (callback) -> 
+    render: (callback) -> 
       async.eachSeries @_children.source(), ((child, next) =>
-        @_addChild child, next
-      ), callback
+
+        @_addChildElement child, outcome.e(next).s (element) =>
+          child.element element
+          next()
+
+      ), outcome.e(callback).s () =>
+        @_children.render callback
 
     ###
     ###
 
-    remove: (callback) -> 
-      async.eachSeries @_children.source(), ((child, next) ->
-        child.remove next
-      ), callback
+    display: (callback) -> 
+      @_children.display () =>
+        @_loaded = true
+        callback()
 
     ###
     ###
@@ -66,26 +70,29 @@ define ["./base",
 
     _removeChild: (item, index) =>
       item.remove()
-      item.element.remove()
+      item.el.remove()
 
     ###
     ###
 
     _addChild: (child, next = (() ->)) ->
 
-      return if @_loading
+      child.loadables.unshift {
+        _id: "loadable",
+        load: (next) =>
+          @_addChildElement child, outcome.e(next).s (element) ->
+            child.element element
+            next()
+      }
 
-      @_loadChild child, () =>
-        child.attach @_childrenElement().append(child.get("parentTplContent")).children().last()
-        next()
+      if @_loaded
+        child.display next
 
     ###
     ###
 
-    _loadChild: (child, callback) ->
+    _addChildElement: (child, callback) ->
 
-      # return if the child has already been loaded
-      return callback() if child.has "parentTplContent"
 
       # a template can be defined for the child element - this is nice for items such as select inputs
       if @view.get("childTemplate")
@@ -97,8 +104,7 @@ define ["./base",
 
       # load the template with the target child data
       template.render child.get(), outcome.e(callback).s (content) =>
-        child.set "parentTplContent", content
-        child.load callback
+        callback null, @_childrenElement().append(content).children().last()
 
 
     ###
@@ -106,14 +112,14 @@ define ["./base",
 
     _childrenElement: () -> 
 
-      return @view.element if not @view.has "childrenElement"
+      return @view.el if not @view.has "childrenElement"
 
       @view.$ @view.get "childrenElement"
 
 
 
   ListChildrenDecorator.test = (view) ->
-    return view.has("children") and view.get("children")._events
+    return view.has("children") and view.get("children").__isCollection
 
 
   ListChildrenDecorator

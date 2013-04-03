@@ -23,7 +23,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
       model = @_model()
       model.set @get "data"
-      
+
       model.save (err, result) =>
         if err 
           callback err
@@ -34,16 +34,19 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     ###
     ###
 
-    _onAttached: () =>
+    _onDisplay: () =>
       super()
+      console.log "DISPLAY"
 
       submitElement = @get("submitElement")
 
       if submitElement
         @$(submitElement).bind "click", @_onSubmit
 
+      @set "data", {}
+
       # listen for any data emitted by child form inputs
-      @element.bind "data", (e, d) =>
+      @el.bind "data", (e, d) =>
 
         # stop the propagation so parent form fields don't catch this
         e.stopPropagation()
@@ -51,12 +54,31 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
         # set to THIS data - this will be added to the model later on
         @set "data.#{d.name}", d.value
 
+        @_validate()
+
+      # validate the data that might be set initially
+      @_validate()
+
     ###
     ###
 
     _onSubmit: (event) =>
       @submit()
 
+    ###
+    ###
+
+    _validate: () ->
+      @_model().set @get "data"
+      @_model().validate (err) =>
+        @_toggleValidity !err
+
+    ###
+     useful for enabling / disabling a button
+    ###
+
+    _toggleValidity: (valid) ->
+      @emit "valid", valid
 
 
     ###

@@ -16,15 +16,17 @@ define ["underscore",
 "../../utils/idGenerator",
 "outcome",
 "./base", 
+"../collection",
+"../../utils/compose",
 "./template",
-"./default",
 "./children",
 "./listChildren",
 "./attributes",
 "./events",
 "./bindings",
 "./transition"], (_, cstep, async, EitherFactory, ClassFactory, generateId, outcome, BaseViewDecorator, 
-  TemplateDecorator, DefaultDecorator, ChildrenDecorator, ListChildrenDecorator, 
+  ViewCollection, compose,
+  TemplateDecorator, ChildrenDecorator, ListChildrenDecorator, 
   AttributesDecorator,
   EventsDecorator, BindingsDecorator, TransitionDecorator) ->
     
@@ -34,20 +36,17 @@ define ["underscore",
       # template must be loaded first because the following decorators handle an element
       "template": new ClassFactory(TemplateDecorator),
 
-
-      "default": new ClassFactory(DefaultDecorator),
-
       # element attributes
       "attributes": new ClassFactory(AttributesDecorator),
-
-      # parent bindings must be set before child bindings
-      "bindings": new ClassFactory(BindingsDecorator),
-
+      
       # children must be loaded before the transition starts, otherwise there might be a delay
       "children": new EitherFactory(new ClassFactory(ChildrenDecorator), new ClassFactory(ListChildrenDecorator)),
 
       # events can go anywhere really
       "events": new ClassFactory(EventsDecorator),
+
+      # parent bindings must be set before child bindings
+      "bindings": new ClassFactory(BindingsDecorator),
 
       # transition should be the last-ish item since it adds a delay to everything else
       "transition": new ClassFactory(TransitionDecorator)
@@ -62,6 +61,9 @@ define ["underscore",
 
       constructor: (@view) ->
         @_id = generateId()
+        @_facadeCollection = new ViewCollection()
+        @_facadeCollection.limit = 1
+        compose @, @_facadeCollection, ["load", "render", "display", "remove"]
         @dispose()
 
       ###
@@ -75,66 +77,34 @@ define ["underscore",
       ###
       ###
 
-      load: (callback) -> 
-        @view.emit "loadingDecorator"
-        @_callDecorFn "load", false, callback
-
-      ###
-      ###
-
-      attach: (callback) -> 
-        @view.emit "attachingDecorator"
-        @_callDecorFn "attach", false, callback
-
-
-      ###
-      ###
-
-      remove: (callback) ->
-        @view.emit "removingDecorator"
-        @_callDecorFn "remove", true, callback
-
-      ###
-      ###
-
       dispose: () ->
 
-        if @_decorArray
-          for decor in @_decorArray
-            decor.dispose()
+        for item in @_facadeCollection.source()
+          item.dispose()
 
-        @_decorArray = []
+        @_facadeCollection.reset []
         @_decorators = {}
-
-
-
-      ###
-      ###
-
-      _callDecorFn: cstep (name, reverse, callback) ->
-
-        stack = if reverse then @_decorArray.reverse() else @_decorArray
-
-        async.eachSeries stack, ((decor, next) ->
-          decor[name].call decor, next
-        ), callback
-
 
       ###
       ###
 
       _addDecorators: () ->
 
+        decorators = []
+
         priority = 0
         for name of availableDecorators
           priority++
           factory = availableDecorators[name]
-          if factory.test(@view) and not @_decorators[name]
-            @_decorators[name] = factory.createItem @view
-            @_decorators[name].priority = priority
+
+          if factory.test(@view)
+            decor = factory.createItem @view
+            decor.priority = priority
+            decor._id = name
+            decorators.push decor
 
         
-        @_decorArray = _.values(@_decorators).sort (a, b) -> if a.priority > b.priority then 1 else -1
+        @_facadeCollection.reset decorators.sort (a, b) -> if a.priority > b.priority then 1 else -1
 
 
 

@@ -26,8 +26,8 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
     ###
     ###
 
-    attach: (callback) ->
-      rivets.bind @view.element, { data: @view }
+    render: (callback) ->
+      rivets.bind @view.el, { data: @view }
       callback()
 
 

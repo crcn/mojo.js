@@ -1,6 +1,7 @@
 define ["jquery", 
 "events", 
 "bindable",
+"./collection",
 "../utils/idGenerator",
 "outcome", 
 "dref",
@@ -8,8 +9,9 @@ define ["jquery",
 "./decor/facade",
 "asyngleton", 
 "../models/locator",
-"../utils/async"], ($, events, bindable, generateId, outcome, dref, _, 
-  ViewDecorator, asyngleton, modelLocator, async) ->
+"../utils/compose",
+"../utils/async"], ($, events, bindable, ViewCollection, generateId, outcome, dref, _, 
+  ViewDecorator, asyngleton, modelLocator, compose, async) ->
   
   class BaseView extends bindable.Object
 
@@ -37,13 +39,16 @@ define ["jquery",
       @decorator = new ViewDecorator @
 
       # items to load with the view
-      @loadables = new bindable.Collection([@decorator])
+      @loadables = new ViewCollection([@decorator])
+
+      compose @, @loadables, ["load", "render", "display", "remove"]
 
       # outcome is flow-control for errors
       @_o = outcome.e @
 
       # initialize the options
       @_init()
+
       @decorator.init()
 
     ###
@@ -71,19 +76,32 @@ define ["jquery",
     ###
 
     _listen: () ->
-      @on 
+
+      @loadables.on 
+
+        # emitted before load
+        load: @_onLoad
+
+        # emitted after all the children have been loaded
+        loaded: @_onLoaded
+
+        # emitted before render
+        render: @_onRender
 
         # emitted after all children have been attached - before transitions & events
         rendered: @_onRendered
 
+        # emitted before display
+        display: @_onDisplay,
+
         # emitted after this view has been attached to an element - after transitions & events
-        attached: @_onAttached
+        displayed: @_onDisplayed,
+
+        # emitted before remove
+        remove: @_onRemove,
 
         # emitted after this view has been completely removed
         removed: @_onRemoved
-
-        # emitted after all the children have been loaded
-        loaded: @_onLoaded
 
     ###
      returns a search for a particular element
@@ -92,78 +110,53 @@ define ["jquery",
     $: (search) -> 
     
       # otherwise - only look within this element
-      @element?.find search
+      @el?.find search
 
     ###
      attaches to an element
     ###
 
-    attach: (selectorOrElement, callback = (() ->)) ->
+    attach: (selectorOrElement, callback) ->
+      @element selectorOrElement
+      @loadables.attach callback
 
-      @element  = if typeof selectorOrElement is "string" then $(selectorOrElement) else selectorOrElement
+    ###
+    ###
+
+    element: (selectorOrElement) ->
+      return @el if not arguments.length
+      @el  = if typeof selectorOrElement is "string" then $(selectorOrElement) else selectorOrElement
       @selector = selectorOrElement
+      @
 
-      @load () =>   
-        @decorator.attach @_o.e(callback).s () =>
-          callback()
-          @emit "attached"
-
-    ###
-     re-renders an element
-    ###
-
-    rerender: (callback = ()->) =>
-
-      callback = @_fixCallback callback
-
-      return callback() if not @selector
-      @attach @selector, callback
 
     ###
     ###
 
-    remove: (callback = (() ->)) ->
+    emit: () ->
+      BaseView.__super__.emit.apply @, arguments
 
-      callback = @_fixCallback callback
+      # also send it to the element
+      @el?.trigger.apply @el, arguments
 
-      return callback() if not @element
-      @decorator.remove @_o.e(callback).s () =>
-        @element.unbind("*")
-        @element.html("")
-        callback()
-        @emit "removed"
 
     ###
     ###
 
-    load: asyngleton (callback) -> 
-      async.eachSeries @loadables.source(), ((loadable, next) ->
-        loadable.load next
-      ), @_o.e(callback).s () =>
-        callback()
-        @emit "loaded"
+    _onLoad      : () =>
+    _onLoaded    : () =>
 
+    _onRender    : () =>
+    _onRendered  : () => 
 
-    ###
-     Fixes the callback incase it's not a function
-    ###
-
-    _fixCallback: (callback) ->
-
-      if typeof callback isnt "function"
-        callback = (() ->)
-
-      callback
-
-    ###
-     DEPRECATED
-    ###
-
-    _onReady     : () ->
-    _onRendered  : () -> @_onReady()
-    _onAttached  : () ->
-    _onRemoved   : () ->
-    _onLoaded    : () ->
+    _onDisplay   : () =>
+    _onDisplayed : () => 
+    
+    _onRemove    : () =>
+    _onRemoved   : () =>
+      return if not @el
+      @el.unbind("*")
+      @el.html("")
 
 
 
