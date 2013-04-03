@@ -7,7 +7,7 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "outcome"], (bindab
      atta
     ###
 
-    attach: (callback) -> @load () => @render () => @display callback
+    attach: (callback) -> @display callback
 
 
     ###
@@ -22,21 +22,21 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "outcome"], (bindab
     ###
 
     render: asyngleton (callback) ->
-      @_callViewMethod "render", "rendered", false, callback
+      @load () => @_callViewMethod "render", "rendered", false, callback
 
     ###
      called when we want to display the view
     ###
 
     display: asyngleton (callback) -> 
-      @_callViewMethod "display", "displayed", false, callback
+      @render () => @_callViewMethod "display", "displayed", false, callback
 
     ###
      removes & unloads the view
     ###
 
     remove: asyngleton (callback) ->
-      @_callViewMethod "remove", "removed", true, callback
+      @display () => @_callViewMethod "remove", "removed", true, callback
 
     ###
     ###
