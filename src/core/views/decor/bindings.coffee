@@ -18,7 +18,9 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
       publish: (obj, keypath, value) ->
         dref.set obj, keypath.replace(/,/g, "."), value
     }
-  })
+  });
+
+  rivets.formatters.negate = (value) -> not value
 
   
   class BindingsDecorator extends BaseViewDecorator

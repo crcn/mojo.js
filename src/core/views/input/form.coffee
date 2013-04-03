@@ -36,7 +36,6 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
     _onDisplay: () =>
       super()
-      console.log "DISPLAY"
 
       submitElement = @get("submitElement")
 
@@ -78,7 +77,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     ###
 
     _toggleValidity: (valid) ->
-      @emit "valid", valid
+      @set "valid", valid
 
 
     ###

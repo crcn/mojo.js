@@ -68,15 +68,12 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
     ###
 
     select: (index) ->
+
       if !~index
         return @deselect()
 
-      console.log index, @source.at index
-
-
       @set "selectedItem", @source.at index
-
-      @el.trigger "data", { name: @get("name"), value: @get("selectedItem").value }
+      @_emitData()
 
     ###
      deselects the item
@@ -84,6 +81,11 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
 
     deselect: () ->
       @set "selectedItem", null
+      @_emitData()
+
+
+    _emitData: () ->
+      @emit "data", { name: @get("name"), value: @get("selectedItem")?.value }
 
 
     ###
