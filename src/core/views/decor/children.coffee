@@ -10,7 +10,6 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
 
 
       childrenClasses = @view.get "children"
-      children = {}
       @_children = new Collection()
 
       for selector of childrenClasses
@@ -18,11 +17,11 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
         view = new clazz()
 
         # make the views accesible from the selectors
-        children[selector] = view
+        @_children[selector] = view
         view.__selector = selector
         @_children.push view
 
-      @view.set "children", @view.children = children
+      @view.set "children", @view.children = @_children
       @_children.load callback
 
     ###

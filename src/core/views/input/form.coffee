@@ -34,6 +34,13 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     ###
     ###
 
+    _onRendered: () ->
+      super()
+
+
+    ###
+    ###
+
     _onDisplay: () =>
       super()
 
