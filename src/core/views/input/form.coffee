@@ -36,9 +36,12 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
     _onRendered: () ->
       super()
-      model = @_model()
-      for inputView in @children.source()
-        model.bind(inputView.get("name")).to(inputView, "value")
+
+      for inputView in @children.source() then do (inputView) =>
+        console.log "model.#{inputView.get("name")}"
+        @bind("model.#{inputView.get("name")}").to(inputView, "value").to (value) ->
+          console.log inputView.get("name"), value
+
 
 
     ###
@@ -46,7 +49,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
     _onDisplay: () =>
       super()
-
+ 
       submitElement = @get("submitElement")
 
       if submitElement
@@ -79,8 +82,8 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     ###
 
     _validate: () ->
-      @_model().set @get "data"
       @_model().validate (err) =>
+        console.log err
         @_toggleValidity !err
 
     ###
@@ -108,8 +111,9 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
     _model: () ->
       model = @get("model")
-      if model
-        return model
+      return model if @get("model")
+
+      console.log "CREATE"
 
       clazz = @get "modelClass"
       model = new clazz

@@ -102,11 +102,11 @@ define ["../list", "./base", "../base", "../../templates/factory", "dref", "bind
       for item, i in @get("source").source()
         if item.value is value
           # offset the default item
-          index = i+1
+          index = i + 1
           break
 
       if not ~index
-        return
+        index = 0
 
       @$("select").children().eq(index).attr("selected", "selected")
 
