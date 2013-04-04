@@ -20,10 +20,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     ###
 
     submit: (callback = (()->)) =>
-
       model = @_model()
-      model.set @get "data"
-
       model.save (err, result) =>
         if err 
           callback err
@@ -37,42 +34,15 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     _onRendered: () ->
       super()
 
-      for inputView in @children.source() then do (inputView) =>
-        console.log "model.#{inputView.get("name")}"
-        @bind("model.#{inputView.get("name")}").to(inputView, "value").to (value) ->
-          console.log inputView.get("name"), value
 
-
+      for inputView in @children.source()
+        @bind("model.#{inputView.get("name")}").to(inputView, "value").to(@_validate).bothWays()
 
     ###
     ###
 
-    _onDisplay: () =>
-      super()
-
-      @set "data", {}
-
-      # listen for any data emitted by child form inputs
-      @el.bind "data", (e, d) =>
-
-        # stop the propagation so parent form fields don't catch this
-        e.stopPropagation()
-
-        # set to THIS data - this will be added to the model later on
-        @set "data.#{d.name}", d.value
-
-        @_validate()
-
-      # validate the data that might be set initially
-      @_validate()
-
-
-    ###
-    ###
-
-    _validate: () ->
+    _validate: () =>
       @_model().validate (err) =>
-        console.log err
         @_toggleValidity !err
 
     ###
@@ -101,11 +71,6 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     _model: () =>
       model = @get("model")
       return model if @get("model")
-
-      console.log new Error().stack
-
-      console.log "CREATE"
-
       clazz = @get "modelClass"
       model = new clazz
       @set "model", model

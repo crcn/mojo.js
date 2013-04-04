@@ -23,8 +23,6 @@ define ["jquery",
      This also reduces the amount of written code tremendously.
     ###
 
-    modelLocator: modelLocator
-
     ###
     ###
 
@@ -32,6 +30,7 @@ define ["jquery",
 
       options.view = @
       options._id = dref.get(options, "_id") or generateId()
+      options.modelLocator = modelLocator
 
       super options
 
@@ -151,7 +150,7 @@ define ["jquery",
 
     _onDisplay   : () =>
     _onDisplayed : () => 
-    
+
     _onRemove    : () =>
     _onRemoved   : () =>
       return if not @el
