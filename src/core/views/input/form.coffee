@@ -36,6 +36,9 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
     _onRendered: () ->
       super()
+      model = @_model()
+      for inputView in @children.source()
+        model.bind(inputView.get("name")).to(inputView, "value")
 
 
     ###
@@ -64,6 +67,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
       # validate the data that might be set initially
       @_validate()
+
 
     ###
     ###
