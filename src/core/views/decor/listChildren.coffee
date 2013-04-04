@@ -5,7 +5,7 @@ define ["./base",
 "bindable",
 "../../factories/class",
 "../collection",
-"../../templates/factory"], (BaseViewDecorator, outcome, async, bindable, ClassFactory, Collection, templates) ->
+"../../templates/factory", "hoist"], (BaseViewDecorator, outcome, async, bindable, ClassFactory, Collection, templates, hoist) ->
   
   class ListChildrenDecorator extends BaseViewDecorator
 
@@ -17,31 +17,31 @@ define ["./base",
 
       @_children = new Collection @view.get "children"
 
-
-      if @view.get "source"
+      if @view.has "source"
         binding = @view.get("source").bind()
+        binding.transform transformer = hoist()
+
+        if @view.get "transformSourceItem"
+          transformer.map @view.get "transformSourceItem" 
 
         # child view class provided? children 
         if @view.get "childViewClass"
           factory = new ClassFactory @view.get "childViewClass"
-          binding.transform (item) -> 
-            factory.createItem item
+          transformer.map (item) => factory.createItem item
 
         binding.to @_children
 
-      
-      @_children.load outcome.e(callback).s () =>
-
-        @_children.on 
-          insert: @_insertChild
-          remove: @_removeChild
-
-        callback.apply this, arguments
+      @_children.load callback
 
     ###
     ###
 
     render: (callback) -> 
+
+      @_children.on 
+        insert: @_insertChild
+        remove: @_removeChild
+
       async.eachSeries @_children.source(), ((child, next) =>
 
         @_addChildElement child, outcome.e(next).s (element) =>
@@ -93,7 +93,6 @@ define ["./base",
 
     _addChildElement: (child, callback) ->
 
-
       # a template can be defined for the child element - this is nice for items such as select inputs
       if @view.get("childTemplate")
         template = @view.get("childTemplate")
@@ -111,9 +110,7 @@ define ["./base",
     ###
 
     _childrenElement: () -> 
-
       return @view.el if not @view.has "childrenElement"
-
       @view.$ @view.get "childrenElement"
 
 

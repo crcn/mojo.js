@@ -18,20 +18,17 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
     init: (options) ->
       super options
 
+      cstates = @get("states")
       @children = new bindable.Collection()
-      states = new bindable.Collection()
+      states = @states = new bindable.Collection()
 
       states.transform().map (state) ->
         return state if typeof state is "object"
         return new state()
 
-
-      states.reset @get("states") or []
+      states.reset cstates
       states.on "updated", @_onStatesChange
-
-      @states = states
       @bind "currentIndex", @_onIndexChange
-
 
     ###
     ###

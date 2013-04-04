@@ -1,6 +1,6 @@
-define ["../list", "../base", "../../templates/factory", "dref"], (ListView, View, templates, dref) ->
+define ["../list", "./base", "../base", "../../templates/factory", "dref", "bindable"], (ListView, InputView, View, templates, dref, bindable) ->
 
-  class SelectInputView extends ListView
+  class SelectInputView extends InputView
 
     ###
     ###
@@ -41,11 +41,20 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
     ###
     ###
 
+    transformSourceItem: (item) =>
+      {
+        _id: dref.get(item, "_id"),
+        value: (dref.get(item, @get("itemValue")) or dref.get(item, @get("itemLabel"))),
+        label: dref.get(item, @get("itemLabel")),
+        data: item
+      }
+
+    ###
+    ###
+
     init: () ->
       super()
-
-      # add the initial child so the default option is visible
-      @children.splice 0, 0, new View { label: @get("selectLabel") }
+      @children = new bindable.Collection([ new View { label: @get("selectLabel") } ])
 
     ###
     ###
@@ -63,71 +72,40 @@ define ["../list", "../base", "../../templates/factory", "dref"], (ListView, Vie
         @select selected.index() - 1
     }
 
+
     ###
      Selects an item based on the index
     ###
 
-    select: (index) ->
+    select: (index) =>
 
       if !~index
         return @deselect()
 
-      @set "selectedItem", @source.at index
-      @_emitData()
+      @set "value", @get("source").at(index).value
 
     ###
      deselects the item
     ###
 
     deselect: () ->
-      @set "selectedItem", null
-      @_emitData()
-
-
-    _emitData: () ->
-      @emit "data", { name: @get("name"), value: @get("selectedItem")?.value }
-
+      @set "value", undefined
 
     ###
     ###
 
-    _onRendered: () =>
+    _onValueChanged: (value) =>
       super()
 
-      # listen for any changes in the selected item so it can be reflected in the drop menu
-      @bind "selectedItem", @_onSelectedItemChange
+      index = -1
 
-    ###
-     transforms the source to something the drop menu can use
-    ###
+      for item, i in @source.source()
+        if item.value is value
+          index = i
+          break
 
-    _transformSelectItem: (item) =>
-      {
-        _id: dref.get(item, "_id"),
-        value: (dref.get(item, @get("itemValue")) or dref.get(item, @get("itemLabel"))),
-        label: dref.get(item, @get("itemLabel")),
-        data: item
-      }
-
-    ###
-    ###
-
-    _createSource: () ->
-      source = super()
-      source.transform().map @_transformSelectItem
-      source
-
-
-    ###
-    ###
-
-    _onSelectedItemChange: (item) =>
-
-      index = 0
-      if not item
-        index = 0
-      else
-        index = @source.indexOf(item) + 1
+      if not ~index
+        return
 
       @$("select").children().eq(index).attr("selected", "selected")
 

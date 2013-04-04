@@ -1,4 +1,4 @@
-define ["../base", "../../templates/factory"], (BaseView, templates) ->
+define ["./base", "../../templates/factory"], (BaseView, templates) ->
 
   class TextInputView extends BaseView
 
@@ -26,14 +26,6 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
 
     _onInputChange: () ->
       @set "value", @$("input").val()
-      @el.trigger "data", { name: @get("name"), value: @get("value") }
-
-    ###
-    ###
-
-    _onRendered: () ->
-      super()
-      @bind "value", @_onValueChange
 
 
     ###
@@ -41,5 +33,6 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
     ###
 
     _onValueChange: (value) =>
+      super()
       @$("input").val value
 
