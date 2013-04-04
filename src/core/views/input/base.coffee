@@ -14,7 +14,7 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
 
     _onRendered: () ->
       super()
-      @bind "value", @_onValueChange
+      @bind "value", @_onValueChanged
 
 
     changed: () ->
@@ -25,6 +25,6 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
      Reflect the value change in the text input
     ###
 
-    _onValueChange: (value) =>
+    _onValueChanged: (value) =>
       @changed()
 

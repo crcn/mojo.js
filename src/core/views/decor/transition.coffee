@@ -12,7 +12,7 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
     ###
 
-    display: (callback) -> 
+    display: (callback) ->
       @view.el.css { "visibility": "visible" }
       @_transitionAll "enter", callback
     

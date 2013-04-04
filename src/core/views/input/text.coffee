@@ -32,7 +32,7 @@ define ["./base", "../../templates/factory"], (BaseView, templates) ->
      Reflect the value change in the text input
     ###
 
-    _onValueChange: (value) =>
-      super()
+    _onValueChanged: (value) =>
+      super value
       @$("input").val value
 

@@ -95,11 +95,11 @@ define ["../list", "./base", "../base", "../../templates/factory", "dref", "bind
     ###
 
     _onValueChanged: (value) =>
-      super()
+      super value
 
       index = -1
 
-      for item, i in @source.source()
+      for item, i in @get("source").source()
         if item.value is value
           index = i
           break

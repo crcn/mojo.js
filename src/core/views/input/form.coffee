@@ -68,6 +68,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     ###
 
     _validate: () ->
+      console.log @get "data"
       @_model().set @get "data"
       @_model().validate (err) =>
         @_toggleValidity !err

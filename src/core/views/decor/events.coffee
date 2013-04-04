@@ -6,7 +6,7 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     ###
     ###
 
-    render: (callback) ->
+    display: (callback) ->
       e = @_events()
       @_disposeBindings()
       @_disposable = disposable.create()
@@ -46,9 +46,9 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
 
 
       if !selectors.length
-        return @_disposable.add(@view.on(actions, cb))
-
-      elements = @view.$(selectors)
+        elements = @view.el
+      else
+        elements = @view.$(selectors)
 
       elements.bind(actions.toLowerCase(), cb)
 
