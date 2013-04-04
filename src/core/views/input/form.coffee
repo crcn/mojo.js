@@ -49,11 +49,6 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
     _onDisplay: () =>
       super()
- 
-      submitElement = @get("submitElement")
-
-      if submitElement
-        @$(submitElement).bind "click", @_onSubmit
 
       @set "data", {}
 
@@ -71,12 +66,6 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
       # validate the data that might be set initially
       @_validate()
 
-
-    ###
-    ###
-
-    _onSubmit: (event) =>
-      @submit()
 
     ###
     ###
@@ -109,9 +98,11 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     ###
     ###
 
-    _model: () ->
+    _model: () =>
       model = @get("model")
       return model if @get("model")
+
+      console.log new Error().stack
 
       console.log "CREATE"
 
