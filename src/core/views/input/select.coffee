@@ -101,7 +101,8 @@ define ["../list", "./base", "../base", "../../templates/factory", "dref", "bind
 
       for item, i in @get("source").source()
         if item.value is value
-          index = i
+          # offset the default item
+          index = i+1
           break
 
       if not ~index
