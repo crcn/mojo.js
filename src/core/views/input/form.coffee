@@ -34,6 +34,8 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     _onRendered: () ->
       super()
 
+      # initializes the model
+      @_validate()
 
       for inputView in @children.source()
         @bind("model.#{inputView.get("name")}").to(inputView, "value").to(@_validate).bothWays()

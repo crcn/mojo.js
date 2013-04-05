@@ -41,7 +41,7 @@ define ["./base",
       @_children.on 
         insert: @_insertChild
         remove: @_removeChild
-
+        
       async.eachSeries @_children.source(), ((child, next) =>
 
         @_addChildElement child, outcome.e(next).s (element) =>

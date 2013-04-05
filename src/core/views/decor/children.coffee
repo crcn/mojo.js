@@ -12,12 +12,19 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
       childrenClasses = @view.get "children"
       @_children = new Collection()
 
-      for selector of childrenClasses
-        clazz = childrenClasses[selector]
+      # modalBody .modal-body
+      for viewName of childrenClasses
+
+        selectorParts = viewName.split(" ")
+        property = selectorParts.shift()
+        selector = selectorParts.shift() or property
+
+        clazz = childrenClasses[viewName]
         view = new clazz()
 
         # make the views accesible from the selectors
-        @_children[selector] = view
+        @_children[property] = view
+        @view.set property, view
         view.__selector = selector
         @_children.push view
 

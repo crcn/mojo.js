@@ -38,15 +38,15 @@ define ["underscore",
 
       # element attributes
       "attributes": new ClassFactory(AttributesDecorator),
+
+      # parent bindings must be set before child bindings
+      "bindings": new ClassFactory(BindingsDecorator),
       
       # children must be loaded before the transition starts, otherwise there might be a delay
       "children": new EitherFactory(new ClassFactory(ChildrenDecorator), new ClassFactory(ListChildrenDecorator)),
 
       # events can go anywhere really
       "events": new ClassFactory(EventsDecorator),
-
-      # parent bindings must be set before child bindings
-      "bindings": new ClassFactory(BindingsDecorator),
 
       # transition should be the last-ish item since it adds a delay to everything else
       "transition": new ClassFactory(TransitionDecorator)

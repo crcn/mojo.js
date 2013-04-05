@@ -40,7 +40,8 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
         if typeof viewMethod is "function"
           ref = viewMethod
         else 
-          ref = @view[viewMethod]
+          console.log viewMethod
+          ref = @view.get viewMethod
 
         ref.apply(@view, arguments)
 
