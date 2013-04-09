@@ -13,7 +13,6 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
           obj.off "change:" + keypath.replace(/,/g, "."), callback
 
       read: (obj, keypath) ->
-        console.log keypath, obj
         obj.get keypath.replace(/,/g, ".")
 
       publish: (obj, keypath, value) ->
@@ -31,7 +30,32 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
 
     render: (callback) ->
       rivets.bind @view.el, { data: @view }
+      @_setupExplicitBindings() if @view.has("bindings")
       callback()
+
+    ###
+    ###
+
+    _setupExplicitBindings: () ->
+      bindings = @view.get("bindings")
+
+      @_setupBinding key, bindings[key] for key of bindings
+
+    ###
+    ###
+
+    _setupBinding: (property, to) ->
+      keyParts = property.split " "
+
+      if typeof to is "function" 
+        oldTo = to
+        to = () =>
+          oldTo.apply @view, arguments
+
+
+      for keyPart in keyParts
+        @view.bind(keyPart).to to
+
 
 
 

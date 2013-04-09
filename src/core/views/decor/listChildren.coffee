@@ -29,7 +29,7 @@ define ["./base",
           factory = new ClassFactory @view.get "childViewClass"
           transformer.map (item) => factory.createItem item
 
-        binding.to @_children
+        binding.to(@_children)
 
       @_children.load callback
 

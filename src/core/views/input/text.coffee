@@ -7,7 +7,6 @@ define ["./base", "../../templates/factory"], (BaseView, templates) ->
 
     template: templates.fromSource("<input type='text' name='{{view.name}}'>", { engine: "handlebars" })
 
-
     ###
     ###
 
@@ -26,7 +25,6 @@ define ["./base", "../../templates/factory"], (BaseView, templates) ->
 
     _onInputChange: () ->
       @set "value", @$("input").val()
-
 
     ###
      Reflect the value change in the text input

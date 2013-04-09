@@ -28,7 +28,8 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
 
       states.reset cstates
       states.on "updated", @_onStatesChange
-      @bind "currentIndex", @_onIndexChange
+      @bind("currentIndex", @_onIndexChange)
+
 
     ###
     ###
@@ -68,6 +69,7 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
 
         # after removal, add the new state
         (() ->
+          console.log "SHIFT ALT DELETE"
           self._currentView = self.states.at(index)
           self.set "currentView", self._currentView
           children.push self._currentView

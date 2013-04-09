@@ -39,10 +39,7 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
       for child in @_children.source()
         child.element @view.$ child.__selector
 
-      #console.log "RENDER CHILDREN"
-      #console.log @_children
       @_children.render () ->
-        #console.log "RENDERED CHILDREN"
         callback()
 
 
