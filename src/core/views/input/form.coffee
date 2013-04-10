@@ -15,7 +15,6 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
     template: templates.fromSource("<form></form>")
 
-
     ###
     ###
 
@@ -44,7 +43,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     ###
 
     _validate: () =>
-      @_model().validate (err) =>
+      @_model().validate (err) => 
         @_toggleValidity !err
 
     ###
@@ -65,7 +64,6 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
 
     _onLoaded: () =>
       super()
-
 
     ###
     ###

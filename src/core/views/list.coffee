@@ -1,4 +1,4 @@
-define ["require", "./base", "bindable", "underscore", "async"], (require, BaseView, bindable, _, async) ->
+define ["require", "./base", "bindable", "underscore"], (require, BaseView, bindable, _) ->
 
 
 

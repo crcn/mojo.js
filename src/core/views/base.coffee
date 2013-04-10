@@ -156,6 +156,7 @@ define ["jquery",
       return if not @el
       @el.unbind("*")
       @el.html("")
+      @dispose()
 
 
 

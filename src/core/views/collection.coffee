@@ -3,6 +3,8 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "outcome"], (bindab
   
   class extends bindable.Collection
 
+    limit: 1
+
     ###
      atta
     ###
@@ -47,11 +49,17 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "outcome"], (bindab
 
       stack = if reverse then @source().reverse() else @source()
 
-      async.eachSeries stack, ((item, next) ->
+      run = (item, next) ->
         fn = item[method]
         return next() if not fn
         fn.call item, next
-      ), outcome.e(callback).s () =>
+
+      done = outcome.e(callback).s () =>
         @emit event
         callback()
+
+      if not ~@limit 
+        async.forEach @source(), run, done
+      else
+        async.eachLimit @source(), @limit, run, done
 

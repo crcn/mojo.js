@@ -57,9 +57,9 @@ define () ->
           err = e
           numRunning--
           return nextItem()
-
+          
         # can we have an unlimited number of parallel processes, or is the num running less than the max allowed?
-        if !~limit or numRunning < limit
+        if not ~limit or numRunning < limit
 
           # then 
           nextItem()

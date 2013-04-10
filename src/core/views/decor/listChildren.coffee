@@ -16,6 +16,7 @@ define ["./base",
     load: (callback) ->  
 
       @_children = new Collection @view.get "children"
+      @_children.limit = -1
 
       if @view.has "source"
         binding = @view.get("source").bind()
@@ -42,7 +43,7 @@ define ["./base",
         insert: @_insertChild
         remove: @_removeChild
         
-      async.eachSeries @_children.source(), ((child, next) =>
+      async.forEach @_children.source(), ((child, next) =>
 
         @_addChildElement child, outcome.e(next).s (element) =>
           child.element element
@@ -103,7 +104,7 @@ define ["./base",
 
       # load the template with the target child data
       template.render child.get(), outcome.e(callback).s (content) =>
-        callback null, @_childrenElement().append(content).children().last()
+        callback null, @_childrenElement().prepend(content).children().first()
 
 
     ###
