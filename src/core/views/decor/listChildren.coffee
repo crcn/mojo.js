@@ -63,6 +63,12 @@ define ["./base",
     ###
     ###
 
+    remove: (callback) ->
+      @_children.remove callback
+
+    ###
+    ###
+
     _insertChild: (item, index) =>
       @_addChild item
 
@@ -70,6 +76,7 @@ define ["./base",
     ###
 
     _removeChild: (item, index) =>
+      return if not item # event is from collection
       item.remove()
       item.el.remove()
 

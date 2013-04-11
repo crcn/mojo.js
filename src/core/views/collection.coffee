@@ -40,6 +40,7 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "outcome"], (bindab
     remove: asyngleton (callback) ->
       @display () => @_callViewMethod "remove", "removed", true, callback
 
+
     ###
     ###
 

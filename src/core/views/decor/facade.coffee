@@ -24,11 +24,13 @@ define ["underscore",
 "./attributes",
 "./events",
 "./bindings",
+"./dragdrop/draggable",
+"./dragdrop/droppable",
 "./transition"], (_, cstep, async, EitherFactory, ClassFactory, generateId, outcome, BaseViewDecorator, 
   ViewCollection, compose,
   TemplateDecorator, ChildrenDecorator, ListChildrenDecorator, 
   AttributesDecorator,
-  EventsDecorator, BindingsDecorator, TransitionDecorator) ->
+  EventsDecorator, DraggableDecorator, DroppableDecorator, BindingsDecorator, TransitionDecorator) ->
     
     # decorators are loaded in this order. Note that the order is important.
     availableDecorators = {
@@ -49,7 +51,13 @@ define ["underscore",
       "events": new ClassFactory(EventsDecorator),
 
       # transition should be the last-ish item since it adds a delay to everything else
-      "transition": new ClassFactory(TransitionDecorator)
+      "transition": new ClassFactory(TransitionDecorator),
+
+      # makes the view draggable
+      "draggable": new ClassFactory(DraggableDecorator),
+
+      # makes the view droppable
+      "droppable": new ClassFactory(DroppableDecorator)
     }
 
 
