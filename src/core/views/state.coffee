@@ -22,11 +22,15 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
       @children = new bindable.Collection()
       states = @states = new bindable.Collection()
 
-      states.transform().map (state) ->
-        return state if typeof state is "object"
-        return new state()
 
-      states.reset cstates
+      #states.transform().map (state) ->
+      #  return state if typeof state is "object"
+      #  return new state()
+
+      states.reset cstates.map (stateClass, index) ->
+        stateClass._id = index
+        stateClass
+
       states.on "updated", @_onStatesChange
       @bind("currentIndex", @_onIndexChange)
 
@@ -68,9 +72,9 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
         ),
 
         # after removal, add the new state
-        (() ->
-          console.log "SHIFT ALT DELETE"
-          self._currentView = self.states.at(index)
+        (() -> 
+          stateClass = self.states.at(index)
+          self._currentView = new stateClass()
           self.set "currentView", self._currentView
           children.push self._currentView
           self._onCurrentStateChange()

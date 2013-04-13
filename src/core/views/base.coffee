@@ -23,9 +23,6 @@ define ["jquery",
      This also reduces the amount of written code tremendously.
     ###
 
-    ###
-    ###
-
     constructor: (options = {}) ->
 
       options.view = @

@@ -22,7 +22,6 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
       model = @_model()
       model.save (err, result) =>
         if err 
-          callback err
           return @_showErrorMessage err
 
         @emit "complete"
@@ -45,7 +44,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     _validate: () =>
       @_model().validate (err) => 
         @_toggleValidity !err
-
+ 
     ###
      useful for enabling / disabling a button
     ###

@@ -107,7 +107,10 @@ define(["require", "dref", "mannequin/lib/utils", "verify", "async", "toarray"],
       }
       if (this.options.$ref) {
         testers.push(this._multi(function(item, next) {
-          return _this.schema.dictionary().getSchema(_this.options.$ref).test(item, next);
+          return _this.schema.dictionary().getSchema(_this.options.$ref).test(item, function(err) {
+            console.err err.message
+            next(err)
+          });
         }));
       }
       if (this.options.$type) {
