@@ -14,7 +14,6 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
 
     init: (options) ->
       super options
-      @set "currentIndex", 0
 
       cstates = @get("states")
       states = @states = new bindable.Collection()
@@ -59,6 +58,8 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
     ###
 
     _onIndexChange: (index) =>
+
+      console.log(index)
 
 
       self = @

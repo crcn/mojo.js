@@ -6,9 +6,8 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
     ###
     ###
 
-    load: (callback) ->  
-
-
+    init: () ->
+      super()
       childrenClasses = @view.get "children"
       @_children = new Collection()
 
@@ -28,6 +27,11 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
         view.__selector = selector
         @_children.push view
 
+
+    ###
+    ###
+
+    load: (callback) ->  
       @view.set "children", @view.children = @_children
       @_children.load callback
 
