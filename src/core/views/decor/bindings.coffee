@@ -29,7 +29,7 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
     ###
 
     load: (callback) ->
-      @_setupExplicitBindings() if @view.has("bindings")
+      @_setupExplicitBindings() if @view.bindings
       callback()
 
     ###
@@ -43,7 +43,7 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
     ###
 
     _setupExplicitBindings: () ->
-      bindings = @view.get("bindings")
+      bindings = @view.bindings
 
       @_setupBinding key, bindings[key] for key of bindings
 

@@ -52,7 +52,7 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
 
     _transitions: () ->
-      transition = @view.get("transition")
+      transition = @view.transition
       if transition.enter or transition.exit
         return [transition]
 
@@ -85,6 +85,6 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
 
 
   TransitionDecorator.test = (view) ->
-    return view.has("transition")
+    return view.transition
 
   TransitionDecorator

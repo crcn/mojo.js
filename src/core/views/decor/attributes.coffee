@@ -18,7 +18,7 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     ###
 
     _properties: () ->
-      attrs = @view.get "attributes"
+      attrs = @view.attributes
 
       attrElement = @_targetElement()
 
@@ -53,6 +53,6 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
 
 
   EventsDecorator.test = (view) ->
-    view.has "attributes"
+    !!view.attributes
 
   EventsDecorator

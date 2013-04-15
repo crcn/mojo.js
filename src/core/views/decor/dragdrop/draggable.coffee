@@ -5,7 +5,7 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
 
     init: () ->
       super()
-      @name = @view.get("draggable")
+      @name = @view.draggable
 
     ###
     ###
@@ -16,7 +16,6 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
 
     
     remove: (callback) ->  
-      console.log "DISPOSE"
       callback()
 
 
@@ -69,6 +68,6 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
     _followMouse: (e) =>
       @draggedItem.css(@_coords(e))
 
-  DraggableDecorator.test = (view) -> view.get("draggable")
+  DraggableDecorator.test = (view) -> view.draggable
 
   DraggableDecorator

@@ -14,7 +14,7 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
     ###
 
     load: (callback) ->  
-      @view.get("template").render @templateData(), outcome.e(callback).s (content) => 
+      @view.template.render @templateData(), outcome.e(callback).s (content) => 
         @_html = content
 
         # the view might have been initialized immediately, so add a 1 MS timeout incase
@@ -50,7 +50,7 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
 
 
   TemplateViewDecorator.test = (view) ->
-    return view.has("template")
+    return view.template
 
 
   TemplateViewDecorator

@@ -8,7 +8,7 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
 
     init: () ->
       super()
-      childrenClasses = @view.get "children"
+      childrenClasses = @view.children
       @_children = new Collection()
 
       # modalBody .modal-body
@@ -32,7 +32,7 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
     ###
 
     load: (callback) ->  
-      @view.set "children", @view.children = @_children
+      @view.children = @view.children = @_children
       @_children.load callback
 
     ###
@@ -61,7 +61,7 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
 
   ChildrenDecorator.test = (view) ->
     # make sure children is present, and that it's an object
-    return view.has("children") and not view.get("children").__isCollection
+    return view.children and not view.children.__isCollection
 
 
   ChildrenDecorator

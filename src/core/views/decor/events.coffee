@@ -40,7 +40,7 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
         if typeof viewMethod is "function"
           ref = viewMethod
         else 
-          ref = @view.get viewMethod
+          ref = @view[viewMethod] or @view.get viewMethod
 
         ref.apply(@view, arguments)
 
@@ -71,10 +71,10 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     ###
 
     _events: () ->
-      @view.get "events"
+      @view.events
 
 
   EventsDecorator.test = (view) ->
-    view.has "events"
+    view.events
 
   EventsDecorator
