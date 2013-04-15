@@ -114,7 +114,7 @@ define ["jquery",
 
     attach: (selectorOrElement, callback) ->
       @element selectorOrElement
-      @loadables.attach callback
+      @loadables.display callback
 
     ###
     ###

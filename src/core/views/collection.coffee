@@ -6,13 +6,6 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "outcome"], (bindab
     limit: 1
 
     ###
-     atta
-    ###
-
-    attach: (callback) -> @display callback
-
-
-    ###
      loads the template, and anything else that might be needed
     ###
 

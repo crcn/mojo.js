@@ -1,4 +1,6 @@
 define ["../list", "./base", "../base", "../../templates/factory", "dref", "bindable"], (ListView, InputView, View, templates, dref, bindable) ->
+    
+  class SelectInputOptionView extends View
 
   class SelectInputView extends InputView
 
@@ -10,12 +12,20 @@ define ["../list", "./base", "../base", "../../templates/factory", "dref", "bind
     ###
     ###
 
-    childrenElement: "select"
-
-    ###
-    ###
-
-    childTemplate: templates.fromSource("<option value='{{value}}'>{{label}}</option>", { engine: "handlebars" })
+    list:
+      "selectList select":
+        itemViewClass: SelectInputOptionView
+        itemViews: () -> [new SelectInputOptionView { label: @get("selectLabel") }]
+        source: "source"
+        itemTemplate: templates.fromSource("<option value='{{value}}'>{{label}}</option>", { engine: "handlebars" })
+        transform: (item, list) ->
+          view = list.view
+          {
+            _id: dref.get(item, "_id"),
+            value: (dref.get(item, view.get("itemValue")) or dref.get(item, view.get("itemLabel"))),
+            label: dref.get(item, view.get("itemLabel")),
+            data: item
+          }
 
     ###
     ###
@@ -27,7 +37,6 @@ define ["../list", "./base", "../base", "../../templates/factory", "dref", "bind
 
     itemLabel: "label"
 
-
     ###
     ###
 
@@ -36,30 +45,7 @@ define ["../list", "./base", "../base", "../../templates/factory", "dref", "bind
     ###
     ###
 
-    childViewClass: View
-
-    ###
-    ###
-
-    transformSourceItem: (item) =>
-      {
-        _id: dref.get(item, "_id"),
-        value: (dref.get(item, @get("itemValue")) or dref.get(item, @get("itemLabel"))),
-        label: dref.get(item, @get("itemLabel")),
-        data: item
-      }
-
-    ###
-    ###
-
-    init: () ->
-      super()
-      @children = new bindable.Collection([ new View { label: @get("selectLabel") } ])
-
-    ###
-    ###
-
-    events: {
+    events: 
       "change select": (event) ->
         selected    = @$(":selected")
         selectedVal = selected.val()
@@ -70,7 +56,7 @@ define ["../list", "./base", "../base", "../../templates/factory", "dref", "bind
 
         # need to offset the default value
         @select selected.index() - 1
-    }
+    
 
 
     ###

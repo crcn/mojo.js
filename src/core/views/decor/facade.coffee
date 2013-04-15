@@ -11,26 +11,24 @@ if setup is called, then teardown immediately, then teardown MUST wait until set
 define ["underscore",
 "cstep",
 "../../utils/async",
-"../../factories/either",
 "../../factories/class",
 "../../utils/idGenerator",
 "outcome",
-"./base", 
+"./base",  
 "../collection",
 "../../utils/compose",
 "./template",
 "./children",
-"./listChildren",
+"./list/decorator",
 "./attributes",
 "./events",
 "./bindings",
 "./dragdrop/draggable",
 "./dragdrop/droppable",
-"./transition"], (_, cstep, async, EitherFactory, ClassFactory, generateId, outcome, BaseViewDecorator, 
+"./transition"], (_, cstep, async, ClassFactory, generateId, outcome, BaseViewDecorator, 
   ViewCollection, compose,
-  TemplateDecorator, ChildrenDecorator, ListChildrenDecorator, 
-  AttributesDecorator,
-  EventsDecorator, DraggableDecorator, DroppableDecorator, BindingsDecorator, TransitionDecorator) ->
+  TemplateDecorator, ChildrenDecorator, ListDecorator, 
+  AttributesDecorator, EventsDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, TransitionDecorator) ->
     
     # decorators are loaded in this order. Note that the order is important.
     availableDecorators = {
@@ -43,9 +41,12 @@ define ["underscore",
 
       # parent bindings must be set before child bindings
       "bindings": new ClassFactory(BindingsDecorator),
+
+      # creates a list of items
+      "list": new ClassFactory(ListDecorator),
       
       # children must be loaded before the transition starts, otherwise there might be a delay
-      "children": new EitherFactory(new ClassFactory(ChildrenDecorator), new ClassFactory(ListChildrenDecorator)),
+      "children": new ClassFactory(ChildrenDecorator),
 
       # events can go anywhere really
       "events": new ClassFactory(EventsDecorator),
@@ -112,7 +113,9 @@ define ["underscore",
             decorators.push decor
 
         
-        @_facadeCollection.reset decorators.sort (a, b) -> if a.priority > b.priority then 1 else -1
+        decorators = decorators.sort (a, b) -> if a.priority > b.priority then 1 else -1
+        @_facadeCollection.reset decorators
+
 
 
 

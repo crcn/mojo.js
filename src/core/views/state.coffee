@@ -2,37 +2,33 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
 
   class StateView extends BaseView
 
-    ###
-    ###
-
-    currentIndex: 0
 
     ###
     ###
 
-    childElement: "div"
+    itemTagName: "div"
+
 
     ###
     ###
 
     init: (options) ->
       super options
+      @set "currentIndex", 0
 
       cstates = @get("states")
-      @children = new bindable.Collection()
       states = @states = new bindable.Collection()
 
-
-      #states.transform().map (state) ->
-      #  return state if typeof state is "object"
-      #  return new state()
+      @list = {
+        itemTagName: @get("itemTagName")
+      }
 
       states.reset cstates.map (stateClass, index) ->
         stateClass._id = index
         stateClass
 
       states.on "updated", @_onStatesChange
-      @bind("currentIndex", @_onIndexChange)
+      @once "list", @_onList
 
 
     ###
@@ -55,27 +51,41 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
     ###
     ###
 
+    _onList: (list) -> 
+      @children = list.itemViews
+      @bind("currentIndex", @_onIndexChange)
+
+    ###
+    ###
+
     _onIndexChange: (index) =>
+
 
       self = @
 
       return if not self.states.length()
       children = @children
+      newStateClass = self.states.at(index)
+      newState = new newStateClass()
 
       step(
+
+        (() ->
+          newState.loadables.load @
+        ),
 
         # wait for the element to be removed before adding the next - what if there's a 
         # transition?
         (() ->
           return @() if not self._currentView
           children.shift()
+          @()
         ),
 
         # after removal, add the new state
         (() -> 
-          stateClass = self.states.at(index)
-          self._currentView = new stateClass()
-          self.set "currentView", self._currentView
+          self._currentView = newState
+          self.set "currentView", newState
           children.push self._currentView
           self._onCurrentStateChange()
         )

@@ -28,9 +28,15 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
     ###
     ###
 
+    load: (callback) ->
+      @_setupExplicitBindings() if @view.has("bindings")
+      callback()
+
+    ###
+    ###
+
     render: (callback) ->
       rivets.bind @view.el, { data: @view }
-      @_setupExplicitBindings() if @view.has("bindings")
       callback()
 
     ###
