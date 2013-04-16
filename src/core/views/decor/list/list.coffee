@@ -9,9 +9,12 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
     ###
     ###
 
-    constructor: (name, @view, @selector, @options) ->
+    constructor: (@decorator, @options) ->
 
-      @_id = @name = name
+      @_id = @name = options.name
+      @view = decorator.view
+      @selector = options.selector
+
      
       # the source of the list - string
       @__source       = options.source

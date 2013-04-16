@@ -6,38 +6,12 @@
       transform: () ->
 ###
 
-define ["../base", "./list", "../../collection", "../../../utils/async", "../../../utils/idGenerator"], (BaseDecorator, List, ViewCollection, async, generateId) ->
+define ["../selectable", "./list", "../../collection", "../../../utils/async", "../../../utils/idGenerator"], (SelectableDecorator, List, ViewCollection, async, generateId) ->
   
-  class ListDecorator extends BaseDecorator
+  class ListDecorator extends SelectableDecorator
 
-    ###
-    ###
-
-    init: () ->
-      super()
-      @_collection = new ViewCollection lists = @_setupLists @view.list
-      for list in lists
-        @view.emit "list", list
-
-    ###
-    ###
-
-    load: (callback) -> @_collection.load callback
-
-    ###
-    ###
-
-    render: (callback) -> @_collection.render callback
-
-    ###
-    ###
-
-    display: (callback) -> @_collection.display callback
-
-    ###
-    ###
-
-    remove: (callback) -> @_collection.remove callback
+    name: "list"
+    controllerClass: List
 
     ###
     ###
@@ -64,16 +38,6 @@ define ["../base", "./list", "../../collection", "../../../utils/async", "../../
         _lists.push list
 
       _lists
-
-    ###
-    ###
-
-    _isSingle: (list) -> 
-      for key of list
-        return true if typeof list[key] isnt "object"
-      return false
-
-
 
 
   ListDecorator.test = (view) -> !!view.list
