@@ -131,7 +131,9 @@ define ["jquery",
     ###
 
     emit: () ->
-      BaseView.__super__.emit.apply @, arguments
+      super(arguments...)
+
+      arguments[0] = arguments[0].toLowerCase()
 
       # also send it to the element
       @el?.trigger.apply @el, arguments

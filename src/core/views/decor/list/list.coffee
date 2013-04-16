@@ -55,7 +55,13 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
       cast(@_itemViewClass)
 
       if @__source
-        @view.bind(@__source).collection().transform(hoister).to(@_viewCollection)
+        @binding = @view.bind(@__source).collection()
+
+        if @options.filter
+          @binding.filter @options.filter
+
+
+        @binding.transform(hoister).to(@_viewCollection)
 
 
     ###
