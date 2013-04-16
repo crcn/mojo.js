@@ -124,7 +124,7 @@ define ["jquery",
     ###
 
     emit: () ->
-      super(arguments...)
+      super arguments...
 
       arguments[0] = arguments[0].toLowerCase()
 
