@@ -150,6 +150,7 @@ define ["jquery",
       @el.unbind("*")
       @el.html("")
       @dispose()
+      @el = undefined
 
 
 
