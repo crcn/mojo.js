@@ -1,4 +1,4 @@
-define ["./base", "../collection", "underscore"], (BaseDecorator, ViewCollection, _) ->
+define ["./base", "../collection", "underscore", "isa"], (BaseDecorator, ViewCollection, _, isa) ->
   
   class SelectableDecorator extends BaseDecorator
 
@@ -46,7 +46,7 @@ define ["./base", "../collection", "underscore"], (BaseDecorator, ViewCollection
         options.name = property or selector
         options.selector = selector
 
-        _controllers.push @[property or selector] = @_newController options
+        _controllers.push @[property or selector] = controller = @_newController options
 
         if property
           @view[property] = controller
@@ -71,6 +71,7 @@ define ["./base", "../collection", "underscore"], (BaseDecorator, ViewCollection
     ###
 
     _isSingle: (options) ->
+      return true if isa.array options
       for key of options
         v = options[key]
         if typeof v is "string"

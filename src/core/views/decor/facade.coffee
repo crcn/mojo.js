@@ -25,10 +25,11 @@ define ["underscore",
 "./bindings",
 "./dragdrop/draggable",
 "./dragdrop/droppable",
+"./states/decorator",
 "./transition"], (_, cstep, async, ClassFactory, generateId, outcome, BaseViewDecorator, 
   ViewCollection, compose,
   TemplateDecorator, ChildrenDecorator, ListDecorator, 
-  AttributesDecorator, EventsDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, TransitionDecorator) ->
+  AttributesDecorator, EventsDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, StatesDecorator, TransitionDecorator) ->
     
     # decorators are loaded in this order. Note that the order is important.
     availableDecorators = {
@@ -44,6 +45,9 @@ define ["underscore",
 
       # creates a list of items
       "list": new ClassFactory(ListDecorator),
+
+      # states view
+      "states": new ClassFactory(StatesDecorator),
       
       # children must be loaded before the transition starts, otherwise there might be a delay
       "children": new ClassFactory(ChildrenDecorator),
