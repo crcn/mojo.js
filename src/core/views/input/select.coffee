@@ -1,4 +1,4 @@
-define ["../list", "./base", "../base", "../../templates/factory", "dref", "bindable"], (ListView, InputView, View, templates, dref, bindable) ->
+define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (InputView, View, templates, dref, bindable) ->
     
   class SelectInputOptionView extends View
 
