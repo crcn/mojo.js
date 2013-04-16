@@ -49,13 +49,6 @@ define ["jquery",
       @decorator.init()
 
     ###
-     visible is a nice toggle which handles events / bindings - and other things
-    ###
-
-    visible: () ->
-      # TODO
-
-    ###
     ###
 
     init: () ->

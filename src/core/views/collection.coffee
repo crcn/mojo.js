@@ -3,6 +3,9 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "outcome"], (bindab
   
   class extends bindable.Collection
 
+    ###
+    ###
+    
     limit: 1
 
     ###
