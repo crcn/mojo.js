@@ -123,6 +123,15 @@ define ["bindable", "stepc"], (bindable, stepc) ->
       view.element @_element()
       view.render () => @emit "renderedState"
 
+
+    ###
+    ###
+
+    emit: () ->
+      super arguments...
+      arguments[0] = @name + "." + arguments[0]
+      @view.emit arguments...
+
     ###
     ###
 
