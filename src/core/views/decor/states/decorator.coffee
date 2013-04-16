@@ -1,6 +1,6 @@
-define ["../base"], (BaseDecorator) ->
+define ["../selectable"], (SelectableDecorator) ->
   
-  class StatesDecorator extends BaseDecorator
+  class StatesDecorator extends SelectableDecorator
 
     ###
     ###

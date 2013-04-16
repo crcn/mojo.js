@@ -24,7 +24,6 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
 
     _initListeners: () =>
       el = @view.el
-      console.log "displayed"
       @document = $(document)
       el.bind "mousedown", @_startDrag
 

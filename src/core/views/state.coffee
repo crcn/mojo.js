@@ -59,9 +59,6 @@ define ["./base",  "bindable", "step"], (BaseView, bindable, step) ->
 
     _onIndexChange: (index) =>
 
-      console.log(index)
-
-
       self = @
 
       return if not self.states.length()

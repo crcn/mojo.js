@@ -5,8 +5,6 @@ templates.use(i 8n)
 
 define ["jquery", "underscore", "asyngleton", "events", "../utils/async"], ($, _, asyngleton, events, async) ->
     
-  # TODO 
-  #console.log module.config()
   
   class Translator extends events.EventEmitter
 
