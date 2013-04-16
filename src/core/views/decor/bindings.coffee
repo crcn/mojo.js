@@ -5,12 +5,11 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
   rivets.configure({
     adapter: {
       subscribe: (obj, keypath, callback) ->
-        if obj.on
-          obj.on "change:" + keypath.replace(/,/g, "."), callback
+        obj.bind keypath.replace(/,/g, "."), callback
 
       unsubscribe: (obj, keypath, callback) ->
-        if obj.on
-          obj.off "change:" + keypath.replace(/,/g, "."), callback
+        #if obj.on
+        #  obj.off "change:" + keypath.replace(/,/g, "."), callback
 
       read: (obj, keypath) ->
         obj.get keypath.replace(/,/g, ".")
