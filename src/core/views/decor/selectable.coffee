@@ -36,7 +36,7 @@ define ["./base", "../collection", "underscore", "isa"], (BaseDecorator, ViewCol
 
     _setupControllers: () ->
       ops = @_options()
-      return [@_newController(_.extend(ops, { name: Math.random() }))] if @_isSingle ops
+      return [@view[@name] = @_newController(_.extend(ops, { name: Math.random() }))] if @_isSingle ops
       _controllers = []
       for key of ops
         keyParts = key.split(" ")
