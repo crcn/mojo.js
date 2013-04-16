@@ -25,8 +25,9 @@ define ["jquery",
 
     constructor: (options = {}) ->
 
+      @_id = dref.get(options, "_id") or generateId()
+
       options.view = @
-      options._id = dref.get(options, "_id") or generateId()
       options.modelLocator = modelLocator
 
       super options
