@@ -58,14 +58,15 @@ define ["bindable", "stepc"], (bindable, stepc) ->
     ###
     ###
 
-    next: () ->
-      newIndex = @index - 1
+    next: () =>
+      newIndex = @get("index") + 1
 
-      if newIndex >= @views.length
+      if newIndex >= @views.length()
         if @rotate
           newIndex = 0
         else
-          newIndex = @views.length - 1
+          newIndex = @views.length() - 1
+          @emit "ended"
 
       @set "index", newIndex
 
@@ -73,12 +74,12 @@ define ["bindable", "stepc"], (bindable, stepc) ->
     ###
     ###
 
-    prev: () ->
-      newIndex = @index - 1
+    prev: () =>
+      newIndex = @get("index") - 1
 
       if newIndex < 0
         if @rotate
-          newIndex = @views.length - 1
+          newIndex = @views.length() - 1
         else
           newIndex = 0
 
@@ -90,9 +91,9 @@ define ["bindable", "stepc"], (bindable, stepc) ->
     _setIndex: (index) =>
       return if not @views.length()
 
-      self = @
-      newStatesClass = @views.at index
-      newState = new newStatesClass()
+      self           = @
+      newStatesClass = @views.at index or 0
+      newState       = new newStatesClass()
 
       stepc.async(
 
@@ -115,7 +116,6 @@ define ["bindable", "stepc"], (bindable, stepc) ->
         )
       )
 
-
     ###
     ###
 
@@ -128,7 +128,6 @@ define ["bindable", "stepc"], (bindable, stepc) ->
 
     _displayView: (view) =>
       view.display () => @emit "displayedState"
-
 
     ###
     ###

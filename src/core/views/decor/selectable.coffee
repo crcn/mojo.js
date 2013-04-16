@@ -36,7 +36,7 @@ define ["./base", "../collection", "underscore", "isa"], (BaseDecorator, ViewCol
 
     _setupControllers: () ->
       ops = @_options()
-      return [@view[@name] = @_newController(_.extend(ops, { name: Math.random() }))] if @_isSingle ops
+      return [@_newController(_.extend(ops, { name: @name }))] if @_isSingle ops
       _controllers = []
       for key of ops
         keyParts = key.split(" ")
@@ -47,9 +47,6 @@ define ["./base", "../collection", "underscore", "isa"], (BaseDecorator, ViewCol
         options.selector = selector
 
         _controllers.push @[property or selector] = controller = @_newController options
-
-        if property
-          @view[property] = controller
 
       _controllers
 
@@ -65,7 +62,9 @@ define ["./base", "../collection", "underscore", "isa"], (BaseDecorator, ViewCol
 
     _newController: (options) ->
       clazz = @controllerClass
-      return new clazz @, options
+      controller = new clazz @, options
+      @view[options.name] = controller
+      controller
 
     ###
     ###
