@@ -1,35 +1,12 @@
-define ["./base", "../collection", "underscore", "isa"], (BaseDecorator, ViewCollection, _, isa) ->
+define ["../collection", "underscore", "isa"], (ViewCollection, _, isa) ->
   
-  class SelectableDecorator extends BaseDecorator
+  class SelectableDecorator extends ViewCollection
 
-    ###
-    ###
-
-    init: () ->
-      @_collection = new ViewCollection @_setupControllers()
-      for controller in @_collection.source()
+    constructor: (@view) ->
+      super()
+      @reset @_setupControllers()
+      for controller in @source()
         @view.emit @name, controller
-
-
-    ###
-    ###
-
-    load: (callback) -> @_collection.load callback
-
-    ###
-    ###
-
-    render: (callback) -> @_collection.render callback
-
-    ###
-    ###
-
-    display: (callback) -> @_collection.display callback
-
-    ###
-    ###
-
-    remove: (callback) -> @_collection.remove callback
 
     ###
     ###
@@ -49,8 +26,6 @@ define ["./base", "../collection", "underscore", "isa"], (BaseDecorator, ViewCol
         _controllers.push @[property or selector] = controller = @_newController options
 
       _controllers
-
-
 
     ###
     ###

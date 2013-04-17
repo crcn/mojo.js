@@ -7,6 +7,7 @@ define ["bindable", "stepc"], (bindable, stepc) ->
 
     constructor: (@decorator, @options) ->
       super()
+      console.log "OK"
 
 
       @_id = @name = @options.name
