@@ -1,0 +1,30 @@
+{
+  "name": "hurryup",
+  "version": "0.0.2",
+  "description": "hurryUp.js ==========",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "mocha --reporter min"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/crcn/hurryUp.js.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "comerr": "0.0.x"
+  },
+  "devDependencies": {
+    "expect.js": "0.2.x",
+    "mocha": "1.8.x"
+  },
+  "readme": "hurryUp.js\n==========\n\ntimeout library for callbacks\n\n\n## API\n\n### hurryUp(timedCallback, optionsOrTimeout, ...args)\n\n- `optionsOrTimeout` \n  - `object` - options passed\n    - `retry` - TRUE if the timedCallback should be re-called if it returns an error\n    - `retryTimeout` - timeout between retrying timed callback\n    - `timeout` - kill timeout\n  - `number` - the timeout before killing the function call\n\n```javascript\nhurryUp(function(next) {\n  \n  //this will cause an error\n  setTimeout(next, 2000);\n}, 1000).call(null, function(err, result) {\n  console.error(\"timeout has occurred!\")\n})\n```\n\nHere's an easier way to wrap around a method:\n\n```javascript\nhurryUp(emitter.once, 1000).call(emitter, \"connected\", function(err, result) {\n  \n});\n```\n\n\nYou can also use hurryup to run a callback multiple times until it succeeds, like so:\n\n```javascript\n\nfunction isItReady(next) {\n  //async stuff here\n  next(new Error(\"no!\"));\n}\n\nhurryUp(function(next) {\n  isItReady(next);\n}, { retry: true }).call(null, function(err) {\n  console.log(err.message); //no!\n});\n```\n",
+  "_id": "hurryup@0.0.2",
+  "dist": {
+    "shasum": "2862cdc01152f5dcca743f37735d300bd6efa41c"
+  },
+  "_from": "hurryup@0.0.x",
+  "_resolved": "http://registry.npmjs.org/hurryup/-/hurryup-0.0.2.tgz"
+}

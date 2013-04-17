@@ -1,0 +1,26 @@
+{
+  "name": "tq",
+  "description": "tiny queue",
+  "version": "0.2.5",
+  "repository": {},
+  "engines": {},
+  "dependencies": {
+    "hurryup": "0.0.x"
+  },
+  "devDependencies": {
+    "expect.js": "0.2.x",
+    "mocha": "1.8.x"
+  },
+  "scripts": {
+    "test": "mocha --reporter list"
+  },
+  "main": "./lib/index.js",
+  "readme": "[![Build Status](https://travis-ci.org/crcn/tq.js.png)](https://travis-ci.org/crcn/tq.js)\n\nTQ is a flexible, tiny queue library for node.js\n\n## Example\n\n```javascript\nvar queue = require(\"tq\").create().start();\n\n```\n\nAnother variation\n\n```javascript\nvar queue = require('tq').queue();\n\n\n[\n\tfunction() {\n\t\tthis();\n\t},\n\tfunction() {\n\t\tthis()\n\t},\n\tfunction() {\n\t\tthis();\n\t}\n].forEach(queue.push);\n\nqueue.start();\n```\n\n\n## Api\n\n\n### queue.push \npushes a queue to the end\n\n### queue.unshift\npushes a queue to the beginning (next up)\n\n### queue.now(callback)\n\n### queue.then(callback)\n\n### callback queue.wait()\n\n### queue.start\nstarts a queue\n\n### queue.stop\nstops a queue",
+  "readmeFilename": "README.md",
+  "_id": "tq@0.2.5",
+  "dist": {
+    "shasum": "785caec94893751732bdc7d68b90d2df1e985bed"
+  },
+  "_from": "tq@0.2.x",
+  "_resolved": "http://registry.npmjs.org/tq/-/tq-0.2.5.tgz"
+}

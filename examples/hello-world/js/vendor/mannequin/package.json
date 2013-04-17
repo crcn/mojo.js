@@ -1,0 +1,37 @@
+{
+  "name": "mannequin",
+  "version": "0.1.28",
+  "description": "mannequin.js ============",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "mocha . --reporter min"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/classdojo/mannequin.js.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "8932fdf3fafd60ee928d5ab3344620e5da44022e",
+  "dependencies": {
+    "outcome": "0.0.x",
+    "verify": "0.0.x",
+    "dref": "0.0.x",
+    "async": "0.2.x",
+    "underscore": "1.4.x",
+    "toarray": "0.0.x",
+    "bindable": "0.2.x",
+    "isa": "0.1.x",
+    "hoist": "0.0.x",
+    "eventemitter2": "0.4.x"
+  },
+  "devDependencies": {
+    "mocha": "1.8.x",
+    "expect.js": "0.2.x",
+    "structr": "0.2.x"
+  },
+  "readme": "mannequin.js\n============\n\nmodel / schema library for javascript\n\n```javascript\nvar mannequin = require(\"mannequin\"),\ndictionary = mannequin.dictionary();\n\n\ndictionary.on(\"modelBuilder\", function(modelBuilder) {\n  modelBuilder.pre([\"save\", \"remove\"], function(next) {\n    this.validate(next);\n  });\n\n  modelBuilder.pre(\"save\", function(next) {\n    if(this.isNew) {\n      //insert\n    } else {\n      //update\n    }\n  });\n\n  modelBuilder.pre(\"remove\", function(next) {\n    //remove it\n    next();\n  });\n\n}).virtual(\"name\").get(function() {\n  return this.get(\"name.first\") + \" \" + this.get(\"name.last\");\n}).set(function(value) {\n  var nameParts = value.split(\" \");\n  this.set(\"name.first\", nameParts[0]);\n  this.set(\"name.last\", nameParts[1]);\n})\n\nvar LocationModel = dictionary.register(\"location\", {\n  name: \"string\",\n  state: \"string\",\n  zip: { $type: \"string\", $is: /\\d{5}/ }\n}).getClass();\n\nvar PersonModel = dictionary.register(\"person\", {\n  name: {\n    first: \"string\",\n    last: \"string\"\n  },\n  email: { \n    $type: \"email\",\n    $required: true\n  },\n  location: \"location\",\n  createdAt: {\n    $type: \"date\",\n    $default: Date.now\n  }\n}).getClass();\n```",
+  "_id": "mannequin@0.1.28",
+  "_from": "mannequin@0.1.x"
+}
