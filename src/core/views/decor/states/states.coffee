@@ -57,6 +57,18 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
     ###
     ###
 
+    select: (stateOrIndex) ->
+      if typeof stateOrIndex is "number"
+        @set "index", stateOrIndex
+      else
+        i = @source.indexOf stateOrIndex
+        return if not ~i
+          @select 
+
+
+    ###
+    ###
+
     next: () =>
       newIndex = @get("index") + 1
 

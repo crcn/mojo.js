@@ -10,6 +10,7 @@ define ["bindable"], (bindable) ->
 
       @class = options.class or options
       @name  = options.name
+      @_id = options.name or Math.random()
 
 
     ###
