@@ -40,9 +40,6 @@ define ["jquery",
 
       compose @, @loadables, ["load", "render", "display", "remove"]
 
-      # outcome is flow-control for errors
-      @_o = outcome.e @
-
       # initialize the options
       @_init()
 

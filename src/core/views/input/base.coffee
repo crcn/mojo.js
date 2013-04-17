@@ -16,10 +16,11 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
       super()
       @bind "value", @_onValueChanged
 
+    ###
+    ###
 
     changed: () ->
       @emit "data", { name: @get("name"), value: @get("value") }
-
 
     ###
      Reflect the value change in the text input

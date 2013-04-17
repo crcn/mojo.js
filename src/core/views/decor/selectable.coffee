@@ -63,6 +63,7 @@ define ["./base", "../collection", "underscore", "isa"], (BaseDecorator, ViewCol
     _newController: (options) ->
       clazz = @controllerClass
       controller = new clazz @, options
+      @view.set(options.name, controller) 
       @view[options.name] = controller
       controller
 
