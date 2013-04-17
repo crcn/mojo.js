@@ -1,23 +1,21 @@
-define ["bindable", "stepc"], (bindable, stepc) ->
+define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
     
-  class States extends bindable.Object
+  class extends bindable.Object
 
     ###
     ###
 
     constructor: (@decorator, @options) ->
       super()
-      console.log "OK"
-
 
       @_id = @name = @options.name
 
       @view  = decorator.view
 
       # the view states
-      @views = new bindable.Collection()
-      @views.enforceId false
-      @views.reset @options.views or @options
+      @states = new bindable.Collection()
+      @states.enforceId false
+      @states.reset (@options.views or @options).map (stateOptions) -> new State stateOptions
 
       # initial index
       @set "index", @options.index or 0
@@ -62,11 +60,11 @@ define ["bindable", "stepc"], (bindable, stepc) ->
     next: () =>
       newIndex = @get("index") + 1
 
-      if newIndex >= @views.length()
+      if newIndex >= @states.length()
         if @rotate
           newIndex = 0
         else
-          newIndex = @views.length() - 1
+          newIndex = @states.length() - 1
           @emit "ended"
 
       @set "index", newIndex
@@ -80,7 +78,7 @@ define ["bindable", "stepc"], (bindable, stepc) ->
 
       if newIndex < 0
         if @rotate
-          newIndex = @views.length() - 1
+          newIndex = @states.length() - 1
         else
           newIndex = 0
 
@@ -90,11 +88,11 @@ define ["bindable", "stepc"], (bindable, stepc) ->
     ###
 
     _setIndex: (index) =>
-      return if not @views.length()
+      return if not @states.length()
 
       self           = @
-      newStatesClass = @views.at index or 0
-      newState       = new newStatesClass()
+      state          = @states.at index or 0
+      newState       = state.createView()
 
       stepc.async(
 
