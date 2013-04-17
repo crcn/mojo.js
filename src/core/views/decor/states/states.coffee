@@ -62,8 +62,8 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
         @set "index", stateOrIndex
       else
         i = @source.indexOf stateOrIndex
-        return if not ~i
-          @select 
+        if ~i
+          @select i
 
 
     ###
