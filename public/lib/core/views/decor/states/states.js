@@ -13,8 +13,6 @@
 
 
       function _Class(decorator, options) {
-        var _this = this;
-
         this.decorator = decorator;
         this.options = options;
         this._displayView = __bind(this._displayView, this);
@@ -28,7 +26,7 @@
         this.source = new bindable.Collection();
         this.source.enforceId(false);
         this.source.reset((this.options.views || this.options).map(function(stateOptions) {
-          return new State(_this, stateOptions);
+          return new State(stateOptions);
         }));
         this.set("index", this.options.index || 0);
         this.selector = this.options.selector;

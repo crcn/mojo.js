@@ -1,5 +1,6 @@
 define ["dojo-bootstrap/lib/views/base", "../core/templates", "bindable"], (View, templates, bindable) ->
   
+
   ###
   ###
 
@@ -12,6 +13,7 @@ define ["dojo-bootstrap/lib/views/base", "../core/templates", "bindable"], (View
     # then remove this person
     events:
       "click .remove": "_remove"
+ 
 
     init: () ->
       super()
@@ -36,7 +38,10 @@ define ["dojo-bootstrap/lib/views/base", "../core/templates", "bindable"], (View
 
       # listen for when a user 
       "keyup #enter-name": (event) ->
+
+        console.log($(event.target).val())
         return if event.keyCode isnt 13
+
         @_addPerson $(event.target).val()
         $(event.target).val ""
 
@@ -50,10 +55,12 @@ define ["dojo-bootstrap/lib/views/base", "../core/templates", "bindable"], (View
         itemViewClass: PersonView
         itemTagName: "div"
 
+
+
     # setup the people collection 
     init: () ->
       super()
-      @people = new bindable.Collection()
+      @people = @funkyStuff = new bindable.Collection()
 
     # called when "enter" is selected
     _addPerson: (name) ->

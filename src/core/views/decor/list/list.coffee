@@ -11,8 +11,8 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
 
     constructor: (@decorator, @options) ->
 
-      @_id = @name = options.name
-      @view = decorator.view
+      @_id      = @name = options.name
+      @view     = decorator.view
       @selector = options.selector
 
      

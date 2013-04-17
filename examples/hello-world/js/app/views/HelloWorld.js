@@ -49,6 +49,7 @@
 
       _Class.prototype.events = {
         "keyup #enter-name": function(event) {
+          console.log($(event.target).val());
           if (event.keyCode !== 13) {
             return;
           }
@@ -68,7 +69,7 @@
 
       _Class.prototype.init = function() {
         _Class.__super__.init.call(this);
-        return this.people = new bindable.Collection();
+        return this.people = this.funkyStuff = new bindable.Collection();
       };
 
       _Class.prototype._addPerson = function(name) {

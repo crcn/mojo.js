@@ -26,11 +26,12 @@ define ["underscore",
 "./dragdrop/draggable",
 "./dragdrop/droppable",
 "./states/decorator",
+"./passDown",
 "./transition"], (_, cstep, async, ClassFactory, generateId, outcome, BaseViewDecorator, 
   ViewCollection, compose,
   TemplateDecorator, ChildrenDecorator, ListDecorator, 
-  AttributesDecorator, EventsDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, StatesDecorator, TransitionDecorator) ->
-    
+  AttributesDecorator, EventsDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, StatesDecorator, PassDownDecorator, TransitionDecorator) ->
+
     # decorators are loaded in this order. Note that the order is important.
     availableDecorators = {
 
@@ -39,6 +40,9 @@ define ["underscore",
 
       # element attributes
       "attributes": new ClassFactory(AttributesDecorator),
+
+      # passes properties down the children
+      "passDown": new ClassFactory(PassDownDecorator),
 
       # parent bindings must be set before child bindings
       "bindings": new ClassFactory(BindingsDecorator),
@@ -66,7 +70,6 @@ define ["underscore",
     }
 
 
-    
     class ViewDecorator extends BaseViewDecorator
   
       ###

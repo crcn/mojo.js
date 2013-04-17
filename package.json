@@ -9,6 +9,7 @@
     "packageDir": "public/vendor",
     "dependencies": {
       "jquery": "1.7.x",
+      "jquery-transit": "*",
       "underscore": "*",
       "events": "0.0.x",
       "async": "0.2.x"

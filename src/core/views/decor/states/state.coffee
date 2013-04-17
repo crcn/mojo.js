@@ -5,7 +5,7 @@ define ["bindable"], (bindable) ->
     ###
     ###
 
-    constructor: (options) ->
+    constructor: (@states, options) ->
       super()
 
       @class = options.class or options

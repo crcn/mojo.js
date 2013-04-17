@@ -27,7 +27,6 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
         view.__selector = selector
         @_children.push view
 
-
     ###
     ###
 

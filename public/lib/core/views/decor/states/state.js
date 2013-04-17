@@ -11,8 +11,7 @@
       */
 
 
-      function _Class(states, options) {
-        this.states = states;
+      function _Class(options) {
         _Class.__super__.constructor.call(this);
         this["class"] = options["class"] || options;
         this.name = options.name;

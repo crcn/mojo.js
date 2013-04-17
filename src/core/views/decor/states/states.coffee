@@ -15,7 +15,7 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
       # the view states
       @source = new bindable.Collection()
       @source.enforceId false
-      @source.reset (@options.views or @options).map (stateOptions) -> new State stateOptions
+      @source.reset (@options.views or @options).map (stateOptions) => new State @, stateOptions
 
       # initial index
       @set "index", @options.index or 0
