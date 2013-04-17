@@ -58,7 +58,6 @@ define ["jquery",
       @init()
       @_listen()
 
-
     ###
     ###
 
@@ -94,10 +93,7 @@ define ["jquery",
      returns a search for a particular element
     ###
 
-    $: (search) -> 
-    
-      # otherwise - only look within this element
-      @el?.find search
+    $: (search) -> @el?.find search
 
     ###
      attaches to an element
@@ -116,7 +112,6 @@ define ["jquery",
       @selector = selectorOrElement
       @
 
-
     ###
     ###
 
@@ -127,7 +122,6 @@ define ["jquery",
 
       # also send it to the element
       @el?.trigger.apply @el, arguments
-
 
     ###
     ###
