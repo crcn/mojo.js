@@ -13,9 +13,9 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
       @view  = decorator.view
 
       # the view states
-      @states = new bindable.Collection()
-      @states.enforceId false
-      @states.reset (@options.views or @options).map (stateOptions) -> new State stateOptions
+      @source = new bindable.Collection()
+      @source.enforceId false
+      @source.reset (@options.views or @options).map (stateOptions) -> new State stateOptions
 
       # initial index
       @set "index", @options.index or 0
@@ -60,11 +60,11 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
     next: () =>
       newIndex = @get("index") + 1
 
-      if newIndex >= @states.length()
+      if newIndex >= @source.length()
         if @rotate
           newIndex = 0
         else
-          newIndex = @states.length() - 1
+          newIndex = @source.length() - 1
           @emit "ended"
 
       @set "index", newIndex
@@ -78,7 +78,7 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
 
       if newIndex < 0
         if @rotate
-          newIndex = @states.length() - 1
+          newIndex = @source.length() - 1
         else
           newIndex = 0
 
@@ -88,10 +88,10 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
     ###
 
     _setIndex: (index) =>
-      return if not @states.length()
+      return if not @source.length()
 
       self           = @
-      state          = @states.at index or 0
+      state          = @source.at index or 0
       newState       = state.createView()
 
       stepc.async(
