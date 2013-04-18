@@ -41,6 +41,8 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
       @_viewCollection.display callback
 
     remove: (callback) ->
+      @binding?.dispose()
+      @binding = undefined
       @_viewCollection.remove callback
 
 
@@ -48,7 +50,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
     ### 
 
     initList: () -> 
-
+      @_ran = Math.random()
       hoister = hoist()
 
       if @options.transform
@@ -63,7 +65,6 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
         if @options.filter
           @binding.filter @options.filter
 
-
         @binding.transform(hoister).to(@_viewCollection)
 
 
@@ -73,7 +74,6 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
     _hookItemView: (itemView) =>
 
       self = @
-
 
       itemView.loadables.unshift({
         _id: "listItem"
@@ -104,8 +104,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
     ###
 
     _removeItem: (itemView) =>
-      return if not @_displayed or not itemView
-      itemView.remove()
+      itemView?.remove()
     ###
     ###
 
