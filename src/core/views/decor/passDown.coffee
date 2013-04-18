@@ -21,13 +21,10 @@ define ["./base", "toarray"], (BaseDecorator, toarray) ->
         if p.passDown
           pd = toarray p.passDown
           for property in pd
-            console.log property
-            @_bindings.push p.bind(property).to(@view, property).to (value) ->
-              console.log property
+            @_bindings.push p.bind(property).to(@view, property)
 
         for i in inherit
-          p.bind(i).to(@view, i).to (value) ->
-            console.log i
+          p.bind(i).to(@view, i)
 
         p = p.parent()
 
