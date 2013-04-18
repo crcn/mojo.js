@@ -109,9 +109,27 @@ define ["jquery",
     element: (selectorOrElement) ->
       return @el if not arguments.length
       @el  = if typeof selectorOrElement is "string" then $(selectorOrElement) else selectorOrElement
+      @el[0]._view = @
       @selector = selectorOrElement
       @
 
+    ###
+    ###
+
+    parent: () -> 
+      p = @el[0].parentNode
+      while p
+        return p._view if p._view
+        p = p.parentNode
+      return null
+
+    ###
+    ###
+
+    root: () ->
+      p = @
+      p = pv while pv = p.parent()
+      p
     ###
     ###
 

@@ -11,27 +11,18 @@ define ["./base", "toarray"], (BaseDecorator, toarray) ->
     ###
 
     render: (callback) ->
-
-      # setup a reference to the view via the dom element
-      @view.el[0]._view = @view
-
       @_bindings = []
 
       # next, find all the views with properties to pass down
-      p = @view.el.parent()[0]
+      p = @view.parent()
 
-
-      @_bindings = []
-
-      # i = sanity
-      while p.parentNode
-
-        if p._view and p._view.passDown 
-          pd = toarray p._view.passDown
+      while p
+        if p.passDown
+          pd = toarray p.passDown
           for property in pd
-            @_bindings.push p._view.bind(property).to(@view, property)
+            @_bindings.push p.bind(property).to(@view, property)
 
-        p = p.parentNode
+        p = p.parent()
 
 
       callback()
