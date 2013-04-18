@@ -163,8 +163,12 @@ define ["jquery",
     _onRemove    : () =>
     _onRemoved   : () =>
       return if not @el
-      @el[0]._view = undefined
-      @_parent = undefined
+      
+      if @_parent
+        @_parent = undefined
+      else
+        @el[0]._view = undefined
+
       @el.unbind("*")
       @el.html("")
       @dispose()
