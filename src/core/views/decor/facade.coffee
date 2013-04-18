@@ -79,13 +79,15 @@ define ["underscore",
         @_id = generateId()
         @_facadeCollection = new ViewCollection()
         @_facadeCollection.limit = 1
-        compose @, @_facadeCollection, ["load", "render", "display", "remove"]
+        compose @, @_facadeCollection, ["render", "load", "display", "remove"]
         @dispose()
 
       ###
       ###
 
       init: () =>
+        return if @_initialized
+        @_initialized = true
 
         # setup the decorators immediately
         @_addDecorators()

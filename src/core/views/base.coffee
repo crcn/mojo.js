@@ -42,7 +42,6 @@ define ["jquery",
 
       # initialize the options
       @_init()
-
       @decorator.init()
 
     ###
