@@ -10,8 +10,8 @@ define ["jquery",
 "asyngleton", 
 "../models/locator",
 "../utils/compose",
-"../utils/async"], ($, events, bindable, ViewCollection, generateId, outcome, dref, _, 
-  ViewDecorator, asyngleton, modelLocator, compose, async) ->
+"../utils/async", "toarray"], ($, events, bindable, ViewCollection, generateId, outcome, dref, _, 
+  ViewDecorator, asyngleton, modelLocator, compose, async, toarray) ->
   
   class BaseView extends bindable.Object
 
@@ -108,7 +108,14 @@ define ["jquery",
     element: (selectorOrElement) ->
       return @el if not arguments.length
       @el  = if typeof selectorOrElement is "string" then $(selectorOrElement) else selectorOrElement
-      @el[0]._view = @
+      el = @el[0]
+
+      # happens for items such as state views
+      if el._view
+        @_parent = el._view
+      else
+        el._view = @
+
       @selector = selectorOrElement
       @
 
@@ -116,6 +123,7 @@ define ["jquery",
     ###
 
     parent: () -> 
+      return @_parent if @_parent
       p = @el[0].parentNode
       while p
         return p._view if p._view
@@ -155,6 +163,8 @@ define ["jquery",
     _onRemove    : () =>
     _onRemoved   : () =>
       return if not @el
+      @el[0]._view = undefined
+      @_parent = undefined
       @el.unbind("*")
       @el.html("")
       @dispose()
