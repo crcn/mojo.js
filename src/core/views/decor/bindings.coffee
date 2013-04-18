@@ -52,15 +52,21 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
     _setupBinding: (property, to) ->
       keyParts = property.split " "
 
+      options = {}
+
       if typeof to is "function" 
         oldTo = to
         to = () =>
           oldTo.apply @view, arguments
 
+      if to.to
+        options = to
+      else
+        options = { to: to }
 
       for keyPart in keyParts
-        @view.bind(keyPart).to to
-
+        options.property = keyPart
+        @view.bind options
 
 
 
