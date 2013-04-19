@@ -82,6 +82,16 @@ define ["underscore",
         compose @, @_facadeCollection, ["render", "load", "display", "remove"]
         @dispose()
 
+
+      ###
+
+      inherit: (key, to, value) ->
+        for key of availableDecorators
+          decoratorClass = availableDecorators[key]
+          if decoratorClass.test 
+      
+      ###
+
       ###
       ###
 

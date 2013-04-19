@@ -27,6 +27,7 @@ define ["jquery",
 
       @_id = dref.get(options, "_id") or dref.get(options.item or {}, "_id") or generateId()
 
+
       options.view = @
       options.modelLocator = modelLocator
 
@@ -34,6 +35,9 @@ define ["jquery",
 
       # controls bindings, events, templates, transitions based on the given options.
       @decorator = new ViewDecorator @
+
+      # inherit from the parent prototype
+      #@_inheritDecorators()
 
       # items to load with the view
       @loadables = new ViewCollection [@decorator]
@@ -43,6 +47,29 @@ define ["jquery",
       # initialize the options
       @_init()
       @decorator.init()
+
+    ###
+
+    _inheritDecorators: () ->
+      for p in @_parentClasses()
+        for key of p
+          prop = p[key]
+          @decorator.inherit key, @, prop
+
+
+    ###
+
+    ###
+    ###
+
+    _parentClasses: () ->
+      parents = []
+      cp = @constructor.__super__
+      while cp
+        parents.push cp
+        cp = cp.constructor.__super__
+
+      parents
 
     ###
     ###
