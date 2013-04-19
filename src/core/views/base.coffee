@@ -28,6 +28,8 @@ define ["jquery",
       @_id = dref.get(options, "_id") or dref.get(options.item or {}, "_id") or generateId()
 
 
+      options = _.extend {}, @data or {}, options
+
       options.view = @
       options.modelLocator = modelLocator
 
