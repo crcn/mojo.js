@@ -25,7 +25,7 @@ define ["jquery",
 
     constructor: (options = {}) ->
 
-      @_id = dref.get(options, "_id") or generateId()
+      @_id = dref.get(options, "_id") or dref.get(options.item or {}, "_id") or generateId()
 
       options.view = @
       options.modelLocator = modelLocator
@@ -137,6 +137,7 @@ define ["jquery",
       p = @
       p = pv while pv = p.parent()
       p
+      
     ###
     ###
 

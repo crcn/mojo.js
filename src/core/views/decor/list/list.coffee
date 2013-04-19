@@ -1,4 +1,4 @@
-define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outcome", "../../../templates/factory"], (bindable, ViewCollection, compose, hoist, outcome, templates) ->
+define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outcome", "../../../templates/factory", "dref"], (bindable, ViewCollection, compose, hoist, outcome, templates, dref) ->
   
   ###
    this IS the children
@@ -11,9 +11,12 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
 
     constructor: (@decorator, @options) ->
 
-      @_id      = @name = options.name
+
+
+      @_id      = @name = options._name
       @view     = decorator.view
       @selector = options.selector
+      @itemName = options.name or "item"
 
      
       # the source of the list - string
@@ -31,9 +34,13 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
     ###
     ###
 
-    load: (callback) -> @_viewCollection.load callback
+    load: (callback) -> 
+      @_loaded = true
+      @_viewCollection.load callback
+
     render: (callback) ->
       @element = if @selector then @view.$ @selector else @view.el
+      @_rendered = true
       @_viewCollection.render callback
 
     display: (callback) ->  
@@ -50,13 +57,18 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
     ### 
 
     initList: () -> 
-      @_ran = Math.random()
       hoister = hoist()
 
       if @options.transform
         hoister.map (item) => @options.transform item, @
 
       hoister.
+      map((item) => 
+        ops = {}
+        ops.item = item
+        ops._id = dref.get(item, "_id")
+        ops
+      ).
       cast(@_itemViewClass)
 
       if @__source
@@ -77,8 +89,9 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
 
       itemView.loadables.unshift({
         _id: "listItem"
-
         render: (callback) ->
+          #console.log self._rendered, self._displayed, self._loaded, Date.now().getTime()
+          
           self._loadChildTemplate itemView, outcome.e(callback).s (content) =>
 
             if self.options.prepend
@@ -122,7 +135,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
       return callback() if not template
 
       # load the template with the target child data
-      template.render itemView.getFlatten(), callback
+      template.render itemView.getFlatten("item") or itemView.getFlatten(), callback
 
 
 

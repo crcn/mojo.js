@@ -8,7 +8,7 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
     constructor: (@decorator, @options) ->
       super()
 
-      @_id = @name = @options.name
+      @_id = @name = @options._name
 
       @view  = decorator.view
 

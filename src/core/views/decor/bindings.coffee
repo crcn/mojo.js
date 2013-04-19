@@ -35,7 +35,7 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
     ###
 
     render: (callback) ->
-      rivets.bind @view.el, { data: @view }
+      rivets.bind @view.el, { data: @view.get("item") or @view, view: @view }
       callback()
 
     ###

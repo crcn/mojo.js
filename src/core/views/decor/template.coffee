@@ -38,8 +38,7 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
     ###
     ###
 
-    templateData: () -> 
-      @view.getFlatten()
+    templateData: () -> @view.getFlatten("item") or @view.getFlatten()
 
     ###
     ###

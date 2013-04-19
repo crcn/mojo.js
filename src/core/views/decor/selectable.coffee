@@ -13,14 +13,14 @@ define ["../collection", "underscore", "isa"], (ViewCollection, _, isa) ->
 
     _setupControllers: () ->
       ops = @_options()
-      return [@_newController(_.extend(ops, { name: @name }))] if @_isSingle ops
+      return [@_newController(_.extend(ops, { _name: @name }))] if @_isSingle ops
       _controllers = []
       for key of ops
         keyParts = key.split(" ")
         selector = keyParts.pop()
         property = keyParts.pop()
         options  = ops[key]
-        options.name = property or selector
+        options._name = property or selector
         options.selector = selector
 
         _controllers.push @[property or selector] = controller = @_newController options
@@ -38,7 +38,7 @@ define ["../collection", "underscore", "isa"], (ViewCollection, _, isa) ->
     _newController: (options) ->
       clazz = @controllerClass
       controller = new clazz @, options
-      @view.set(options.name, controller) 
+      @view.set(options._name, controller) 
       @view[options.name] = controller
       controller
 
