@@ -1999,8 +1999,6 @@ var requirejs, require, define;
     req(cfg);
 }(this));
 
-
-
 var jam = {
     "packages": [
         {
@@ -2169,7 +2167,7 @@ var jam = {
             "main": "./lib/index.js"
         }
     ],
-    "version": "0.2.15",
+    "version": "0.2.17",
     "shim": {
         "jquery-transit": {
             "deps": [
