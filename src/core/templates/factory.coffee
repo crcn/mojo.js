@@ -1,4 +1,4 @@
-define ["require", "./template", "asyngleton", "underscore"], (require, Template, asyngleton, _) ->
+define ["require", "./template", "asyngleton", "underscore", "./engines/handlebars"], (require, Template, asyngleton, _, Handlebars) ->
 
   
   class TemplateFactory
@@ -45,8 +45,9 @@ define ["require", "./template", "asyngleton", "underscore"], (require, Template
     ###
 
     loadEngine: (name, callback) ->
-      require ["./engines/#{@_engine}"], (Engine) =>
-        callback null, (@_loadedEngines[name] or (@_loadedEngines[name] = new Engine(@)))
+      callback(null, @_loadedEngines[name] or (@_loadedEngines[name] = new Handlebars(@)))
+      #require ["./engines/#{@_engine}"], (Engine) =>
+        #callback null, (@_loadedEngines[name] or (@_loadedEngines[name] = new Engine(@)))
 
     ###
     ###

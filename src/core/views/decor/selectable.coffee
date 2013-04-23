@@ -1,4 +1,4 @@
-define ["../collection", "underscore", "isa"], (ViewCollection, _, isa) ->
+define ["../collection", "underscore", "type-component"], (ViewCollection, _, type) ->
   
   class SelectableDecorator extends ViewCollection
 
@@ -46,7 +46,7 @@ define ["../collection", "underscore", "isa"], (ViewCollection, _, isa) ->
     ###
 
     _isSingle: (options) ->
-      return true if isa.array options
+      return true if type(options) is "array"
       for key of options
         v = options[key]
         if typeof v is "string"

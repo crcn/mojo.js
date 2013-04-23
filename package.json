@@ -1,10 +1,9 @@
 {
   "name": "dojo-bootstrap",
-  "version": "0.1.13",
+  "version": "0.1.15",
   "description": "test",
-  "main": "./public/lib/index.js",
+  "main": "./lib/index.js",
   "jam": {
-    "main": "index.js",
     "baseUrl": "public",
     "packageDir": "public/vendor",
     "dependencies": {
@@ -15,14 +14,13 @@
       "async": "0.2.x"
     },
     "config": {
-      "repository":"http://npm.classdojo.com:5984/jam",
+      "repository": "http://npm.classdojo.com:5984/jam",
       "paths": {
         "templates": "public/templates"
       }
     }
   },
-    "repository":"http://npm.classdojo.com:5984/jam",
-  
+  "repository": "http://npm.classdojo.com:5984/jam",
   "dependencies": {
     "dref": "0.0.x",
     "comerr": "0.0.x",
@@ -31,12 +29,14 @@
     "asyngleton": "0.1.x",
     "outcome": "0.0.x",
     "step": "0.0.x",
+    "type-component":"0.0.x",
     "bindable": "0.2.x",
     "disposable": "0.0.x",
     "eventemitter2": "0.4.x",
     "rivets": "0.3.x",
     "structr": "0.2.x",
     "dolce": "0.0.x",
-    "mannequin": "0.1.x"
+    "mannequin": "0.1.x",
+    "hoist": "0.0.x"
   }
 }

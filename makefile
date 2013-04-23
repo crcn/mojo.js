@@ -13,3 +13,6 @@ clean:
 
 test: 
 	mocha . --timeout 99999
+
+link:
+	ln -s `cbd dir dojo-bootstrap` `cbd dir dojo`/public/js/teacher/web2/vendor
