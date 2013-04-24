@@ -27,24 +27,35 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
       @document = $(document)
       el.bind "mousedown", @_startDrag
 
+      # gets IE to work
+      el.bind "dragstart", () =>
+
     ###
     ###
 
     _startDrag: (e) =>
 
-      # prevent original drag - might be an image
-      e.preventDefault()
 
       @document.bind "mousemove", @_drag
       @document.one "mouseup", @_stopDrag
 
-      @_offset = { x: e.offsetX, y: e.offsetY }
+      # layerX = firefox
+      @_offset = { x: e.offsetX or @view.el.width()/2, y: e.offsetY or @view.el.height()/2 }
+
+
 
       @draggedItem = @document.find("body").append(@view.el.html()).children().last()
+
+
 
       @draggedItem.css { "z-index": 99999999, "position": "absolute", "opacity": 0.8  }
       @draggedItem.transit { scale: 1.5 }
       @_followMouse e
+
+      # prevent original drag - might be an image
+      # e.preventDefault()
+      e.stopPropagation()
+      true
 
 
     _stopDrag: (e) =>
@@ -59,13 +70,14 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
       @_followMouse e
 
 
-    _event: (e) => { view: @view, draggedItem: @draggedItem, mouse: { x: e.pageX, y: e.pageY } }
+    _event: (e) => 
+      { view: @view, draggedItem: @draggedItem, mouse: { x: e.pageX, y: e.pageY } }
 
 
     _coords: (e) => { left: e.pageX - @_offset.x, top: e.pageY - @_offset.y }
 
     _followMouse: (e) =>
-      @draggedItem.css(@_coords(e))
+      @draggedItem.css @_coords(e)
 
   DraggableDecorator.test = (view) -> view.draggable
 

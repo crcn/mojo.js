@@ -28,10 +28,8 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
     render: (callback) ->
       @view.el.css { "display": "none" }
       @view.el.html @_html
-
       # need to give the browser some breathing room to render (FFOX throws recursive error)
       setTimeout callback, 0
-      # callback()
 
     ###
     ###
