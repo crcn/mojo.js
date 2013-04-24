@@ -37,11 +37,10 @@ define () ->
 
       finish = () ->
 
-
         # return if already finished, or there are no more running items
         return if finished or (numRunning and not err)
         finished = true
-        next err
+        next()
 
       nextItem = () ->
 

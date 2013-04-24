@@ -6,14 +6,14 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
 
     render: (callback) ->
-      @view.el.css { "visibility": "hidden" }
+      @view.el.css { "display": "none" }
       callback()
 
     ###
     ###
 
     display: (callback) ->
-      @view.el.css { "visibility": "visible" }
+      @view.el.css { "display": "block" }
       @_transitionAll "enter", callback
     
 

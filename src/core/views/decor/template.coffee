@@ -14,7 +14,8 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
     ###
 
     load: (callback) ->  
-      @view.template.render @templateData(), outcome.e(callback).s (content) => 
+      @view.template.render @templateData(), (err, content) => 
+        return callback(err) if err
         @_html = content
 
         # the view might have been initialized immediately, so add a 1 MS timeout incase
@@ -25,15 +26,20 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
     ###
 
     render: (callback) ->
-      @view.el.css { "visibility": "hidden" }
+      @view.el.css { "display": "none" }
       @view.el.html @_html
-      callback()
+      setTimeout callback, 0
 
     ###
     ###
 
     display: (callback) ->
       callback()
+
+    remove: (callback) ->
+      @view.el.unbind("*")
+      @view.el.html ""
+      setTimeout callback, 0
 
     ###
     ###
@@ -44,7 +50,7 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
     ###
 
     _onDisplayed: () =>
-      @view.el.css { "visibility": "visible" }
+      @view.el.css { "display": "block" }
 
 
 

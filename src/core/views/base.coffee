@@ -10,9 +10,12 @@ define ["jquery",
 "asyngleton", 
 "../models/locator",
 "../utils/compose",
-"../utils/async", "toarray"], ($, events, bindable, ViewCollection, generateId, outcome, dref, _, 
+"../utils/async", 
+"toarray"], ($, events, bindable, ViewCollection, generateId, outcome, dref, _, 
   ViewDecorator, asyngleton, modelLocator, compose, async, toarray) ->
-  
+    
+
+
   class BaseView extends bindable.Object
 
     ###
@@ -26,6 +29,7 @@ define ["jquery",
     constructor: (options = {}) ->
 
       @_id = dref.get(options, "_id") or dref.get(options.item or {}, "_id") or generateId()
+
 
 
       options = _.extend {}, @data or {}, options
@@ -191,6 +195,8 @@ define ["jquery",
     _onDisplayed : () => 
 
     _onRemove    : () =>
+      @_removing = true
+
     _onRemoved   : () =>
       return if not @el
       
@@ -199,8 +205,6 @@ define ["jquery",
       else
         @el[0]._view = undefined
 
-      @el.unbind("*")
-      @el.html("")
       @dispose()
       @el = undefined
 

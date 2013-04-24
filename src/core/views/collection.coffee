@@ -1,6 +1,7 @@
 
-define ["bindable", "../utils/async", "cstep", "asyngleton", "outcome"], (bindable, async, cstep, asyngleton, outcome) ->
-  
+define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, cstep, asyngleton) ->
+    
+
   class extends bindable.Collection
 
     ###
@@ -42,6 +43,7 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "outcome"], (bindab
 
     _callViewMethod: (method, event, reverse, callback = (() ->)) ->
 
+
       @emit method
 
       stack = if reverse then @source().reverse() else @source()
@@ -51,9 +53,10 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "outcome"], (bindab
         return next() if not fn
         fn.call item, next
 
-      done = outcome.e(callback).s () =>
+      done = (err, result) =>
+        return callback(err) if err
         @emit event
-        callback()
+        return callback()
 
       if not ~@limit 
         async.forEach @source(), run, done

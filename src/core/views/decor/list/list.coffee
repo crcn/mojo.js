@@ -1,4 +1,4 @@
-define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outcome", "../../../templates/factory", "dref"], (bindable, ViewCollection, compose, hoist, outcome, templates, dref) ->
+define ["bindable", "../../collection", "../../../utils/compose", "hoist", "../../../templates/factory", "dref"], (bindable, ViewCollection, compose, hoist, templates, dref) ->
   
   ###
    this IS the children
@@ -12,12 +12,10 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
     constructor: (@decorator, @options) ->
 
 
-
       @_id      = @name = options._name
       @view     = decorator.view
       @selector = options.selector
       @itemName = options.name or "item"
-
      
       # the source of the list - string
       @__source       = options.source
@@ -26,6 +24,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
       @_itemViewClass = options.itemViewClass
 
       @_viewCollection = @itemViews = new ViewCollection @options.itemViews?.call @view or []
+      @_viewCollection.delay = 0
       @_viewCollection.bind { insert: @_hookItemView, remove: @_removeItem }
 
 
@@ -92,7 +91,8 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "outc
         render: (callback) ->
           #console.log self._rendered, self._displayed, self._loaded, Date.now().getTime()
           
-          self._loadChildTemplate itemView, outcome.e(callback).s (content) =>
+          self._loadChildTemplate itemView, (err, content) =>
+            return callback(err) if err
 
             if self.options.prepend
               el = self.element.prepend(content).children().first()
