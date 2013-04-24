@@ -54,7 +54,7 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
     ###
     ###
 
-    remove: (callback) -> @_children.remove callback
+    #remove: (callback) -> @_children.remove callback
 
 
 

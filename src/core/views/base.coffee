@@ -54,28 +54,6 @@ define ["jquery",
       @_init()
       @decorator.init()
 
-    ###
-
-    _inheritDecorators: () ->
-      for p in @_parentClasses()
-        for key of p
-          prop = p[key]
-          @decorator.inherit key, @, prop
-
-
-    ###
-
-    ###
-    ###
-
-    _parentClasses: () ->
-      parents = []
-      cp = @constructor.__super__
-      while cp
-        parents.push cp
-        cp = cp.constructor.__super__
-
-      parents
 
     ###
     ###
@@ -163,6 +141,14 @@ define ["jquery",
         p = p.parentNode
       return null
 
+    attached: () ->
+      p = @el[0]
+      return false if not p
+      while p.parentNode and p.parentNode isnt document.body
+        p = p.parentNode
+
+      return p.parentNode is document.body
+
     ###
     ###
 
@@ -204,6 +190,12 @@ define ["jquery",
         @_parent = undefined
       else
         @el[0]._view = undefined
+
+      console.log "REMOVE"
+
+
+      @el.unbind("*")
+      @el.html("")
 
       @dispose()
       @el = undefined

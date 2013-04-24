@@ -46,10 +46,10 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "../.
       @_displayed = true
       @_viewCollection.display callback
 
-    remove: (callback) ->
-      @binding?.dispose()
-      @binding = undefined
-      @_viewCollection.remove callback
+    #remove: (callback) ->
+    #  @binding?.dispose()
+    #  @binding = undefined
+    #  @_viewCollection.remove callback
 
 
     ###
@@ -103,6 +103,12 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "../.
 
             callback()
 
+        remove: (callback) ->
+          callback()
+      })
+
+      itemView.loadables.push({
+        _id: "listItem2"
         remove: (callback) ->
           itemView.el.remove()
           callback()

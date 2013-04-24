@@ -37,11 +37,6 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
     display: (callback) ->
       callback()
 
-    remove: (callback) ->
-      @view.el.unbind("*")
-      @view.el.html ""
-      # see @render
-      setTimeout callback, 0
 
     ###
     ###

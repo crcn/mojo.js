@@ -35,14 +35,13 @@ define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, 
     ###
 
     remove: asyngleton (callback) ->
-      @display () => @_callViewMethod "remove", "removed", true, callback
+      @display () => @_callViewMethod "remove", "removed", false, callback
 
 
     ###
     ###
 
     _callViewMethod: (method, event, reverse, callback = (() ->)) ->
-
 
       @emit method
 
