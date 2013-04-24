@@ -56,7 +56,7 @@ define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, 
       done = (err, result) =>
         return callback(err) if err
         @emit event
-        return callback()
+        callback()
 
       if not ~@limit 
         async.forEach @source(), run, done

@@ -16,7 +16,7 @@ define ["./base", "../../templates/factory"], (BaseView, templates) ->
     ###
 
     events: {
-      "input input": "_onInputChange"
+      "keyup input": "_onInputChange"
     }
 
     ###
