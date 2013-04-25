@@ -191,9 +191,6 @@ define ["jquery",
       else
         @el[0]._view = undefined
 
-      console.log "REMOVE"
-
-
       @el.unbind("*")
       @el.html("")
 
