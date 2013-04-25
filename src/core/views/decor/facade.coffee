@@ -30,43 +30,47 @@ define ["underscore",
   ViewCollection, compose,
   TemplateDecorator, ChildrenDecorator, ListDecorator, 
   AttributesDecorator, EventsDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, StatesDecorator, PassDownDecorator, TransitionDecorator) ->
+    
 
-    # decorators are loaded in this order. Note that the order is important.
-    availableDecorators = {
+    decor = (name, clazz) ->
+      { name: name, factory: new ClassFactory(clazz) }
+
+    availableDecorators = [
 
       # template must be loaded first because the following decorators handle an element
-      "template": new ClassFactory(TemplateDecorator),
+      decor("template", TemplateDecorator),
 
       # element attributes
-      "attributes": new ClassFactory(AttributesDecorator),
+      decor("attributes", AttributesDecorator),
 
       # passes properties down the children
-      "passDown": new ClassFactory(PassDownDecorator),
+      decor("passDown", PassDownDecorator),
 
       # parent bindings must be set before child bindings
-      "bindings": new ClassFactory(BindingsDecorator),
+      decor("bindings", BindingsDecorator),
 
       # creates a list of items
-      "list": new ClassFactory(ListDecorator),
+      decor("list", ListDecorator),
 
       # states view
-      "states": new ClassFactory(StatesDecorator),
-      
+      decor("states", StatesDecorator),
+
       # children must be loaded before the transition starts, otherwise there might be a delay
-      "children": new ClassFactory(ChildrenDecorator),
+      decor("children", ChildrenDecorator),
 
       # events can go anywhere really
-      "events": new ClassFactory(EventsDecorator),
+      decor("events", EventsDecorator),
 
       # transition should be the last-ish item since it adds a delay to everything else
-      "transition": new ClassFactory(TransitionDecorator),
+      decor("transition", TransitionDecorator),
 
       # makes the view draggable
-      "draggable": new ClassFactory(DraggableDecorator),
+      decor("draggable", DraggableDecorator),
 
       # makes the view droppable
-      "droppable": new ClassFactory(DroppableDecorator)
-    }
+      decor("droppable", DroppableDecorator)
+    ]
+
 
 
     class ViewDecorator extends BaseViewDecorator
@@ -119,10 +123,10 @@ define ["underscore",
 
         decorators = []
 
-        priority = 0
-        for name of availableDecorators
-          priority++
-          factory = availableDecorators[name]
+        for d, priority in availableDecorators
+
+          factory = d.factory
+          name = d.name
 
           if factory.test(@view)
             decor = factory.createItem @view

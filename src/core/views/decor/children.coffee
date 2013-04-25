@@ -31,6 +31,7 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
     ###
 
     load: (callback) ->  
+
       @view.children = @view.children = @_children
       @_children.load callback
 
