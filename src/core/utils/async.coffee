@@ -45,7 +45,7 @@ define () ->
       nextItem = () ->
 
         # finish if we're at the end
-        return finish() if (currentIndex >= items.length) or err
+        return finish(err) if (currentIndex >= items.length) or err
 
         # increment the number of running items
         numRunning++
@@ -53,7 +53,6 @@ define () ->
 
 
         each item, (e) ->
-          err = e
           numRunning--
           return nextItem()
           

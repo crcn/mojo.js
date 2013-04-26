@@ -32,13 +32,15 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
 
     load: (callback) ->  
 
+
       @view.children = @view.children = @_children
       @_children.load callback
 
     ###
     ###
 
-    render: (callback) -> 
+    render: (callback) ->
+
 
       for child in @_children.source()
         child.element @view.$ child.__selector
@@ -50,7 +52,8 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
     ###
     ###
 
-    display: (callback) -> @_children.display callback
+    display: (callback) -> 
+      @_children.display callback
 
     ###
     ###

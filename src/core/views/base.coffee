@@ -47,6 +47,7 @@ define ["jquery",
 
       # items to load with the view
       @loadables = new ViewCollection [@decorator]
+      @loadables.view = @
 
       compose @, @loadables, ["load", "render", "display", "remove"]
 

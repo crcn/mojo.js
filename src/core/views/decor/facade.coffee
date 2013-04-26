@@ -134,7 +134,6 @@ define ["underscore",
             decor._id = name
             decorators.push decor
 
-        
         decorators = decorators.sort (a, b) -> if a.priority > b.priority then 1 else -1
         @_facadeCollection.reset decorators
 

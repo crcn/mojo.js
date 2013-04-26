@@ -89,8 +89,6 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "../.
       itemView.loadables.unshift({
         _id: "listItem"
         render: (callback) ->
-          #console.log self._rendered, self._displayed, self._loaded, Date.now().getTime()
-          
           self._loadChildTemplate itemView, (err, content) =>
             return callback(err) if err
 
