@@ -1,6 +1,6 @@
 {
   "name": "dojo-bootstrap",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "description": "test",
   "main": "./lib/index.js",
   "jam": {

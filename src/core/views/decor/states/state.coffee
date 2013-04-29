@@ -16,8 +16,16 @@ define ["bindable", "underscore"], (bindable, _) ->
 
       @_id = options.name or Math.random()
 
+      ops.selected = false
 
       super ops
+
+    ###
+    ###
+
+    select: () ->
+      @states.select @
+
 
 
     ###

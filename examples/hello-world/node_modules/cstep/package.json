@@ -1,0 +1,22 @@
+{
+  "name": "cstep",
+  "version": "0.0.1",
+  "description": "Usage",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/crcn/coffee-step.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "tq": "0.2.x"
+  },
+  "readme": "Flow-control library used for coffeescript classes\n\nUsage\n\n```coffeescript\ncstep = require \"cstep\"\n\nclass Config\n  \n  ###\n    Function: Constructor\n\n    Parameters:\n      source - source of the configuration file\n\n  ###\n\n  constructor: (@source) ->\n\n  ###\n    Function: load\n\n    Loads the configuration file\n\n    Parameters:\n\n    next - called when load is complete\n  ###\n\n  load: cstep (next) ->\n    fs.readFile @source, (err, content) =>\n      @_content = JSON.parse content\n      next()\n\n  ###\n    Function: set\n\n    sets a value to the configuration file\n\n    Parameters:\n\n    next - called when set is complete (used mostly for cstep)\n  ###\n\n  set: cstep (key, value, next) ->\n    @_content[key] = value\n    next()\n\n  ###\n    Function: save\n\n    Parameters:\n\n    next - called when save is complete\n  ###\n\n  save: cstep (next) ->\n    fs.writeFile @source, JSON.stringify(@_content), next\n```\n\n\nUsing Config.coffee\n\n```coffeescript\nconfig = new Config __dirname + \"/config.json\"\nconfig.load().set(\"hello\", \"world\").save () ->\n  #successfully saved {\"hello\":\"world\"}\n```\n\n\n",
+  "_id": "cstep@0.0.1",
+  "_from": "cstep@0.0.x"
+}

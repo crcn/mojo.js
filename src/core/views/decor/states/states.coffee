@@ -102,9 +102,14 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
     _setIndex: (index) =>
       return if not @source.length()
 
+      @currentState?.set "selected", false
+
       self           = @
-      state          = @source.at index or 0
+      state          = @currentState = @source.at index or 0
       newState       = state.createView()
+
+      @currentState?.set "selected", true
+      
 
       stepc.async(
 
