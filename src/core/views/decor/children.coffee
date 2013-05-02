@@ -1,5 +1,5 @@
 
-define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDecorator, outcome, async, Collection) ->
+define ["./base", "outcome", "../../utils/async", "../collection", "pilot-block"], (BaseViewDecorator, outcome, async, Collection, pilot) ->
   
   class ChildrenDecorator extends BaseViewDecorator
 
@@ -10,55 +10,45 @@ define ["./base", "outcome", "../../utils/async", "../collection"], (BaseViewDec
       super()
       childrenClasses = @view.children
       @_children = new Collection()
+      @_childrenByName = {}
 
       # modalBody .modal-body
-      for viewName of childrenClasses
+      for property of childrenClasses
 
-        selectorParts = viewName.split(" ")
-        property = selectorParts.shift()
-        selector = selectorParts.shift() or property
-
-        clazz = childrenClasses[viewName]
-        view = new clazz()
+        clazz = childrenClasses[property]
+        child = new clazz()
 
         # make the views accesible from the selectors
-        @_children[property] = view
-        @view.set property, view
-        view.__selector = selector
-        @_children.push view
+        @_children[property] = @_childrenByName[property] = child
+        @view.set property, child
+        @view.linkChild child
+        @_children.push child
 
     ###
     ###
 
     load: (callback) ->  
-
-
       @view.children = @view.children = @_children
-      @_children.load callback
+      @_children.load (err) =>
+        return callback(err) if err?
+        for childName of @_childrenByName
+          @view.set "section.#{childName}", @_childrenByName[childName].section.html()
+        setTimeout callback, 0
 
     ###
     ###
 
-    render: (callback) ->
-
-
-      for child in @_children.source()
-        child.element @view.$ child.__selector
-
-      @_children.render () ->
-        callback()
-
+    render: (callback) -> @_children.render callback
 
     ###
     ###
 
-    display: (callback) -> 
-      @_children.display callback
+    display: (callback) -> @_children.display callback
 
     ###
     ###
 
-    #remove: (callback) -> @_children.remove callback
+    remove: (callback) -> @_children.remove callback
 
 
 

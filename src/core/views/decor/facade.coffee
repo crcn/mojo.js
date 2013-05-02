@@ -25,29 +25,32 @@ define ["underscore",
 "./dragdrop/draggable",
 "./dragdrop/droppable",
 "./states/decorator",
-"./passDown",
 "./transition"], (_, cstep, async, ClassFactory, generateId, BaseViewDecorator, 
   ViewCollection, compose,
   TemplateDecorator, ChildrenDecorator, ListDecorator, 
-  AttributesDecorator, EventsDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, StatesDecorator, PassDownDecorator, TransitionDecorator) ->
+  AttributesDecorator, EventsDecorator, BindingsDecorator, DraggableDecorator, 
+  DroppableDecorator, StatesDecorator, TransitionDecorator) ->
     
 
     decor = (name, clazz) ->
       { name: name, factory: new ClassFactory(clazz) }
 
+
+    ###
+    loading order:
+
+    1. children templates
+    2. parent templates
+    3. parent -> child bindings
+    ###
+
     availableDecorators = [
-
-      # template must be loaded first because the following decorators handle an element
-      decor("template", TemplateDecorator),
-
-      # element attributes
-      decor("attributes", AttributesDecorator),
-
-      # passes properties down the children
-      decor("passDown", PassDownDecorator),
 
       # parent bindings must be set before child bindings
       decor("bindings", BindingsDecorator),
+
+      # transition should be the last-ish item since it adds a delay to everything else
+      decor("transition", TransitionDecorator),
 
       # creates a list of items
       decor("list", ListDecorator),
@@ -58,11 +61,14 @@ define ["underscore",
       # children must be loaded before the transition starts, otherwise there might be a delay
       decor("children", ChildrenDecorator),
 
+      # template must be loaded first because the following decorators handle an element
+      decor("template", TemplateDecorator),
+
+      # element attributes
+      decor("attributes", AttributesDecorator),
+
       # events can go anywhere really
       decor("events", EventsDecorator),
-
-      # transition should be the last-ish item since it adds a delay to everything else
-      decor("transition", TransitionDecorator),
 
       # makes the view draggable
       decor("draggable", DraggableDecorator),
@@ -84,16 +90,6 @@ define ["underscore",
         @_facadeCollection.limit = 1
         compose @, @_facadeCollection, ["render", "load", "display", "remove"]
         @dispose()
-
-
-      ###
-
-      inherit: (key, to, value) ->
-        for key of availableDecorators
-          decoratorClass = availableDecorators[key]
-          if decoratorClass.test 
-      
-      ###
 
       ###
       ###

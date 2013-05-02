@@ -6,7 +6,7 @@
       transform: () ->
 ###
 
-define ["../selectable", "./list", "../../collection", "../../../utils/async", "../../../utils/idGenerator"], (SelectableDecorator, List, ViewCollection, async, generateId) ->
+define ["../selectable", "./list"], (SelectableDecorator, List) ->
   
   class ListDecorator extends SelectableDecorator
     name: "list"

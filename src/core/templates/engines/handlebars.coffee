@@ -22,7 +22,6 @@ define ["./base", "handlebars"], (Base, Handlebars) ->
     compile: (source) ->
 
       template = Handlebars.compile source
-
       return {
         render: (options, callback) ->
           callback null, template options

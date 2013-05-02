@@ -10,13 +10,8 @@ define ["./base", "../../templates/factory"], (BaseView, templates) ->
     ###
     ###
 
-    attributesElement: "input"
-
-    ###
-    ###
-
     events: {
-      "keyup input": "_onInputChange"
+      "keyup": "_onInputChange"
     }
 
     ###
@@ -24,7 +19,7 @@ define ["./base", "../../templates/factory"], (BaseView, templates) ->
     ###
 
     _onInputChange: () ->
-      @set "value", @$("input").val()
+      @set "value", @$().val()
 
     ###
      Reflect the value change in the text input
@@ -32,5 +27,5 @@ define ["./base", "../../templates/factory"], (BaseView, templates) ->
 
     _onValueChanged: (value) =>
       super value
-      @$("input").val value
+      @$().val value
 

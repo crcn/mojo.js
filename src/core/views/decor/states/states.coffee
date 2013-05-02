@@ -9,6 +9,7 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
       super()
 
       @_id = @name = @options._name
+      @section = @options.section
 
       @view  = decorator.view
 
@@ -38,6 +39,8 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
     render: (callback) ->
       @once "renderedState", callback
       @bind "currentView", @_renderView
+      callback()
+
 
     ###
     ###
@@ -45,13 +48,14 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
     display: (callback) ->
       @once "displayedState", callback
       @bind "currentView", @_displayView
+      callback()
 
     ###
     ###
 
     remove: (callback) ->
-      return callback() if not @_currentView
-      @_currentView.remove callback
+      return callback() if not @has "currentView"
+      @get("currentView").remove callback
 
 
     ###
@@ -102,43 +106,38 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
     _setIndex: (index) =>
       return if not @source.length()
 
+
       @currentState?.set "selected", false
 
       self           = @
       state          = @currentState = @source.at index or 0
-      newState       = state.createView()
+      newStateView   = state.createView()
+      @view.linkChild newStateView
 
-      @currentState?.set "selected", true
+      @currentState.set "selected", true
+
+      oldView = self._currentView
       
 
       stepc.async(
 
         # first load the new state in
         (() ->
-          newState.loadables.load @
-        ),
-
-        # next, remove the OLD state
-        (() ->
-          return @() if not self._currentView
-          self._currentView.remove @
+          newStateView.loadables.load @
         ),
 
         # finally, add the new state
         (() ->
-          self._currentView = newState
-          self.set "currentView", newState
+
+          oldView?.remove()
+
+          # set the nw start
+          self._currentView = newStateView
+          self.set "currentView", newStateView
           self.emit "loadedState"
+
         )
       )
-
-    ###
-    ###
-
-    _renderView: (view) =>
-      view.element @_element()
-      view.render () => @emit "renderedState"
-
 
     ###
     ###
@@ -151,8 +150,18 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
     ###
     ###
 
+    _renderView: (view) =>
+      view.render () => 
+        @view.section.append view.section
+        @emit "renderedState"
+
+
+    ###
+    ###
+
     _displayView: (view) =>
-      view.display () => @emit "displayedState"
+      view.display () => 
+        @emit "displayedState"
 
     ###
     ###

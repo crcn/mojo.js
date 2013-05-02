@@ -2,7 +2,6 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
   
   class EventsDecorator extends BaseDecorator
 
-
     ###
     ###
 
@@ -25,7 +24,6 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
       @_disposeBindings()
       callback()
 
-
     ###
     ###
 
@@ -46,17 +44,16 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
 
 
       if !selectors.length
-        elements = @view.el
+        elements = @view.$()
       else
         elements = @view.$(selectors)
+
 
       elements.bind(actions.toLowerCase(), cb)
 
       @_disposable.add(() ->
         elements.unbind actions, cb
       )
-
-
 
     ###
     ###
@@ -65,7 +62,6 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
       return if not @_disposable
       @_disposable.dispose()
       @_disposable = undefined
-
 
     ###
     ###

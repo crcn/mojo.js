@@ -52,7 +52,6 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     _toggleValidity: (valid) ->
       @set "valid", valid
 
-
     ###
     ###
 

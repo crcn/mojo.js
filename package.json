@@ -1,6 +1,6 @@
 {
   "name": "dojo-bootstrap",
-  "version": "0.1.21",
+  "version": "0.2.0",
   "description": "test",
   "main": "./lib/index.js",
   "jam": {
@@ -37,6 +37,7 @@
     "structr": "0.2.x",
     "dolce": "0.0.x",
     "mannequin": "0.1.x",
-    "hoist": "0.0.x"
+    "hoist": "0.0.x",
+    "pilot-block": "0.0.x"
   }
 }

@@ -1,4 +1,6 @@
-define ["bindable", "../../collection", "../../../utils/compose", "hoist", "../../../templates/factory", "dref"], (bindable, ViewCollection, compose, hoist, templates, dref) ->
+define ["bindable", "../../collection", "../../../utils/compose", "hoist", 
+"../../../templates/factory", "dref", "pilot-block", "underscore"], (bindable, ViewCollection, compose, 
+  hoist, templates, dref, pilot, _) ->
   
   ###
    this IS the children
@@ -11,10 +13,9 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "../.
 
     constructor: (@decorator, @options) ->
 
-
       @_id      = @name = options._name
       @view     = decorator.view
-      @selector = options.selector
+      @section  = options.section
       @itemName = options.name or "item"
      
       # the source of the list - string
@@ -23,10 +24,14 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "../.
       # the view class for each item
       @_itemViewClass = options.itemViewClass
 
-      @_viewCollection = @itemViews = new ViewCollection @options.itemViews?.call @view or []
-      @_viewCollection.delay = 0
+      @_viewCollection = @itemViews = new ViewCollection()
       @_viewCollection.bind { insert: @_hookItemView, remove: @_removeItem }
 
+      @_listSection = pilot.createSection()
+      @_deferredSections = []
+
+      # throttle the deferred insertions
+      @_insertDeferredSections = _.debounce(@_insertDeferredSections, 0)
 
       @initList()
 
@@ -34,23 +39,28 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "../.
     ###
 
     load: (callback) -> 
-      @_loaded = true
-      @_viewCollection.load callback
+      @_viewCollection.load () =>
+        @_loaded = true
+        @view.set @section, @_listSection.html()
+        callback() 
 
-    render: (callback) ->
-      @element = if @selector then @view.$ @selector else @view.el
-      @_rendered = true
-      @_viewCollection.render callback
+    ###
+    ###
 
-    display: (callback) ->  
-      @_displayed = true
-      @_viewCollection.display callback
+    render: (callback) -> @_viewCollection.render callback
 
-    #remove: (callback) ->
-    #  @binding?.dispose()
-    #  @binding = undefined
-    #  @_viewCollection.remove callback
+    ###
+    ###
 
+    display: (callback) -> @_viewCollection.display callback
+
+    ###
+    ###
+
+    remove: (callback) ->
+      @binding?.dispose()
+      @binding = undefined
+      @_viewCollection.remove callback
 
     ###
     ### 
@@ -86,61 +96,44 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist", "../.
 
       self = @
 
-      itemView.loadables.unshift({
-        _id: "listItem"
-        render: (callback) ->
-          self._loadChildTemplate itemView, (err, content) =>
-            return callback(err) if err
-
-            if self.options.prepend
-              el = self.element.prepend(content).children().first()
-            else
-              el = self.element.append(content).children().last()
-
-            itemView.element el
-
-            callback()
-
-        remove: (callback) ->
-          callback()
-      })
+      @view.linkChild itemView
 
       itemView.loadables.push({
         _id: "listItem2"
-        remove: (callback) ->
-          itemView.el.remove()
-          callback()
-      })
+        load: (callback) ->
 
-      if @_displayed
-        itemView.display()
+          # defer section insertion so we don't kill DOM rendering - this is only a ~1 MS delay.
+          # NOT doing this might result in a max call stack issue with FFox, and IE
+          if self._loaded and false
+            self._deferInsert itemView.section
+          else
+            self._listSection.append itemView.section
+
+          return callback()
+      })
 
       itemView
 
     ###
     ###
 
+    _deferInsert: (section) ->  
+      @_deferredSections.push(section)
+      @_insertDeferredSections()
+
+    ###
+    ###
+
+    _insertDeferredSections: () =>
+      @_listSection.append @_deferredSections...
+      @_deferredSections = []
+
+
+    ###
+    ###
+
     _removeItem: (itemView) =>
       itemView?.remove()
-    ###
-    ###
-
-    _loadChildTemplate: (itemView, callback) ->
-
-
-      # a template can be defined for the child element - this is nice for items such as select inputs
-      if @options.itemTemplate
-        template = @options.itemTemplate
-
-      # or an element name can be provided
-      else if @options.itemTagName
-        template = templates.fromSource("<#{@options.itemTagName} />")
-
-      return callback() if not template
-
-      # load the template with the target child data
-      template.render itemView.getFlatten("item") or itemView.getFlatten(), callback
-
 
 
 

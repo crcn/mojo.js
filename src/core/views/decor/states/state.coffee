@@ -26,8 +26,6 @@ define ["bindable", "underscore"], (bindable, _) ->
     select: () ->
       @states.select @
 
-
-
     ###
     ###
 

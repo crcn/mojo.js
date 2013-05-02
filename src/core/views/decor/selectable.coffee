@@ -2,6 +2,9 @@ define ["../collection", "underscore", "type-component"], (ViewCollection, _, ty
   
   class SelectableDecorator extends ViewCollection
 
+    ###
+    ###
+    
     constructor: (@view) ->
       super()
       @reset @_setupControllers()
@@ -13,17 +16,14 @@ define ["../collection", "underscore", "type-component"], (ViewCollection, _, ty
 
     _setupControllers: () ->
       ops = @_options()
-      return [@_newController(_.extend(ops, { _name: @name }))] if @_isSingle ops
+      return [@_newController(_.extend(ops, { _name: @name, section: "html" }))] if @_isSingle ops
       _controllers = []
-      for key of ops
-        keyParts = key.split(" ")
-        selector = keyParts.pop()
-        property = keyParts.pop()
-        options  = ops[key]
-        options._name = property or selector
-        options.selector = selector
-
-        _controllers.push @[property or selector] = controller = @_newController options
+      for property of ops
+        options  = ops[property]
+        options._name = property
+        options.section = "section.#{property}"
+        
+        _controllers.push @[property] = controller = @_newController options
 
       _controllers
 
@@ -39,7 +39,7 @@ define ["../collection", "underscore", "type-component"], (ViewCollection, _, ty
       clazz = @controllerClass
       controller = new clazz @, options
       @view.set(options._name, controller) 
-      @view[options.name] = controller
+      @view[options._name] = controller
       controller
 
     ###

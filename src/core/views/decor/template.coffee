@@ -1,5 +1,5 @@
 
-define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
+define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
   
   class TemplateViewDecorator extends BaseViewDecorator
 
@@ -15,22 +15,20 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
 
     load: (callback) ->  
 
+
       @view.template.render @templateData(), (err, content) => 
         return callback(err) if err
-        @_html = content
+        @view.section.html content
+        @view.set "html", @view.section.html()
 
-        # the view might have been initialized immediately, so add a 1 MS timeout incase
-        # there's anything else that needs to initialize the view
-        setTimeout callback, 1
+        # template might have already been compiled, so give a delay
+        setTimeout callback, 0
 
     ###
     ###
 
     render: (callback) ->
-      @view.el.css { "display": "none" }
-      @view.el.html @_html
-      # need to give the browser some breathing room to render (FFOX throws recursive error)
-      setTimeout callback, 0
+      callback()
 
     ###
     ###
@@ -38,17 +36,16 @@ define ["./base", "outcome"], (BaseViewDecorator, outcome) ->
     display: (callback) ->
       callback()
 
-
     ###
     ###
 
-    templateData: () -> @view.getFlatten("item") or @view.getFlatten()
+    templateData: () -> { item: @view.getFlatten("item"), section: @view.get("section"), view: @view }
 
     ###
     ###
 
     _onDisplayed: () =>
-      @view.el.css { "display": "block" }
+      # @view.el.css { "display": "block" }
 
 
 

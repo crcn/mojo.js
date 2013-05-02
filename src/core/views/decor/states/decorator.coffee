@@ -10,11 +10,9 @@ class extends View
 define ["../selectable", "./states"], (SelectableDecorator, States) ->
   
   class StatesDecorator extends SelectableDecorator
-
-    name: "states"
-    controllerClass: States
+    name            : "states"
+    controllerClass : States
     
-
 
   StatesDecorator.test = (view) -> 
     !!view.states

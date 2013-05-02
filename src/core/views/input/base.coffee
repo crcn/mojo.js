@@ -5,13 +5,6 @@ define ["../base", "../../templates/factory"], (BaseView, templates) ->
     ###
     ###
 
-    events: {
-      "input input": "_onInputChange"
-    }
-
-    ###
-    ###
-
     _onRendered: () ->
       super()
       @bind "value", @_onValueChanged

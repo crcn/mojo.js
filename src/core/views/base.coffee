@@ -11,8 +11,9 @@ define ["jquery",
 "../models/locator",
 "../utils/compose",
 "../utils/async", 
+"pilot-block",
 "toarray"], ($, events, bindable, ViewCollection, generateId, outcome, dref, _, 
-  ViewDecorator, asyngleton, modelLocator, compose, async, toarray) ->
+  ViewDecorator, asyngleton, modelLocator, compose, async, pilot, toarray) ->
     
 
 
@@ -28,9 +29,12 @@ define ["jquery",
 
     constructor: (options = {}) ->
 
+
+
       @_id = dref.get(options, "_id") or dref.get(options.item or {}, "_id") or generateId()
 
-
+      # create a default element block
+      @section = pilot.createSection()
 
       options = _.extend {}, @data or {}, options
 
@@ -60,6 +64,7 @@ define ["jquery",
     ###
 
     init: () ->
+
       # OVERRIDE ME
 
     ###
@@ -68,6 +73,15 @@ define ["jquery",
     _init: () ->
       @init()
       @_listen()
+
+    ###
+     If the key doesn't exist, then inherit it from the parent
+    ###
+
+    get: (key) ->
+
+      # if the value doesn't exist, then inherit it from the parent
+      return super(key) ? @_parent?.get(key)
 
     ###
     ###
@@ -104,60 +118,30 @@ define ["jquery",
      returns a search for a particular element
     ###
 
-    $: (search) -> @el?.find search
+    $: (search) -> 
+      el = $(@section.elements)
+
+      if arguments.length
+        return el.find search
+
+      return el
 
     ###
      attaches to an element
     ###
 
-    attach: (selectorOrElement, callback) ->
-      @element selectorOrElement
+    attach: (element, callback) ->
+      @_domElement = element[0] or element
       @loadables.display callback
 
     ###
     ###
 
-    element: (selectorOrElement) ->
-      return @el if not arguments.length
-      @el  = if typeof selectorOrElement is "string" then $(selectorOrElement) else selectorOrElement
-      el = @el[0]
-
-      # happens for items such as state views
-      if el._view
-        @_parent = el._view
-      else
-        el._view = @
-
-      @selector = selectorOrElement
+    linkChild: () ->
+      for child in arguments
+        child._parent = @
       @
 
-    ###
-    ###
-
-    parent: () -> 
-      return @_parent if @_parent
-      p = @el[0].parentNode
-      while p
-        return p._view if p._view
-        p = p.parentNode
-      return null
-
-    attached: () ->
-      p = @el[0]
-      return false if not p
-      while p.parentNode and p.parentNode isnt document.body
-        p = p.parentNode
-
-      return p.parentNode is document.body
-
-    ###
-    ###
-
-    root: () ->
-      p = @
-      p = pv while pv = p.parent()
-      p
-      
     ###
     ###
 
@@ -167,7 +151,8 @@ define ["jquery",
       arguments[0] = arguments[0].toLowerCase()
 
       # also send it to the element
-      @el?.trigger.apply @el, arguments
+      el = @$()
+      el.trigger.apply el, arguments
 
     ###
     ###
@@ -179,21 +164,22 @@ define ["jquery",
     _onRendered  : () => 
 
     _onDisplay   : () =>
+      return if not @_domElement
+      @section.replaceChildren @_domElement
+
     _onDisplayed : () => 
+      @_displayed = true
 
     _onRemove    : () =>
       @_removing = true
 
     _onRemoved   : () =>
-      return if not @el
-      
-      if @_parent
-        @_parent = undefined
-      else
-        @el[0]._view = undefined
+      return if @_parent?._removing
+      @section.dispose()
 
-      @el.unbind("*")
-      @el.html("")
+      el = @$()
+      el.unbind("*")
+      el.remove()
 
       @dispose()
       @el = undefined

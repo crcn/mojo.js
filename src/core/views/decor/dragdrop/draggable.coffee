@@ -3,6 +3,9 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
 
   class DraggableDecorator extends BaseViewDecorator
 
+    ###
+    ###
+
     init: () ->
       super()
       @name = @view.draggable
@@ -23,7 +26,7 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
     ###
 
     _initListeners: () =>
-      el = @view.el
+      el = @view.$()
       @document = $(document)
       el.bind "mousedown", @_startDrag
 
@@ -35,16 +38,18 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
 
     _startDrag: (e) =>
 
+      el = @view.$()
+
 
       @document.bind "mousemove", @_drag
       @document.one "mouseup", @_stopDrag
 
       # layerX = firefox
-      @_offset = { x: e.offsetX or @view.el.width()/2, y: e.offsetY or @view.el.height()/2 }
+      @_offset = { x: e.offsetX or el.width()/2, y: e.offsetY or el.height()/2 }
 
 
 
-      @draggedItem = @document.find("body").append(@view.el.html()).children().last()
+      @draggedItem = @document.find("body").append(el.html()).children().last()
 
 
 

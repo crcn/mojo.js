@@ -1,23 +1,22 @@
 define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (InputView, View, templates, dref, bindable) ->
     
   class SelectInputOptionView extends View
+    template: templates.fromSource("<option value='{{item.value}}'>{{item.label}}</option>", { engine: "handlebars" })
+
 
   class SelectInputView extends InputView
-
     ###
     ###
 
-    template: templates.fromSource("<select name='{{view.name}}'></select>", { engine: "handlebars" })
+    template: templates.fromSource("<select name='{{view.name}}'><option>{{view.selectLabel}}</option>{{{section.selectList}}}</select>", { engine: "handlebars" })
 
     ###
     ###
 
     list:
-      "selectList select":
+      "selectList":
         itemViewClass: SelectInputOptionView
-        itemViews: () -> [new SelectInputOptionView { label: @get("selectLabel") }]
         source: "source"
-        itemTemplate: templates.fromSource("<option value='{{value}}'>{{label}}</option>", { engine: "handlebars" })
         transform: (item, list) ->
           view = list.view
           {
@@ -46,7 +45,7 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
     ###
 
     events: 
-      "change select": (event) ->
+      "change": (event) ->
         selected    = @$(":selected")
         selectedVal = selected.val()
 
@@ -94,6 +93,6 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
       if not ~index
         index = 0
 
-      @$("select").children().eq(index).attr("selected", "selected")
+      @$().children().eq(index).attr("selected", "selected")
 
 

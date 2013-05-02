@@ -5,25 +5,14 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
     ###
 
-    render: (callback) ->
-      @view.el.css { "display": "none" }
-      callback()
-
-    ###
-    ###
-
     display: (callback) ->
-      @view.el.css { "display": "block" }
       @_transitionAll "enter", callback
     
-
     ###
     ###
-
 
     remove: (callback)  -> 
       @_transitionAll "exit", callback
-
 
     ###
     ###
@@ -37,8 +26,6 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
 
     _transition: (element, transition, callback) ->
-
-
       # if the element doesn't exist, then return an error
       return callback(new comerr.NotFound("element does not exist")) if not element.length
 
@@ -46,7 +33,6 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
         element.css transition.from
 
       element.transit transition.to or transition, callback
-
 
     ###
     ###
@@ -78,7 +64,7 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
 
     _element: (transition) -> 
       selector = transition.selector or transition.el
-      return if selector then @view.$(selector) else @view.el
+      return if selector then @view.$(selector) else @view.$()
 
 
 

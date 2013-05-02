@@ -6,6 +6,12 @@ define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, 
 
     ###
     ###
+
+    constructor: () ->
+      super arguments...
+
+    ###
+    ###
     
     limit: 1
 
@@ -28,7 +34,9 @@ define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, 
     ###
 
     display: asyngleton (callback) -> 
-      @render () => @_callViewMethod "display", "displayed", false, callback
+      @render () => 
+        @on "insert", @_displayLateItem
+        @_callViewMethod "display", "displayed", false, callback
 
     ###
      removes & unloads the view
@@ -61,4 +69,10 @@ define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, 
         async.forEach @source(), run, done
       else
         async.eachLimit @source(), @limit, run, done
+
+
+    ###
+    ###
+
+    _displayLateItem: (item) => item.display()
 

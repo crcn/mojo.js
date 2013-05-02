@@ -52,7 +52,7 @@ define ["events"], (events) ->
 
 
       for droppable, i in droppables
-        del = droppable.view.el
+        del = droppable.view.$()
         delx = del.offset().left
         dely = del.offset().top
         delw = del.width()
