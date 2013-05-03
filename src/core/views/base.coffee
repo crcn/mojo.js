@@ -29,8 +29,6 @@ define ["jquery",
 
     constructor: (options = {}) ->
 
-
-
       @_id = dref.get(options, "_id") or dref.get(options.item or {}, "_id") or generateId()
 
       # create a default element block
@@ -58,7 +56,6 @@ define ["jquery",
       # initialize the options
       @_init()
       @decorator.init()
-
 
     ###
     ###

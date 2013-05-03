@@ -1,4 +1,4 @@
-define ["../../i18n/translate", "./base"], (t, BaseTemplatePlugin) ->
+define ["i18next", "./base"], (i18n, BaseTemplatePlugin) ->
   
   ###
   ###
@@ -13,5 +13,5 @@ define ["../../i18n/translate", "./base"], (t, BaseTemplatePlugin) ->
 
       {
         name: "i",
-        render: (text) -> t text
+        render: (text) -> i18n.t text
       }

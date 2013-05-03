@@ -1,4 +1,4 @@
-define ["./base", "handlebars"], (Base, Handlebars) ->
+define ["./base", "handlebars", "i18next"], (Base, Handlebars, i18n) ->
 
   class HandlebarsEngine extends Base
 
@@ -8,19 +8,13 @@ define ["./base", "handlebars"], (Base, Handlebars) ->
     ###
 
     init: () ->
-      @factory.plugins.forEach (plugin) =>
-        return if not plugin.templateHelper
-        helper = plugin.templateHelper()
-        Handlebars.registerHelper helper.name, (getText) ->
-          return helper.render(getText())
-
-        
+      Handlebars.registerHelper "t", (i18key) ->
+        new Handlebars.SafeString(i18n.t(i18key))
 
     ###
     ###
 
     compile: (source) ->
-
       template = Handlebars.compile source
       return {
         render: (options, callback) ->
