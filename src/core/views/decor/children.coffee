@@ -33,7 +33,7 @@ define ["./base", "outcome", "../../utils/async", "../collection", "pilot-block"
         return callback(err) if err?
         for childName of @_childrenByName
           @view.set "section.#{childName}", @_childrenByName[childName].section.html()
-        setTimeout callback, 0
+        callback()
 
     ###
     ###

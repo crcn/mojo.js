@@ -18,11 +18,14 @@ define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
 
       @view.template.render @templateData(), (err, content) => 
         return callback(err) if err
+
+        p = @view.section.start
+
         @view.section.html content
         @view.set "html", @view.section.html()
 
         # template might have already been compiled, so give a delay
-        setTimeout callback, 0
+        callback()
 
     ###
     ###

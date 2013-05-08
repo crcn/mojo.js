@@ -155,6 +155,7 @@ define ["jquery",
     ###
 
     _onLoad      : () =>
+
     _onLoaded    : () =>
 
     _onRender    : () =>

@@ -1,4 +1,4 @@
-define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
+define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc, pilot) ->
     
   class extends bindable.Object
 
@@ -121,18 +121,26 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
 
       stepc.async(
 
+        (() ->
+          return @() if not oldView
+          oldView.remove @
+        ),
+
         # first load the new state in
         (() ->
-          newStateView.loadables.load @
+          newStateView.load @
         ),
 
         # finally, add the new state
         (() ->
 
-          oldView?.remove()
 
           # set the nw start
           self._currentView = newStateView
+          self.view.section.append newStateView.section
+
+          pilot.update self.view.section.start.parentNode
+
           self.set "currentView", newStateView
           self.emit "loadedState"
 
@@ -152,7 +160,6 @@ define ["./state", "bindable", "stepc"], (State, bindable, stepc) ->
 
     _renderView: (view) =>
       view.render () => 
-        @view.section.append view.section
         @emit "renderedState"
 
 

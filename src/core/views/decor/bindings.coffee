@@ -40,7 +40,8 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
           el.nodeName isnt "#comment" and el.nodeName isnt "#text"
         ), { data: @view.get("item") or @view, view: @view }
 
-      callback()
+      setTimeout(callback, 0)
+
 
     ###
     ###
