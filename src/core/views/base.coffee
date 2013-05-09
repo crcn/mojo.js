@@ -44,9 +44,6 @@ define ["jquery",
       # controls bindings, events, templates, transitions based on the given options.
       @decorator = new ViewDecorator @
 
-      # inherit from the parent prototype
-      #@_inheritDecorators()
-
       # items to load with the view
       @loadables = new ViewCollection [@decorator]
       @loadables.view = @
