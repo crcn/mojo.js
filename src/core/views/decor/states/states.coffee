@@ -113,7 +113,6 @@ define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc,
     _setIndex: (index) =>
       return if not @source.length()
 
-
       @currentState?.set "selected", false
 
       self           = @
@@ -136,12 +135,15 @@ define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc,
 
         (() ->
           return @() if not oldView
-          oldView.remove @
+          oldView.dispose()
+          @()
         ),
 
 
         # finally, add the new state
-        (() ->
+        ((err) ->
+          if err
+            console.error err
 
           # set the nw start
           self._currentView = newStateView

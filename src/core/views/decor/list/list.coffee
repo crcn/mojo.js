@@ -39,10 +39,19 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
 
     load: (callback) -> 
-      @_viewCollection.load () =>
-        @_loaded = true
-        @view.set @section, @_listSection.html()
-        callback() 
+      @_fetchRemote () =>
+        @_viewCollection.load () =>
+          @_loaded = true
+          @view.set @section, @_listSection.html()
+          callback() 
+
+    ###
+    ###
+
+    _fetchRemote: (next) ->
+      collection = @view.get(@__source)
+      return next() if not collection?.fetch
+      collection.fetch next
 
     ###
     ###
