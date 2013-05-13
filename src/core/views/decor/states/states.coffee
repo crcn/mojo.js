@@ -9,7 +9,8 @@ define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc,
       super()
 
       @_id = @name = @options._name
-      @section = @options.section
+      @sectionName = @options.section
+      @_section = pilot.createSection()
 
       @view  = decorator.view
 
@@ -30,7 +31,13 @@ define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc,
     ###
 
     load: (callback) ->
-      @once "loadedState", callback
+      @once "loadedState", () =>
+        if @sectionName is "html" and not @view.template
+          @view.section.html @_section.html()
+        else
+          @view.set @sectionName, @_section.html()
+        callback()
+
       @bind "index", @_setIndex
 
     ###
@@ -139,7 +146,7 @@ define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc,
           # set the nw start
           self._currentView = newStateView
 
-          self.view.section.append newStateView.section
+          self._section.append newStateView.section
 
           self.set "currentView", newStateView
           self.emit "loadedState"
@@ -160,7 +167,6 @@ define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc,
 
     _renderView: (view) =>
       view.render () => 
-        #@view.section.append view.section
         @emit "renderedState"
 
 
@@ -168,7 +174,6 @@ define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc,
     ###
 
     _displayView: (view) =>
-      console.log "DISPLAY"
       view.display () => 
         @emit "displayedState"
 

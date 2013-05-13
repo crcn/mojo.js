@@ -29,7 +29,7 @@ define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates
     ###
     ###
 
-    _onRendered: () ->
+    _onRendered: () =>
       super()
 
       # initializes the model

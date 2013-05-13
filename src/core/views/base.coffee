@@ -14,31 +14,26 @@ define ["jquery",
 "pilot-block",
 "toarray"], ($, events, bindable, ViewCollection, generateId, outcome, dref, _, 
   ViewDecorator, asyngleton, modelLocator, compose, async, pilot, toarray) ->
-    
-
-
+      
   class BaseView extends bindable.Object
 
     ###
-     may seem a bit antipattern-ish to use a singleton object like this for all views, bit 
-     it makes data-binding to one object a helluvalot easier, and it also promotes good use by making it
-     easier for developer to reuse global data. 
-
-     This also reduces the amount of written code tremendously.
     ###
 
-    constructor: (options = {}) ->
+    constructor: (data = {}) ->
 
-      # ID's are 
-      @_id = dref.get(options, "_id") or dref.get(options.item or {}, "_id") or generateId()
+      # ID's are necessary for collections
+      @_id = dref.get(data, "_id") or dref.get(data.item or {}, "_id") or generateId()
 
       # create a default element block
       @section = pilot.createSection()
 
-      options.view = @
-      options.modelLocator = modelLocator
+      data.view         = @
 
-      super options
+      # singleton modelLocator - a bit anti-patternish
+      data.modelLocator = modelLocator
+
+      super data
 
       # items to load with the view
       @decorators = new ViewCollection()
@@ -74,17 +69,13 @@ define ["jquery",
      If the key doesn't exist, then inherit it from the parent
     ###
 
-    get: (key) ->
-
-      # if the value doesn't exist, then inherit it from the parent
-      return super(key) ? @_parent?.get(key)
+    get: (key) -> super(key) ? @_parent?.get(key)
 
     ###
     ###
 
     _listen: () ->
-
-      @decorators.on 
+      @on 
 
         # emitted before load
         load: @_onLoad
@@ -123,11 +114,14 @@ define ["jquery",
       return el
 
     ###
-     attaches to an element
+     attaches to an element to the DOM
     ###
 
     attach: (element, callback) ->
       @_domElement = element[0] or element
+      @once "display", () =>
+        @section.replaceChildren @_domElement
+
       @display callback
 
     ###
@@ -164,21 +158,16 @@ define ["jquery",
     ###
     ###
 
-    _onLoad      : () =>
-      @_loading = true
-
+    _onLoad      : () => @_loading = true
     _onLoaded    : () =>
       @_loading = false
       return if @_parent?._loading
       @section.updateChildren()
 
-    _onRender    : () =>
-    _onRendered  : () => 
+    _onRender    : () ->
+    _onRendered  : () ->
 
-    _onDisplay   : () =>
-      return if not @_domElement
-      @section.replaceChildren @_domElement
-
+    _onDisplay   : () => 
     _onDisplayed : () => 
       @_displayed = true
 
@@ -186,6 +175,7 @@ define ["jquery",
       @_removing = true
 
     _onRemoved   : () =>
+      @_removing = false
       return if @_parent?._removing
       @dispose()
 

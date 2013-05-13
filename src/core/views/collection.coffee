@@ -49,6 +49,14 @@ define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, 
     ###
     ###
 
+    emit: (name) ->
+      super arguments...
+      @view?.emit arguments...
+
+
+    ###
+    ###
+
     _callViewMethod: (method, event, reverse, callback = (() ->)) ->
 
       @emit method
@@ -74,5 +82,6 @@ define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, 
     ###
     ###
 
-    _displayLateItem: (item) => item.display()
+    _displayLateItem: (item) => 
+      item.display()
 

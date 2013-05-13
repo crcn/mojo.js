@@ -98,6 +98,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
 
       @view.linkChild itemView
 
+
       itemView.decorators.push({
         _id: "listItem2"
         load: (callback) ->
