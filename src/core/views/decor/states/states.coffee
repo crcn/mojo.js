@@ -168,6 +168,7 @@ define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc,
     ###
 
     _displayView: (view) =>
+      console.log "DISPLAY"
       view.display () => 
         @emit "displayedState"
 

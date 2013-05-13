@@ -6,13 +6,6 @@ define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
     ###
     ###
 
-    init: () ->
-      super()
-      @view.loadables.on "displayed", @_onDisplayed
-
-    ###
-    ###
-
     load: (callback) ->  
 
       @view.template.render @templateData(), (err, content) => 
@@ -24,7 +17,7 @@ define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
         @view.set "html", @view.section.html()
 
         # template might have already been compiled, so give a delay
-        setTimeout callback, 0
+        callback()
 
     ###
     ###
@@ -43,11 +36,6 @@ define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
 
     templateData: () -> { item: @view.getFlatten("item"), section: @view.get("section"), view: @view }
 
-    ###
-    ###
-
-    _onDisplayed: () =>
-      # @view.el.css { "display": "block" }
 
 
 

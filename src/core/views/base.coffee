@@ -41,18 +41,20 @@ define ["jquery",
 
       super options
 
-      # controls bindings, events, templates, transitions based on the given options.
-      @decorator = new ViewDecorator @
-
       # items to load with the view
-      @loadables = new ViewCollection [@decorator]
-      @loadables.view = @
-
-      compose @, @loadables, ["load", "render", "display", "remove"]
+      @decorators = new ViewCollection()
 
       # initialize the options
       @_init()
-      @decorator.init()
+      ViewDecorator.setup @
+
+    ###
+    ###
+
+    load    : (next) -> @decorators.load next
+    render  : (next) -> @decorators.render next
+    display : (next) -> @decorators.display next
+    remove  : (next) -> @decorators.remove next
 
     ###
     ###
@@ -82,7 +84,7 @@ define ["jquery",
 
     _listen: () ->
 
-      @loadables.on 
+      @decorators.on 
 
         # emitted before load
         load: @_onLoad
@@ -126,7 +128,7 @@ define ["jquery",
 
     attach: (element, callback) ->
       @_domElement = element[0] or element
-      @loadables.display callback
+      @display callback
 
     ###
     ###
@@ -152,8 +154,12 @@ define ["jquery",
     ###
 
     _onLoad      : () =>
+      @_loading = true
 
     _onLoaded    : () =>
+      @_loading = false
+      return if @_parent?._loading
+      @section.updateChildren()
 
     _onRender    : () =>
     _onRendered  : () => 

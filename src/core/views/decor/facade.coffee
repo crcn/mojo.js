@@ -78,60 +78,24 @@ define ["underscore",
     ]
 
 
+    setup: (view) ->
+      decorators = []
 
-    class ViewDecorator extends BaseViewDecorator
-  
-      ###
-      ###
+      for d, priority in availableDecorators
 
-      constructor: (@view) ->
-        @_id = generateId()
-        @_facadeCollection = new ViewCollection()
-        @_facadeCollection.limit = 1
-        compose @, @_facadeCollection, ["render", "load", "display", "remove"]
-        @dispose()
+        factory = d.factory
+        name = d.name
 
-      ###
-      ###
+        if factory.test view
+          decor = factory.createItem view
+          decor.priority = priority
+          decor._id = name
+          decorators.push decor
 
-      init: () =>
-        return if @_initialized
-        @_initialized = true
+      decorators = decorators.sort (a, b) -> if a.priority > b.priority then 1 else -1
+      view.decorators.push.apply view.decorators, decorators 
 
-        # setup the decorators immediately
-        @_addDecorators()
 
-      ###
-      ###
-
-      dispose: () ->
-
-        for item in @_facadeCollection.source()
-          item.dispose()
-
-        @_facadeCollection.reset []
-        @_decorators = {}
-
-      ###
-      ###
-
-      _addDecorators: () ->
-
-        decorators = []
-
-        for d, priority in availableDecorators
-
-          factory = d.factory
-          name = d.name
-
-          if factory.test(@view)
-            decor = factory.createItem @view
-            decor.priority = priority
-            decor._id = name
-            decorators.push decor
-
-        decorators = decorators.sort (a, b) -> if a.priority > b.priority then 1 else -1
-        @_facadeCollection.reset decorators
 
 
 
