@@ -29,12 +29,11 @@ define ["jquery",
 
     constructor: (options = {}) ->
 
+      # ID's are 
       @_id = dref.get(options, "_id") or dref.get(options.item or {}, "_id") or generateId()
 
       # create a default element block
       @section = pilot.createSection()
-
-      options = _.extend {}, @data or {}, options
 
       options.view = @
       options.modelLocator = modelLocator
@@ -43,9 +42,11 @@ define ["jquery",
 
       # items to load with the view
       @decorators = new ViewCollection()
+      @decorators.view = @
 
       # initialize the options
       @_init()
+
       ViewDecorator.setup @
 
     ###
@@ -60,7 +61,6 @@ define ["jquery",
     ###
 
     init: () ->
-
       # OVERRIDE ME
 
     ###
@@ -150,6 +150,17 @@ define ["jquery",
       el = @$()
       el.trigger.apply el, arguments
 
+
+    ###
+    ###
+
+    dispose: () ->
+      el = @$()
+      el.unbind "*"
+      @section.dispose()
+      super()
+
+
     ###
     ###
 
@@ -176,14 +187,7 @@ define ["jquery",
 
     _onRemoved   : () =>
       return if @_parent?._removing
-      @section.dispose()
-
-      el = @$()
-      el.unbind("*")
-      el.remove()
-
       @dispose()
-      @el = undefined
 
 
 
