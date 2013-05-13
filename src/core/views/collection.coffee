@@ -49,9 +49,9 @@ define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, 
     ###
     ###
 
-    emit: (name) ->
-      super arguments...
-      @view?.emit arguments...
+    #emit: (name) ->
+    #  super arguments...
+    #  @view?.emit arguments...
 
 
     ###
@@ -69,8 +69,8 @@ define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, 
         fn.call item, next
 
       done = (err, result) =>
-        return callback(err) if err
         @emit event
+        return callback(err) if err
         callback()
 
       if not ~@limit 

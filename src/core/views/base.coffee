@@ -37,7 +37,6 @@ define ["jquery",
 
       # items to load with the view
       @decorators = new ViewCollection()
-      @decorators.view = @
 
       # initialize the options
       @_init()
@@ -50,7 +49,8 @@ define ["jquery",
     load    : (next) -> @decorators.load next
     render  : (next) -> @decorators.render next
     display : (next) -> @decorators.display next
-    remove  : (next) -> @decorators.remove next
+    remove  : (next) -> 
+      @decorators.remove next
 
     ###
     ###
@@ -75,7 +75,7 @@ define ["jquery",
     ###
 
     _listen: () ->
-      @on 
+      @decorators.on 
 
         # emitted before load
         load: @_onLoad
@@ -119,7 +119,8 @@ define ["jquery",
 
     attach: (element, callback) ->
       @_domElement = element[0] or element
-      @once "display", () =>
+
+      @decorators.once "display", () =>
         @section.replaceChildren @_domElement
 
       @display callback
@@ -148,7 +149,7 @@ define ["jquery",
     ###
     ###
 
-    dispose: () ->
+    dispose: () =>
       el = @$()
       el.unbind "*"
       @section.dispose()
@@ -164,8 +165,8 @@ define ["jquery",
       return if @_parent?._loading
       @section.updateChildren()
 
-    _onRender    : () ->
-    _onRendered  : () ->
+    _onRender    : () =>
+    _onRendered  : () =>
 
     _onDisplay   : () => 
     _onDisplayed : () => 

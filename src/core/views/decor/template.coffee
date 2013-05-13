@@ -22,18 +22,6 @@ define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
     ###
     ###
 
-    render: (callback) ->
-      callback()
-
-    ###
-    ###
-
-    display: (callback) ->
-      callback()
-
-    ###
-    ###
-
     templateData: () -> { item: @view.getFlatten("item"), section: @view.get("section"), view: @view }
 
 

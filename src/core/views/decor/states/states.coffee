@@ -135,8 +135,7 @@ define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc,
 
         (() ->
           return @() if not oldView
-          oldView.dispose()
-          @()
+          oldView.remove @
         ),
 
 
