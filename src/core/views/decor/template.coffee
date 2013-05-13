@@ -15,7 +15,6 @@ define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
 
     load: (callback) ->  
 
-
       @view.template.render @templateData(), (err, content) => 
         return callback(err) if err
 
