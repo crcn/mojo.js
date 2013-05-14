@@ -111,30 +111,17 @@ define ["jquery",
 
     _listen: () ->
       @decorators.on 
+        load      : @_onLoad
+        loaded    : @_onLoaded
 
-        # emitted before load
-        load: @_onLoad
+        render    : @_onRender
+        rendered  : @_onRendered
 
-        # emitted after all the children have been loaded
-        loaded: @_onLoaded
-
-        # emitted before render
-        render: @_onRender
-
-        # emitted after all children have been attached - before transitions & events
-        rendered: @_onRendered
-
-        # emitted before display
-        display: @_onDisplay
-
-        # emitted after this view has been attached to an element - after transitions & events
-        displayed: @_onDisplayed
-
-        # emitted before remove
-        remove: @_onRemove
-
-        # emitted after this view has been completely removed
-        removed: @_onRemoved
+        display   : @_onDisplay
+        displayed : @_onDisplayed
+        
+        remove    : @_onRemove 
+        removed   : @_onRemoved
 
     ###
     ###
