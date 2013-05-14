@@ -13,8 +13,6 @@ define ["disposable", "./base", "jquery"], (disposable, BaseDecorator, $) ->
       for selector of e 
         @_addBinding selector, e[selector]
 
-      @view.emit "events"
-
       callback()
 
     ###
