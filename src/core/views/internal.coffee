@@ -125,13 +125,13 @@ define ["jquery",
         rendered: @_onRendered
 
         # emitted before display
-        display: @_onDisplay,
+        display: @_onDisplay
 
         # emitted after this view has been attached to an element - after transitions & events
-        displayed: @_onDisplayed,
+        displayed: @_onDisplayed
 
         # emitted before remove
-        remove: @_onRemove,
+        remove: @_onRemove
 
         # emitted after this view has been completely removed
         removed: @_onRemoved
