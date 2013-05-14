@@ -1,4 +1,4 @@
-define ["../base", "../../templates/factory", "mannequin"], (BaseView, templates, mannequin) ->
+define ["../index", "../../templates/factory", "mannequin"], (BaseView, templates, mannequin) ->
   
   ###
   ###

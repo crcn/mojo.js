@@ -1,4 +1,4 @@
-define ["../base", "../../templates/factory"], (BaseView, templates) ->
+define ["../index", "../../templates/factory"], (BaseView, templates) ->
 
   class BaseInputView extends BaseView
 

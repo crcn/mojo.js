@@ -4,12 +4,22 @@ define [], () ->
   class Adapter
 
     ###
+     returns a bindable object
     ###
 
 
-    wrapItem: (item) ->
-    wrapCollection: (collection) ->
-    wrapView: (view) ->
-    wrapViewClass: (view) ->
+    getItem        : (item) ->
+
+    ###
+     returns a bindable collection
+    ###
+
+    getCollection  : (collection) ->
+
+    ###
+     returns a mojo view
+    ###
+
+    getView        : (view) ->
     
 
