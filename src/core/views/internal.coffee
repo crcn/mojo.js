@@ -57,36 +57,6 @@ define ["jquery",
     get: (key) -> super(key) ? @_parent?.get(key)
 
     ###
-    ###
-
-    _listen: () ->
-      @decorators.on 
-
-        # emitted before load
-        load: @_onLoad
-
-        # emitted after all the children have been loaded
-        loaded: @_onLoaded
-
-        # emitted before render
-        render: @_onRender
-
-        # emitted after all children have been attached - before transitions & events
-        rendered: @_onRendered
-
-        # emitted before display
-        display: @_onDisplay,
-
-        # emitted after this view has been attached to an element - after transitions & events
-        displayed: @_onDisplayed,
-
-        # emitted before remove
-        remove: @_onRemove,
-
-        # emitted after this view has been completely removed
-        removed: @_onRemoved
-
-    ###
      returns a search for a particular element
     ###
 
@@ -96,6 +66,7 @@ define ["jquery",
       if arguments.length
         return el.find search
 
+      if arguments.length then el.find(search) else
       return el
 
     ###
@@ -139,6 +110,36 @@ define ["jquery",
       el.unbind "*"
       @section.dispose()
       super()
+      
+    ###
+    ###
+
+    _listen: () ->
+      @decorators.on 
+
+        # emitted before load
+        load: @_onLoad
+
+        # emitted after all the children have been loaded
+        loaded: @_onLoaded
+
+        # emitted before render
+        render: @_onRender
+
+        # emitted after all children have been attached - before transitions & events
+        rendered: @_onRendered
+
+        # emitted before display
+        display: @_onDisplay,
+
+        # emitted after this view has been attached to an element - after transitions & events
+        displayed: @_onDisplayed,
+
+        # emitted before remove
+        remove: @_onRemove,
+
+        # emitted after this view has been completely removed
+        removed: @_onRemoved
 
     ###
     ###
@@ -167,6 +168,7 @@ define ["jquery",
     _onRemoved   : () =>
       return if @_parent?.currentState is ViewStates.REMOVING
       @dispose()
+
 
 
 
