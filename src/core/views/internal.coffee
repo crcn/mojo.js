@@ -37,6 +37,11 @@ define ["jquery",
       # initialize the options
       @init()
       @_listen()
+      
+    ###
+    ###
+
+    init: () -> # OVERRIDE ME
 
     ###
     ###
@@ -46,10 +51,6 @@ define ["jquery",
     display : (next) -> @decorators.display next
     remove  : (next) -> @decorators.remove next
 
-    ###
-    ###
-
-    init: () -> # OVERRIDE ME
 
     ###
      If the key doesn't exist, then inherit it from the parent
@@ -119,7 +120,7 @@ define ["jquery",
 
         display   : @_onDisplay
         displayed : @_onDisplayed
-        
+
         remove    : @_onRemove 
         removed   : @_onRemoved
 
