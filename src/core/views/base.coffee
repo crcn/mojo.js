@@ -6,14 +6,14 @@ define ["jquery",
 "outcome", 
 "dref",
 "underscore", 
-"./decor/facade",
+"./decor/factory",
 "asyngleton", 
 "../models/locator",
 "../utils/compose",
 "../utils/async", 
 "pilot-block",
 "toarray", "./states"], ($, events, bindable, ViewCollection, generateId, outcome, dref, _, 
-  ViewDecorator, asyngleton, modelLocator, compose, async, pilot, toarray, ViewStates) ->
+  ViewDecoratorFactory, asyngleton, modelLocator, compose, async, pilot, toarray, ViewStates) ->
 
   
       
@@ -38,13 +38,14 @@ define ["jquery",
       super data
 
       # items to load with the view
+      # TODO - viewCollections.create() - should be a recycled item
       @decorators = new ViewCollection()
 
       # initialize the options
       @init()
       @_listen()
 
-      ViewDecorator.setup @
+      ViewDecoratorFactory.setup @
 
     ###
     ###
@@ -154,26 +155,18 @@ define ["jquery",
     ###
     ###
 
-    _onLoad      : () =>
-      @currentState = ViewStates.LOADING
-
+    _onLoad      : () => @currentState = ViewStates.LOADING
     _onLoaded    : () =>
       return if @_parent?.currentState is ViewStates.LOADING
       @section.updateChildren()
 
-    _onRender    : () =>
-      @currentState = ViewStates.RENDERING
-
+    _onRender    : () => @currentState = ViewStates.RENDERING
     _onRendered  : () =>
 
-    _onDisplay   : () => 
-      @currentState = ViewStates.DISPLAYING
-
+    _onDisplay   : () => @currentState = ViewStates.DISPLAYING
     _onDisplayed : () => 
 
-    _onRemove    : () =>
-      @currentState = ViewStates.REMOVING
-
+    _onRemove    : () => @currentState = ViewStates.REMOVING
     _onRemoved   : () =>
       return if @_parent?.currentState is ViewStates.REMOVING
       @dispose()
