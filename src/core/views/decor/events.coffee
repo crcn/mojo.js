@@ -1,4 +1,4 @@
-define ["disposable", "./base"], (disposable, BaseDecorator) ->
+define ["disposable", "./base", "jquery"], (disposable, BaseDecorator, $) ->
   
   class EventsDecorator extends BaseDecorator
 
@@ -50,6 +50,10 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
 
 
       elements.bind(actions.toLowerCase(), cb)
+      for action in actions.split " " then do (action) =>
+        @_disposable.add @view.on action, () ->
+          cb.apply @, [$.Event(action)].concat Array.prototype.slice.call arguments
+
 
       @_disposable.add(() ->
         elements.unbind actions, cb

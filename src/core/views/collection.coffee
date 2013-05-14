@@ -9,12 +9,6 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
 
     ###
     ###
-
-    constructor: () ->
-      super arguments...
-
-    ###
-    ###
     
     limit: 1
 
@@ -30,7 +24,8 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
     ###
 
     render: asyngleton (callback) ->
-      @load () => @_callViewMethod "render", "rendered", callback
+      @load () => 
+        @_callViewMethod "render", "rendered", callback
 
     ###
      called when we want to display the view
@@ -46,7 +41,15 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
     ###
 
     remove: asyngleton (callback) ->
-      @display () => @_callViewMethod "remove", "removed", callback
+      @display () => 
+        @_callViewMethod "remove", "removed", callback
+
+    ###
+    ###
+
+    emit: () ->
+      super arguments...
+      @view?.emit arguments...
 
     ###
     ###

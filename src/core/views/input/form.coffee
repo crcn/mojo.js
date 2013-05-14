@@ -24,7 +24,7 @@ define ["../index", "../../templates/factory", "mannequin"], (BaseView, template
         if err 
           return @_showErrorMessage err
 
-        @emit "complete"
+        @bubble "complete"
 
     ###
     ###

@@ -1,9 +1,10 @@
-define ["../../base"], (BaseView) ->
+define ["../../internal"], (InternalView) ->
   
 
-  class BaseView
+  class BackboneWrapperView extends InternalView
 
     ###
     ###
 
-    constructor: () ->
+    constructor: (@_backboneView) ->
+      super()

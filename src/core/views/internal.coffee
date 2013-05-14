@@ -29,6 +29,7 @@ define ["jquery",
       # items to load with the view
       # TODO - viewCollections.create() - should be a recycled item
       @decorators = new ViewCollection()
+      @decorators.view = @
 
       # create a default element block
       @section = pilot.createSection()
@@ -55,6 +56,13 @@ define ["jquery",
     ###
 
     get: (key) -> super(key) ? @_parent?.get(key)
+
+    ###
+    ###
+
+    bubble: () ->
+      @emit arguments...
+      @_parent?.bubble arguments...
 
     ###
      returns a search for a particular element
@@ -92,25 +100,12 @@ define ["jquery",
     ###
     ###
 
-    emit: () ->
-      super arguments...
-
-      arguments[0] = arguments[0].toLowerCase()
-
-      # also send it to the element
-      el = @$()
-      el.trigger.apply el, arguments
-
-
-    ###
-    ###
-
     dispose: () =>
       el = @$()
       el.unbind "*"
       @section.dispose()
       super()
-      
+
     ###
     ###
 
