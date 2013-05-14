@@ -12,8 +12,10 @@ define ["jquery",
 "../utils/compose",
 "../utils/async", 
 "pilot-block",
-"toarray"], ($, events, bindable, ViewCollection, generateId, outcome, dref, _, 
-  ViewDecorator, asyngleton, modelLocator, compose, async, pilot, toarray) ->
+"toarray", "./states"], ($, events, bindable, ViewCollection, generateId, outcome, dref, _, 
+  ViewDecorator, asyngleton, modelLocator, compose, async, pilot, toarray, ViewStates) ->
+
+  
       
   class BaseView extends bindable.Object
 
@@ -39,7 +41,8 @@ define ["jquery",
       @decorators = new ViewCollection()
 
       # initialize the options
-      @_init()
+      @init()
+      @_listen()
 
       ViewDecorator.setup @
 
@@ -49,21 +52,13 @@ define ["jquery",
     load    : (next) -> @decorators.load next
     render  : (next) -> @decorators.render next
     display : (next) -> @decorators.display next
-    remove  : (next) -> 
-      @decorators.remove next
+    remove  : (next) -> @decorators.remove next
 
     ###
     ###
 
     init: () ->
       # OVERRIDE ME
-
-    ###
-    ###
-
-    _init: () ->
-      @init()
-      @_listen()
 
     ###
      If the key doesn't exist, then inherit it from the parent
@@ -159,25 +154,28 @@ define ["jquery",
     ###
     ###
 
-    _onLoad      : () => @_loading = true
+    _onLoad      : () =>
+      @currentState = ViewStates.LOADING
+
     _onLoaded    : () =>
-      @_loading = false
-      return if @_parent?._loading
+      return if @_parent?.currentState is ViewStates.LOADING
       @section.updateChildren()
 
     _onRender    : () =>
+      @currentState = ViewStates.RENDERING
+
     _onRendered  : () =>
 
     _onDisplay   : () => 
+      @currentState = ViewStates.DISPLAYING
+
     _onDisplayed : () => 
-      @_displayed = true
 
     _onRemove    : () =>
-      @_removing = true
+      @currentState = ViewStates.REMOVING
 
     _onRemoved   : () =>
-      @_removing = false
-      return if @_parent?._removing
+      return if @_parent?.currentState is ViewStates.REMOVING
       @dispose()
 
 
