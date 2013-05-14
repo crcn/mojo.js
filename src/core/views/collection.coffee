@@ -1,5 +1,8 @@
 
-define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, cstep, asyngleton) ->
+define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleCallback"], (bindable, async, cstep, asyngleton, throttleCallback) ->
+
+  
+  callbackThrottle = throttleCallback 20
     
 
   class extends bindable.Collection
@@ -20,14 +23,14 @@ define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, 
     ###
 
     load: asyngleton (callback) -> 
-      @_callViewMethod "load", "loaded", false, callback
+      @_callViewMethod "load", "loaded", callback
 
     ###
      renders the view 
     ###
 
     render: asyngleton (callback) ->
-      @load () => @_callViewMethod "render", "rendered", false, callback
+      @load () => @_callViewMethod "render", "rendered", callback
 
     ###
      called when we want to display the view
@@ -36,37 +39,27 @@ define ["bindable", "../utils/async", "cstep", "asyngleton"], (bindable, async, 
     display: asyngleton (callback) -> 
       @render () => 
         @on "insert", @_displayLateItem
-        @_callViewMethod "display", "displayed", false, callback
+        @_callViewMethod "display", "displayed", callback
 
     ###
      removes & unloads the view
     ###
 
     remove: asyngleton (callback) ->
-      @display () => @_callViewMethod "remove", "removed", false, callback
-
-
-    ###
-    ###
-
-    #emit: (name) ->
-    #  super arguments...
-    #  @view?.emit arguments...
-
+      @display () => @_callViewMethod "remove", "removed", callback
 
     ###
     ###
 
-    _callViewMethod: (method, event, reverse, callback = (() ->)) ->
+    _callViewMethod: (method, event, callback = (() ->)) ->
 
       @emit method
-
-      stack = if reverse then @source().reverse() else @source()
 
       run = (item, next) ->
         fn = item[method]
         return next() if not fn
         fn.call item, next
+        # callbackThrottle.call item, fn, next
 
       done = (err, result) =>
         @emit event
