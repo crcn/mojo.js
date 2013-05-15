@@ -17,7 +17,7 @@ define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
         @view.set "html", @view.section.html()
 
         # template might have already been compiled, so give a delay
-        callback()
+        setTimeout callback, 0
 
     ###
     ###
