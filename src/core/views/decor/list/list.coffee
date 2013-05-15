@@ -1,6 +1,6 @@
 define ["bindable", "../../collection", "../../../utils/compose", "hoist", 
-"../../../templates/factory", "dref", "pilot-block", "underscore"], (bindable, ViewCollection, compose, 
-  hoist, templates, dref, pilot, _) ->
+"../../../templates/factory", "dref", "pilot-block", "underscore", "../../adapters/index"], (bindable, ViewCollection, compose, 
+  hoist, templates, dref, pilot, _, adapters) ->
   
   ###
    this IS the children
@@ -22,7 +22,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       @__source       = options.source
 
       # the view class for each item
-      @_itemViewClass = options.itemViewClass
+      @_itemViewClass = adapters.getViewClass options.itemViewClass
 
       @_viewCollection = @itemViews = new ViewCollection()
       @_viewCollection.bind { insert: @_hookItemView, remove: @_removeItem }
@@ -42,16 +42,19 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       @_fetchRemote () =>
         @_viewCollection.load () =>
           @_loaded = true
-          @view.set @section, @_listSection.html()
+          if @section is "html"
+            @view.section.html @_listSection.html()
+          else 
+            @view.set @section, @_listSection.html()
+
           callback() 
 
     ###
     ###
 
-    _fetchRemote: (next) ->
-      collection = @view.get(@__source)
-      return next() if not collection?.fetch
-      collection.fetch next
+    _fetchRemote: (next) -> 
+      return next() if not @_sourceCollection?.fetch
+      @_sourceCollection.fetch next
 
     ###
     ###
@@ -80,7 +83,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       if @options.transform
         hoister.map (item) => @options.transform item, @
 
-      hoister.
+      @_itemTransformer = hoister.
       map((item) => 
         ops = {}
         ops.item = item
@@ -89,13 +92,56 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       ).
       cast(@_itemViewClass)
 
-      if @__source
-        @binding = @view.bind(@__source).collection()
 
-        if @options.filter
-          @binding.filter @options.filter
+      @_bindSource()
 
-        @binding.transform(hoister).to(@_viewCollection)
+
+    ###
+    ###
+
+    _onSourceChange: (source) => 
+
+      # might be a bindable.Collection / backbone / spine collection
+      @_sourceCollection = adapters.getCollection source
+
+
+      @_sourceBinding?.dispose()
+      @_sourceBinding = binding = @_sourceCollection.bind()
+
+
+      if @options.filter
+        @_sourceBinding.filter @options.filter
+
+      binding.transform(@_itemTransformer).to(@_viewCollection)
+
+    ###
+    ###
+
+    _bindSource: () ->
+      return if not @__source
+      if typeof @__source is "string"
+        @_bindSourceString()
+      else
+        @_bindSourceInst()
+
+    ###
+    ###
+
+    _bindSourceString: () ->
+      @binding = @view.bind(@__source, @_onSourceChange)
+
+      #if @options.filter
+      #  @binding.filter @options.filter
+
+      #@binding.transform(hoister).to(@_viewCollection)
+
+    ###
+    ###
+
+    _bindSourceInst: () ->
+      @_onSourceChange @__source
+
+
 
 
     ###
@@ -107,9 +153,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
 
       @view.linkChild itemView
 
-
-      itemView.decorators.push({
-        _id: "listItem2"
+      itemView.decorators.push
         load: (callback) ->
 
           # defer section insertion so we don't kill DOM rendering - this is only a ~1 MS delay.
@@ -120,7 +164,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
             self._listSection.append itemView.section
 
           return callback()
-      })
+      
 
       itemView
 

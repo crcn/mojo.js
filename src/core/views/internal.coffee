@@ -28,7 +28,7 @@ define ["jquery",
 
       # items to load with the view
       # TODO - viewCollections.create() - should be a recycled item
-      @decorators = new ViewCollection()
+      @decorators = @loadables = new ViewCollection()
       @decorators.view = @
 
       # create a default element block
@@ -37,7 +37,7 @@ define ["jquery",
       # initialize the options
       @init()
       @_listen()
-      
+
     ###
     ###
 

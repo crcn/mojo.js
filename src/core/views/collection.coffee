@@ -7,6 +7,10 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
 
   class extends bindable.Collection
 
+    constructor: () ->
+      super arguments...
+      @enforceId false
+
     ###
     ###
     

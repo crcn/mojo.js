@@ -19,5 +19,5 @@ define [], () ->
      returns a mojo view
     ###
 
-    getView        : (view) ->
+    getViewClass    : (viewClass) ->
     

@@ -49,7 +49,7 @@ define ["../collection", "underscore", "type-component"], (ViewCollection, _, ty
       return true if type(options) is "array"
       for key of options
         v = options[key]
-        if typeof v is "string"
+        if type(v) isnt "object"
           return true
 
       return false

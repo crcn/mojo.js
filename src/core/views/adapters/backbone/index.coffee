@@ -1,4 +1,6 @@
-define ["../base/index"], (BaseAdapter) ->
+define ["../base/index", "./view", 
+"./collection", "./model"], (BaseAdapter, BackboneWrapperView, 
+  BackboneWrapperCollection, BackboneWrapperModel) ->
   
   class BackboneAdapter extends BaseAdapter
 
@@ -7,15 +9,21 @@ define ["../base/index"], (BaseAdapter) ->
 
     getModel: (value) ->  
       return false if not value.idAttribute
-      console.log "MODEL"
+      new BackboneWrapperModel value
 
     ###
     ###
 
     getCollection: (value) ->
+      return false if not value._byId or not value.models
+      new BackboneWrapperCollection value
 
     ###
     ###
 
-    getView: (value) ->
+    getViewClass: (clazz) ->
+      proto = clazz.prototype
+      return false if not proto.el or not proto.$ or not proto.tagName
       
+      class extends BackboneWrapperView
+        viewClass: clazz

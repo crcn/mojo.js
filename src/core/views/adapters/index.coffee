@@ -29,7 +29,7 @@ define ["./backbone/index"], (BackboneAdapter) ->
      returns a mojo view
     ###
 
-    getView        : (value) -> @_get "getView", value
+    getViewClass   : (value) -> @_get "getViewClass", value
 
     ###
     ###
@@ -37,8 +37,10 @@ define ["./backbone/index"], (BackboneAdapter) ->
     _get: (method, value) ->
       for adapter in @_adapters
         result = adapter[method].call adapter, value
-        return result if result?
+        return result if result
       return value
+
+  new Adapter()
 
 
     
