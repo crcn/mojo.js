@@ -23,7 +23,7 @@ define ["../base/index", "./view",
 
     getViewClass: (clazz) ->
       proto = clazz.prototype
-      return false if not proto.el or not proto.$ or not proto.tagName
+      return false if not proto.tagName or not proto.$
       
       class extends BackboneWrapperView
         viewClass: clazz
