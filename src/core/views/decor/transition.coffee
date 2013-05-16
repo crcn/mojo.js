@@ -5,7 +5,15 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
     ###
 
+    render: (callback) ->
+      @view.$().css({display:"none"})
+      callback()
+
+    ###
+    ###
+
     display: (callback) ->
+      @view.$().css({display:"block"})
       @_transitionAll "enter", callback
     
     ###

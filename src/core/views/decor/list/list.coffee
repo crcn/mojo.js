@@ -93,7 +93,6 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       ).
       cast(@_itemViewClass)
 
-
       @_bindSource()
 
 
@@ -116,7 +115,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       if @options.filter
         @_sourceBinding.filter @options.filter
 
-      binding.to().transform(@_itemTransformer).to(@_viewCollection)
+      binding.transform(@_itemTransformer).to(@_viewCollection)
 
     ###
     ###
@@ -188,7 +187,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
     ###
 
-    _removeItemView: (itemView) =>  
+    _removeItemView: (itemView) => 
       return if not itemView
       itemView.remove()
 
