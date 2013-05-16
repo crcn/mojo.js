@@ -6,9 +6,9 @@
       transform: () ->
 ###
 
-define ["../selectable", "./list"], (SelectableDecorator, List) ->
+define ["../sectionable/index", "./list"], (Sectionable, List) ->
   
-  class ListDecorator extends SelectableDecorator
+  class ListDecorator extends Sectionable
     name: "list"
     controllerClass: List
 

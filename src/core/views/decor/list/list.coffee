@@ -1,31 +1,26 @@
 define ["bindable", "../../collection", "../../../utils/compose", "hoist", 
-"../../../templates/factory", "dref", "pilot-block", "underscore", "../../adapters/index", "events"], (bindable, ViewCollection, compose, 
-  hoist, templates, dref, pilot, _, adapters, events) ->
+"../../../templates/factory", "dref", "pilot-block", "underscore", "../../adapters/index", "events", "../sectionable/decor"], (bindable, ViewCollection, compose, 
+  hoist, templates, dref, pilot, _, adapters, events, SectionableDecor) ->
   
   ###
    this IS the children
   ###
 
-  class extends events.EventEmitter
+  class extends SectionableDecor
 
     ###
     ###
 
-    constructor: (@decorator, @options) ->
-
-      @_id      = @name = options._name
-      @view     = decorator.view
-      @section  = options.section
-      @itemName = options.name or "item"
+    constructor: () ->
+      super arguments...
      
       # the source of the list - string, or object
-      @__source       = options.source
+      @__source       = @options.source
 
       # the view class for each item
-      @_itemViewClass = adapters.getViewClass options.itemViewClass
+      @_itemViewClass = adapters.getViewClass @options.itemViewClass
 
       @_viewCollection = @itemViews = new ViewCollection()
-      @_listSection = pilot.createSection()
       @_viewCollection.bind { insert: @_hookItemView, remove: @_removeItemView, reset: @_resetItemViews }
 
       @_deferredSections = []
@@ -36,16 +31,9 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
     ###
 
-    load: (callback) -> 
+    _load: (callback) -> 
       @_fetchRemote () =>
-        @_viewCollection.load () =>
-          @_loaded = true
-          if @section is "html"
-            @view.section.html @_listSection.html()
-          else 
-            @view.set @section, @_listSection.html()
-
-          callback() 
+        @_viewCollection.load callback
 
     ###
     ###
@@ -65,7 +53,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
 
     _fetchRemote: (next) -> 
-      return next() if @_viewCollection.length
+      return next() if @_viewCollection.length or not @_sourceCollection?.fetch
       @_sourceCollection?.fetch()
       @once "resetList", next
 
@@ -169,7 +157,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
           if self._loaded
             self._deferInsert itemView.section
           else
-            self._listSection.append itemView.section
+            self.section.append itemView.section
 
           callback()
       
@@ -194,7 +182,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
 
     _insertDeferredSections: () =>
-      @_listSection.append @_deferredSections...
+      @section.append @_deferredSections...
       @_deferredSections = []
 
     ###

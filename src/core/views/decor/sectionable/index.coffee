@@ -1,4 +1,4 @@
-define ["../collection", "underscore", "type-component"], (ViewCollection, _, type) ->
+define ["../../collection", "underscore", "type-component"], (ViewCollection, _, type) ->
   
   class SelectableDecorator extends ViewCollection
 

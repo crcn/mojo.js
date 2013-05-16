@@ -1,18 +1,12 @@
-define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc, pilot) ->
+define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor"], (State, bindable, stepc, pilot, Decor) ->
     
-  class extends bindable.Object
+  class extends Decor
 
     ###
     ###
 
-    constructor: (@decorator, @options) ->
-      super()
-
-      @_id = @name = @options._name
-      @sectionName = @options.section
-      @_section = pilot.createSection()
-
-      @view  = decorator.view
+    constructor: () ->
+      super arguments...
 
       # the view states
       @source = new bindable.Collection()
@@ -30,14 +24,8 @@ define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc,
     ###
     ###
 
-    load: (callback) ->
-      @once "loadedState", () =>
-        if @sectionName is "html" and not @view.template
-          @view.section.html @_section.html()
-        else
-          @view.set @sectionName, @_section.html()
-        callback()
-
+    _load: (callback) ->
+      @once "loadedState", callback
       @bind "index", @_setIndex
 
     ###
@@ -47,7 +35,6 @@ define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc,
       @once "renderedState", callback
       @bind "currentView", @_renderView
       callback()
-
 
     ###
     ###
@@ -147,7 +134,7 @@ define ["./state", "bindable", "stepc", "pilot-block"], (State, bindable, stepc,
           # set the nw start
           self._currentView = newStateView
 
-          self._section.append newStateView.section
+          self.section.append newStateView.section
 
           self.set "currentView", newStateView
           self.emit "loadedState"

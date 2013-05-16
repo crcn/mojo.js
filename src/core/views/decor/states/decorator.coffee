@@ -7,9 +7,9 @@ class extends View
     }
 ###
 
-define ["../selectable", "./states"], (SelectableDecorator, States) ->
+define ["../sectionable/index", "./states"], (Sectionable, States) ->
   
-  class StatesDecorator extends SelectableDecorator
+  class StatesDecorator extends Sectionable
     name            : "states"
     controllerClass : States
     
