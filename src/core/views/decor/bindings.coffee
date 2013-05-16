@@ -39,8 +39,7 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
         rivets.bind @view.section.elements.filter((el) ->
           el.nodeName isnt "#comment" and el.nodeName isnt "#text"
         ), { data: @view.get("item") or @view, item: @view.get("item") or @view, view: @view }
-  
-      setTimeout callback, 0
+      callback()
 
 
     ###

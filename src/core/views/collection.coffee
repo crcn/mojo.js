@@ -66,8 +66,7 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
       run = (item, next) ->
         fn = item[method]
         return next() if not fn
-        fn.call item, next
-        # callbackThrottle.call item, fn, next
+        callbackThrottle.call item, fn, next
 
       done = (err, result) =>
         @emit event
