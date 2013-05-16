@@ -53,8 +53,11 @@ define ["events"], (events) ->
 
       for droppable, i in droppables
         del = droppable.view.$()
-        delx = del.offset().left
-        dely = del.offset().top
+        offset = del.offset()
+        continue if not offset
+
+        delx = offset.left
+        dely = offset.top
         delw = del.width()
         delh = del.height()
 
