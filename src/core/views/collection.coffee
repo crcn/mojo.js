@@ -38,6 +38,7 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
     display: asyngleton (callback) -> 
       @render () => 
         @on "insert", @_displayLateItem
+        @on "reset", @_displayLateItems
         @_callViewMethod "display", "displayed", callback
 
     ###
@@ -84,4 +85,10 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
 
     _displayLateItem: (item) => 
       item.display()
+
+    ###
+    ###
+
+    _displayLateItems: (items) =>
+      @_callViewMethod "display", "displayed"
 

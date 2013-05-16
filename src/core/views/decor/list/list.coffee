@@ -1,12 +1,12 @@
 define ["bindable", "../../collection", "../../../utils/compose", "hoist", 
-"../../../templates/factory", "dref", "pilot-block", "underscore", "../../adapters/index"], (bindable, ViewCollection, compose, 
-  hoist, templates, dref, pilot, _, adapters) ->
+"../../../templates/factory", "dref", "pilot-block", "underscore", "../../adapters/index", "events"], (bindable, ViewCollection, compose, 
+  hoist, templates, dref, pilot, _, adapters, events) ->
   
   ###
    this IS the children
   ###
 
-  class
+  class extends events.EventEmitter
 
     ###
     ###
@@ -18,22 +18,20 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       @section  = options.section
       @itemName = options.name or "item"
      
-      # the source of the list - string
+      # the source of the list - string, or object
       @__source       = options.source
 
       # the view class for each item
       @_itemViewClass = adapters.getViewClass options.itemViewClass
 
       @_viewCollection = @itemViews = new ViewCollection()
-      @_viewCollection.bind { insert: @_hookItemView, remove: @_removeItem }
-
       @_listSection = pilot.createSection()
+      @_viewCollection.bind { insert: @_hookItemView, remove: @_removeItemView, reset: @_resetItemViews }
+
       @_deferredSections = []
-
-      # throttle the deferred insertions
-      @_insertDeferredSections = _.debounce(@_insertDeferredSections, 0)
-
       @initList()
+
+
 
     ###
     ###
@@ -52,9 +50,24 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
     ###
 
+    _resetItemViews: (items, oldItems) =>
+
+      for itemView in oldItems
+        itemView.dispose()
+        itemView.section.dispose()
+
+      for item in items
+        @_hookItemView item
+
+      @emit "resetList"
+
+    ###
+    ###
+
     _fetchRemote: (next) -> 
-      return next() if not @_sourceCollection?.fetch
-      @_sourceCollection.fetch next
+      return next() if @_viewCollection.length
+      @_sourceCollection?.fetch()
+      @once "resetList", next
 
     ###
     ###
@@ -70,8 +83,8 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
 
     remove: (callback) ->
-      @binding?.dispose()
-      @binding = undefined
+      @_sourceBinding?.dispose()
+      @_sourceBinding = undefined
       @_viewCollection.remove callback
 
     ###
@@ -101,6 +114,10 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
 
     _onSourceChange: (source) => 
 
+
+      @_viewCollection.source []
+      @_deferredSections = []
+
       # might be a bindable.Collection / backbone / spine collection
       @_sourceCollection = adapters.getCollection source
 
@@ -108,11 +125,10 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       @_sourceBinding?.dispose()
       @_sourceBinding = binding = @_sourceCollection.bind()
 
-
       if @options.filter
         @_sourceBinding.filter @options.filter
 
-      binding.transform(@_itemTransformer).to(@_viewCollection)
+      binding.to().transform(@_itemTransformer).to(@_viewCollection)
 
     ###
     ###
@@ -127,22 +143,13 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
     ###
 
-    _bindSourceString: () ->
-      @binding = @view.bind(@__source, @_onSourceChange)
-
-      #if @options.filter
-      #  @binding.filter @options.filter
-
-      #@binding.transform(hoister).to(@_viewCollection)
+    _bindSourceString: () -> @view.bind(@__source, @_onSourceChange)
 
     ###
     ###
 
     _bindSourceInst: () ->
       @_onSourceChange @__source
-
-
-
 
     ###
     ###
@@ -156,14 +163,15 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       itemView.decorators.push
         load: (callback) ->
 
+
           # defer section insertion so we don't kill DOM rendering - this is only a ~1 MS delay.
           # NOT doing this might result in a max call stack issue with FFox, and IE
-          if self._loaded and false
+          if self._loaded
             self._deferInsert itemView.section
           else
             self._listSection.append itemView.section
 
-          return callback()
+          callback()
       
 
       itemView
@@ -173,7 +181,14 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
 
     _deferInsert: (section) ->  
       @_deferredSections.push(section)
-      @_insertDeferredSections()
+      @_deferInsert2()
+
+    ###
+    ###
+
+    _deferInsert2: () ->
+      clearTimeout @_deferInsertTimeout
+      @_deferInsertTimeout = setTimeout @_insertDeferredSections, 0
 
     ###
     ###
@@ -182,12 +197,12 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       @_listSection.append @_deferredSections...
       @_deferredSections = []
 
-
     ###
     ###
 
-    _removeItem: (itemView) =>
-      itemView?.remove()
+    _removeItemView: (itemView) =>  
+      return if not itemView
+      itemView.remove()
 
 
 

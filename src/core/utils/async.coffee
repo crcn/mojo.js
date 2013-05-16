@@ -26,7 +26,7 @@ define () ->
      Allows for any number of items to be run in parallel
     ###
 
-    eachLimit: (items, limit, each, next) ->
+    eachLimit: (items, limit, each, next) ->  
 
       numRunning = 0
       currentIndex = 0
