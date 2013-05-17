@@ -62,7 +62,7 @@ define ["underscore",
       decor("template"   , TemplateDecorator, false),
 
       # additional decorators that don't have high priority - get added on .render() & .display()
-      decor("preload"    , PreloadDecorator, false),
+      decor("preload"    , PreloadDecorator),
       decor("attributes" , AttributesDecorator),
       decor("transition" , TransitionDecorator),
       decor("events"     , EventsDecorator),

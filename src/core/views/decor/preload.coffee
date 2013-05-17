@@ -11,6 +11,6 @@ define ["./base"], (BaseDecor) ->
       model.fetch next
 
 
-  PreloadDecorator.getOptions = (view) -> true
+  PreloadDecorator.getOptions = (view) -> view.preload
 
   PreloadDecorator
