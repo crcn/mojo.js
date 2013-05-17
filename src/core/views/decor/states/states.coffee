@@ -44,6 +44,7 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor", "
     remove: (callback) -> @_currentView.remove callback
 
     ###
+     selects a state 
     ###
 
     select: (stateOrIndex) ->
@@ -55,32 +56,33 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor", "
           @select i
 
     ###
+     Moves onto the next state
     ###
 
-    next: () =>
-      newIndex = @get("index") + 1
+    next: () => @move()
 
-      if newIndex >= @source.length()
-        if @rotate
-          newIndex = 0
-        else
-          newIndex = @source.length() - 1
-          @emit "ended"
+    ###
+     Moves to the previous state
+    ###
 
-      @set "index", newIndex
-
+    prev: () => @move -1 
 
     ###
     ###
 
-    prev: () =>
-      newIndex = @get("index") - 1
+    move: (position = 1) ->
+      newIndex = @get("index") + position
 
       if newIndex < 0
         if @rotate
           newIndex = @source.length() - 1
         else
           newIndex = 0
+      else if newIndex >= @source.length() 
+        if @rotate
+          newIndex = 0
+        else
+          newIndex = @source.length() - 1
 
       @set "index", newIndex
 
