@@ -25,11 +25,11 @@ define ["underscore",
 "./dragdrop/draggable",
 "./dragdrop/droppable",
 "./states/decorator",
-"./transition"], (_, cstep, async, ClassFactory, generateId, BaseViewDecorator, 
+"./transition", "./preload"], (_, cstep, async, ClassFactory, generateId, BaseViewDecorator, 
   ViewCollection, compose,
   TemplateDecorator, ChildrenDecorator, ListDecorator, 
   AttributesDecorator, EventsDecorator, BindingsDecorator, DraggableDecorator, 
-  DroppableDecorator, StatesDecorator, TransitionDecorator) ->
+  DroppableDecorator, StatesDecorator, TransitionDecorator, PreloadDecorator) ->
     
 
     decor = (name, clazz) ->
@@ -61,12 +61,14 @@ define ["underscore",
       decor("template"   , TemplateDecorator),
 
       # additional decorators that don't have high priority - get added on .render() & .display()
+      decor("preload"    , PreloadDecorator),
       decor("attributes" , AttributesDecorator),
       decor("transition" , TransitionDecorator),
       decor("events"     , EventsDecorator),
       decor("draggable"  , DraggableDecorator),
       decor("droppable"  , DroppableDecorator)
     ]
+
 
 
     setup: (view) ->

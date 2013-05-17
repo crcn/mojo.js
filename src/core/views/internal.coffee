@@ -40,7 +40,7 @@ define ["jquery",
 
       # create a default element block
       @section = pilot.createSection()
-      
+
       @_listen()
       @_setupDecor()
       @_setupBindings()
@@ -130,12 +130,7 @@ define ["jquery",
     ###
 
     _setupDecor: () ->
-      @decorators.push {
-        load: (next) =>
-          item = @get("item") ? @get("model")
-          return next() if not item?.fetch
-          item.fetch next
-      }
+      # OVERRIDE ME
 
     ###
     ###
