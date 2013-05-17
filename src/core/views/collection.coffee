@@ -1,11 +1,14 @@
 
 define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleCallback"], (bindable, async, cstep, asyngleton, throttleCallback) ->
 
-  
+  # randomly calls setImmediate for callbacks
   callbackThrottle = throttleCallback 20
     
 
   class extends bindable.Collection
+
+    ###
+    ###
 
     constructor: () ->
       super arguments...

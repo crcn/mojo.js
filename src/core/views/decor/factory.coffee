@@ -70,7 +70,19 @@ define ["underscore",
       decor("droppable"  , DroppableDecorator)
     ]
 
+    ###
+    ###
 
+
+    addDecoratorClass: (options = {}) -> 
+      availableDecorators.push( 
+        decor options.name, 
+        options.class or options.clazz, 
+        options.inheritable
+      )
+
+    ###
+    ###
 
     setup: (view) ->  
 
