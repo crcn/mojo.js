@@ -8,6 +8,9 @@ define ["./internal", "./decor/factory"], (InternalView, DecorFactory) ->
 
     @addDecoratorClass: DecorFactory.addDecoratorClass
 
+    ###
+    ###
+    
     _initDecor: () ->
       super()
       DecorFactory.setup @

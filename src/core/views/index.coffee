@@ -1,3 +1,1 @@
-define ["./base", "./decor/factory"], (BaseView, DecorFactory) ->
-  
-  class DecoratedView extends BaseView
+define ["./base", "./decor/factory"], (BaseView, DecorFactory) -> BaseView
