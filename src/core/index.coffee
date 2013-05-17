@@ -1,2 +1,3 @@
-define ["./views/index"], (View) ->
-  View: View
+define ["./views/index", "./mediator/index"], (View, mediator) ->
+  View     : View
+  mediator : mediator

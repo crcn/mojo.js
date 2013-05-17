@@ -1,2 +1,2 @@
-define [], () ->
+define ["events"], () -> new events.EventEmitter()
   
