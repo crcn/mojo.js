@@ -13,26 +13,6 @@ define () ->
     init: () ->
 
     ###
-    ###
-
-    load: (callback) -> callback()
-
-    ###
-    ###
-
-    render: (callback) -> callback()
-
-    ###
-    ###
-
-    display: (callback) -> callback()
-
-    ###
-    ###
-
-    remove: (callback) -> callback()
-
-    ###
      disposes immediatly without the teardown
     ###
 

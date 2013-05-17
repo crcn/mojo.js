@@ -1,4 +1,3 @@
-
 define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
   
   class TemplateViewDecorator extends BaseViewDecorator

@@ -10,9 +10,9 @@ define ["./base", "../../templates/factory"], (BaseView, templates) ->
     ###
     ###
 
-    events: {
+    events: 
       "keyup": "_onInputChange"
-    }
+    
 
     ###
      on input change, set the value of this text input to the element value

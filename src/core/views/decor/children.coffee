@@ -1,4 +1,3 @@
-
 define ["./base", "outcome", "../../utils/async", "../collection", "pilot-block"], (BaseViewDecorator, outcome, async, Collection, pilot) ->
   
   class ChildrenDecorator extends BaseViewDecorator

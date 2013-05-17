@@ -18,13 +18,14 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
         itemViewClass: SelectInputOptionView
         source: "source"
         transform: (item, list) ->
+        
           view = list.view
-          {
-            _id: dref.get(item, "_id"),
-            value: (dref.get(item, view.get("itemValue")) or dref.get(item, view.get("itemLabel"))),
-            label: dref.get(item, view.get("itemLabel")),
-            data: item
-          }
+          
+          _id   : dref.get(item, "_id"),
+          value : (dref.get(item, view.get("itemValue")) or dref.get(item, view.get("itemLabel"))),
+          label : dref.get(item, view.get("itemLabel")),
+          data  : item
+          
 
     ###
     ###
