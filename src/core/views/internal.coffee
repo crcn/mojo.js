@@ -37,6 +37,7 @@ define ["jquery",
       # initialize the options
       @init()
       @_listen()
+      @_setupDecor()
 
     ###
     ###
@@ -123,6 +124,17 @@ define ["jquery",
 
         remove    : @_onRemove 
         removed   : @_onRemoved
+
+    ###
+    ###
+
+    _setupDecor: () ->
+      @decorators.push {
+        load: (next) =>
+          item = @get("item") ? @get("model")
+          return next() if not item?.fetch
+          item.fetch next
+      }
 
     ###
     ###

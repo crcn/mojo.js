@@ -6,6 +6,7 @@ define ["../index", "../../templates/factory"], (BaseView, templates) ->
     ###
 
     _onRendered: () ->
+      super()
       @bind "value", @_onValueChanged
 
     ###

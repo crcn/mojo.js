@@ -21,7 +21,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       @_itemViewClass = adapters.getViewClass @options.itemViewClass
 
       @_viewCollection = @itemViews = new ViewCollection()
-      @_viewCollection.bind { insert: @_hookItemView, remove: @_removeItemView, reset: @_resetItemViews }
+      @_viewCollection.bind { insert: @_hookItemView, remove: @_removeItemView }
 
       @_deferredSections = []
       @initList()
@@ -38,24 +38,9 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
     ###
 
-    _resetItemViews: (items, oldItems) =>
-
-      for itemView in oldItems
-        itemView.dispose()
-        itemView.section.dispose()
-
-      for item in items
-        @_hookItemView item
-
-      @emit "resetList"
-
-    ###
-    ###
-
     _fetchRemote: (next) -> 
-      return next() if @_viewCollection.length or not @_sourceCollection?.fetch
-      @_sourceCollection?.fetch()
-      @once "resetList", next
+      return next() if @_viewCollection.length() or not @_sourceCollection?.fetch
+      @_sourceCollection?.fetch next
 
     ###
     ###
@@ -189,7 +174,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
 
     _removeItemView: (itemView) => 
       return if not itemView
-      itemView.remove()
+      itemView.dispose()
 
 
 
