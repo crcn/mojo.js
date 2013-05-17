@@ -118,7 +118,7 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor"], 
         
         # first load the new state in
         (() ->
-          newStateView[self.view.currentState].call newStateView, @
+          newStateView[self.view.get("currentState")].call newStateView, @
         ),
 
         (() ->

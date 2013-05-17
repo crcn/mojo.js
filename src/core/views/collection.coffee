@@ -64,8 +64,9 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
     _call: (method, event, source, callback = (() ->)) ->
 
       # first time being called? 
-      if @_currentState isnt method
-        @emit @_currentState = method
+      if @get("currentState") isnt method
+        @set "currentState", method
+        @emit method
 
       # runs the current decorator
       run = (item, next) ->
@@ -97,8 +98,9 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
     _callPending: (method, event, callback) ->
 
       # no pending items? We're finished here
-      if not @_pending
-        @emit @_currentState = event
+      unless @_pending
+        @set event, true
+        @emit event
         callback()
         return
 
@@ -113,10 +115,10 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
     _loadLateItem: (item) => 
 
       # hasn't even started yet!
-      return if not @_currentState
+      return unless @has("currentState")
 
       # already done? display the item
-      if @_currentState is "displayed"
+      if @get("displayed")
         item.display()
         return
 

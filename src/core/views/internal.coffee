@@ -26,6 +26,13 @@ define ["jquery",
       super data
 
 
+      # initialize the options
+      @init()
+
+    ###
+    ###
+
+    init: () -> 
       # items to load with the view
       # TODO - viewCollections.create() - should be a recycled item
       @decorators = @loadables = new ViewCollection()
@@ -33,16 +40,11 @@ define ["jquery",
 
       # create a default element block
       @section = pilot.createSection()
-
-      # initialize the options
-      @init()
+      
       @_listen()
       @_setupDecor()
+      @_setupBindings()
 
-    ###
-    ###
-
-    init: () -> # OVERRIDE ME
 
     ###
     ###
@@ -51,7 +53,6 @@ define ["jquery",
     render  : (next) -> @decorators.render next
     display : (next) -> @decorators.display next
     remove  : (next) -> @decorators.remove next
-
 
     ###
      If the key doesn't exist, then inherit it from the parent
@@ -139,29 +140,35 @@ define ["jquery",
     ###
     ###
 
-    _onLoad      : () => @currentState = ViewStates.LOADING
+    _setupBindings: () ->
+      @decorators.bind("currentState").to(@, "currentState")
+
+    ###
+    ###
+
+    _onLoad      : () =>  
     _onLoaded    : () =>
-      return if @_parent?.currentState is ViewStates.LOADING
+      return if @_parent?.get("currentState") is ViewStates.LOADING
       @section.updateChildren()
 
     ###
     ###
 
-    _onRender    : () => @currentState = ViewStates.RENDERING
+    _onRender    : () => 
     _onRendered  : () =>
 
     ###
     ###
 
-    _onDisplay   : () => @currentState = ViewStates.DISPLAYING
+    _onDisplay   : () => 
     _onDisplayed : () => 
 
     ###
     ###
     
-    _onRemove    : () => @currentState = ViewStates.REMOVING
+    _onRemove    : () =>
     _onRemoved   : () =>
-      return if @_parent?.currentState is ViewStates.REMOVING
+      return if @_parent?.get("currentState") is ViewStates.REMOVING
       @dispose()
 
 
