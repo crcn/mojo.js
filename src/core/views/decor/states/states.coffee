@@ -100,11 +100,13 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor"], 
     _setIndex: (index) =>
       return if not @source.length()
 
+
       @currentState?.set "selected", false
+      oldState = @currentState
 
       self           = @
       state          = @currentState = @source.at index or 0
-      newStateView   = state.createView()
+      newStateView   = state.getView()
       @view.linkChild newStateView
 
       @currentState.set "selected", true
@@ -120,8 +122,10 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor"], 
         ),
 
         (() ->
-          return @() if not oldView
-          oldView.remove @
+
+          # just hide the state - might want to re-use it again
+          oldState?.hide()
+          @()
         ),
 
         # finally, add the new state
@@ -133,6 +137,7 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor"], 
           self._currentView = newStateView
 
           self.section.append newStateView.section
+          self.currentState.show()
 
           self.set "currentView", newStateView
           self.emit "loadedState"

@@ -29,7 +29,20 @@ define ["bindable", "underscore"], (bindable, _) ->
     ###
     ###
 
-    createView: () -> 
+    hide: () ->
+      @_view?.$().css({ display: "none" })
+
+    ###
+    ###
+
+    show: () ->
+      @_view?.$().css({ display: "block" })
+
+    ###
+    ###
+
+    getView: () -> 
+      return @_view if @_view
       clazz = @get("class")
-      new clazz()
+      @_view = new clazz()
 
