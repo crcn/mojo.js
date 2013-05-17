@@ -20,6 +20,6 @@ define ["../base", "./collection", "jquery"], (BaseViewDecorator, droppables, $)
 
 
 
-  DroppableDecorator.test = (view) -> view.droppable
+  DroppableDecorator.getOptions = (view) -> view.droppable
 
   DroppableDecorator

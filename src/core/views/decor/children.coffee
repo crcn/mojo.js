@@ -7,7 +7,8 @@ define ["./base", "outcome", "../../utils/async", "../collection", "pilot-block"
 
     init: () ->
       super()
-      childrenClasses = @view.children
+
+      childrenClasses = @options
       @_children = new Collection()
       @_childrenByName = {}
 
@@ -51,9 +52,7 @@ define ["./base", "outcome", "../../utils/async", "../collection", "pilot-block"
 
 
 
-  ChildrenDecorator.test = (view) ->
-    # make sure children is present, and that it's an object
-    return view.children and not view.children.__isCollection
+  ChildrenDecorator.getOptions = (view) -> view.children
 
 
   ChildrenDecorator

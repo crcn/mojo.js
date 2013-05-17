@@ -84,6 +84,6 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
     _followMouse: (e) =>
       @draggedItem.css @_coords(e)
 
-  DraggableDecorator.test = (view) -> view.draggable
+  DraggableDecorator.getOptions = (view) -> view.draggable
 
   DraggableDecorator

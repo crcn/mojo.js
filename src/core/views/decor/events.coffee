@@ -5,6 +5,13 @@ define ["disposable", "./base", "jquery"], (disposable, BaseDecorator, $) ->
     ###
     ###
 
+    init: () ->
+      super()
+      @events = @options
+
+    ###
+    ###
+
     render: (callback) ->
       e = @_events()
       @_disposeBindings()
@@ -68,11 +75,9 @@ define ["disposable", "./base", "jquery"], (disposable, BaseDecorator, $) ->
     ###
     ###
 
-    _events: () ->
-      @view.events
+    _events: () -> @events
 
 
-  EventsDecorator.test = (view) ->
-    view.events
+  EventsDecorator.getOptions = (view) -> view.events
 
   EventsDecorator

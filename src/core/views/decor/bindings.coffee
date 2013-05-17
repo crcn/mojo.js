@@ -27,8 +27,15 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
     ###
     ###
 
+    init: () ->
+      super()
+      @bindings = if typeof @options is "object" then @options else undefined
+
+    ###
+    ###
+
     load: (callback) ->
-      @_setupExplicitBindings() if @view.bindings
+      @_setupExplicitBindings() if @bindings
       callback()
 
     ###
@@ -36,6 +43,8 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
     ###
 
     render: (callback) ->
+      return callback() if @view.__bound
+      @view.__bound = true
       if @view.section.elements.length
         rivets.bind @view.section.elements.filter((el) ->
           el.nodeName isnt "#comment" and el.nodeName isnt "#text"
@@ -48,8 +57,7 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
     ###
 
     _setupExplicitBindings: () ->
-      bindings = @view.bindings
-
+      bindings = @bindings
       @_setupBinding key, bindings[key] for key of bindings
 
     ###
@@ -77,6 +85,6 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
 
 
 
-  BindingsDecorator.test = (view) -> true
+  BindingsDecorator.getOptions = (view) -> view.bindings or !!view.template
 
   BindingsDecorator

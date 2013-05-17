@@ -5,6 +5,13 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
     ###
 
+    init: () ->
+      super()
+      @transition = @options
+
+    ###
+    ###
+
     render: (callback) ->
       @view.$().css({display:"none"})
       callback()
@@ -46,7 +53,7 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
 
     _transitions: () ->
-      transition = @view.transition
+      transition = @transition
       if transition.enter or transition.exit
         return [transition]
 
@@ -78,7 +85,6 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
 
 
 
-  TransitionDecorator.test = (view) ->
-    return view.transition
+  TransitionDecorator.getOptions = (view) -> view.transition
 
   TransitionDecorator

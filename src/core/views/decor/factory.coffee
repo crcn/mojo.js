@@ -32,9 +32,10 @@ define ["underscore",
   DroppableDecorator, StatesDecorator, TransitionDecorator, PreloadDecorator) ->
     
 
-    decor = (name, clazz) ->
-       name    : name
-       factory : new ClassFactory(clazz) 
+    decor = (name, clazz, inheritable = true) ->
+       name        : name
+       clazz       : clazz
+       inheritable : inheritable
 
 
     ###
@@ -58,10 +59,10 @@ define ["underscore",
       decor("children"   , ChildrenDecorator),
 
       # loads a template, and injects the sections / children (from above) on load
-      decor("template"   , TemplateDecorator),
+      decor("template"   , TemplateDecorator, false),
 
       # additional decorators that don't have high priority - get added on .render() & .display()
-      decor("preload"    , PreloadDecorator),
+      decor("preload"    , PreloadDecorator, false),
       decor("attributes" , AttributesDecorator),
       decor("transition" , TransitionDecorator),
       decor("events"     , EventsDecorator),
@@ -71,17 +72,67 @@ define ["underscore",
 
 
 
-    setup: (view) ->
+    setup: (view) ->  
 
-      for d in availableDecorators
+      # decorators are cached in the view class
+      if view.constructor.__decorators
+        @setDecorators view, view.constructor.__decorators
+      else
+        view.constructor.__decorators = @findDecorators view.constructor
+        @setup view
 
-        factory = d.factory
-        name = d.name
+      
+    ###
+     Finds ALL the decorators for a view, including the parent 
+     decorators which should be inherited (but overridden by the child prototype)
+    ###
 
-        if factory.test view
-          decor = factory.createItem view
-          decor._id = name
-          view.decorators.push decor
+    findDecorators: (viewClass) -> 
+      decorators = []
+
+      cv = viewClass
+      pv = undefined
+
+      # inherit from the parent classes
+      while cv and cv.prototype.__isView
+
+        # attach from the class, along with the prototype. class = optimal
+        decorators = decorators.concat @_findDecorators(cv, pv).concat @_findDecorators cv.prototype, pv?.prototype
+        pv = cv
+        cv = cv.__super__?.constructor
+
+      decorators.sort (a, b) -> if a.priority > b.priority then 1 else -1
+
+    ###
+    ###
+
+    _findDecorators: (proto, child) ->
+      decorators = []
+
+
+      for d, priority in availableDecorators
+        clazz       = d.clazz
+
+        # skip if the decorator is not inheritable
+        if child and not d.inheritable
+          continue
+
+        if options = clazz.getOptions proto
+
+          #skip if the options are exactly the same
+          continue if child and options is clazz.getOptions child
+          decorators.push { clazz: clazz, name: d.name, options: options, priority: priority }
+
+      decorators
+
+    ###
+    ###
+
+    setDecorators: (view, decorators) ->
+      for decor in decorators
+        d = new decor.clazz view, decor.options
+        d._id = decor.name
+        view.decorators.push d
 
 
 

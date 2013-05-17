@@ -14,6 +14,11 @@ define ["jquery",
 
     ###
     ###
+    
+    __isView: true
+
+    ###
+    ###
 
     constructor: (data = {}) ->
 

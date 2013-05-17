@@ -13,6 +13,6 @@ define ["../sectionable/index", "./list"], (Sectionable, List) ->
     controllerClass: List
 
 
-  ListDecorator.test = (view) -> !!view.list
+  ListDecorator.getOptions = (view) -> view.list
 
   ListDecorator

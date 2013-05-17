@@ -5,7 +5,7 @@ define ["../../collection", "underscore", "type-component"], (ViewCollection, _,
     ###
     ###
     
-    constructor: (@view) ->
+    constructor: (@view, @options) ->
       super()
       @reset @_setupControllers()
       for controller in @source()
@@ -30,7 +30,7 @@ define ["../../collection", "underscore", "type-component"], (ViewCollection, _,
     ###
     ###
 
-    _options: () -> @view[@name]
+    _options: () -> @options
 
     ###
     ###

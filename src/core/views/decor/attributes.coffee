@@ -2,6 +2,9 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
   
   class AttributesDecorator extends BaseDecorator
 
+    init: () ->
+      super()
+      @attrs = @options
     ###
     ###
 
@@ -16,7 +19,7 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     ###
 
     _properties: () ->
-      attrs = @view.attributes
+      attrs = @attrs
 
       attrElement = @_targetElement()
 
@@ -46,7 +49,6 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     _targetElement: () -> @view.$()
 
 
-  AttributesDecorator.test = (view) ->
-    !!view.attributes
+  AttributesDecorator.getOptions = (view) -> view.attributes
 
   AttributesDecorator

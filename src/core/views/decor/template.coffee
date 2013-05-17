@@ -5,9 +5,16 @@ define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
     ###
     ###
 
-    load: (callback) ->  
+    init: () ->
+      super()
+      @template = @options
 
-      @view.template.render @templateData(), (err, content) => 
+    ###
+    ###
+
+    load: (callback) ->  
+      @template.render @templateData(), (err, content) => 
+      
         return callback(err) if err
 
         p = @view.section.start
@@ -26,8 +33,7 @@ define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
 
 
 
-  TemplateViewDecorator.test = (view) ->
-    return view.template
+  TemplateViewDecorator.getOptions = (view) -> view.template
 
 
   TemplateViewDecorator

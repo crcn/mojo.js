@@ -5,7 +5,7 @@ define () ->
     ###
     ###
 
-    constructor: (@view) -> @init()
+    constructor: (@view, @options) -> @init()
 
     ###
     ###
