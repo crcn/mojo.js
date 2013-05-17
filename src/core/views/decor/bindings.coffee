@@ -32,6 +32,7 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
       callback()
 
     ###
+     bindings to the elements
     ###
 
     render: (callback) ->
@@ -43,6 +44,7 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
 
 
     ###
+     explicit bindings are properties from & to properties of the view controller
     ###
 
     _setupExplicitBindings: () ->
