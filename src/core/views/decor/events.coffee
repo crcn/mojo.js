@@ -5,7 +5,7 @@ define ["disposable", "./base", "jquery"], (disposable, BaseDecorator, $) ->
     ###
     ###
 
-    display: (callback) ->
+    render: (callback) ->
       e = @_events()
       @_disposeBindings()
       @_disposable = disposable.create()
