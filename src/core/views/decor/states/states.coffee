@@ -1,4 +1,4 @@
-define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor"], (State, bindable, stepc, pilot, Decor) ->
+define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor", "../../collection"], (State, bindable, stepc, pilot, Decor, ViewCollection) ->
     
   class extends Decor
 
@@ -25,32 +25,23 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor"], 
     ###
 
     _load: (callback) ->
-      @once "loadedState", callback
       @bind "index", @_setIndex
+      @bind("currentView").once().to callback
 
     ###
     ###
 
-    render: (callback) ->
-      @once "renderedState", callback
-      @bind "currentView", @_renderView
-      callback()
+    render: (callback) -> @_currentView.render callback
 
     ###
     ###
 
-    display: (callback) ->
-      @once "displayedState", callback
-      @bind "currentView", @_displayView
-      callback()
+    display: (callback) -> @_currentView.display callback
 
     ###
     ###
 
-    remove: (callback) ->
-      return callback() if not @has "currentView"
-      @get("currentView").remove callback
-
+    remove: (callback) -> @_currentView.remove callback
 
     ###
     ###
@@ -62,7 +53,6 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor"], 
         i = @source.indexOf stateOrIndex
         if ~i
           @select i
-
 
     ###
     ###
@@ -112,7 +102,6 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor"], 
       @currentState.set "selected", true
 
       oldView = self._currentView
-      
 
       stepc.async(
         
@@ -140,8 +129,6 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor"], 
           self.currentState.show()
 
           self.set "currentView", newStateView
-          self.emit "loadedState"
-
         )
       )
 
@@ -152,30 +139,6 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor"], 
       super arguments...
       arguments[0] = @name + "." + arguments[0]
       @view.bubble arguments...
-
-    ###
-    ###
-
-    _renderView: (view) =>
-      view.render () => 
-        @emit "renderedState"
-
-
-    ###
-    ###
-
-    _displayView: (view) =>
-      view.display () => 
-        @emit "displayedState"
-
-    ###
-    ###
-
-    _element: () ->
-      if @selector then @view.$(@selector) else @view.el
-
-
-
 
 
 
