@@ -1,17 +1,16 @@
 define ["disposable", "./base"], (disposable, BaseDecorator) ->
   
-  class EventsDecorator extends BaseDecorator
+  class AttributesDecorator extends BaseDecorator
 
     ###
     ###
 
-    load: (callback) ->
+    render: (callback) ->
       for props in @_properties()
         for key of props.attributes
           props.element.attr(key, props.attributes[key])
 
       callback()
-
 
     ###
     ###
@@ -47,7 +46,7 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     _targetElement: () -> @view.$()
 
 
-  EventsDecorator.test = (view) ->
+  AttributesDecorator.test = (view) ->
     !!view.attributes
 
-  EventsDecorator
+  AttributesDecorator
