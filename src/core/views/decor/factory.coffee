@@ -72,18 +72,16 @@ define ["underscore",
     setup: (view) ->
       decorators = []
 
-      for d, priority in availableDecorators
+      for d in availableDecorators
 
         factory = d.factory
         name = d.name
 
         if factory.test view
           decor = factory.createItem view
-          decor.priority = priority
           decor._id = name
           decorators.push decor
 
-      decorators = decorators.sort (a, b) -> if a.priority > b.priority then 1 else -1
       view.decorators.push.apply view.decorators, decorators 
 
 
