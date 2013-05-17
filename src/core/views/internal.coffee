@@ -41,9 +41,9 @@ define ["jquery",
       # create a default element block
       @section = pilot.createSection()
 
-      @_listen()
-      @_setupDecor()
-      @_setupBindings()
+      @_initListeners()
+      @_initDecor()
+      @_initBindings()
 
 
     ###
@@ -112,7 +112,7 @@ define ["jquery",
     ###
     ###
 
-    _listen: () ->
+    _initListeners: () ->
       @decorators.on 
         load      : @_onLoad
         loaded    : @_onLoaded
@@ -129,13 +129,13 @@ define ["jquery",
     ###
     ###
 
-    _setupDecor: () ->
+    _initDecor: () ->
       # OVERRIDE ME
 
     ###
     ###
 
-    _setupBindings: () ->
+    _initBindings: () ->
       @decorators.bind("currentState").to(@, "currentState")
 
     ###
