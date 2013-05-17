@@ -1,11 +1,9 @@
 define [], () ->
-
   
   class Popup
 
     ###
     ###
-
 
 
   Popup.show = (clazz) ->

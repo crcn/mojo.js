@@ -14,7 +14,6 @@ define ["../sectionable/index", "./states"], (Sectionable, States) ->
     controllerClass : States
     
 
-  StatesDecorator.test = (view) -> 
-    !!view.states
+  StatesDecorator.test = (view) -> !!view.states
 
   StatesDecorator

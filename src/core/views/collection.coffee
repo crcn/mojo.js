@@ -9,7 +9,11 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
 
     constructor: () ->
       super arguments...
+
       @enforceId false
+
+      # keep tabs on any late items
+      @on "insert", @_loadLateItem
 
     ###
     ###
@@ -17,29 +21,27 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
     limit: 1
 
     ###
-     loads the template, and anything else that might be needed
+     Creates, and parses the DOM
     ###
 
     load: asyngleton (callback) -> 
-      @_callViewMethod "load", "loaded", callback
+      @_call "load", "loaded", @source(), callback
 
     ###
-     renders the view 
+     attaches any controllers / bindings to the view (rivets)
     ###
 
     render: asyngleton (callback) ->
       @load () => 
-        @_callViewMethod "render", "rendered", callback
+        @_call "render", "rendered", @source(), callback
 
     ###
-     called when we want to display the view
+     adds the elements to the DOM - transitions happen here
     ###
 
     display: asyngleton (callback) -> 
       @render () => 
-        @on "insert", @_displayLateItem
-        @on "reset", @_displayLateItems
-        @_callViewMethod "display", "displayed", callback
+        @_call "display", "displayed", @source(), callback
 
     ###
      removes & unloads the view
@@ -47,7 +49,7 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
 
     remove: asyngleton (callback) ->
       @display () => 
-        @_callViewMethod "remove", "removed", callback
+        @_call "remove", "removed", @source(), callback
 
     ###
     ###
@@ -59,31 +61,69 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
     ###
     ###
 
-    _callViewMethod: (method, event, callback = (() ->)) ->
+    _call: (method, event, source, callback = (() ->)) ->
 
-      @emit method
+      # first time being called? 
+      if @_currentState isnt method
+        @emit @_currentState = method
 
+      # runs the current decorator
       run = (item, next) ->
         fn = item[method]
         return next() if not fn
+
+        # randomly calls .setImmediate to break the callstack. This prevents
+        # a stack overflow in older browsers
         callbackThrottle.call item, fn, next
 
-      done = (err, result) =>
-        @emit event
-        return callback(err) if err
-        callback()
+      # called once all the *current* decorators have been initialized
+      done = (err, result) => 
+        @_callPending method, event, callback
+
+      # source is copied incase any *new* items are added - new items can be pushed / unshifted, which
+      # can screw up the loading process. _callPending is used to capture any decorators that might
+      # have been added a bit late.
+      src = source.concat()
 
       if not ~@limit 
-        async.forEach @source(), run, done
+        async.forEach src, run, done
       else
-        async.eachLimit @source(), @limit, run, done
+        async.eachLimit src, @limit, run, done
 
+    ###
+     Calls any pending 
+    ###
+
+    _callPending: (method, event, callback) ->
+
+      # no pending items? We're finished here
+      if not @_pending
+        @emit @_currentState = event
+        callback()
+        return
+
+      pending   = @_pending
+      @_pending = undefined
+
+      @_call method, event, pending, callback
 
     ###
     ###
 
-    _displayLateItem: (item) => 
-      item.display()
+    _loadLateItem: (item) => 
+
+      # hasn't even started yet!
+      return if not @_currentState
+
+      # already done? display the item
+      if @_currentState is "displayed"
+        item.display()
+        return
+
+      if not @_pending
+        @_pending = []
+
+      @_pending.push item
 
     ###
     ###

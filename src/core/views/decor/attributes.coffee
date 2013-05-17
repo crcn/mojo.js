@@ -30,11 +30,9 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
       elements = []
 
       for selector of attrs
-        elements.push {
-          element: attrElement.find(selector),
-          attributes: attrs[selector]
-        }
-
+        elements.push 
+          element    : attrElement.find(selector),
+          attributes : attrs[selector]
 
     ###
     ###
