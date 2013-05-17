@@ -70,7 +70,6 @@ define ["underscore",
 
 
     setup: (view) ->
-      decorators = []
 
       for d in availableDecorators
 
@@ -80,9 +79,8 @@ define ["underscore",
         if factory.test view
           decor = factory.createItem view
           decor._id = name
-          decorators.push decor
+          view.decorators.push decor
 
-      view.decorators.push.apply view.decorators, decorators 
 
 
 
