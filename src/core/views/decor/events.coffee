@@ -53,9 +53,9 @@ define ["disposable", "./base", "jquery"], (disposable, BaseDecorator, $) ->
           cb.apply @, [$.Event(action)].concat Array.prototype.slice.call arguments
 
 
-      @_disposable.add(() ->
+      @_disposable.add () ->
         elements.unbind actions, cb
-      )
+      
 
     ###
     ###
