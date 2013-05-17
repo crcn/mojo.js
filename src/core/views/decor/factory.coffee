@@ -33,7 +33,8 @@ define ["underscore",
     
 
     decor = (name, clazz) ->
-      { name: name, factory: new ClassFactory(clazz) }
+       name    : name
+       factory : new ClassFactory(clazz) 
 
 
     ###
@@ -44,37 +45,27 @@ define ["underscore",
     3. parent -> child bindings
     ###
 
+    # note that the decorator order is very important
     availableDecorators = [
 
-      # parent bindings must be set before child bindings
-      decor("bindings", BindingsDecorator),
+      # bindings = priority for explicit data-bindings
+      decor("bindings"   , BindingsDecorator),
 
-      # transition should be the last-ish item since it adds a delay to everything else
-      decor("transition", TransitionDecorator),
+      # section / child decorators. These have (almost) highest
+      # priority since they should be added before the template is loaded
+      decor("list"       , ListDecorator),
+      decor("states"     , StatesDecorator),
+      decor("children"   , ChildrenDecorator),
 
-      # creates a list of items
-      decor("list", ListDecorator),
+      # loads a template, and injects the sections / children (from above) on load
+      decor("template"   , TemplateDecorator),
 
-      # states view
-      decor("states", StatesDecorator),
-
-      # children must be loaded before the transition starts, otherwise there might be a delay
-      decor("children", ChildrenDecorator),
-
-      # template must be loaded first because the following decorators handle an element
-      decor("template", TemplateDecorator),
-
-      # element attributes
-      decor("attributes", AttributesDecorator),
-
-      # events can go anywhere really
-      decor("events", EventsDecorator),
-
-      # makes the view draggable
-      decor("draggable", DraggableDecorator),
-
-      # makes the view droppable
-      decor("droppable", DroppableDecorator)
+      # additional decorators that don't have high priority - get added on .render() & .display()
+      decor("attributes" , AttributesDecorator),
+      decor("transition" , TransitionDecorator),
+      decor("events"     , EventsDecorator),
+      decor("draggable"  , DraggableDecorator),
+      decor("droppable"  , DroppableDecorator)
     ]
 
 
