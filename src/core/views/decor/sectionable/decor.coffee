@@ -7,14 +7,13 @@ define ["bindable", "pilot-block"], (bindable, pilot) ->
 
     constructor: (@decorator, @options) ->  
       super()
-      
+
       @_id          = @name = options._name
       @view         = decorator.view
       @sectionName  = options.section
       @itemName     = options.name or "item"
 
       @section = pilot.createSection()
-
 
     ###
     ###
@@ -26,8 +25,6 @@ define ["bindable", "pilot-block"], (bindable, pilot) ->
         else
           @view.set @sectionName, @section
         callback()
-
-
 
     ###
     ###

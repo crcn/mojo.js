@@ -1,2 +1,6 @@
-define ["events"], (events) -> new events.EventEmitter()
+define ["./mediator", "hooks"], (Mediator, hooks) -> 
+  m = new Mediator()
+  m
+  
+
   

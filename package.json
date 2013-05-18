@@ -1,6 +1,6 @@
 {
   "name": "dojo-bootstrap",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "description": "test",
   "main": "./lib/index.js",
   "jam": {
@@ -29,7 +29,7 @@
     "asyngleton": "0.1.x",
     "outcome": "0.0.x",
     "step": "0.0.x",
-    "type-component":"0.0.x",
+    "type-component": "0.0.x",
     "bindable": "0.2.x",
     "disposable": "0.0.x",
     "eventemitter2": "0.4.x",
@@ -38,6 +38,8 @@
     "dolce": "0.0.x",
     "mannequin": "0.1.x",
     "hoist": "0.0.x",
-    "pilot-block": "0.0.x"
+    "pilot-block": "0.0.x",
+    "crema": "0.1.x",
+    "hooks": "0.3.x"
   }
 }
