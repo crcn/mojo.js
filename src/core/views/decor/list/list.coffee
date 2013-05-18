@@ -21,12 +21,10 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       @_itemViewClass = adapters.getViewClass @options.itemViewClass
 
       @_viewCollection = @itemViews = new ViewCollection()
-      @_viewCollection.bind { insert: @_hookItemView, remove: @_removeItemView }
+      @_viewCollection.bind { remove: @_removeItemView }
 
       @_deferredSections = []
       @initList()
-
-
 
     ###
     ###
@@ -76,7 +74,11 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
         ops._id = dref.get(item, "_id")
         ops
       ).
-      cast(@_itemViewClass)
+      cast(@_itemViewClass).
+      map((item) =>
+        @_hookItemView item
+        item
+      )
 
       @_bindSource()
 

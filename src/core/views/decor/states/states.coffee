@@ -78,11 +78,14 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor", "
           newIndex = @source.length() - 1
         else
           newIndex = 0
+          @emit "ended" 
+          
       else if newIndex >= @source.length() 
         if @rotate
           newIndex = 0
         else
           newIndex = @source.length() - 1
+          @emit "ended"
 
       @set "index", newIndex
 

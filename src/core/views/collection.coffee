@@ -122,7 +122,7 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
 
       # already done? display the item
       if @get("displayed")
-        item.display()
+        item.display?()
         return
 
       if not @_pending

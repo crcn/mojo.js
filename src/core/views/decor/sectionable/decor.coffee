@@ -7,6 +7,7 @@ define ["bindable", "pilot-block"], (bindable, pilot) ->
 
     constructor: (@decorator, @options) ->  
       super()
+      
       @_id          = @name = options._name
       @view         = decorator.view
       @sectionName  = options.section
