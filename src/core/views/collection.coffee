@@ -130,9 +130,3 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
 
       @_pending.push item
 
-    ###
-    ###
-
-    _displayLateItems: (items) =>
-      @_callViewMethod "display", "displayed"
-
