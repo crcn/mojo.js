@@ -45,12 +45,10 @@ define ["hooks", "type-component", "crema", "underscore"], (hooks, type, crema, 
         if not @commands[name = route.path.value.substr(1)]
           @commands[name] = () ->
 
-        if route.type is "pre"
-          hooks.pre.call @commands, name, callback
-        else if route.type is "post"
-          hooks.post.call @commands, name, callback
-        else if not route.type
-          hooks.hook.call @commands, name, callback
+        if not route.type
+          route.type = "hook"
+
+        hooks[route.type].call @commands, name, callback
 
 
 

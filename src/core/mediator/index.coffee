@@ -1,6 +1,4 @@
-define ["./mediator", "hooks"], (Mediator, hooks) -> 
-  m = new Mediator()
-  m
+define ["./mediator", "hooks"], (Mediator, hooks) -> new Mediator()
   
 
   

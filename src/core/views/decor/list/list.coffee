@@ -176,7 +176,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
 
     _removeItemView: (itemView) => 
       return if not itemView
-      itemView.dispose()
+      itemView.remove()
 
 
 
