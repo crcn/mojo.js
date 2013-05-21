@@ -32,7 +32,7 @@ class BasicView extends mojo.View
   init: () ->
     super()
     console.log @get("message")
-``
+```
 
 Note that if a view property doesn't exist, `.get()` will return the parent view property instead. For example:
 
