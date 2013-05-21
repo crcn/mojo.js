@@ -9,6 +9,8 @@ class ModalView extends mojo.View
     <strong>{{view.message}}</strong>
   "
 
+# attach to the DOM
+new ModalView().attach($("#people"))
 ```
 
 ## Lists
@@ -18,7 +20,7 @@ class ModalView extends mojo.View
 
 - `[sectionName]` - name of the section.
   - `modelViewClass` - class to instantiate for each item in the source collection.
-  - `source` - the source collection. This can be a `string`, or reference to a [collection](../../data-binding/collections).
+  - `source` - the source collection. This can be a `string`, or reference to a [collection](../../data-binding/collections.md).
   - `transform` - `function` which transforms the `source` item
   - `filter` - filters out items from the source collection
 
