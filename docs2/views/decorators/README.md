@@ -18,7 +18,7 @@ new ModalView().attach($("#people"))
 
 #### Properties
 
-- `[sectionName]` - name of the [section]("../sections").
+- `[sectionName]` - name of the [section](../sections).
   - `modelViewClass` - class to instantiate for each item in the source collection.
   - `source` - the source collection. This can be a `string`, or reference to a [collection](../../data-binding/collections.md).
   - `transform` - `function` which transforms the `source` item
