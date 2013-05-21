@@ -63,9 +63,10 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
 
     initList: () -> 
       hoister = hoist()
+      map = @options.map or @options.transform
 
-      if @options.transform
-        hoister.map (model) => @options.transform model, @
+      if map
+        hoister.map (model) => map model, @
 
       @_modelTransformer = hoister.
       map((model) => 
