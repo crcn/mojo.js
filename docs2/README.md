@@ -2,6 +2,10 @@
 
 Pretty self explanatory.
 
+### [Router](./router)
+
+TODO
+
 ### [Mediator](./mediator)
 
 Controls any global commands you'd like to invoke. This is basically like an in-app API, allowing a more decoupled, 
@@ -11,6 +15,7 @@ scalable architecture. A few good use-cases:
 - Redirecting to another part of the single page app.
 - invoking any business logic.
 - any form of communication throughout the application
+
 
 
 #### Features
