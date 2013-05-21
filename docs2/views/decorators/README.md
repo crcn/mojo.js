@@ -23,7 +23,7 @@ class ModalView extends mojo.View
   - `filter` - filters out items from the source collection
 
 
-#### Example
+#### Js Example
 
 ```coffeescript
 class PersonView extends mojo.View
@@ -32,18 +32,22 @@ class PersonView extends mojo.View
   "
 
 class PeopleView extends mojo.View
-
+  
+  # the template for the people view - this holds the list of friends
+  # provided below
   template: template.fromString "
     List if {{item.name}}'s friends: 
 
     {{{section.friends}}}
   "
 
+  # creates a list of friends using the person view
   list: 
     friends: 
-      itemViewClass: PersonView
-      source: "item.friends"
-      filter: (person) -> person.age > 21
+      itemViewClass : PersonView
+      source        : "item.friends"
+      filter        : (person) -> person.age > 21
+
 ```
 
 ## Children
