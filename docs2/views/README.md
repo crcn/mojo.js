@@ -1,3 +1,16 @@
+Mojo views are composed of a few parts
+
+### [templates](./templates)
+
+Handlebars template. Templates also describe where each section goes.
+
+### [sections](./sections)
+
+Placeholders in the template where child views go.
+
+### [decorators](./decorators)
+
+Describe what the view does, and any child views.
 
 ## API
 
