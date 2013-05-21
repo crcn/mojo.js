@@ -1,6 +1,6 @@
 {
   "name": "mojo",
-  "version": "0.2.23",
+  "version": "0.2.24",
   "description": "test",
   "main": "./lib/index.js",
   "jam": {

@@ -12,10 +12,10 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
         #  obj.off "change:" + keypath.replace(/,/g, "."), callback
 
       read: (obj, keypath) ->
-        obj.get keypath.replace(/,/g, ".")
+        obj.get? keypath.replace(/,/g, ".")
 
       publish: (obj, keypath, value) ->
-        obj.set keypath.replace(/,/g, "."), value
+        obj.set? keypath.replace(/,/g, "."), value
     }
   });
 

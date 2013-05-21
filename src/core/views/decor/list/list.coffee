@@ -72,8 +72,8 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
         ops = {}
 
         # DEPRECATE
-        ops.item  = item
-        ops.model = item
+        ops.item  = model
+        ops.model = model
 
         ops._id = dref.get(model, "_id")
         ops
