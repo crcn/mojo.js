@@ -88,13 +88,3 @@ emits an event
 ### .bubble(event, args...)
 
 bubbles up an event to the root view.
-
-
-### [Decorators](./decorators)
-
-### [Templates](./templates)
-
-### [Sections](./sections)
-
-
-## Models
