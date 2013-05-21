@@ -175,15 +175,15 @@ class ModelView extends mojo.View
     body: BodyView
     footer: FooterView
 
-  transition: {
-    enter: {
-      from: { opacity: 0 },
-      to: { opacity: 0.25 }
-    },
-    exit: {
-      to: { opacity: 0  }
-    }
-  }
+  transition: 
+  
+    enter: 
+      to: 
+        opacity: 1
+
+    exit: 
+      to: 
+        opacity: 0  
 
 # attach to the DOM
 new ModelView().attach($("#model"))
