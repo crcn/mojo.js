@@ -7,7 +7,7 @@ define [], () ->
      returns a bindable object
     ###
 
-    getModel       : (item) ->
+    getModel       : (model) ->
 
     ###
      returns a bindable collection

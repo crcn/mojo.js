@@ -17,11 +17,11 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       # the source of the list - string, or object
       @__source       = @options.source
 
-      # the view class for each item
-      @_itemViewClass = adapters.getViewClass @options.itemViewClass
+      # the view class for each model
+      @_modelViewClass = adapters.getViewClass @options.modelViewClass or @options.itemViewClass # itemViewClass = DEPRECATED
 
-      @_viewCollection = @itemViews = new ViewCollection()
-      @_viewCollection.bind { remove: @_removeItemView }
+      @_viewCollection = @modelViews = new ViewCollection()
+      @_viewCollection.bind { remove: @_removeModelView }
 
       @_deferredSections = []
       @initList()
@@ -65,19 +65,23 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       hoister = hoist()
 
       if @options.transform
-        hoister.map (item) => @options.transform item, @
+        hoister.map (model) => @options.transform model, @
 
-      @_itemTransformer = hoister.
-      map((item) => 
+      @_modelTransformer = hoister.
+      map((model) => 
         ops = {}
-        ops.item = item
-        ops._id = dref.get(item, "_id")
+
+        # DEPRECATE
+        ops.item  = item
+        ops.model = item
+
+        ops._id = dref.get(model, "_id")
         ops
       ).
-      cast(@_itemViewClass).
-      map((item) =>
-        @_hookItemView item
-        item
+      cast(@_modelViewClass).
+      map((model) =>
+        @_hookModelView model
+        model
       )
 
       @_bindSource()
@@ -102,7 +106,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       if @options.filter
         @_sourceBinding.filter @options.filter
 
-      binding.transform(@_itemTransformer).to(@_viewCollection)
+      binding.transform(@_modelTransformer).to(@_viewCollection)
 
     ###
     ###
@@ -128,27 +132,27 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
     ###
 
-    _hookItemView: (itemView) =>
+    _hookModelView: (modelView) =>
 
       self = @
 
-      @view.linkChild itemView
+      @view.linkChild modelView
 
-      itemView.decorators.push
+      modelView.decorators.push
         load: (callback) ->
 
 
           # defer section insertion so we don't kill DOM rendering - this is only a ~1 MS delay.
           # NOT doing this might result in a max call stack issue with FFox, and IE
           if self._loaded
-            self._deferInsert itemView.section
+            self._deferInsert modelView.section
           else
-            self.section.append itemView.section
+            self.section.append modelView.section
 
           callback()
       
 
-      itemView
+      modelView
 
     ###
     ###
@@ -174,9 +178,9 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
     ###
 
-    _removeItemView: (itemView) => 
-      return if not itemView
-      itemView.remove()
+    _removeModelView: (modelView) => 
+      return if not modelView
+      modelView.remove()
 
 
 

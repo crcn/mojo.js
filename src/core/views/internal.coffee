@@ -17,21 +17,18 @@ define ["jquery",
     
     __isView: true
 
-    
-
     ###
     ###
 
     constructor: (data = {}) ->
 
       # ID's are necessary for collections
-      @_id = dref.get(data, "_id") or dref.get(data.item or {}, "_id") or generateId()
+      @_id = dref.get(data, "_id") or dref.get(data.item or data.model or {}, "_id") or generateId()
 
       data.view         = @
       data.modelLocator = modelLocator
 
       super data
-
 
       # initialize the options
       @init()

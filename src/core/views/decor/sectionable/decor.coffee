@@ -11,7 +11,7 @@ define ["bindable", "pilot-block"], (bindable, pilot) ->
       @_id          = @name = options._name
       @view         = decorator.view
       @sectionName  = options.section
-      @itemName     = options.name or "item"
+      @modelName    = options.name or "model"
 
       @section = pilot.createSection()
 

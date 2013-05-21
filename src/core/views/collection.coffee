@@ -15,8 +15,8 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
 
       @enforceId false
 
-      # keep tabs on any late items
-      @on "insert", @_loadLateItem
+      # keep tabs on any late decorators
+      @on "insert", @_loadLateDecor
 
     ###
     ###
@@ -72,13 +72,13 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
         @emit method
 
       # runs the current decorator
-      run = (item, next) ->
-        fn = item[method]
+      run = (decorator, next) ->
+        fn = decorator[method]
         return next() if not fn
 
         # randomly calls .setImmediate to break the callstack. This prevents
         # a stack overflow in older browsers
-        callbackThrottle.call item, fn, next
+        callbackThrottle.call decorator, fn, next
 
       # called once all the *current* decorators have been initialized
       done = (err, result) => 
@@ -100,7 +100,7 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
 
     _callPending: (method, event, callback) ->
 
-      # no pending items? We're finished here
+      # no pending decorators? We're finished here
       unless @_pending
         @set event, true
         @emit event
@@ -115,18 +115,18 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
     ###
     ###
 
-    _loadLateItem: (item) => 
+    _loadLateDecor: (decorator) => 
 
       # hasn't even started yet!
       return unless @has("currentState")
 
-      # already done? display the item
+      # already done? display the decorator
       if @get("displayed")
-        item.display?()
+        decorator.display?()
         return
 
       if not @_pending
         @_pending = []
 
-      @_pending.push item
+      @_pending.push decorator
 

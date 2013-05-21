@@ -6,7 +6,7 @@ define ["./base"], (BaseDecor) ->
     ###
 
     load: (next) ->
-      model = @view.get("item") or @view.get("model")
+      model = @view.get("model") ? @view.get("item")
       return next() if not model or not model?.fetch
       model.fetch next
 

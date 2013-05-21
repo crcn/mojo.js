@@ -12,7 +12,7 @@ define ["bindable"], (bindable) ->
     constructor: (model) ->
       super model.attributes
       @model = model
-      model.item = @
+      model.model = @
 
       for key of model then do (key) =>
         v = model[key]

@@ -1,7 +1,7 @@
 define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (InputView, View, templates, dref, bindable) ->
     
   class SelectInputOptionView extends View
-    template: templates.fromSource("<option value='{{item.value}}'>{{item.label}}</option>", { engine: "handlebars" })
+    template: templates.fromSource("<option value='{{model.value}}'>{{model.label}}</option>", { engine: "handlebars" })
 
 
   class SelectInputView extends InputView
@@ -14,17 +14,17 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
     ###
 
     list:
-      "selectList":
-        itemViewClass: SelectInputOptionView
-        source: "source"
-        transform: (item, list) ->
+      selectList:
+        modelViewClass : SelectInputOptionView
+        source         : "source"
+        transform      : (model, list) ->
         
           view = list.view
           
-          _id   : dref.get(item, "_id"),
-          value : (dref.get(item, view.get("itemValue")) or dref.get(item, view.get("itemLabel"))),
-          label : dref.get(item, view.get("itemLabel")),
-          data  : item
+          _id   : dref.get(model, "_id"),
+          value : (dref.get(model, view.get("modelValue")) or dref.get(model, view.get("modelLabel"))),
+          label : dref.get(model, view.get("modelLabel")),
+          data  : model
           
 
     ###
@@ -35,12 +35,12 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
     ###
     ###
 
-    itemLabel: "label"
+    modelLabel: "label"
 
     ###
     ###
 
-    itemValue: "_id"
+    modelValue: "_id"
 
     ###
     ###
@@ -50,7 +50,7 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
         selected    = @$(":selected")
         selectedVal = selected.val()
 
-        # de-select the item
+        # de-select the model
         if not selectedVal.length
           return @deselect()
 
@@ -60,7 +60,7 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
 
 
     ###
-     Selects an item based on the index
+     Selects an model based on the index
     ###
 
     select: (index) =>
@@ -71,7 +71,7 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
       @set "value", @get("source").at(index).value
 
     ###
-     deselects the item
+     deselects the model
     ###
 
     deselect: () ->
@@ -85,9 +85,9 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
 
       index = -1
 
-      for item, i in @get("source").source()
-        if item.value is value
-          # offset the default item
+      for model, i in @get("source").source()
+        if model.value is value
+          # offset the default model
           index = i + 1
           break
 

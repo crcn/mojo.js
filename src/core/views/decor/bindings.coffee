@@ -46,9 +46,12 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
       return callback() if @view.__bound
       @view.__bound = true
       if @view.section.elements.length
+
+        model = @view.get("model") ? @view.get("item") ? @view
+
         rivets.bind @view.section.elements.filter((el) ->
           el.nodeName isnt "#comment" and el.nodeName isnt "#text"
-        ), { data: @view.get("item") or @view, item: @view.get("item") or @view, view: @view }
+        ), { data: model, item: model, model: model, view: @view }
       callback()
 
 

@@ -10,7 +10,7 @@ define ["../../internal"], (InternalView) ->
     init: () ->
       super()
 
-      model = @get("item").model ? @get("item")
+      model = @get("model").model ? @get("model")
       view  = null
 
 

@@ -16,8 +16,8 @@ class ModalView extends mojo.View
 
 #### Properties
 
-- `[sectionName]` - name of the section
-  - `itemViewClass` - class to instantiate for each item in the source collection.
+- `[sectionName]` - name of the section.
+  - `modelViewClass` - class to instantiate for each item in the source collection.
   - `source` - the source collection. This can be a `string`, or reference to a [collection](../../data-binding/collections).
   - `transform` - `function` which transforms the `source` item
   - `filter` - filters out items from the source collection
@@ -28,7 +28,7 @@ class ModalView extends mojo.View
 ```coffeescript
 class PersonView extends mojo.View
   template: template.fromString "
-    hello {{item.name}}. You're over 21! <br />
+    hello {{model.name}}. You're over 21! <br />
   "
 
 class PeopleView extends mojo.View
@@ -36,7 +36,7 @@ class PeopleView extends mojo.View
   # the template for the people view - this holds the list of friends
   # provided below
   template: template.fromString "
-    List if {{item.name}}'s friends: 
+    List if {{model.name}}'s friends: 
 
     {{{section.friends}}}
   "
@@ -45,12 +45,20 @@ class PeopleView extends mojo.View
   list: 
     friends: 
       itemViewClass : PersonView
-      source        : "item.friends"
+      source        : "model.friends"
       filter        : (person) -> person.age > 21
 
 ```
 
 ## Children
+
+#### Js Example
+
+```coffeescript
+class ModalView extends mojo.View
+
+  
+```
 
 ## States
 
