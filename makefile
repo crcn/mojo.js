@@ -15,4 +15,4 @@ test:
 	mocha . --timeout 99999
 
 link:
-	ln -s `cbd dir dojo-bootstrap` `cbd dir dojo`/public/js/teacher/web2/vendor
+	ln -s `cbd dir mojo` `cbd dir dojo`/public/js/teacher/web2/vendor
