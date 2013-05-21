@@ -48,6 +48,9 @@ class PeopleView extends mojo.View
       source        : "model.friends"
       filter        : (person) -> person.age > 21
 
+
+# attach to the DOM
+new PeopleView().attach($("#people"))
 ```
 
 ## Children
@@ -80,7 +83,9 @@ class ModalView extends mojo.View
     header : HeaderView
     body   : BodyView
     footer : FooterView
-  
+
+# attach to the DOM
+new ModalView().attach($("#modal"))
 ```
 
 ## States
@@ -104,6 +109,10 @@ class SlideshowView extends mojo.View
       SlideView
     ]
 
+
+# attach to the DOM
+new SlideshowView().attach($("#slideshow"))
+
 ```
 
 ## Bindings
@@ -120,6 +129,10 @@ class PeopleView extends mojo.View
 
   bindings:
     "model.friends": "friends"
+
+
+# attach to the DOM
+new PeopleView().attach($("#people"))
 ```
 
 ## Events
@@ -140,6 +153,10 @@ class LoginView extends mojo.View
 
   _login: (event) ->  
     # do something here!
+
+
+# attach to the DOM
+new LoginView().attach($("#login"))
 ```
 
 ## Transition
@@ -167,6 +184,9 @@ class ModelView extends mojo.View
       to: { opacity: 0  }
     }
   }
+
+# attach to the DOM
+new ModelView().attach($("#model"))
 ```
 
 
@@ -216,5 +236,9 @@ class EditStudentsView extends mojo.View
   children:
     monsters: MonstersView
     students: StudentsView
+
+
+# attach to the DOM
+new EditStudentsView().attach($("#edit-students"))
 
 ```
