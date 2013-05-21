@@ -176,7 +176,7 @@ class ModelView extends mojo.View
     footer: FooterView
 
   transition: 
-  
+
     enter: 
       to: 
         opacity: 1
@@ -226,7 +226,7 @@ class StudentsView extends mojo.View
   template: studentsView
   list:
     students:
-      modelViewClass StudentView
+      modelViewClass: StudentView
       source: "students"
 
 
