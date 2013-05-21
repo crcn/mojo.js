@@ -46,9 +46,9 @@ class PeopleView extends mojo.View
   # creates a list of friends using the person view
   list: 
     friends: 
-      itemViewClass : PersonView
-      source        : "model.friends"
-      filter        : (person) -> person.age > 21
+      mdoelViewClass : PersonView
+      source         : "model.friends"
+      filter         : (person) -> person.age > 21
 
 
 # attach to the DOM
