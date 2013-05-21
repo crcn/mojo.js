@@ -167,6 +167,7 @@ class ModelView extends mojo.View
       to: { opacity: 0  }
     }
   }
+```
 
 
 ## Drag & Drop
@@ -215,5 +216,5 @@ class EditStudentsView extends mojo.View
   children:
     monsters: MonstersView
     students: StudentsView
-    
+
 ```
