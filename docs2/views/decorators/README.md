@@ -1,4 +1,6 @@
-## Templates
+## [Templates](../templates)
+
+Attaches a [template](../templates) to the view
 
 #### Js Example
 
