@@ -6,6 +6,10 @@ Pretty self explanatory.
 
 TODO
 
+### [Data Binding](./data-binding)
+
+TODO
+
 ### [Mediator](./mediator)
 
 Controls any global commands you'd like to invoke. This is basically like an in-app API, allowing a more decoupled, 
