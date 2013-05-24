@@ -5,7 +5,7 @@ define ["bindable", "underscore"], (bindable, _) ->
     ###
     ###
 
-    constructor: (@states, options) ->
+    constructor: (@states, options, index) ->
 
       ops = {}
 
@@ -15,7 +15,7 @@ define ["bindable", "underscore"], (bindable, _) ->
         ops = options
 
       @_id = options.name or Math.random()
-
+      ops.index = index
       ops.selected = false
 
       super ops

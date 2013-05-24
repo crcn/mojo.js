@@ -11,15 +11,18 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor", "
       # the view states
       @source = new bindable.Collection()
       @source.enforceId false
-      @source.reset (@options.views or @options).map (stateOptions) => new State @, stateOptions
+      @source.reset (@options.views or @options).map (stateOptions, i) => 
+        new State @, stateOptions, i
 
       # initial index
       @set "index", @options.index or 0
+      @set "source", @source
 
       @selector = @options.selector
 
       # rotate back to zero if at the end
       @rotate = @options.rotate or false
+
 
     ###
     ###
@@ -103,6 +106,8 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor", "
       state          = @currentState = @source.at index or 0
       newStateView   = state.getView()
       @view.linkChild newStateView
+
+      @view.set "index", index
 
       @currentState.set "selected", true
 

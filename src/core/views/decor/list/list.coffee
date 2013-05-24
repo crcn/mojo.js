@@ -24,12 +24,16 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       @_viewCollection.bind { remove: @_removeModelView }
 
       @_deferredSections = []
-      @initList()
 
     ###
     ###
 
     _load: (callback) -> 
+
+      # init the list on load so property bindings
+      # can be properly inherited
+      @initList()
+
       @_fetchRemote () =>
         @_viewCollection.load callback
 

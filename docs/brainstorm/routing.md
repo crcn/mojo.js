@@ -1,0 +1,1 @@
+There needs to be a way for views to plug into a router 
