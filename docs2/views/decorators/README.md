@@ -1,4 +1,6 @@
-## Templates
+## [Templates](../templates)
+
+Attaches a [template](../templates) to the view
 
 #### Js Example
 
@@ -19,9 +21,9 @@ new ModalView().attach($("#people"))
 #### Properties
 
 - `[sectionName]` - name of the [section](../sections).
-  - `modelViewClass` - class to instantiate for each item in the source collection.
+  - `modelViewClass` - class to instantiate for each item in the source [collection](../../data-binding/collections.md).
   - `source` - the source collection. This can be a `string`, or reference to a [collection](../../data-binding/collections.md).
-  - `transform` - `function` which transforms the `source` item
+  - `map` - `function` which maps each item the `source`
   - `filter` - filters out items from the source collection
 
 
@@ -46,9 +48,9 @@ class PeopleView extends mojo.View
   # creates a list of friends using the person view
   list: 
     friends: 
-      itemViewClass : PersonView
-      source        : "model.friends"
-      filter        : (person) -> person.age > 21
+      mdoelViewClass : PersonView
+      source         : "model.friends"
+      filter         : (person) -> person.age > 21
 
 
 # attach to the DOM
