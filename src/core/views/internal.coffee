@@ -62,7 +62,14 @@ define ["jquery",
      If the key doesn't exist, then inherit it from the parent
     ###
 
-    get: (key) -> super(key) ? @_parent?.get(key)
+    get: (key) -> 
+      ret = super(key)
+      if not ret
+        ret = @_parent?.get(key)
+        if ret
+          @set key, ret
+      ret
+
 
     ###
     ###
