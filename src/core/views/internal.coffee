@@ -63,11 +63,19 @@ define ["jquery",
     ###
 
     get: (key) -> 
+
+      # try to find the value in this view
       ret = super(key)
+
+      # value doesn't exist? check the parent
       if not ret
         ret = @_parent?.get(key)
+
+        # value exists? set to this view so we don't have to check
+        # the parents anymore - also fixes any issue when setting a value
         if ret
           @set key, ret
+          
       ret
 
 
