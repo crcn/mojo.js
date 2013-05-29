@@ -12,9 +12,8 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
     ###
 
-    render: (callback) ->
+    render: () ->
       @view.$().css({display:"none"})
-      callback()
 
     ###
     ###

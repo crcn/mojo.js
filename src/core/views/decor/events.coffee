@@ -12,7 +12,7 @@ define ["disposable", "./base", "jquery"], (disposable, BaseDecorator, $) ->
     ###
     ###
 
-    render: (callback) ->
+    render: () ->
       e = @_events()
       @_disposeBindings()
       @_disposable = disposable.create()
@@ -20,14 +20,11 @@ define ["disposable", "./base", "jquery"], (disposable, BaseDecorator, $) ->
       for selector of e 
         @_addBinding selector, e[selector]
 
-      callback()
-
     ###
     ###
 
-    remove: (callback) ->
+    remove: () ->
       @_disposeBindings()
-      callback()
 
     ###
     ###

@@ -34,16 +34,15 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
     ###
     ###
 
-    load: (callback) ->
+    load: () ->
       @_setupExplicitBindings() if @bindings
-      callback()
 
     ###
      bindings to the elements
     ###
 
-    render: (callback) ->
-      return callback() if @view.__bound
+    render: () ->
+      return if @view.__bound
       @view.__bound = true
       if @view.section.elements.length
 
@@ -52,7 +51,6 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
         rivets.bind @view.section.elements.filter((el) ->
           el.nodeName isnt "#comment" and el.nodeName isnt "#text"
         ), { data: model, item: model, model: model, view: @view }
-      callback()
 
 
     ###

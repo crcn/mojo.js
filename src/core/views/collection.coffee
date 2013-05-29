@@ -1,10 +1,6 @@
 
-define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleCallback"], (bindable, async, cstep, asyngleton, throttleCallback) ->
-
-  # randomly calls setImmediate for callbacks
-  callbackThrottle = throttleCallback 20
+define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleCallback", "flatstack"], (bindable, async, cstep, asyngleton, throttleCallback, flatstack) ->
     
-
   class extends bindable.Collection
 
     ###
@@ -14,6 +10,9 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
       super arguments...
 
       @enforceId false
+
+      @_callstack = flatstack @
+
 
       # keep tabs on any late decorators
       @on "insert", @_loadLateDecor
@@ -66,22 +65,15 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
 
     _call: (method, event, source, callback = (() ->)) ->
 
+      # callstack = flatstack @
+
       # first time being called? 
       if @get("currentState") isnt method
         @set "currentState", method
         @emit method
 
-      # runs the current decorator
-      run = (decorator, next) ->
-        fn = decorator[method]
-        return next() if not fn
-
-        # randomly calls .setImmediate to break the callstack. This prevents
-        # a stack overflow in older browsers
-        callbackThrottle.call decorator, fn, next
-
       # called once all the *current* decorators have been initialized
-      done = (err, result) => 
+      done = () => 
         @_callPending method, event, callback
 
       # source is copied incase any *new* items are added - new items can be pushed / unshifted, which
@@ -89,16 +81,25 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
       # have been added a bit late.
       src = source.concat()
 
-      if not ~@limit 
-        async.forEach src, run, done
-      else
-        async.eachLimit src, @limit, run, done
+      
+      src = src.map (decor) => 
+        { context: decor, fn: decor[method] or @_noFn }
+      
+
+      @_callstack.push.apply @_callstack, src
+      @_callstack.push done
+      
+
+      #async.eachSeries src, run, done
+
+    _noFn: () ->
 
     ###
      Calls any pending 
     ###
 
     _callPending: (method, event, callback) ->
+
 
       # no pending decorators? We're finished here
       unless @_pending
@@ -109,6 +110,7 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
 
       pending   = @_pending
       @_pending = undefined
+
 
       @_call method, event, pending, callback
 

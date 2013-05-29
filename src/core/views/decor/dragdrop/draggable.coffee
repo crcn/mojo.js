@@ -13,13 +13,8 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
     ###
     ###
 
-    display: (callback) ->
+    display: () ->
       @_initListeners()
-      callback()
-
-    
-    remove: (callback) ->  
-      callback()
 
 
     ###

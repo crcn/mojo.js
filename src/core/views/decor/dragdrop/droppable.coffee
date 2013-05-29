@@ -10,13 +10,11 @@ define ["../base", "./collection", "jquery"], (BaseViewDecorator, droppables, $)
     ###
     ###
 
-    display: (callback) ->
+    display: () ->
       droppables.add @name, @
-      callback()
 
-    remove: (callback) ->  
+    remove: () ->  
       droppables.remove @name, @
-      callback()
 
 
 

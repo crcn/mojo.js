@@ -1,4 +1,4 @@
-define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor", "../../collection"], (State, bindable, stepc, pilot, Decor, ViewCollection) ->
+define ["./state", "bindable", "pilot-block", "../sectionable/decor", "../../collection", "flatstack"], (State, bindable, pilot, Decor, ViewCollection, flatstack) ->
     
   class extends Decor
 
@@ -23,6 +23,7 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor", "
       # rotate back to zero if at the end
       @rotate = @options.rotate or false
 
+      @_callstack = flatstack @
 
     ###
     ###
@@ -34,7 +35,8 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor", "
     ###
     ###
 
-    render: (callback) -> @_currentView.render callback
+    render: (callback) -> 
+      @_currentView.render callback
 
     ###
     ###
@@ -113,34 +115,31 @@ define ["./state", "bindable", "stepc", "pilot-block", "../sectionable/decor", "
 
       oldView = self._currentView
 
-      stepc.async(
-        
+      @_callstack.push(
+
+
         # first load the new state in
-        (() ->
-          newStateView[self.view.get("currentState")].call newStateView, @
+        ((next) ->
+          newStateView[self.view.get("currentState")].call newStateView, next
         ),
 
+        # just hide the state - might want to re-use it again
         (() ->
-
-          # just hide the state - might want to re-use it again
           oldState?.hide()
-          @()
         ),
 
         # finally, add the new state
-        ((err) ->
-          if err
-            console.error err
-
+        (() =>
           # set the nw start
-          self._currentView = newStateView
+          @_currentView = newStateView
 
-          self.section.append newStateView.section
-          self.currentState.show()
+          @section.append newStateView.section
+          @currentState.show()
 
-          self.set "currentView", newStateView
+          @set "currentView", newStateView
         )
       )
+
 
     ###
     ###

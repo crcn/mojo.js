@@ -8,12 +8,10 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
     ###
     ###
 
-    render: (callback) ->
+    render: () ->
       for props in @_properties()
         for key of props.attributes
           props.element.attr(key, props.attributes[key])
-
-      callback()
 
     ###
     ###
