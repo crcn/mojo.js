@@ -24,6 +24,8 @@ define ["jquery",
       @_id = dref.get(data, "_id") or dref.get(data.item or data.model or {}, "_id") or generateId()
 
       data.view         = @
+
+      # TODO - this should be removed - leave it up to the root view
       data.modelLocator = modelLocator
 
       super data
