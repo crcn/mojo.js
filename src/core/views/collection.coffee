@@ -1,5 +1,5 @@
 
-define ["bindable", "cstep", "asyngleton", "../utils/throttleCallback", "flatstack"], (bindable, cstep, asyngleton, throttleCallback, flatstack) ->
+define ["bindable", "cstep", "asyngleton", "flatstack"], (bindable, cstep, asyngleton, flatstack) ->
     
   class DecorCollection extends bindable.Collection
 
