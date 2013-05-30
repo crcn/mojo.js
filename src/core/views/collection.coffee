@@ -61,9 +61,7 @@ define ["bindable", "cstep", "asyngleton", "../utils/throttleCallback", "flatsta
 
     _call: (method, event, source, callback = (() ->)) ->
 
-      # callstack = flatstack @
-
-      # first time being called? 
+      # first time being called? It's NOW the current state
       if @get("currentState") isnt method
         @set "currentState", method
         @emit method
@@ -101,7 +99,7 @@ define ["bindable", "cstep", "asyngleton", "../utils/throttleCallback", "flatsta
 
         #load, loaded, display, displayed, etc.
         @set event, true
-        
+
         @emit event
         callback()
         return
