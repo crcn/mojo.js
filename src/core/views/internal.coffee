@@ -78,6 +78,7 @@ define ["jquery",
       ret
 
     ###
+     bubbles up an event to the root view
     ###
 
     bubble: () ->
@@ -86,6 +87,9 @@ define ["jquery",
 
     ###
      returns a search for a particular element
+     TODO - this shouldn't really exist - leave it up
+     to any decorator to implement this, or place it in 
+     a utility function
     ###
 
     $: (search) -> 
@@ -122,6 +126,9 @@ define ["jquery",
 
     dispose: () =>
       el = @$()
+
+      # TODO - this chunk should be removed - leave it up
+      # to the event decorator.
       el.unbind "*"
       @section.dispose()
       super()
