@@ -71,6 +71,7 @@ define ["jquery",
 
         # value exists? set to this view so we don't have to check
         # the parents anymore - also fixes any issue when setting a value
+        # TODO - there should be a binding somewhere here..
         if ret
           @set key, ret
           
