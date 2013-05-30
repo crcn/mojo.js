@@ -113,8 +113,6 @@ define ["./state", "bindable", "pilot-block", "../sectionable/decor", "../../col
 
       @currentState.set "selected", true
 
-      oldView = self._currentView
-
       @_callstack.push(
 
 
