@@ -98,7 +98,10 @@ define ["bindable", "cstep", "asyngleton", "../utils/throttleCallback", "flatsta
 
       # no pending decorators? We're finished here
       unless @_pending
+
+        #load, loaded, display, displayed, etc.
         @set event, true
+        
         @emit event
         callback()
         return
