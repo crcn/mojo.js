@@ -60,7 +60,6 @@ define ["disposable", "./base", "jquery"], (disposable, BaseDecorator, $) ->
       @_disposable.add () ->
         elements.unbind actions, cb
       
-
     ###
     ###
 

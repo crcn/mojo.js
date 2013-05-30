@@ -2,9 +2,13 @@ define ["disposable", "./base"], (disposable, BaseDecorator) ->
   
   class AttributesDecorator extends BaseDecorator
 
+    ###
+    ###
+    
     init: () ->
       super()
       @attrs = @options
+
     ###
     ###
 

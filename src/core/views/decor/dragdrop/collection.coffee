@@ -8,7 +8,6 @@ define ["events"], (events) ->
       @_droppables = {}
       @_current = {}
 
-
     ###
     ###
 

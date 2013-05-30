@@ -91,7 +91,6 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
 
       @_bindSource()
 
-
     ###
     ###
 

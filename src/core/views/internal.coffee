@@ -8,8 +8,6 @@ define ["jquery",
 "./states"], ($, bindable, ViewCollection, generateId, dref,  
   modelLocator, pilot, ViewStates) ->
 
-  
-      
   class InternalView extends bindable.Object
 
     ###
@@ -77,7 +75,6 @@ define ["jquery",
           @set key, ret
           
       ret
-
 
     ###
     ###

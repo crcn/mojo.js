@@ -3,7 +3,6 @@ define ["../../internal"], (InternalView) ->
 
   class BackboneWrapperView extends InternalView
 
-
     ###
     ###
 

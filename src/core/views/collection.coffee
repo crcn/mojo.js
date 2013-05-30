@@ -1,7 +1,7 @@
 
-define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleCallback", "flatstack"], (bindable, async, cstep, asyngleton, throttleCallback, flatstack) ->
+define ["bindable", "cstep", "asyngleton", "../utils/throttleCallback", "flatstack"], (bindable, cstep, asyngleton, throttleCallback, flatstack) ->
     
-  class extends bindable.Collection
+  class DecorCollection extends bindable.Collection
 
     ###
     ###
@@ -11,16 +11,12 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
 
       @enforceId false
 
+      # used as a flow-control library that minimizes
+      # the amount of recursion 
       @_callstack = flatstack @
-
 
       # keep tabs on any late decorators
       @on "insert", @_loadLateDecor
-
-    ###
-    ###
-    
-    limit: 1
 
     ###
      Creates, and parses the DOM
@@ -72,30 +68,31 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
         @set "currentState", method
         @emit method
 
-      # called once all the *current* decorators have been initialized
+      # once all decorators have been loaded, make sure to load all pending
+      # decor before continuing. This is recursive until these are NO MORE pending
+      # decorators!
       done = () => 
         @_callPending method, event, callback
 
       # source is copied incase any *new* items are added - new items can be pushed / unshifted, which
       # can screw up the loading process. _callPending is used to capture any decorators that might
       # have been added a bit late.
-      src = source.concat()
+      src = source.concat().map (decor) => 
+        context: decor 
 
+        # decor FN might not exist, so point to something else. 
+        fn: decor[method] or @_noFn 
       
-      src = src.map (decor) => 
-        { context: decor, fn: decor[method] or @_noFn }
-      
-
       @_callstack.push.apply @_callstack, src
       @_callstack.push done
-      
 
-      #async.eachSeries src, run, done
+    ###
+    ###
 
     _noFn: () ->
 
     ###
-     Calls any pending 
+     calls any late decorators
     ###
 
     _callPending: (method, event, callback) ->
@@ -115,6 +112,8 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
       @_call method, event, pending, callback
 
     ###
+     used when a decorator is added a bit late - might happen
+     for items such as states, lists, or dynamically loaded decor (child views)
     ###
 
     _loadLateDecor: (decorator) => 
@@ -127,7 +126,7 @@ define ["bindable", "../utils/async", "cstep", "asyngleton", "../utils/throttleC
         decorator.display?()
         return
 
-      if not @_pending
+      unless @_pending
         @_pending = []
 
       @_pending.push decorator

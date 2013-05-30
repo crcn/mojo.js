@@ -8,7 +8,7 @@ define ["bindable"], (bindable) ->
 
     ###
     ###
-
+    
     constructor: (model) ->
       super model.attributes
       @model = model

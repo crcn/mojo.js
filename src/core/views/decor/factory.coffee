@@ -72,7 +72,6 @@ define ["underscore",
     ###
     ###
 
-
     addDecoratorClass: (options = {}) -> 
       availableDecorators.push( 
         _decor options.name, 

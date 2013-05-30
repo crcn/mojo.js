@@ -16,7 +16,6 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
     display: () ->
       @_initListeners()
 
-
     ###
     ###
 
@@ -57,25 +56,35 @@ define ["../base", "./collection", "jquery", "underscore"], (BaseViewDecorator, 
       e.stopPropagation()
       true
 
+    ###
+    ###
 
     _stopDrag: (e) =>
       droppables.drop @name, @_event e
       @document.unbind "mousemove", @_mouseMoveListener
       @draggedItem.remove()
 
-
+    ###
+    ###
 
     _drag: (e) =>
       droppables.drag @name, @_event e
       @_followMouse e
 
+    ###
+    ###
 
     _event: (e) => 
       { view: @view, draggedItem: @draggedItem, mouse: { x: e.pageX, y: e.pageY } }
 
+    ###
+    ###
 
     _coords: (e) => { left: e.pageX - @_offset.x, top: e.pageY - @_offset.y }
 
+    ###
+    ###
+    
     _followMouse: (e) =>
       @draggedItem.css @_coords(e)
 
