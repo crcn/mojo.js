@@ -91,7 +91,6 @@ define ["underscore",
         view.constructor.__decorators = @findDecorators view.constructor
         @setup view
 
-      
     ###
      Finds ALL the decorators for a view, including the parent 
      decorators which should be inherited (but overridden by the child prototype)

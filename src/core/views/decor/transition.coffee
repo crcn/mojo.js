@@ -72,7 +72,6 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     _filterTransitions: (type) ->
       return @_transitions().filter (trans) -> !!trans[type]
 
-
     ###
     ###
 

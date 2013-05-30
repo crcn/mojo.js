@@ -12,7 +12,6 @@ define ["./base", "../../templates/factory"], (BaseView, templates) ->
 
     events: 
       "keyup": "_onInputChange"
-    
 
     ###
      on input change, set the value of this text input to the element value

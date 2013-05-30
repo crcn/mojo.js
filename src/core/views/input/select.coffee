@@ -56,9 +56,7 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
 
         # need to offset the default value
         @select selected.index() - 1
-    
-
-
+        
     ###
      Selects an model based on the index
     ###

@@ -23,9 +23,10 @@ define ["jquery",
       # ID's are necessary for collections
       @_id = dref.get(data, "_id") or dref.get(data.item or data.model or {}, "_id") or generateId()
 
+      # TODO - remove this - is it really necessary?
       data.view         = @
 
-      # TODO - this should be removed - leave it up to the root view
+      # TODO - this should be removed - leave it up to the root view.
       data.modelLocator = modelLocator
 
       super data
