@@ -78,10 +78,8 @@ define ["bindable", "cstep", "asyngleton", "../utils/throttleCallback", "flatsta
       # can screw up the loading process. _callPending is used to capture any decorators that might
       # have been added a bit late.
       src = source.concat().map (decor) => 
-        context: decor 
-
-        # decor FN might not exist, so point to something else. 
-        fn: decor[method] or @_noFn 
+        fn      : decor[method] or @_noFn 
+        context : decor 
       
       @_callstack.push.apply @_callstack, src
       @_callstack.push done
