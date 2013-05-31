@@ -1,14 +1,14 @@
 define ["jquery",
-"bindable",
+"../bindable/inheritable",
 "./collection",
 "../utils/idGenerator",
 "dref",
 "../models/locator",
 "pilot-block",
-"./states"], ($, bindable, ViewCollection, generateId, dref,  
+"./states"], ($, BindableInheritableObject, ViewCollection, generateId, dref,  
   modelLocator, pilot, ViewStates) ->
 
-  class InternalView extends bindable.Object
+  class InternalView extends BindableInheritableObject
 
     ###
     ###
@@ -19,6 +19,7 @@ define ["jquery",
     ###
 
     constructor: (data = {}) ->
+
 
       # ID's are necessary for collections
       @_id = dref.get(data, "_id") or dref.get(data.item or data.model or {}, "_id") or generateId()
@@ -41,8 +42,6 @@ define ["jquery",
 
     init: () -> 
 
-      @_parentBindings = {}
-
       # items to load with the view
       # TODO - viewCollections.create() - should be a recycled item
       @decorators = @loadables = new ViewCollection()
@@ -55,7 +54,6 @@ define ["jquery",
       @_initDecor()
       @_initBindings()
 
-
     ###
     ###
 
@@ -63,41 +61,6 @@ define ["jquery",
     render  : (next) -> @decorators.render next
     display : (next) -> @decorators.display next
     remove  : (next) -> @decorators.remove next
-
-    ###
-     If the key doesn't exist, then inherit it from the parent
-    ###
-
-    get: (key) -> 
-
-      # try to find the value in this view
-      ret = super(key)
-
-      # value doesn't exist? check the parent
-      if not ret
-        ret = @_parent?.get(key)
-
-        # value exists? set to this view so we don't have to check the parent anymore
-        if ret
-
-          # create a binding incase the parent key changes - needs to be reflected
-          # in the view
-          binding = @_parent.bind(key).to(@, key).now()
-
-          # if the value changes in this view, then break it off from the parent
-          @bind key, (value) => binding.dispose()
-
-          
-      ret
-
-
-    ###
-     bubbles up an event to the root view
-    ###
-
-    bubble: () ->
-      @emit arguments...
-      @_parent?.bubble arguments...
 
     ###
      returns a search for a particular element
@@ -126,14 +89,6 @@ define ["jquery",
         @section.replaceChildren @_domElement
 
       @display callback
-
-    ###
-    ###
-
-    linkChild: () ->
-      for child in arguments
-        child._parent = @
-      @
 
     ###
     ###
