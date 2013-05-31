@@ -118,7 +118,7 @@ define ["bindable", "asyngleton", "flatstack"], (bindable, asyngleton, flatstack
     _loadLateDecor: (decorator) => 
 
       # hasn't even started yet!
-      return unless @has("currentState")
+      return unless @has("currentState") or @get("currentState") is "none"
 
       # already done? display the decorator
       if @get("displayed")

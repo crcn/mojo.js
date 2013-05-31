@@ -26,6 +26,8 @@ define ["jquery",
       # TODO - remove this - is it really necessary?
       data.view         = @
 
+      data.currentState = ViewStates.NONE
+
       # TODO - this should be removed - leave it up to the root view.
       data.modelLocator = modelLocator
 
@@ -38,6 +40,9 @@ define ["jquery",
     ###
 
     init: () -> 
+
+      @_parentBindings = {}
+
       # items to load with the view
       # TODO - viewCollections.create() - should be a recycled item
       @decorators = @loadables = new ViewCollection()
@@ -72,13 +77,19 @@ define ["jquery",
       if not ret
         ret = @_parent?.get(key)
 
-        # value exists? set to this view so we don't have to check
-        # the parents anymore - also fixes any issue when setting a value
-        # TODO - there should be a binding somewhere here..
+        # value exists? set to this view so we don't have to check the parent anymore
         if ret
-          @set key, ret
+
+          # create a binding incase the parent key changes - needs to be reflected
+          # in the view
+          binding = @_parent.bind(key).to(@, key).now()
+
+          # if the value changes in this view, then break it off from the parent
+          @bind key, (value) => binding.dispose()
+
           
       ret
+
 
     ###
      bubbles up an event to the root view
