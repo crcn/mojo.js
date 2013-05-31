@@ -81,7 +81,7 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
 
       for keyPart in keyParts
         options.property = keyPart
-        @view.bind options
+        @view.bind(options).now()
 
 
 

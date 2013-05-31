@@ -163,12 +163,12 @@ define ["jquery",
     ###
 
     _initBindings: () ->
-      @decorators.bind("currentState").to(@, "currentState")
+      @decorators.bind("currentState").to(@, "currentState").now()
 
     ###
     ###
 
-    _onLoad      : () =>  
+    _onLoad      : () =>
     _onLoaded    : () =>
       return if @_parent?.get("currentState") is ViewStates.LOADING
       @section.updateChildren()

@@ -29,8 +29,8 @@ define ["./state", "bindable", "pilot-block", "../sectionable/decor", "../../col
     ###
 
     _load: (callback) ->
-      @bind "index", @_setIndex
-      @bind("currentView").once().to callback
+      @bind("index", @_setIndex).now()
+      @bind("currentView").once().to(callback).now()
 
     ###
     ###

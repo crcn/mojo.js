@@ -27,7 +27,7 @@ define ["./base", "outcome", "../../utils/async", "../collection", "pilot-block"
     ###
     ###
 
-    load: (callback) ->  
+    load: (callback) ->
       @view.children = @view.children = @_children
       @_children.load (err) =>
         return callback(err) if err?

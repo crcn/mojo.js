@@ -21,7 +21,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       @_modelViewClass = adapters.getViewClass @options.modelViewClass or @options.itemViewClass # itemViewClass = DEPRECATED
 
       @_viewCollection = @modelViews = new ViewCollection()
-      @_viewCollection.bind { remove: @_removeModelView }
+      @_viewCollection.bind({ remove: @_removeModelView }).now()
 
       @_deferredSections = []
 
@@ -110,7 +110,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       if @options.filter
         @_sourceBinding.filter @options.filter
 
-      binding.transform(@_modelTransformer).to(@_viewCollection)
+      binding.transform(@_modelTransformer).to(@_viewCollection).now()
 
     ###
     ###
@@ -125,7 +125,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
     ###
 
-    _bindSourceString: () -> @view.bind(@__source, @_onSourceChange)
+    _bindSourceString: () -> @view.bind(@__source, @_onSourceChange).now()
 
     ###
     ###
