@@ -14,7 +14,7 @@ define ["bindable"], (bindable) ->
       ret = super(key)
 
       # value doesn't exist? check the parent
-      if not ret
+      if not ret?
         ret = @_parent?.get(key)
 
         # value exists? set to this object so we don't have to check the parent anymore
@@ -27,8 +27,13 @@ define ["bindable"], (bindable) ->
 
           @_parentBindings.push binding = @_parent.bind(key).to(@, key).now()
 
+
           # if the value changes in this object, then break it off from the parent
           @bind key, (value) => 
+
+            # same as the parent value? return
+            return if value is binding.value
+            
             binding.dispose()
             @_parentBindings.splice @_parentBindings.indexOf(binding), 1
 

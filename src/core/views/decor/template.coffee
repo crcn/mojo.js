@@ -33,7 +33,7 @@ define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
       
       item    : model # DEPRECATED
       model   : model
-      section : @view.get("section") 
+      sections : @view.get("sections") 
       view    : @view 
 
 

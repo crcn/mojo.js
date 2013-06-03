@@ -18,6 +18,11 @@ define ["jquery",
     ###
     ###
 
+    modelLocator: modelLocator
+
+    ###
+    ###
+
     constructor: (data = {}) ->
 
 
