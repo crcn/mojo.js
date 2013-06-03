@@ -7,7 +7,7 @@ define ["jquery",
 "pilot-block",
 "./states"], ($, BindableInheritableObject, ViewCollection, generateId, dref,  
   modelLocator, pilot, ViewStates) ->
-
+  
   class InternalView extends BindableInheritableObject
 
     ###

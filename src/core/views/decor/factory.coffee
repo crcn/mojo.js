@@ -16,19 +16,17 @@ define ["underscore",
 "../collection",
 "../../utils/compose",
 "./template",
-"./children",
-"./list/decorator",
 "./attributes",
 "./events",
 "./bindings",
+"./sections/index",
 "./dragdrop/draggable",
 "./dragdrop/droppable",
-"./states/decorator",
 "./transition", "./preload"], (_, cstep, ClassFactory, generateId, BaseViewDecorator, 
   ViewCollection, compose,
-  TemplateDecorator, ChildrenDecorator, ListDecorator, 
-  AttributesDecorator, EventsDecorator, BindingsDecorator, DraggableDecorator, 
-  DroppableDecorator, StatesDecorator, TransitionDecorator, PreloadDecorator) ->
+  TemplateDecorator, 
+  AttributesDecorator, EventsDecorator, BindingsDecorator, SectionsDecorator, DraggableDecorator, 
+  DroppableDecorator, TransitionDecorator, PreloadDecorator) ->
     
 
     _decor = (name, clazz, inheritable = true) ->
@@ -53,9 +51,7 @@ define ["underscore",
 
       # section / child decorators. These have (almost) highest
       # priority since they should be added before the template is loaded
-      _decor("list"       , ListDecorator),
-      _decor("states"     , StatesDecorator),
-      _decor("children"   , ChildrenDecorator),
+      _decor("sections"   , SectionsDecorator),
 
       # loads a template, and injects the sections / children (from above) on load
       _decor("template"   , TemplateDecorator, false),

@@ -1,12 +1,11 @@
-define ["./state", "bindable", "pilot-block", "../sectionable/decor", "../../collection", "flatstack"], (State, bindable, pilot, Decor, ViewCollection, flatstack) ->
-    
-  class extends Decor
+define ["pilot-block", "./state", "flatstack", "bindable"], (pilot, State, flatstack, bindable) ->
+  class StatesSection extends bindable.Object
 
     ###
     ###
 
-    constructor: () ->
-      super arguments...
+    constructor: (@view, @name, @options) ->
+      super()
 
       # the view states
       @source = new bindable.Collection()
@@ -24,29 +23,34 @@ define ["./state", "bindable", "pilot-block", "../sectionable/decor", "../../col
       @rotate = @options.rotate or false
 
       @_callstack = flatstack @
+      @section = pilot.createSection()
 
     ###
     ###
 
-    _load: (callback) ->
+    toString: () -> @section.toString()
+
+    ###
+    ###
+
+    load: (next) ->
       @bind("index", @_setIndex).now()
-      @bind("currentView").once().to(callback).now()
+      @bind("currentView").once().to(next).now()
 
     ###
     ###
 
-    render: (callback) -> 
-      @_currentView.render callback
+    render: (next) -> @_currentView.render next
 
     ###
     ###
 
-    display: (callback) -> @_currentView.display callback
+    display: (next) -> @_currentView.display next
 
     ###
     ###
 
-    remove: (callback) -> @_currentView.remove callback
+    remove: (next) -> @_currentView.remove next
 
     ###
      selects a state 
@@ -146,9 +150,7 @@ define ["./state", "bindable", "pilot-block", "../sectionable/decor", "../../col
       arguments[0] = @name + "." + arguments[0]
       @view.bubble arguments...
 
+    @test: (options) -> options.type is "states"
+  
 
-
-
-
-
-
+  StatesSection

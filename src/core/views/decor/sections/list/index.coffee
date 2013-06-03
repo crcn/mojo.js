@@ -1,19 +1,8 @@
-define ["bindable", "../../collection", "../../../utils/compose", "hoist", 
-"../../../templates/factory", "dref", "pilot-block", "underscore", "../../adapters/index", "events", "../sectionable/decor"], (bindable, ViewCollection, compose, 
-  hoist, templates, dref, pilot, _, adapters, events, SectionableDecor) ->
+define ["../../../collection", "../../../adapters/index", "dref", "hoist", "pilot-block"], (ViewCollection, adapters, dref, hoist, pilot) ->
   
-  ###
-   this IS the children
-  ###
+  class ListSection
+    constructor: (@view, @name, @options) ->
 
-  class extends SectionableDecor
-
-    ###
-    ###
-
-    constructor: () ->
-      super arguments...
-     
       # the source of the list - string, or object
       @__source       = @options.source
 
@@ -24,18 +13,23 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       @_viewCollection.bind({ remove: @_removeModelView }).now()
 
       @_deferredSections = []
+      @section = pilot.createSection()
 
     ###
     ###
 
-    _load: (callback) -> 
+    toString: () -> 
+      @section.toString()
+
+
+    load: (next) ->
 
       # init the list on load so property bindings
       # can be properly inherited
       @initList()
 
       @_fetchRemote () =>
-        @_viewCollection.load callback
+        @_viewCollection.load next
 
     ###
     ###
@@ -47,20 +41,20 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
     ###
     ###
 
-    render: (callback) -> @_viewCollection.render callback
+    render: (next) -> @_viewCollection.render next
 
     ###
     ###
 
-    display: (callback) -> @_viewCollection.display callback
+    display: (next) -> @_viewCollection.display next
 
     ###
     ###
 
-    remove: (callback) ->
+    remove: (next) ->
       @_sourceBinding?.dispose()
       @_sourceBinding = undefined
-      @_viewCollection.remove callback
+      @_viewCollection.remove next
 
     ###
     ### 
@@ -143,7 +137,7 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       @view.linkChild modelView
 
       modelView.decorators.push
-        load: (callback) ->
+        load: (next) ->
 
 
           # defer section insertion so we don't kill DOM rendering - this is only a ~1 MS delay.
@@ -153,7 +147,8 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
           else
             self.section.append modelView.section
 
-          callback()
+
+          next()
       
 
       modelView
@@ -186,9 +181,6 @@ define ["bindable", "../../collection", "../../../utils/compose", "hoist",
       return if not modelView
       modelView.remove()
 
+    @test: (options) -> options.type is "list"
 
-
-
-
-
-
+  ListSection
