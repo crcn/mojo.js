@@ -35,7 +35,7 @@ define ["../index", "../../templates/factory", "mannequin"], (BaseView, template
       # initializes the model
       @_validate()
 
-      for inputView in @children.source()
+      for inputView in @get("sections").source.source()
         @bind("model.#{inputView.get("name")}").to(inputView, "value").to(@_validate).bothWays()
 
     ###

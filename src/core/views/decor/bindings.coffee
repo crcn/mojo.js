@@ -1,26 +1,4 @@
-define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
-
-
-
-  rivets.configure({
-    adapter: {
-      subscribe: (obj, keypath, callback) ->
-        obj.bind keypath.replace(/,/g, "."), callback
-
-      unsubscribe: (obj, keypath, callback) ->
-        #if obj.on
-        #  obj.off "change:" + keypath.replace(/,/g, "."), callback
-
-      read: (obj, keypath) ->
-        obj.get? keypath.replace(/,/g, ".")
-
-      publish: (obj, keypath, value) ->
-        obj.set? keypath.replace(/,/g, "."), value
-    }
-  });
-
-  rivets.formatters.negate = (value) -> not value
-
+define ["./base", "dref"], (BaseViewDecorator, dref) ->
   
   class BindingsDecorator extends BaseViewDecorator
 
@@ -36,21 +14,6 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
 
     load: () ->
       @_setupExplicitBindings() if @bindings
-
-    ###
-     bindings to the elements
-    ###
-
-    render: () ->
-      return if @view.__bound
-      @view.__bound = true
-      if @view.section.elements.length
-
-        model = @view.get("model") ? @view.get("item") ? @view
-
-        rivets.bind @view.section.elements.filter((el) ->
-          el.nodeName isnt "#comment" and el.nodeName isnt "#text"
-        ), { data: model, item: model, model: model, view: @view }
 
 
     ###
@@ -86,6 +49,6 @@ define ["./base", "rivets", "dref"], (BaseViewDecorator, rivets, dref) ->
 
 
 
-  BindingsDecorator.getOptions = (view) -> view.bindings or !!view.template
+  BindingsDecorator.getOptions = (view) -> view.bindings
 
   BindingsDecorator

@@ -21,7 +21,8 @@ define ["../../collection",
     ###
 
     init: () ->
-      @_sections = new ViewCollection()
+      @_sections = @source = new ViewCollection()
+      @view.set "sections", @
 
       for sectionName of @sectionOptions
         @_addSection sectionName, @sectionOptions[sectionName]
@@ -45,6 +46,7 @@ define ["../../collection",
       section = new sectionClass @view, name, options
 
       @view.set "sections.#{name}", section
+
 
       @_sections.push section
 
