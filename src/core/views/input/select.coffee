@@ -8,13 +8,14 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
     ###
     ###
 
-    template: templates.fromSource("<select name='{{view.name}}'><option>{{view.selectLabel}}</option>{{{section.selectList}}}</select>", { engine: "handlebars" })
+    template: templates.fromSource("<select name='{{view.name}}'><option>{{view.selectLabel}}</option>{{{sections.selectList}}}</select>", { engine: "handlebars" })
 
     ###
     ###
 
-    list:
+    sections:
       selectList:
+        type           : "list"
         modelViewClass : SelectInputOptionView
         source         : "source"
         transform      : (model, list) ->
