@@ -18,7 +18,7 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
         type           : "list"
         modelViewClass : SelectInputOptionView
         source         : "source"
-        transform      : (model, list) ->
+        transform      : (model, list) -> 
         
           view = list.view
           
@@ -80,6 +80,7 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
     ###
 
     _onValueChanged: (value) =>
+
       super value
 
       index = -1
