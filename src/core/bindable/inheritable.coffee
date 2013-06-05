@@ -25,11 +25,14 @@ define ["bindable"], (bindable) ->
           unless @_parentBindings
             @_parentBindings = []
 
-          @_parentBindings.push binding = @_parent.bind(key).to(@, key).now()
+          # fetch the object being referenced
+          bindingKey = key.split(".").shift()
+
+          @_parentBindings.push binding = @_parent.bind(bindingKey).to(@, bindingKey).now()
 
 
           # if the value changes in this object, then break it off from the parent
-          @bind key, (value) => 
+          @bind bindingKey, (value) => 
 
             # same as the parent value? return
             return if value is binding.value
