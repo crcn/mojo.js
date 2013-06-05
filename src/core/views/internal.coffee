@@ -18,11 +18,6 @@ define ["jquery",
     ###
     ###
 
-    modelLocator: modelLocator
-
-    ###
-    ###
-
     constructor: (data = {}) ->
 
 
@@ -33,9 +28,6 @@ define ["jquery",
       data.view         = @
 
       data.currentState = ViewStates.NONE
-
-      # TODO - this should be removed - leave it up to the root view.
-      data.modelLocator = modelLocator
 
       super data
 

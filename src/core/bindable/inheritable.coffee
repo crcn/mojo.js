@@ -9,7 +9,8 @@ define ["bindable"], (bindable) ->
      If the key doesn't exist, then inherit it from the parent
     ###
 
-    get: (key) -> super(key) ? @_inherit(key)
+    get: (key) -> 
+      super(key) ? @_inherit(key)
 
     ###
      inherits a property from the parent
@@ -20,7 +21,7 @@ define ["bindable"], (bindable) ->
       bindingKey = _getBindingKey(key)
 
       # binding key already exists in this object? ignore inheritance
-      ret = InheritableObject.__super__.get.call(@, bindingKey)?
+      ret = InheritableObject.__super__.get.call(@, bindingKey)
 
       return undefined if ret
 
@@ -35,7 +36,6 @@ define ["bindable"], (bindable) ->
         @_parentBindings[bindingKey] = binding = @_parent.bind(bindingKey).to(@, bindingKey)
         @_parentBindings[bindingKey].now()
 
-
         # if the value changes in this object, then break it off from the parent
         @bind bindingKey, (value) => 
           # same as the parent value? ignore.
@@ -43,15 +43,23 @@ define ["bindable"], (bindable) ->
           
           binding.dispose()
           delete @_parentBindings[bindingKey]
-
+        
       return @_parent?.get key
+
+    ###
+    ###
+
+    _set: (key, value) ->
+      @_inherit key
+      super key, value
 
 
     ###
      finds the owner of a given property
     ###
 
-    owner: (property) -> @_owner  _getBindingKey(property), @
+    owner: (property) ->  
+      @_owner _getBindingKey(property), @
       
     ###
     ###
@@ -65,10 +73,6 @@ define ["bindable"], (bindable) ->
 
       return caller
 
-
-
-      
-
     ###
      bubbles up an event to the root object
     ###
@@ -76,7 +80,6 @@ define ["bindable"], (bindable) ->
     bubble: () ->
       @emit arguments...
       @_parent?.bubble arguments...
-
 
     ###
     ###
