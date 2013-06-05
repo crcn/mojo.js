@@ -1,47 +1,73 @@
 define ["bindable"], (bindable) ->
+
+  _getBindingKey = (key) -> key.split(".").shift()
   
 
   class InheritableObject extends bindable.Object
-
 
     ###
      If the key doesn't exist, then inherit it from the parent
     ###
 
-    get: (key) -> 
+    get: (key) -> super(key) ? @_inherit(key)
 
-      # try to find the value in this view
-      ret = super(key)
+    ###
+     inherits a property from the parent
+    ###
 
-      # value doesn't exist? check the parent
-      if not ret?
-        ret = @_parent?.get(key)
+    _inherit: (key) -> 
 
-        # value exists? set to this object so we don't have to check the parent anymore
-        if ret
+      bindingKey = _getBindingKey(key)
 
-          # create a binding incase the parent key changes - needs to be reflected
-          # in the object
-          unless @_parentBindings
-            @_parentBindings = []
+      # binding key already exists in this object? ignore inheritance
+      ret = InheritableObject.__super__.get.call(@, bindingKey)?
 
-          # fetch the object being referenced
-          bindingKey = key.split(".").shift()
+      return undefined if ret
 
-          @_parentBindings.push binding = @_parent.bind(bindingKey).to(@, bindingKey).now()
+      if @_parent and not @_parentBindings?[bindingKey]
+
+        # create a binding incase the parent key changes - needs to be reflected
+        # in the object
+        unless @_parentBindings
+          @_parentBindings = {}
+
+        @_parentBindings[bindingKey]?.dispose()
+        @_parentBindings[bindingKey] = binding = @_parent.bind(bindingKey).to(@, bindingKey)
+        @_parentBindings[bindingKey].now()
 
 
-          # if the value changes in this object, then break it off from the parent
-          @bind bindingKey, (value) => 
-
-            # same as the parent value? return
-            return if value is binding.value
-            
-            binding.dispose()
-            @_parentBindings.splice @_parentBindings.indexOf(binding), 1
-
+        # if the value changes in this object, then break it off from the parent
+        @bind bindingKey, (value) => 
+          # same as the parent value? ignore.
+          return if value is binding.value
           
-      ret
+          binding.dispose()
+          delete @_parentBindings[bindingKey]
+
+      return @_parent?.get key
+
+
+    ###
+     finds the owner of a given property
+    ###
+
+    owner: (property) -> @_owner  _getBindingKey(property), @
+      
+    ###
+    ###
+
+    _owner: (property, caller) ->
+
+      return @_parent.owner(property, caller) if @_parent and @_parentBindings?[property]
+
+      # call super _get to bypass inheritance
+      return @ if InheritableObject.__super__.get.call(@, property)?
+
+      return caller
+
+
+
+      
 
     ###
      bubbles up an event to the root object
@@ -50,6 +76,7 @@ define ["bindable"], (bindable) ->
     bubble: () ->
       @emit arguments...
       @_parent?.bubble arguments...
+
 
     ###
     ###
