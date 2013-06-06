@@ -5,8 +5,8 @@ define ["jquery",
 "dref",
 "../models/locator",
 "pilot-block",
-"./states"], ($, BindableInheritableObject, ViewCollection, generateId, dref,  
-  modelLocator, pilot, ViewStates) ->
+"./states", "type-component"], ($, BindableInheritableObject, ViewCollection, generateId, dref,  
+  modelLocator, pilot, ViewStates, type) ->
   
   class InternalView extends BindableInheritableObject
 
@@ -20,12 +20,8 @@ define ["jquery",
 
     constructor: (data = {}) ->
 
-
       # ID's are necessary for collections
       @_id = dref.get(data, "_id") or dref.get(data.item or data.model or {}, "_id") or generateId()
-
-      # TODO - remove this - is it really necessary?
-      data.view         = @
 
       data.currentState = ViewStates.NONE
 
@@ -34,10 +30,14 @@ define ["jquery",
       # initialize the options
       @init()
 
+
+
     ###
     ###
 
     init: () -> 
+
+      @_copyThisToData()
 
       # items to load with the view
       # TODO - viewCollections.create() - should be a recycled item
@@ -50,6 +50,15 @@ define ["jquery",
       @_initListeners()
       @_initDecor()
       @_initBindings()
+
+    ###
+    ###
+
+    _copyThisToData: () ->
+      for key of @constructor.prototype
+        v = @constructor.prototype[key]
+        continue if key.substr(0, 1) is "_"
+        @set key, v
 
     ###
     ###
@@ -72,7 +81,6 @@ define ["jquery",
       if arguments.length
         return el.find search
 
-      if arguments.length then el.find(search) else
       return el
 
     ###
