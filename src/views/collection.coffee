@@ -32,7 +32,7 @@ define ["bindable", "flatstack"], (bindable, flatstack) ->
      attaches any controllers / bindings to the view (rivets)
     ###
 
-    render: asyngleton (callback) ->
+    render: (callback) ->
       @_runOnce "render", callback, (callback) => @load () =>
         @_call "render", "rendered", @source(), callback
 
@@ -40,7 +40,7 @@ define ["bindable", "flatstack"], (bindable, flatstack) ->
      adds the elements to the DOM - transitions happen here
     ###
 
-    display: asyngleton (callback) -> 
+    display: (callback) -> 
       @_runOnce "display", callback, (callback) => @render () =>
         @_call "display", "displayed", @source(), callback
 
@@ -48,7 +48,7 @@ define ["bindable", "flatstack"], (bindable, flatstack) ->
      removes & unloads the view
     ###
 
-    remove: asyngleton (callback) ->
+    remove: (callback) ->
       @_runOnce "remove", callback, (callback) => @display () =>
         @_call "remove", "removed", @source(), callback
 
