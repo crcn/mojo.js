@@ -33,9 +33,6 @@ define ["jquery",
     ###
 
     init: () -> 
-
-      @_copyThisToData()
-
       # items to load with the view
       # TODO - viewCollections.create() - should be a recycled item
       @decorators = @loadables = new ViewCollection()
@@ -47,15 +44,6 @@ define ["jquery",
       @_initListeners()
       @_initDecor()
       @_initBindings()
-
-    ###
-    ###
-
-    _copyThisToData: () ->
-      for key of @constructor.prototype
-        v = @constructor.prototype[key]
-        continue if key.substr(0, 1) is "_"
-        @set key, v
 
     ###
     ###
