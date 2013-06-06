@@ -33,10 +33,10 @@ define () ->
     ###
     ###
 
-    createItem: (item) ->
+    create: (item) ->
 
       # is it already a factory? return it!
-      if item.createItem 
+      if item.create 
         return item
 
       # otherwise find the factory

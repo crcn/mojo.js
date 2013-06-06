@@ -20,10 +20,10 @@ define [], () ->
     ###
     ###
 
-    createItem: (item) ->
+    create: (item) ->
 
       for factory in @_factories
         if factory.test item
-          return factory.createItem item
+          return factory.create item
 
 

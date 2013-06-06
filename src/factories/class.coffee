@@ -22,7 +22,7 @@ define ["./base", "./factory"], (BaseFactory, factoryFactory) ->
     ###
     ###
 
-    createItem: (options) -> return new @clazz(options)
+    create: (options) -> return new @clazz(options)
 
 
 

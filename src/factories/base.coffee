@@ -12,5 +12,5 @@ define () ->
      creates a new item
     ###
 
-    createItem: (options) ->
+    create: (options) ->
       # OVERRIDE ME

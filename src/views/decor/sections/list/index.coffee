@@ -1,13 +1,18 @@
-define ["../../../collection", "../../../adapters/index", "dref", "hoist", "pilot-block"], (ViewCollection, adapters, dref, hoist, pilot) ->
+define ["../../../collection", 
+  "../../../adapters/index", 
+  "dref", 
+  "hoist", 
+  "pilot-block", 
+  "type-component", 
+  "../../../../factories/fn", 
+  "../../../../factories/class"], (ViewCollection, adapters, dref, 
+    hoist, pilot, type, FnFactory, ClassFactory) ->
   
   class ListSection
     constructor: (@view, @name, @options) ->
 
       # the source of the list - string, or object
       @__source       = @options.source
-
-      # the view class for each model
-      @_modelViewClass = adapters.getViewClass @options.modelViewClass or @options.itemViewClass # itemViewClass = DEPRECATED
 
       @_viewCollection = @modelViews = new ViewCollection()
       @_viewCollection.bind({ remove: @_removeModelView }).now()
@@ -63,24 +68,27 @@ define ["../../../collection", "../../../adapters/index", "dref", "hoist", "pilo
       hoister = hoist()
       map = @options.map or @options.transform
 
+      console.log @options
+
+      modelViewFactory = @options.modelViewFactory or new ClassFactory adapters.getViewClass @options.modelViewClass
+
+      # must turn it into a factory
+      if type(modelViewFactory) is "function"
+        modelViewFactory = new FnFactory modelViewFactory
+
       if map
         hoister.map (model) => map model, @
 
       @_modelTransformer = hoister.
       map((model) => 
-        ops = {}
-
-        # DEPRECATE
-        ops.item  = model
+        ops       = {}
         ops.model = model
-
-        ops._id = dref.get(model, "_id")
+        ops._id   = dref.get(model, "_id")
         ops
-      ).
-      cast(@_modelViewClass).
-      map((model) =>
-        @_hookModelView model
-        model
+      ).map((model) =>
+        view = modelViewFactory.create model
+        @_hookModelView view
+        view
       )
 
       @_bindSource()

@@ -6,10 +6,10 @@ define ["./factory"], (factoryFactory) ->
     ###
 
     constructor: (control, tests) ->
-      @factory = factoryFactory.createItem control.choose tests
+      @factory = factoryFactory.create control.choose tests
 
 
     ###
     ###
 
-    createItem: (item) -> @factory.createItem
+    create: (item) -> @factory.create
