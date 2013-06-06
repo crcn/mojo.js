@@ -5,6 +5,7 @@ define ["./base", "../base", "../../templates/factory", "dref", "bindable"], (In
 
 
   class SelectInputView extends InputView
+  
     ###
     ###
 
