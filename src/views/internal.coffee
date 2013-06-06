@@ -20,8 +20,7 @@ define ["jquery",
 
     constructor: (data = {}) ->
 
-      # ID's are necessary for collections
-      @_id = dref.get(data, "_id") or dref.get(data.item or data.model or {}, "_id") or generateId()
+      @_id = dref.get(data.model or {}, "_id") or generateId()
 
       data.currentState = ViewStates.NONE
 
@@ -29,8 +28,6 @@ define ["jquery",
 
       # initialize the options
       @init()
-
-
 
     ###
     ###
