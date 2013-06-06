@@ -30,14 +30,14 @@ define ["bindable", "underscore"], (bindable, _) ->
     ###
 
     hide: () ->
-      @_view?.$().css({ display: "none" })
+      @_view.section.detach()
       @_view.set "visible", false
 
     ###
     ###
 
     show: () ->
-      @_view?.$().css({ display: "block" })
+      @_view.section.attach()
       @_view.set "visible", true
 
     ###

@@ -1,5 +1,9 @@
 define ["./base"], (BaseDecor) ->
   
+  ###
+   preloads a model, or set of models before 
+  ###
+  
   class PreloadDecorator extends BaseDecor
 
     ###

@@ -30,6 +30,8 @@ define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
 
     templateData: () -> 
       model = @view.getFlatten("model") ? @view.getFlatten("item")
+
+      # todo ~ return @view.toObject()
       
       item     : model # DEPRECATED
       model    : model

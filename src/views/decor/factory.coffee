@@ -1,20 +1,7 @@
-###
-
-Notes:
-
-1. cstep is used so that teardown & other functions wait until the previous method is calld. For instance - 
-if setup is called, then teardown immediately, then teardown MUST wait until setup is complete
-
-###
 
 
-define ["underscore",
-"cstep",
-"../../factories/class",
-"../../utils/idGenerator",
-"./base",  
+define ["./base",  
 "../collection",
-"../../utils/compose",
 "./template",
 "./attributes",
 "./events",
@@ -22,8 +9,8 @@ define ["underscore",
 "./sections/index",
 "./dragdrop/draggable",
 "./dragdrop/droppable",
-"./transition", "./preload"], (_, cstep, ClassFactory, generateId, BaseViewDecorator, 
-  ViewCollection, compose,
+"./transition", "./preload"], (BaseViewDecorator, 
+  ViewCollection, 
   TemplateDecorator, 
   AttributesDecorator, EventsDecorator, BindingsDecorator, SectionsDecorator, DraggableDecorator, 
   DroppableDecorator, TransitionDecorator, PreloadDecorator) ->
