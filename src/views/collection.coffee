@@ -1,5 +1,5 @@
 
-define ["bindable", "asyngleton", "flatstack"], (bindable, asyngleton, flatstack) ->
+define ["bindable", "flatstack"], (bindable, flatstack) ->
     
   class DecorCollection extends bindable.Collection
 
@@ -18,19 +18,22 @@ define ["bindable", "asyngleton", "flatstack"], (bindable, asyngleton, flatstack
       # keep tabs on any late decorators
       @on "insert", @_loadLateDecor
 
+      @_running = {}
+
     ###
      Creates, and parses the DOM
     ###
 
-    load: asyngleton (callback) -> 
-      @_call "load", "loaded", @source(), callback
+    load: (callback) -> 
+      @_runOnce "load", callback, (callback) =>
+        @_call "load", "loaded", @source(), callback
 
     ###
      attaches any controllers / bindings to the view (rivets)
     ###
 
     render: asyngleton (callback) ->
-      @load () => 
+      @_runOnce "render", callback, (callback) => @load () =>
         @_call "render", "rendered", @source(), callback
 
     ###
@@ -38,7 +41,7 @@ define ["bindable", "asyngleton", "flatstack"], (bindable, asyngleton, flatstack
     ###
 
     display: asyngleton (callback) -> 
-      @render () => 
+      @_runOnce "display", callback, (callback) => @render () =>
         @_call "display", "displayed", @source(), callback
 
     ###
@@ -46,7 +49,7 @@ define ["bindable", "asyngleton", "flatstack"], (bindable, asyngleton, flatstack
     ###
 
     remove: asyngleton (callback) ->
-      @display () => 
+      @_runOnce "remove", callback, (callback) => @display () =>
         @_call "remove", "removed", @source(), callback
 
     ###
@@ -129,4 +132,29 @@ define ["bindable", "asyngleton", "flatstack"], (bindable, asyngleton, flatstack
         @_pending = []
 
       @_pending.push decorator
+
+    ###
+     runs a function just once
+    ###
+
+    _runOnce: (key, callback, run) =>
+
+      # 2 = loaded
+      if (code = @_running[key]) is 2
+        return callback()
+
+      if callback
+        @once (event = "__#{key}"), callback
+
+      return if code
+
+      #1 = loading
+      @_running[key] = 1
+
+      run () =>
+
+        # done!
+        @_running[key] = 2
+        @emit event
+
 
