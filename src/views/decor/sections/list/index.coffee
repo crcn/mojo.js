@@ -68,8 +68,6 @@ define ["../../../collection",
       hoister = hoist()
       map = @options.map or @options.transform
 
-      console.log @options
-
       modelViewFactory = @options.modelViewFactory or new ClassFactory adapters.getViewClass @options.modelViewClass
 
       # must turn it into a factory
