@@ -65,13 +65,20 @@ define ["./base",
     ###
     ###
 
-    setup: (view) ->  
+    setup: (view, decor) -> 
+
+      if decor
+        _decorators = @_findDecorators decor
+      else
+        _decorators = view.__decorators
+
 
       # decorators are cached in the view class
-      if view.constructor.prototype.__decorators
-        @setDecorators view, view.constructor.prototype.__decorators
+      if _decorators
+        @setDecorators view, _decorators
       else
-        view.constructor.prototype.__decorators = @findDecorators view
+        decor = @findDecorators view
+        view.constructor.prototype.__decorators = view.__decorators = decor
         @setup view
 
     ###

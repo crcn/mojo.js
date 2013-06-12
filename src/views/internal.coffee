@@ -126,18 +126,6 @@ define ["jquery",
       @decorators.once "stateChange", @_init
 
     ###
-     dynamically added decorators
-    ###
-
-    decorate: (options) ->
-
-      # delete the cache
-      @__decorators = undefined
-      _.extend @, options
-
-
-
-    ###
     ###
 
     _initDecor: () ->

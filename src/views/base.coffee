@@ -16,5 +16,13 @@ define ["./internal", "./decor/factory"], (InternalView, DecorFactory) ->
       DecorFactory.setup @
 
 
+    ###
+     dynamically added decorators
+    ###
+
+    decorate: (options) ->
+      DecorFactory.setup @, options
+
+
 
 
