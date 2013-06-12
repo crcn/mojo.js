@@ -20,6 +20,8 @@ define ["../../../collection",
       @_deferredSections = []
       @section = pilot.createSection()
 
+      @_viewCollection.bind("length").to(@, "length")
+
     ###
     ###
 
@@ -40,7 +42,8 @@ define ["../../../collection",
     ###
 
     _fetchRemote: (next) -> 
-      return next() if @_viewCollection.length() or not @_sourceCollection?.fetch
+      console.log @_sourceCollection?.length(), @
+      return next() if not @_sourceCollection?.fetch
       @_sourceCollection?.fetch next
 
     ###
@@ -185,6 +188,7 @@ define ["../../../collection",
 
     _removeModelView: (modelView) => 
       return if not modelView
+      console.log modelView.get("currentState")
       modelView.remove()
 
     @test: (options) -> options.type is "list"
