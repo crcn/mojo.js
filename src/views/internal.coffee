@@ -1,11 +1,12 @@
 define ["jquery",
 "../bindable/inheritable",
+"underscore",
 "./collection",
 "../utils/idGenerator",
 "dref",
 "../models/locator",
 "pilot-block",
-"./states", "type-component"], ($, BindableInheritableObject, ViewCollection, generateId, dref,  
+"./states", "type-component"], ($, BindableInheritableObject, _, ViewCollection, generateId, dref,  
   modelLocator, pilot, ViewStates, type) ->
   
   class InternalView extends BindableInheritableObject
@@ -123,6 +124,18 @@ define ["jquery",
         # stateChange: @_init
 
       @decorators.once "stateChange", @_init
+
+    ###
+     dynamically added decorators
+    ###
+
+    decorate: (options) ->
+
+      # delete the cache
+      @__decorators = undefined
+      _.extend @, options
+
+
 
     ###
     ###

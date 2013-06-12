@@ -68,10 +68,10 @@ define ["./base",
     setup: (view) ->  
 
       # decorators are cached in the view class
-      if view.constructor.__decorators
-        @setDecorators view, view.constructor.__decorators
+      if view.constructor.prototype.__decorators
+        @setDecorators view, view.constructor.prototype.__decorators
       else
-        view.constructor.__decorators = @findDecorators view.constructor
+        view.constructor.prototype.__decorators = @findDecorators view
         @setup view
 
     ###
@@ -79,19 +79,19 @@ define ["./base",
      decorators which should be inherited (but overridden by the child prototype)
     ###
 
-    findDecorators: (viewClass) -> 
+    findDecorators: (view) -> 
       decorators = []
 
-      cv = viewClass
+      cv = view
       pv = undefined
 
       # inherit from the parent classes
-      while cv and cv.prototype.__isView
+      while cv and cv.__isView
 
         # attach from the class, along with the prototype. class = optimal
-        decorators = decorators.concat @_findDecorators(cv, pv).concat @_findDecorators cv.prototype, pv?.prototype
+        decorators = decorators.concat @_findDecorators(cv, pv).concat @_findDecorators cv.constructor, pv?.constructor
         pv = cv
-        cv = cv.__super__?.constructor
+        cv = cv.__super__
 
       decorators.sort (a, b) -> if a.priority > b.priority then 1 else -1
 

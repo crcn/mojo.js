@@ -1,8 +1,8 @@
 define ["type-component"], (type) ->
   
   class ChildSection
-    constructor: (@parentView, @name, @viewClass) ->
-      @view = new @viewClass()
+    constructor: (@parentView, @name, viewOrClass) ->
+      @view = if viewOrClass.__isView then viewOrClass else new viewOrClass()
       @parentView.linkChild @view
 
     load    : (next) -> @view.load next
@@ -13,6 +13,7 @@ define ["type-component"], (type) ->
     toString: () -> 
       @view.section.toString()
 
-    @test: (options) -> type(options) is "function"
+    @test: (options) -> 
+      (type(options) is "function") or options.__isView
 
   ChildSection
