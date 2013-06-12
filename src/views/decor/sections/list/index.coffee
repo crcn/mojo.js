@@ -44,7 +44,6 @@ define ["../../../collection",
     ###
 
     _fetchRemote: (next) -> 
-      console.log @_sourceCollection?.length(), @
       return next() if not @_sourceCollection?.fetch
       @_sourceCollection?.fetch next
 
@@ -190,7 +189,6 @@ define ["../../../collection",
 
     _removeModelView: (modelView) => 
       return if not modelView
-      console.log modelView.get("currentState")
       modelView.remove()
 
     @test: (options) -> options.type is "list"
