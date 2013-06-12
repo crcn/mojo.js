@@ -85,7 +85,7 @@ define ["jquery",
     ###
     ###
 
-    _init: () =>
+    _init: (event) =>
       return if @_initialized
       @_initialized = true
       @_initDecor()
@@ -120,8 +120,9 @@ define ["jquery",
         remove    : @_onRemove 
         removed   : @_onRemoved
 
-        stateChange : @_init
+        # stateChange: @_init
 
+      @decorators.once "stateChange", @_init
 
     ###
     ###
@@ -132,12 +133,15 @@ define ["jquery",
     ###
 
     _initBindings: () ->
+
       @decorators.bind("currentState").to(@, "currentState").now()
 
     ###
     ###
 
     _onLoad      : () =>
+      #@_init()
+
     _onLoaded    : () =>
       return if @_parent?.get("currentState") is ViewStates.LOADING
       @section.updateChildren()
