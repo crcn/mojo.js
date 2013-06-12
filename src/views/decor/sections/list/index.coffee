@@ -3,13 +3,15 @@ define ["../../../collection",
   "dref", 
   "hoist", 
   "pilot-block", 
+  "bindable",
   "type-component", 
   "../../../../factories/fn", 
   "../../../../factories/class"], (ViewCollection, adapters, dref, 
-    hoist, pilot, type, FnFactory, ClassFactory) ->
+    hoist, pilot, bindable, type, FnFactory, ClassFactory) ->
   
-  class ListSection
+  class ListSection extends bindable.Object
     constructor: (@view, @name, @options) ->
+      super()
 
       # the source of the list - string, or object
       @__source       = @options.source
