@@ -1,0 +1,960 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'publish' ]
+2 info using npm@1.2.18
+3 info using node@v0.10.5
+4 verbose publish [ '.' ]
+5 verbose read json /Users/craig/Developer/Jobs/classdojo/mojo/package.json
+6 verbose cache add [ '.', null ]
+7 verbose cache add name=undefined spec="." args=[".",null]
+8 verbose parsed url { protocol: null,
+8 verbose parsed url   slashes: null,
+8 verbose parsed url   auth: null,
+8 verbose parsed url   host: null,
+8 verbose parsed url   port: null,
+8 verbose parsed url   hostname: null,
+8 verbose parsed url   hash: null,
+8 verbose parsed url   search: null,
+8 verbose parsed url   query: null,
+8 verbose parsed url   pathname: '.',
+8 verbose parsed url   path: '.',
+8 verbose parsed url   href: '.' }
+9 silly lockFile 3a52ce78- .
+10 verbose lock . /Users/craig/.npm/3a52ce78-.lock
+11 verbose read json package.json
+12 verbose tar pack [ '/var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/tmp.tgz',
+12 verbose tar pack   '.' ]
+13 verbose tarball /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/tmp.tgz
+14 verbose folder .
+15 info prepublish mojo@0.4.13
+16 silly lockFile 3a52ce78- .
+17 verbose lock . /Users/craig/.npm/3a52ce78-.lock
+18 silly lockFile f28993fd-07703-0-8534194945823401-tmp-tgz /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/tmp.tgz
+19 verbose lock /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/tmp.tgz /Users/craig/.npm/f28993fd-07703-0-8534194945823401-tmp-tgz.lock
+20 silly lockFile 3a52ce78- .
+21 silly lockFile 3a52ce78- .
+22 silly lockFile f28993fd-07703-0-8534194945823401-tmp-tgz /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/tmp.tgz
+23 silly lockFile f28993fd-07703-0-8534194945823401-tmp-tgz /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/tmp.tgz
+24 verbose tar unpack /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/tmp.tgz
+25 silly lockFile 74deb9fb-07703-0-8534194945823401-package /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/package
+26 verbose lock /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/package /Users/craig/.npm/74deb9fb-07703-0-8534194945823401-package.lock
+27 silly lockFile f28993fd-07703-0-8534194945823401-tmp-tgz /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/tmp.tgz
+28 verbose lock /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/tmp.tgz /Users/craig/.npm/f28993fd-07703-0-8534194945823401-tmp-tgz.lock
+29 silly gunzTarPerm modes [ '755', '644' ]
+30 silly gunzTarPerm extractEntry package.json
+31 silly gunzTarPerm modified mode [ 'package.json', 511, 493 ]
+32 silly gunzTarPerm extractEntry .npmignore
+33 silly gunzTarPerm modified mode [ '.npmignore', 511, 493 ]
+34 silly gunzTarPerm extractEntry README.md
+35 silly gunzTarPerm modified mode [ 'README.md', 511, 493 ]
+36 silly gunzTarPerm extractEntry index.js
+37 silly gunzTarPerm modified mode [ 'index.js', 511, 493 ]
+38 silly gunzTarPerm extractEntry docs/brainstorm/README.md
+39 silly gunzTarPerm modified mode [ 'docs/brainstorm/README.md', 511, 493 ]
+40 silly gunzTarPerm extractEntry docs/brainstorm/views.md
+41 silly gunzTarPerm modified mode [ 'docs/brainstorm/views.md', 511, 493 ]
+42 silly gunzTarPerm extractEntry docs/brainstorm/bindings.md
+43 silly gunzTarPerm modified mode [ 'docs/brainstorm/bindings.md', 511, 493 ]
+44 silly gunzTarPerm extractEntry docs/brainstorm/collections.md
+45 silly gunzTarPerm modified mode [ 'docs/brainstorm/collections.md', 511, 493 ]
+46 silly gunzTarPerm extractEntry docs/brainstorm/factories.md
+47 silly gunzTarPerm modified mode [ 'docs/brainstorm/factories.md', 511, 493 ]
+48 silly gunzTarPerm extractEntry docs/brainstorm/guidlines.md
+49 silly gunzTarPerm modified mode [ 'docs/brainstorm/guidlines.md', 511, 493 ]
+50 silly gunzTarPerm extractEntry docs/brainstorm/input views.md
+51 silly gunzTarPerm modified mode [ 'docs/brainstorm/input views.md', 511, 493 ]
+52 silly gunzTarPerm extractEntry docs/brainstorm/ab testing javascript.md
+53 silly gunzTarPerm modified mode [ 'docs/brainstorm/ab testing javascript.md', 511, 493 ]
+54 silly gunzTarPerm extractEntry docs/brainstorm/models.md
+55 silly gunzTarPerm modified mode [ 'docs/brainstorm/models.md', 511, 493 ]
+56 silly gunzTarPerm extractEntry docs/brainstorm/names.md
+57 silly gunzTarPerm modified mode [ 'docs/brainstorm/names.md', 511, 493 ]
+58 silly gunzTarPerm extractEntry docs/brainstorm/organization.md
+59 silly gunzTarPerm modified mode [ 'docs/brainstorm/organization.md', 511, 493 ]
+60 silly gunzTarPerm extractEntry docs/brainstorm/pseudo.md
+61 silly gunzTarPerm modified mode [ 'docs/brainstorm/pseudo.md', 511, 493 ]
+62 silly gunzTarPerm extractEntry docs/brainstorm/routing.md
+63 silly gunzTarPerm modified mode [ 'docs/brainstorm/routing.md', 511, 493 ]
+64 silly gunzTarPerm extractEntry docs/brainstorm/templates.md
+65 silly gunzTarPerm modified mode [ 'docs/brainstorm/templates.md', 511, 493 ]
+66 silly gunzTarPerm extractEntry docs/brainstorm/mixins.md
+67 silly gunzTarPerm modified mode [ 'docs/brainstorm/mixins.md', 511, 493 ]
+68 silly gunzTarPerm extractEntry docs2/README.md
+69 silly gunzTarPerm modified mode [ 'docs2/README.md', 511, 493 ]
+70 silly gunzTarPerm extractEntry docs2/adapters/README.md
+71 silly gunzTarPerm modified mode [ 'docs2/adapters/README.md', 511, 493 ]
+72 silly gunzTarPerm extractEntry docs2/brainstorm/README.md
+73 silly gunzTarPerm modified mode [ 'docs2/brainstorm/README.md', 511, 493 ]
+74 silly gunzTarPerm extractEntry docs2/data-binding/README.md
+75 silly gunzTarPerm modified mode [ 'docs2/data-binding/README.md', 511, 493 ]
+76 silly gunzTarPerm extractEntry docs2/data-binding/collections.md
+77 silly gunzTarPerm modified mode [ 'docs2/data-binding/collections.md', 511, 493 ]
+78 silly gunzTarPerm extractEntry docs2/data-binding/objects.md
+79 silly gunzTarPerm modified mode [ 'docs2/data-binding/objects.md', 511, 493 ]
+80 silly gunzTarPerm extractEntry docs2/mediator/README.md
+81 silly gunzTarPerm modified mode [ 'docs2/mediator/README.md', 511, 493 ]
+82 silly gunzTarPerm extractEntry docs2/views/README.md
+83 silly gunzTarPerm modified mode [ 'docs2/views/README.md', 511, 493 ]
+84 silly gunzTarPerm extractEntry docs2/views/decorators/README.md
+85 silly gunzTarPerm modified mode [ 'docs2/views/decorators/README.md', 511, 493 ]
+86 silly gunzTarPerm extractEntry docs2/views/sections/README.md
+87 silly gunzTarPerm modified mode [ 'docs2/views/sections/README.md', 511, 493 ]
+88 silly gunzTarPerm extractEntry docs2/views/templates/README.md
+89 silly gunzTarPerm modified mode [ 'docs2/views/templates/README.md', 511, 493 ]
+90 silly gunzTarPerm extractEntry dump.rdb
+91 silly gunzTarPerm modified mode [ 'dump.rdb', 511, 493 ]
+92 silly gunzTarPerm extractEntry .jamignore
+93 silly gunzTarPerm modified mode [ '.jamignore', 511, 493 ]
+94 silly gunzTarPerm extractEntry lib/index.js
+95 silly gunzTarPerm modified mode [ 'lib/index.js', 511, 493 ]
+96 silly gunzTarPerm extractEntry lib/bindable/inheritable.js
+97 silly gunzTarPerm modified mode [ 'lib/bindable/inheritable.js', 511, 493 ]
+98 silly gunzTarPerm extractEntry lib/core/index.js
+99 silly gunzTarPerm modified mode [ 'lib/core/index.js', 511, 493 ]
+100 silly gunzTarPerm extractEntry lib/core/factories/abTest.js
+101 silly gunzTarPerm modified mode [ 'lib/core/factories/abTest.js', 511, 493 ]
+102 silly gunzTarPerm extractEntry lib/core/factories/abstract.js
+103 silly gunzTarPerm modified mode [ 'lib/core/factories/abstract.js', 511, 493 ]
+104 silly gunzTarPerm extractEntry lib/core/factories/base.js
+105 silly gunzTarPerm modified mode [ 'lib/core/factories/base.js', 511, 493 ]
+106 silly gunzTarPerm extractEntry lib/core/factories/class.js
+107 silly gunzTarPerm modified mode [ 'lib/core/factories/class.js', 511, 493 ]
+108 silly gunzTarPerm extractEntry lib/core/factories/either.js
+109 silly gunzTarPerm modified mode [ 'lib/core/factories/either.js', 511, 493 ]
+110 silly gunzTarPerm extractEntry lib/core/factories/factory.js
+111 silly gunzTarPerm modified mode [ 'lib/core/factories/factory.js', 511, 493 ]
+112 silly gunzTarPerm extractEntry lib/core/factories/fn.js
+113 silly gunzTarPerm modified mode [ 'lib/core/factories/fn.js', 511, 493 ]
+114 silly gunzTarPerm extractEntry lib/core/mediator/index.js
+115 silly gunzTarPerm modified mode [ 'lib/core/mediator/index.js', 511, 493 ]
+116 silly gunzTarPerm extractEntry lib/core/mediator/mediator.js
+117 silly gunzTarPerm modified mode [ 'lib/core/mediator/mediator.js', 511, 493 ]
+118 silly gunzTarPerm extractEntry lib/core/models/locator.js
+119 silly gunzTarPerm modified mode [ 'lib/core/models/locator.js', 511, 493 ]
+120 silly gunzTarPerm extractEntry lib/core/templates/factory.js
+121 silly gunzTarPerm modified mode [ 'lib/core/templates/factory.js', 511, 493 ]
+122 silly gunzTarPerm extractEntry lib/core/templates/template.js
+123 silly gunzTarPerm modified mode [ 'lib/core/templates/template.js', 511, 493 ]
+124 silly gunzTarPerm extractEntry lib/core/templates/engines/base.js
+125 silly gunzTarPerm modified mode [ 'lib/core/templates/engines/base.js', 511, 493 ]
+126 silly gunzTarPerm extractEntry lib/core/templates/engines/handlebars.js
+127 silly gunzTarPerm modified mode [ 'lib/core/templates/engines/handlebars.js', 511, 493 ]
+128 silly gunzTarPerm extractEntry lib/core/templates/engines/none.js
+129 silly gunzTarPerm modified mode [ 'lib/core/templates/engines/none.js', 511, 493 ]
+130 silly gunzTarPerm extractEntry lib/core/templates/plugins/base.js
+131 silly gunzTarPerm modified mode [ 'lib/core/templates/plugins/base.js', 511, 493 ]
+132 silly gunzTarPerm extractEntry lib/core/templates/plugins/i18n.js
+133 silly gunzTarPerm modified mode [ 'lib/core/templates/plugins/i18n.js', 511, 493 ]
+134 silly gunzTarPerm extractEntry lib/core/utils/async.js
+135 silly gunzTarPerm modified mode [ 'lib/core/utils/async.js', 511, 493 ]
+136 silly gunzTarPerm extractEntry lib/core/utils/compose.js
+137 silly gunzTarPerm modified mode [ 'lib/core/utils/compose.js', 511, 493 ]
+138 silly gunzTarPerm extractEntry lib/core/utils/getCallstackSize.js
+139 silly gunzTarPerm modified mode [ 'lib/core/utils/getCallstackSize.js', 511, 493 ]
+140 silly gunzTarPerm extractEntry lib/core/utils/idGenerator.js
+141 silly gunzTarPerm modified mode [ 'lib/core/utils/idGenerator.js', 511, 493 ]
+142 silly gunzTarPerm extractEntry lib/core/utils/logger.js
+143 silly gunzTarPerm modified mode [ 'lib/core/utils/logger.js', 511, 493 ]
+144 silly gunzTarPerm extractEntry lib/core/utils/throttleCallback.js
+145 silly gunzTarPerm modified mode [ 'lib/core/utils/throttleCallback.js', 511, 493 ]
+146 silly gunzTarPerm extractEntry lib/core/views/base.js
+147 silly gunzTarPerm modified mode [ 'lib/core/views/base.js', 511, 493 ]
+148 silly gunzTarPerm extractEntry lib/core/views/collection.js
+149 silly gunzTarPerm modified mode [ 'lib/core/views/collection.js', 511, 493 ]
+150 silly gunzTarPerm extractEntry lib/core/views/index.js
+151 silly gunzTarPerm modified mode [ 'lib/core/views/index.js', 511, 493 ]
+152 silly gunzTarPerm extractEntry lib/core/views/internal.js
+153 silly gunzTarPerm modified mode [ 'lib/core/views/internal.js', 511, 493 ]
+154 silly gunzTarPerm extractEntry lib/core/views/states.js
+155 silly gunzTarPerm modified mode [ 'lib/core/views/states.js', 511, 493 ]
+156 silly gunzTarPerm extractEntry lib/core/views/adapters/index.js
+157 silly gunzTarPerm modified mode [ 'lib/core/views/adapters/index.js', 511, 493 ]
+158 silly gunzTarPerm extractEntry lib/core/views/adapters/backbone/collection.js
+159 silly gunzTarPerm modified mode [ 'lib/core/views/adapters/backbone/collection.js', 511, 493 ]
+160 silly gunzTarPerm extractEntry lib/core/views/adapters/backbone/index.js
+161 silly gunzTarPerm modified mode [ 'lib/core/views/adapters/backbone/index.js', 511, 493 ]
+162 silly gunzTarPerm extractEntry lib/core/views/adapters/backbone/model.js
+163 silly gunzTarPerm modified mode [ 'lib/core/views/adapters/backbone/model.js', 511, 493 ]
+164 silly gunzTarPerm extractEntry lib/core/views/adapters/backbone/view.js
+165 silly gunzTarPerm modified mode [ 'lib/core/views/adapters/backbone/view.js', 511, 493 ]
+166 silly gunzTarPerm extractEntry lib/core/views/adapters/base/index.js
+167 silly gunzTarPerm modified mode [ 'lib/core/views/adapters/base/index.js', 511, 493 ]
+168 silly gunzTarPerm extractEntry lib/core/views/decor/attributes.js
+169 silly gunzTarPerm modified mode [ 'lib/core/views/decor/attributes.js', 511, 493 ]
+170 silly gunzTarPerm extractEntry lib/core/views/decor/bindings.js
+171 silly gunzTarPerm modified mode [ 'lib/core/views/decor/bindings.js', 511, 493 ]
+172 silly gunzTarPerm extractEntry lib/core/views/decor/children.js
+173 silly gunzTarPerm modified mode [ 'lib/core/views/decor/children.js', 511, 493 ]
+174 silly gunzTarPerm extractEntry lib/core/views/decor/template.js
+175 silly gunzTarPerm modified mode [ 'lib/core/views/decor/template.js', 511, 493 ]
+176 silly gunzTarPerm extractEntry lib/core/views/decor/events.js
+177 silly gunzTarPerm modified mode [ 'lib/core/views/decor/events.js', 511, 493 ]
+178 silly gunzTarPerm extractEntry lib/core/views/decor/factory.js
+179 silly gunzTarPerm modified mode [ 'lib/core/views/decor/factory.js', 511, 493 ]
+180 silly gunzTarPerm extractEntry lib/core/views/decor/base.js
+181 silly gunzTarPerm modified mode [ 'lib/core/views/decor/base.js', 511, 493 ]
+182 silly gunzTarPerm extractEntry lib/core/views/decor/preload.js
+183 silly gunzTarPerm modified mode [ 'lib/core/views/decor/preload.js', 511, 493 ]
+184 silly gunzTarPerm extractEntry lib/core/views/decor/selectable.js
+185 silly gunzTarPerm modified mode [ 'lib/core/views/decor/selectable.js', 511, 493 ]
+186 silly gunzTarPerm extractEntry lib/core/views/decor/transition.js
+187 silly gunzTarPerm modified mode [ 'lib/core/views/decor/transition.js', 511, 493 ]
+188 silly gunzTarPerm extractEntry lib/core/views/decor/sectionable/decor.js
+189 silly gunzTarPerm modified mode [ 'lib/core/views/decor/sectionable/decor.js', 511, 493 ]
+190 silly gunzTarPerm extractEntry lib/core/views/decor/sectionable/index.js
+191 silly gunzTarPerm modified mode [ 'lib/core/views/decor/sectionable/index.js', 511, 493 ]
+192 silly gunzTarPerm extractEntry lib/core/views/decor/states/decorator.js
+193 silly gunzTarPerm modified mode [ 'lib/core/views/decor/states/decorator.js', 511, 493 ]
+194 silly gunzTarPerm extractEntry lib/core/views/decor/states/state.js
+195 silly gunzTarPerm modified mode [ 'lib/core/views/decor/states/state.js', 511, 493 ]
+196 silly gunzTarPerm extractEntry lib/core/views/decor/states/states.js
+197 silly gunzTarPerm modified mode [ 'lib/core/views/decor/states/states.js', 511, 493 ]
+198 silly gunzTarPerm extractEntry lib/core/views/decor/dragdrop/collection.js
+199 silly gunzTarPerm modified mode [ 'lib/core/views/decor/dragdrop/collection.js', 511, 493 ]
+200 silly gunzTarPerm extractEntry lib/core/views/decor/dragdrop/draggable.js
+201 silly gunzTarPerm modified mode [ 'lib/core/views/decor/dragdrop/draggable.js', 511, 493 ]
+202 silly gunzTarPerm extractEntry lib/core/views/decor/dragdrop/droppable.js
+203 silly gunzTarPerm modified mode [ 'lib/core/views/decor/dragdrop/droppable.js', 511, 493 ]
+204 silly gunzTarPerm extractEntry lib/core/views/decor/list/decorator.js
+205 silly gunzTarPerm modified mode [ 'lib/core/views/decor/list/decorator.js', 511, 493 ]
+206 silly gunzTarPerm extractEntry lib/core/views/decor/list/list.js
+207 silly gunzTarPerm modified mode [ 'lib/core/views/decor/list/list.js', 511, 493 ]
+208 silly gunzTarPerm extractEntry lib/core/views/input/base.js
+209 silly gunzTarPerm modified mode [ 'lib/core/views/input/base.js', 511, 493 ]
+210 silly gunzTarPerm extractEntry lib/core/views/input/form.js
+211 silly gunzTarPerm modified mode [ 'lib/core/views/input/form.js', 511, 493 ]
+212 silly gunzTarPerm extractEntry lib/core/views/input/select.js
+213 silly gunzTarPerm modified mode [ 'lib/core/views/input/select.js', 511, 493 ]
+214 silly gunzTarPerm extractEntry lib/core/views/input/text.js
+215 silly gunzTarPerm modified mode [ 'lib/core/views/input/text.js', 511, 493 ]
+216 silly gunzTarPerm extractEntry lib/factories/abTest.js
+217 silly gunzTarPerm modified mode [ 'lib/factories/abTest.js', 511, 493 ]
+218 silly gunzTarPerm extractEntry lib/factories/abstract.js
+219 silly gunzTarPerm modified mode [ 'lib/factories/abstract.js', 511, 493 ]
+220 silly gunzTarPerm extractEntry lib/factories/base.js
+221 silly gunzTarPerm modified mode [ 'lib/factories/base.js', 511, 493 ]
+222 silly gunzTarPerm extractEntry lib/factories/class.js
+223 silly gunzTarPerm modified mode [ 'lib/factories/class.js', 511, 493 ]
+224 silly gunzTarPerm extractEntry lib/factories/either.js
+225 silly gunzTarPerm modified mode [ 'lib/factories/either.js', 511, 493 ]
+226 silly gunzTarPerm extractEntry lib/factories/factory.js
+227 silly gunzTarPerm modified mode [ 'lib/factories/factory.js', 511, 493 ]
+228 silly gunzTarPerm extractEntry lib/factories/fn.js
+229 silly gunzTarPerm modified mode [ 'lib/factories/fn.js', 511, 493 ]
+230 silly gunzTarPerm extractEntry lib/mediator/index.js
+231 silly gunzTarPerm modified mode [ 'lib/mediator/index.js', 511, 493 ]
+232 silly gunzTarPerm extractEntry lib/mediator/mediator.js
+233 silly gunzTarPerm modified mode [ 'lib/mediator/mediator.js', 511, 493 ]
+234 silly gunzTarPerm extractEntry lib/models/locator.js
+235 silly gunzTarPerm modified mode [ 'lib/models/locator.js', 511, 493 ]
+236 silly gunzTarPerm extractEntry lib/templates/factory.js
+237 silly gunzTarPerm modified mode [ 'lib/templates/factory.js', 511, 493 ]
+238 silly gunzTarPerm extractEntry lib/templates/template.js
+239 silly gunzTarPerm modified mode [ 'lib/templates/template.js', 511, 493 ]
+240 silly gunzTarPerm extractEntry lib/templates/engines/base.js
+241 silly gunzTarPerm modified mode [ 'lib/templates/engines/base.js', 511, 493 ]
+242 silly gunzTarPerm extractEntry lib/templates/engines/handlebars.js
+243 silly gunzTarPerm modified mode [ 'lib/templates/engines/handlebars.js', 511, 493 ]
+244 silly gunzTarPerm extractEntry lib/templates/engines/none.js
+245 silly gunzTarPerm modified mode [ 'lib/templates/engines/none.js', 511, 493 ]
+246 silly gunzTarPerm extractEntry lib/templates/plugins/base.js
+247 silly gunzTarPerm modified mode [ 'lib/templates/plugins/base.js', 511, 493 ]
+248 silly gunzTarPerm extractEntry lib/templates/plugins/i18n.js
+249 silly gunzTarPerm modified mode [ 'lib/templates/plugins/i18n.js', 511, 493 ]
+250 silly gunzTarPerm extractEntry lib/utils/async.js
+251 silly gunzTarPerm modified mode [ 'lib/utils/async.js', 511, 493 ]
+252 silly gunzTarPerm extractEntry lib/utils/compose.js
+253 silly gunzTarPerm modified mode [ 'lib/utils/compose.js', 511, 493 ]
+254 silly gunzTarPerm extractEntry lib/utils/getCallstackSize.js
+255 silly gunzTarPerm modified mode [ 'lib/utils/getCallstackSize.js', 511, 493 ]
+256 silly gunzTarPerm extractEntry lib/utils/idGenerator.js
+257 silly gunzTarPerm modified mode [ 'lib/utils/idGenerator.js', 511, 493 ]
+258 silly gunzTarPerm extractEntry lib/utils/logger.js
+259 silly gunzTarPerm modified mode [ 'lib/utils/logger.js', 511, 493 ]
+260 silly gunzTarPerm extractEntry lib/views/base.js
+261 silly gunzTarPerm modified mode [ 'lib/views/base.js', 511, 493 ]
+262 silly gunzTarPerm extractEntry lib/views/collection.js
+263 silly gunzTarPerm modified mode [ 'lib/views/collection.js', 511, 493 ]
+264 silly gunzTarPerm extractEntry lib/views/index.js
+265 silly gunzTarPerm modified mode [ 'lib/views/index.js', 511, 493 ]
+266 silly gunzTarPerm extractEntry lib/views/internal.js
+267 silly gunzTarPerm modified mode [ 'lib/views/internal.js', 511, 493 ]
+268 silly gunzTarPerm extractEntry lib/views/states.js
+269 silly gunzTarPerm modified mode [ 'lib/views/states.js', 511, 493 ]
+270 silly gunzTarPerm extractEntry lib/views/adapters/index.js
+271 silly gunzTarPerm modified mode [ 'lib/views/adapters/index.js', 511, 493 ]
+272 silly gunzTarPerm extractEntry lib/views/adapters/backbone/collection.js
+273 silly gunzTarPerm modified mode [ 'lib/views/adapters/backbone/collection.js', 511, 493 ]
+274 silly gunzTarPerm extractEntry lib/views/adapters/backbone/index.js
+275 silly gunzTarPerm modified mode [ 'lib/views/adapters/backbone/index.js', 511, 493 ]
+276 silly gunzTarPerm extractEntry lib/views/adapters/backbone/model.js
+277 silly gunzTarPerm modified mode [ 'lib/views/adapters/backbone/model.js', 511, 493 ]
+278 silly gunzTarPerm extractEntry lib/views/adapters/backbone/view.js
+279 silly gunzTarPerm modified mode [ 'lib/views/adapters/backbone/view.js', 511, 493 ]
+280 silly gunzTarPerm extractEntry lib/views/adapters/base/index.js
+281 silly gunzTarPerm modified mode [ 'lib/views/adapters/base/index.js', 511, 493 ]
+282 silly gunzTarPerm extractEntry lib/views/decor/attributes.js
+283 silly gunzTarPerm modified mode [ 'lib/views/decor/attributes.js', 511, 493 ]
+284 silly gunzTarPerm extractEntry lib/views/decor/base.js
+285 silly gunzTarPerm modified mode [ 'lib/views/decor/base.js', 511, 493 ]
+286 silly gunzTarPerm extractEntry lib/views/decor/bindings.js
+287 silly gunzTarPerm modified mode [ 'lib/views/decor/bindings.js', 511, 493 ]
+288 silly gunzTarPerm extractEntry lib/views/decor/events.js
+289 silly gunzTarPerm modified mode [ 'lib/views/decor/events.js', 511, 493 ]
+290 silly gunzTarPerm extractEntry lib/views/decor/factory.js
+291 silly gunzTarPerm modified mode [ 'lib/views/decor/factory.js', 511, 493 ]
+292 silly gunzTarPerm extractEntry lib/views/decor/preload.js
+293 silly gunzTarPerm modified mode [ 'lib/views/decor/preload.js', 511, 493 ]
+294 silly gunzTarPerm extractEntry lib/views/decor/template.js
+295 silly gunzTarPerm modified mode [ 'lib/views/decor/template.js', 511, 493 ]
+296 silly gunzTarPerm extractEntry lib/views/decor/transition.js
+297 silly gunzTarPerm modified mode [ 'lib/views/decor/transition.js', 511, 493 ]
+298 silly gunzTarPerm extractEntry lib/views/decor/dragdrop/collection.js
+299 silly gunzTarPerm modified mode [ 'lib/views/decor/dragdrop/collection.js', 511, 493 ]
+300 silly gunzTarPerm extractEntry lib/views/decor/dragdrop/draggable.js
+301 silly gunzTarPerm modified mode [ 'lib/views/decor/dragdrop/draggable.js', 511, 493 ]
+302 silly gunzTarPerm extractEntry lib/views/decor/dragdrop/droppable.js
+303 silly gunzTarPerm modified mode [ 'lib/views/decor/dragdrop/droppable.js', 511, 493 ]
+304 silly gunzTarPerm extractEntry lib/views/decor/sections/index.js
+305 silly gunzTarPerm modified mode [ 'lib/views/decor/sections/index.js', 511, 493 ]
+306 silly gunzTarPerm extractEntry lib/views/decor/sections/child/index.js
+307 silly gunzTarPerm modified mode [ 'lib/views/decor/sections/child/index.js', 511, 493 ]
+308 silly gunzTarPerm extractEntry lib/views/decor/sections/list/index.js
+309 silly gunzTarPerm modified mode [ 'lib/views/decor/sections/list/index.js', 511, 493 ]
+310 silly gunzTarPerm extractEntry lib/views/decor/sections/states/index.js
+311 silly gunzTarPerm modified mode [ 'lib/views/decor/sections/states/index.js', 511, 493 ]
+312 silly gunzTarPerm extractEntry lib/views/decor/sections/states/state.js
+313 silly gunzTarPerm modified mode [ 'lib/views/decor/sections/states/state.js', 511, 493 ]
+314 silly gunzTarPerm extractEntry lib/views/input/base.js
+315 silly gunzTarPerm modified mode [ 'lib/views/input/base.js', 511, 493 ]
+316 silly gunzTarPerm extractEntry lib/views/input/form.js
+317 silly gunzTarPerm modified mode [ 'lib/views/input/form.js', 511, 493 ]
+318 silly gunzTarPerm extractEntry lib/views/input/select.js
+319 silly gunzTarPerm modified mode [ 'lib/views/input/select.js', 511, 493 ]
+320 silly gunzTarPerm extractEntry lib/views/input/text.js
+321 silly gunzTarPerm modified mode [ 'lib/views/input/text.js', 511, 493 ]
+322 silly gunzTarPerm extractEntry makefile
+323 silly gunzTarPerm modified mode [ 'makefile', 511, 493 ]
+324 silly gunzTarPerm extractEntry publish
+325 silly gunzTarPerm modified mode [ 'publish', 511, 493 ]
+326 silly gunzTarPerm extractEntry .cupboard
+327 silly gunzTarPerm modified mode [ '.cupboard', 511, 493 ]
+328 silly gunzTarPerm extractEntry src/bindable/inheritable.coffee
+329 silly gunzTarPerm modified mode [ 'src/bindable/inheritable.coffee', 511, 493 ]
+330 silly gunzTarPerm extractEntry src/core/factories/abTest.coffee
+331 silly gunzTarPerm modified mode [ 'src/core/factories/abTest.coffee', 511, 493 ]
+332 silly gunzTarPerm extractEntry src/core/factories/abstract.coffee
+333 silly gunzTarPerm modified mode [ 'src/core/factories/abstract.coffee', 511, 493 ]
+334 silly gunzTarPerm extractEntry src/core/factories/base.coffee
+335 silly gunzTarPerm modified mode [ 'src/core/factories/base.coffee', 511, 493 ]
+336 silly gunzTarPerm extractEntry src/core/factories/class.coffee
+337 silly gunzTarPerm modified mode [ 'src/core/factories/class.coffee', 511, 493 ]
+338 silly gunzTarPerm extractEntry src/core/factories/either.coffee
+339 silly gunzTarPerm modified mode [ 'src/core/factories/either.coffee', 511, 493 ]
+340 silly gunzTarPerm extractEntry src/core/factories/factory.coffee
+341 silly gunzTarPerm modified mode [ 'src/core/factories/factory.coffee', 511, 493 ]
+342 silly gunzTarPerm extractEntry src/core/factories/fn.coffee
+343 silly gunzTarPerm modified mode [ 'src/core/factories/fn.coffee', 511, 493 ]
+344 silly gunzTarPerm extractEntry src/core/index.coffee
+345 silly gunzTarPerm modified mode [ 'src/core/index.coffee', 511, 493 ]
+346 silly gunzTarPerm extractEntry src/core/mediator/index.coffee
+347 silly gunzTarPerm modified mode [ 'src/core/mediator/index.coffee', 511, 493 ]
+348 silly gunzTarPerm extractEntry src/core/mediator/mediator.coffee
+349 silly gunzTarPerm modified mode [ 'src/core/mediator/mediator.coffee', 511, 493 ]
+350 silly gunzTarPerm extractEntry src/core/models/locator.coffee
+351 silly gunzTarPerm modified mode [ 'src/core/models/locator.coffee', 511, 493 ]
+352 silly gunzTarPerm extractEntry src/core/templates/engines/base.coffee
+353 silly gunzTarPerm modified mode [ 'src/core/templates/engines/base.coffee', 511, 493 ]
+354 silly gunzTarPerm extractEntry src/core/templates/engines/handlebars.coffee
+355 silly gunzTarPerm modified mode [ 'src/core/templates/engines/handlebars.coffee', 511, 493 ]
+356 silly gunzTarPerm extractEntry src/core/templates/engines/none.coffee
+357 silly gunzTarPerm modified mode [ 'src/core/templates/engines/none.coffee', 511, 493 ]
+358 silly gunzTarPerm extractEntry src/core/templates/factory.coffee
+359 silly gunzTarPerm modified mode [ 'src/core/templates/factory.coffee', 511, 493 ]
+360 silly gunzTarPerm extractEntry src/core/templates/plugins/base.coffee
+361 silly gunzTarPerm modified mode [ 'src/core/templates/plugins/base.coffee', 511, 493 ]
+362 silly gunzTarPerm extractEntry src/core/templates/plugins/i18n.coffee
+363 silly gunzTarPerm modified mode [ 'src/core/templates/plugins/i18n.coffee', 511, 493 ]
+364 silly gunzTarPerm extractEntry src/core/templates/template.coffee
+365 silly gunzTarPerm modified mode [ 'src/core/templates/template.coffee', 511, 493 ]
+366 silly gunzTarPerm extractEntry src/core/utils/async.coffee
+367 silly gunzTarPerm modified mode [ 'src/core/utils/async.coffee', 511, 493 ]
+368 silly gunzTarPerm extractEntry src/core/utils/compose.coffee
+369 silly gunzTarPerm modified mode [ 'src/core/utils/compose.coffee', 511, 493 ]
+370 silly gunzTarPerm extractEntry src/core/utils/getCallstackSize.coffee
+371 silly gunzTarPerm modified mode [ 'src/core/utils/getCallstackSize.coffee', 511, 493 ]
+372 silly gunzTarPerm extractEntry src/core/utils/idGenerator.coffee
+373 silly gunzTarPerm modified mode [ 'src/core/utils/idGenerator.coffee', 511, 493 ]
+374 silly gunzTarPerm extractEntry src/core/utils/logger.coffee
+375 silly gunzTarPerm modified mode [ 'src/core/utils/logger.coffee', 511, 493 ]
+376 silly gunzTarPerm extractEntry src/core/utils/throttleCallback.coffee
+377 silly gunzTarPerm modified mode [ 'src/core/utils/throttleCallback.coffee', 511, 493 ]
+378 silly gunzTarPerm extractEntry src/core/views/adapters/backbone/collection.coffee
+379 silly gunzTarPerm modified mode [ 'src/core/views/adapters/backbone/collection.coffee',
+379 silly gunzTarPerm   511,
+379 silly gunzTarPerm   493 ]
+380 silly gunzTarPerm extractEntry src/core/views/adapters/backbone/index.coffee
+381 silly gunzTarPerm modified mode [ 'src/core/views/adapters/backbone/index.coffee', 511, 493 ]
+382 silly gunzTarPerm extractEntry src/core/views/adapters/backbone/model.coffee
+383 silly gunzTarPerm modified mode [ 'src/core/views/adapters/backbone/model.coffee', 511, 493 ]
+384 silly gunzTarPerm extractEntry src/core/views/adapters/backbone/view.coffee
+385 silly gunzTarPerm modified mode [ 'src/core/views/adapters/backbone/view.coffee', 511, 493 ]
+386 silly gunzTarPerm extractEntry src/core/views/adapters/base/index.coffee
+387 silly gunzTarPerm modified mode [ 'src/core/views/adapters/base/index.coffee', 511, 493 ]
+388 silly gunzTarPerm extractEntry src/core/views/adapters/index.coffee
+389 silly gunzTarPerm modified mode [ 'src/core/views/adapters/index.coffee', 511, 493 ]
+390 silly gunzTarPerm extractEntry src/core/views/base.coffee
+391 silly gunzTarPerm modified mode [ 'src/core/views/base.coffee', 511, 493 ]
+392 silly gunzTarPerm extractEntry src/core/views/collection.coffee
+393 silly gunzTarPerm modified mode [ 'src/core/views/collection.coffee', 511, 493 ]
+394 silly gunzTarPerm extractEntry src/core/views/decor/list/decorator.coffee
+395 silly gunzTarPerm modified mode [ 'src/core/views/decor/list/decorator.coffee', 511, 493 ]
+396 silly gunzTarPerm extractEntry src/core/views/decor/list/list.coffee
+397 silly gunzTarPerm modified mode [ 'src/core/views/decor/list/list.coffee', 511, 493 ]
+398 silly gunzTarPerm extractEntry src/core/views/decor/attributes.coffee
+399 silly gunzTarPerm modified mode [ 'src/core/views/decor/attributes.coffee', 511, 493 ]
+400 silly gunzTarPerm extractEntry src/core/views/decor/bindings.coffee
+401 silly gunzTarPerm modified mode [ 'src/core/views/decor/bindings.coffee', 511, 493 ]
+402 silly gunzTarPerm extractEntry src/core/views/decor/children.coffee
+403 silly gunzTarPerm modified mode [ 'src/core/views/decor/children.coffee', 511, 493 ]
+404 silly gunzTarPerm extractEntry src/core/views/decor/dragdrop/collection.coffee
+405 silly gunzTarPerm modified mode [ 'src/core/views/decor/dragdrop/collection.coffee', 511, 493 ]
+406 silly gunzTarPerm extractEntry src/core/views/decor/dragdrop/draggable.coffee
+407 silly gunzTarPerm modified mode [ 'src/core/views/decor/dragdrop/draggable.coffee', 511, 493 ]
+408 silly gunzTarPerm extractEntry src/core/views/decor/dragdrop/droppable.coffee
+409 silly gunzTarPerm modified mode [ 'src/core/views/decor/dragdrop/droppable.coffee', 511, 493 ]
+410 silly gunzTarPerm extractEntry src/core/views/decor/events.coffee
+411 silly gunzTarPerm modified mode [ 'src/core/views/decor/events.coffee', 511, 493 ]
+412 silly gunzTarPerm extractEntry src/core/views/decor/factory.coffee
+413 silly gunzTarPerm modified mode [ 'src/core/views/decor/factory.coffee', 511, 493 ]
+414 silly gunzTarPerm extractEntry src/core/views/decor/base.coffee
+415 silly gunzTarPerm modified mode [ 'src/core/views/decor/base.coffee', 511, 493 ]
+416 silly gunzTarPerm extractEntry src/core/views/decor/preload.coffee
+417 silly gunzTarPerm modified mode [ 'src/core/views/decor/preload.coffee', 511, 493 ]
+418 silly gunzTarPerm extractEntry src/core/views/decor/sectionable/decor.coffee
+419 silly gunzTarPerm modified mode [ 'src/core/views/decor/sectionable/decor.coffee', 511, 493 ]
+420 silly gunzTarPerm extractEntry src/core/views/decor/sectionable/index.coffee
+421 silly gunzTarPerm modified mode [ 'src/core/views/decor/sectionable/index.coffee', 511, 493 ]
+422 silly gunzTarPerm extractEntry src/core/views/decor/selectable.coffee
+423 silly gunzTarPerm modified mode [ 'src/core/views/decor/selectable.coffee', 511, 493 ]
+424 silly gunzTarPerm extractEntry src/core/views/decor/states/decorator.coffee
+425 silly gunzTarPerm modified mode [ 'src/core/views/decor/states/decorator.coffee', 511, 493 ]
+426 silly gunzTarPerm extractEntry src/core/views/decor/states/state.coffee
+427 silly gunzTarPerm modified mode [ 'src/core/views/decor/states/state.coffee', 511, 493 ]
+428 silly gunzTarPerm extractEntry src/core/views/decor/states/states.coffee
+429 silly gunzTarPerm modified mode [ 'src/core/views/decor/states/states.coffee', 511, 493 ]
+430 silly gunzTarPerm extractEntry src/core/views/decor/template.coffee
+431 silly gunzTarPerm modified mode [ 'src/core/views/decor/template.coffee', 511, 493 ]
+432 silly gunzTarPerm extractEntry src/core/views/decor/transition.coffee
+433 silly gunzTarPerm modified mode [ 'src/core/views/decor/transition.coffee', 511, 493 ]
+434 silly gunzTarPerm extractEntry src/core/views/index.coffee
+435 silly gunzTarPerm modified mode [ 'src/core/views/index.coffee', 511, 493 ]
+436 silly gunzTarPerm extractEntry src/core/views/input/base.coffee
+437 silly gunzTarPerm modified mode [ 'src/core/views/input/base.coffee', 511, 493 ]
+438 silly gunzTarPerm extractEntry src/core/views/input/form.coffee
+439 silly gunzTarPerm modified mode [ 'src/core/views/input/form.coffee', 511, 493 ]
+440 silly gunzTarPerm extractEntry src/core/views/input/select.coffee
+441 silly gunzTarPerm modified mode [ 'src/core/views/input/select.coffee', 511, 493 ]
+442 silly gunzTarPerm extractEntry src/core/views/input/text.coffee
+443 silly gunzTarPerm modified mode [ 'src/core/views/input/text.coffee', 511, 493 ]
+444 silly gunzTarPerm extractEntry src/core/views/internal.coffee
+445 silly gunzTarPerm modified mode [ 'src/core/views/internal.coffee', 511, 493 ]
+446 silly gunzTarPerm extractEntry src/core/views/states.coffee
+447 silly gunzTarPerm modified mode [ 'src/core/views/states.coffee', 511, 493 ]
+448 silly gunzTarPerm extractEntry src/factories/abTest.coffee
+449 silly gunzTarPerm modified mode [ 'src/factories/abTest.coffee', 511, 493 ]
+450 silly gunzTarPerm extractEntry src/factories/abstract.coffee
+451 silly gunzTarPerm modified mode [ 'src/factories/abstract.coffee', 511, 493 ]
+452 silly gunzTarPerm extractEntry src/factories/base.coffee
+453 silly gunzTarPerm modified mode [ 'src/factories/base.coffee', 511, 493 ]
+454 silly gunzTarPerm extractEntry src/factories/class.coffee
+455 silly gunzTarPerm modified mode [ 'src/factories/class.coffee', 511, 493 ]
+456 silly gunzTarPerm extractEntry src/factories/either.coffee
+457 silly gunzTarPerm modified mode [ 'src/factories/either.coffee', 511, 493 ]
+458 silly gunzTarPerm extractEntry src/factories/factory.coffee
+459 silly gunzTarPerm modified mode [ 'src/factories/factory.coffee', 511, 493 ]
+460 silly gunzTarPerm extractEntry src/factories/fn.coffee
+461 silly gunzTarPerm modified mode [ 'src/factories/fn.coffee', 511, 493 ]
+462 silly gunzTarPerm extractEntry src/index.coffee
+463 silly gunzTarPerm modified mode [ 'src/index.coffee', 511, 493 ]
+464 silly gunzTarPerm extractEntry src/mediator/index.coffee
+465 silly gunzTarPerm modified mode [ 'src/mediator/index.coffee', 511, 493 ]
+466 silly gunzTarPerm extractEntry src/mediator/mediator.coffee
+467 silly gunzTarPerm modified mode [ 'src/mediator/mediator.coffee', 511, 493 ]
+468 silly gunzTarPerm extractEntry src/models/locator.coffee
+469 silly gunzTarPerm modified mode [ 'src/models/locator.coffee', 511, 493 ]
+470 silly gunzTarPerm extractEntry src/templates/engines/base.coffee
+471 silly gunzTarPerm modified mode [ 'src/templates/engines/base.coffee', 511, 493 ]
+472 silly gunzTarPerm extractEntry src/templates/engines/handlebars.coffee
+473 silly gunzTarPerm modified mode [ 'src/templates/engines/handlebars.coffee', 511, 493 ]
+474 silly gunzTarPerm extractEntry src/templates/engines/none.coffee
+475 silly gunzTarPerm modified mode [ 'src/templates/engines/none.coffee', 511, 493 ]
+476 silly gunzTarPerm extractEntry src/templates/factory.coffee
+477 silly gunzTarPerm modified mode [ 'src/templates/factory.coffee', 511, 493 ]
+478 silly gunzTarPerm extractEntry src/templates/plugins/base.coffee
+479 silly gunzTarPerm modified mode [ 'src/templates/plugins/base.coffee', 511, 493 ]
+480 silly gunzTarPerm extractEntry src/templates/plugins/i18n.coffee
+481 silly gunzTarPerm modified mode [ 'src/templates/plugins/i18n.coffee', 511, 493 ]
+482 silly gunzTarPerm extractEntry src/templates/template.coffee
+483 silly gunzTarPerm modified mode [ 'src/templates/template.coffee', 511, 493 ]
+484 silly gunzTarPerm extractEntry src/utils/async.coffee
+485 silly gunzTarPerm modified mode [ 'src/utils/async.coffee', 511, 493 ]
+486 silly gunzTarPerm extractEntry src/utils/compose.coffee
+487 silly gunzTarPerm modified mode [ 'src/utils/compose.coffee', 511, 493 ]
+488 silly gunzTarPerm extractEntry src/utils/getCallstackSize.coffee
+489 silly gunzTarPerm modified mode [ 'src/utils/getCallstackSize.coffee', 511, 493 ]
+490 silly gunzTarPerm extractEntry src/utils/idGenerator.coffee
+491 silly gunzTarPerm modified mode [ 'src/utils/idGenerator.coffee', 511, 493 ]
+492 silly gunzTarPerm extractEntry src/utils/logger.coffee
+493 silly gunzTarPerm modified mode [ 'src/utils/logger.coffee', 511, 493 ]
+494 silly gunzTarPerm extractEntry src/views/adapters/backbone/collection.coffee
+495 silly gunzTarPerm modified mode [ 'src/views/adapters/backbone/collection.coffee', 511, 493 ]
+496 silly gunzTarPerm extractEntry src/views/adapters/backbone/index.coffee
+497 silly gunzTarPerm modified mode [ 'src/views/adapters/backbone/index.coffee', 511, 493 ]
+498 silly gunzTarPerm extractEntry src/views/adapters/backbone/model.coffee
+499 silly gunzTarPerm modified mode [ 'src/views/adapters/backbone/model.coffee', 511, 493 ]
+500 silly gunzTarPerm extractEntry src/views/adapters/backbone/view.coffee
+501 silly gunzTarPerm modified mode [ 'src/views/adapters/backbone/view.coffee', 511, 493 ]
+502 silly gunzTarPerm extractEntry src/views/adapters/base/index.coffee
+503 silly gunzTarPerm modified mode [ 'src/views/adapters/base/index.coffee', 511, 493 ]
+504 silly gunzTarPerm extractEntry src/views/adapters/index.coffee
+505 silly gunzTarPerm modified mode [ 'src/views/adapters/index.coffee', 511, 493 ]
+506 silly gunzTarPerm extractEntry src/views/base.coffee
+507 silly gunzTarPerm modified mode [ 'src/views/base.coffee', 511, 493 ]
+508 silly gunzTarPerm extractEntry src/views/collection.coffee
+509 silly gunzTarPerm modified mode [ 'src/views/collection.coffee', 511, 493 ]
+510 silly gunzTarPerm extractEntry src/views/decor/attributes.coffee
+511 silly gunzTarPerm modified mode [ 'src/views/decor/attributes.coffee', 511, 493 ]
+512 silly gunzTarPerm extractEntry src/views/decor/base.coffee
+513 silly gunzTarPerm modified mode [ 'src/views/decor/base.coffee', 511, 493 ]
+514 silly gunzTarPerm extractEntry src/views/decor/bindings.coffee
+515 silly gunzTarPerm modified mode [ 'src/views/decor/bindings.coffee', 511, 493 ]
+516 silly gunzTarPerm extractEntry src/views/decor/dragdrop/collection.coffee
+517 silly gunzTarPerm modified mode [ 'src/views/decor/dragdrop/collection.coffee', 511, 493 ]
+518 silly gunzTarPerm extractEntry src/views/decor/dragdrop/draggable.coffee
+519 silly gunzTarPerm modified mode [ 'src/views/decor/dragdrop/draggable.coffee', 511, 493 ]
+520 silly gunzTarPerm extractEntry src/views/decor/dragdrop/droppable.coffee
+521 silly gunzTarPerm modified mode [ 'src/views/decor/dragdrop/droppable.coffee', 511, 493 ]
+522 silly gunzTarPerm extractEntry src/views/decor/events.coffee
+523 silly gunzTarPerm modified mode [ 'src/views/decor/events.coffee', 511, 493 ]
+524 silly gunzTarPerm extractEntry src/views/decor/factory.coffee
+525 silly gunzTarPerm modified mode [ 'src/views/decor/factory.coffee', 511, 493 ]
+526 silly gunzTarPerm extractEntry src/views/decor/preload.coffee
+527 silly gunzTarPerm modified mode [ 'src/views/decor/preload.coffee', 511, 493 ]
+528 silly gunzTarPerm extractEntry src/views/decor/sections/child/index.coffee
+529 silly gunzTarPerm modified mode [ 'src/views/decor/sections/child/index.coffee', 511, 493 ]
+530 silly gunzTarPerm extractEntry src/views/decor/sections/index.coffee
+531 silly gunzTarPerm modified mode [ 'src/views/decor/sections/index.coffee', 511, 493 ]
+532 silly gunzTarPerm extractEntry src/views/decor/sections/list/index.coffee
+533 silly gunzTarPerm modified mode [ 'src/views/decor/sections/list/index.coffee', 511, 493 ]
+534 silly gunzTarPerm extractEntry src/views/decor/sections/states/index.coffee
+535 silly gunzTarPerm modified mode [ 'src/views/decor/sections/states/index.coffee', 511, 493 ]
+536 silly gunzTarPerm extractEntry src/views/decor/sections/states/state.coffee
+537 silly gunzTarPerm modified mode [ 'src/views/decor/sections/states/state.coffee', 511, 493 ]
+538 silly gunzTarPerm extractEntry src/views/decor/template.coffee
+539 silly gunzTarPerm modified mode [ 'src/views/decor/template.coffee', 511, 493 ]
+540 silly gunzTarPerm extractEntry src/views/decor/transition.coffee
+541 silly gunzTarPerm modified mode [ 'src/views/decor/transition.coffee', 511, 493 ]
+542 silly gunzTarPerm extractEntry src/views/index.coffee
+543 silly gunzTarPerm modified mode [ 'src/views/index.coffee', 511, 493 ]
+544 silly gunzTarPerm extractEntry src/views/input/base.coffee
+545 silly gunzTarPerm modified mode [ 'src/views/input/base.coffee', 511, 493 ]
+546 silly gunzTarPerm extractEntry src/views/input/form.coffee
+547 silly gunzTarPerm modified mode [ 'src/views/input/form.coffee', 511, 493 ]
+548 silly gunzTarPerm extractEntry src/views/input/select.coffee
+549 silly gunzTarPerm modified mode [ 'src/views/input/select.coffee', 511, 493 ]
+550 silly gunzTarPerm extractEntry src/views/input/text.coffee
+551 silly gunzTarPerm modified mode [ 'src/views/input/text.coffee', 511, 493 ]
+552 silly gunzTarPerm extractEntry src/views/internal.coffee
+553 silly gunzTarPerm modified mode [ 'src/views/internal.coffee', 511, 493 ]
+554 silly gunzTarPerm extractEntry src/views/states.coffee
+555 silly gunzTarPerm modified mode [ 'src/views/states.coffee', 511, 493 ]
+556 verbose read json /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/package/package.json
+557 silly lockFile 74deb9fb-07703-0-8534194945823401-package /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/package
+558 silly lockFile 74deb9fb-07703-0-8534194945823401-package /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/package
+559 silly lockFile f28993fd-07703-0-8534194945823401-tmp-tgz /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/tmp.tgz
+560 silly lockFile f28993fd-07703-0-8534194945823401-tmp-tgz /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/tmp.tgz
+561 verbose from cache /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/package/package.json
+562 verbose tar pack [ '/Users/craig/.npm/mojo/0.4.13/package.tgz',
+562 verbose tar pack   '/var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/package' ]
+563 verbose tarball /Users/craig/.npm/mojo/0.4.13/package.tgz
+564 verbose folder /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/package
+565 silly lockFile 74deb9fb-07703-0-8534194945823401-package /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/package
+566 verbose lock /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/package /Users/craig/.npm/74deb9fb-07703-0-8534194945823401-package.lock
+567 silly lockFile 2dd62db8-raig-npm-mojo-0-4-13-package-tgz /Users/craig/.npm/mojo/0.4.13/package.tgz
+568 verbose lock /Users/craig/.npm/mojo/0.4.13/package.tgz /Users/craig/.npm/2dd62db8-raig-npm-mojo-0-4-13-package-tgz.lock
+569 silly lockFile 74deb9fb-07703-0-8534194945823401-package /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/package
+570 silly lockFile 74deb9fb-07703-0-8534194945823401-package /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-46441/1371003207703-0.8534194945823401/package
+571 silly lockFile 2dd62db8-raig-npm-mojo-0-4-13-package-tgz /Users/craig/.npm/mojo/0.4.13/package.tgz
+572 silly lockFile 2dd62db8-raig-npm-mojo-0-4-13-package-tgz /Users/craig/.npm/mojo/0.4.13/package.tgz
+573 silly lockFile e3e6d079-rs-craig-npm-mojo-0-4-13-package /Users/craig/.npm/mojo/0.4.13/package
+574 verbose lock /Users/craig/.npm/mojo/0.4.13/package /Users/craig/.npm/e3e6d079-rs-craig-npm-mojo-0-4-13-package.lock
+575 silly lockFile e3e6d079-rs-craig-npm-mojo-0-4-13-package /Users/craig/.npm/mojo/0.4.13/package
+576 silly lockFile e3e6d079-rs-craig-npm-mojo-0-4-13-package /Users/craig/.npm/mojo/0.4.13/package
+577 verbose tar unpack /Users/craig/.npm/mojo/0.4.13/package.tgz
+578 silly lockFile e3e6d079-rs-craig-npm-mojo-0-4-13-package /Users/craig/.npm/mojo/0.4.13/package
+579 verbose lock /Users/craig/.npm/mojo/0.4.13/package /Users/craig/.npm/e3e6d079-rs-craig-npm-mojo-0-4-13-package.lock
+580 silly lockFile 2dd62db8-raig-npm-mojo-0-4-13-package-tgz /Users/craig/.npm/mojo/0.4.13/package.tgz
+581 verbose lock /Users/craig/.npm/mojo/0.4.13/package.tgz /Users/craig/.npm/2dd62db8-raig-npm-mojo-0-4-13-package-tgz.lock
+582 silly gunzTarPerm modes [ '755', '644' ]
+583 silly gunzTarPerm extractEntry package.json
+584 silly gunzTarPerm extractEntry .npmignore
+585 silly gunzTarPerm extractEntry README.md
+586 silly gunzTarPerm extractEntry index.js
+587 silly gunzTarPerm extractEntry dump.rdb
+588 silly gunzTarPerm extractEntry docs2/README.md
+589 silly gunzTarPerm extractEntry docs2/adapters/README.md
+590 silly gunzTarPerm extractEntry docs2/brainstorm/README.md
+591 silly gunzTarPerm extractEntry docs2/data-binding/README.md
+592 silly gunzTarPerm extractEntry docs2/data-binding/collections.md
+593 silly gunzTarPerm extractEntry docs2/data-binding/objects.md
+594 silly gunzTarPerm extractEntry docs2/mediator/README.md
+595 silly gunzTarPerm extractEntry docs2/views/README.md
+596 silly gunzTarPerm extractEntry docs2/views/decorators/README.md
+597 silly gunzTarPerm extractEntry docs2/views/sections/README.md
+598 silly gunzTarPerm extractEntry docs2/views/templates/README.md
+599 silly gunzTarPerm extractEntry .jamignore
+600 silly gunzTarPerm extractEntry .cupboard
+601 silly gunzTarPerm extractEntry lib/index.js
+602 silly gunzTarPerm extractEntry lib/bindable/inheritable.js
+603 silly gunzTarPerm extractEntry lib/core/index.js
+604 silly gunzTarPerm extractEntry lib/core/factories/abTest.js
+605 silly gunzTarPerm extractEntry lib/core/factories/abstract.js
+606 silly gunzTarPerm extractEntry lib/core/factories/base.js
+607 silly gunzTarPerm extractEntry lib/core/factories/class.js
+608 silly gunzTarPerm extractEntry lib/core/factories/either.js
+609 silly gunzTarPerm extractEntry lib/core/factories/factory.js
+610 silly gunzTarPerm extractEntry lib/core/factories/fn.js
+611 silly gunzTarPerm extractEntry lib/core/mediator/index.js
+612 silly gunzTarPerm extractEntry lib/core/mediator/mediator.js
+613 silly gunzTarPerm extractEntry lib/core/models/locator.js
+614 silly gunzTarPerm extractEntry lib/core/templates/factory.js
+615 silly gunzTarPerm extractEntry lib/core/templates/template.js
+616 silly gunzTarPerm extractEntry lib/core/templates/engines/base.js
+617 silly gunzTarPerm extractEntry lib/core/templates/engines/handlebars.js
+618 silly gunzTarPerm extractEntry lib/core/templates/engines/none.js
+619 silly gunzTarPerm extractEntry lib/core/templates/plugins/base.js
+620 silly gunzTarPerm extractEntry lib/core/templates/plugins/i18n.js
+621 silly gunzTarPerm extractEntry lib/core/utils/async.js
+622 silly gunzTarPerm extractEntry lib/core/utils/compose.js
+623 silly gunzTarPerm extractEntry lib/core/utils/getCallstackSize.js
+624 silly gunzTarPerm extractEntry lib/core/utils/idGenerator.js
+625 silly gunzTarPerm extractEntry lib/core/utils/logger.js
+626 silly gunzTarPerm extractEntry lib/core/utils/throttleCallback.js
+627 silly gunzTarPerm extractEntry lib/core/views/base.js
+628 silly gunzTarPerm extractEntry lib/core/views/collection.js
+629 silly gunzTarPerm extractEntry lib/core/views/index.js
+630 silly gunzTarPerm extractEntry lib/core/views/internal.js
+631 silly gunzTarPerm extractEntry lib/core/views/states.js
+632 silly gunzTarPerm extractEntry lib/core/views/adapters/index.js
+633 silly gunzTarPerm extractEntry lib/core/views/adapters/backbone/collection.js
+634 silly gunzTarPerm extractEntry lib/core/views/adapters/backbone/index.js
+635 silly gunzTarPerm extractEntry lib/core/views/adapters/backbone/model.js
+636 silly gunzTarPerm extractEntry lib/core/views/adapters/backbone/view.js
+637 silly gunzTarPerm extractEntry lib/core/views/adapters/base/index.js
+638 silly gunzTarPerm extractEntry lib/core/views/decor/attributes.js
+639 silly gunzTarPerm extractEntry lib/core/views/decor/bindings.js
+640 silly gunzTarPerm extractEntry lib/core/views/decor/children.js
+641 silly gunzTarPerm extractEntry lib/core/views/decor/template.js
+642 silly gunzTarPerm extractEntry lib/core/views/decor/events.js
+643 silly gunzTarPerm extractEntry lib/core/views/decor/factory.js
+644 silly gunzTarPerm extractEntry lib/core/views/decor/base.js
+645 silly gunzTarPerm extractEntry lib/core/views/decor/preload.js
+646 silly gunzTarPerm extractEntry lib/core/views/decor/selectable.js
+647 silly gunzTarPerm extractEntry lib/core/views/decor/transition.js
+648 silly gunzTarPerm extractEntry lib/core/views/decor/sectionable/decor.js
+649 silly gunzTarPerm extractEntry lib/core/views/decor/sectionable/index.js
+650 silly gunzTarPerm extractEntry lib/core/views/decor/states/decorator.js
+651 silly gunzTarPerm extractEntry lib/core/views/decor/states/state.js
+652 silly gunzTarPerm extractEntry lib/core/views/decor/states/states.js
+653 silly gunzTarPerm extractEntry lib/core/views/decor/dragdrop/collection.js
+654 silly gunzTarPerm extractEntry lib/core/views/decor/dragdrop/draggable.js
+655 silly gunzTarPerm extractEntry lib/core/views/decor/dragdrop/droppable.js
+656 silly gunzTarPerm extractEntry lib/core/views/decor/list/decorator.js
+657 silly gunzTarPerm extractEntry lib/core/views/decor/list/list.js
+658 silly gunzTarPerm extractEntry lib/core/views/input/base.js
+659 silly gunzTarPerm extractEntry lib/core/views/input/form.js
+660 silly gunzTarPerm extractEntry lib/core/views/input/select.js
+661 silly gunzTarPerm extractEntry lib/core/views/input/text.js
+662 silly gunzTarPerm extractEntry lib/factories/abTest.js
+663 silly gunzTarPerm extractEntry lib/factories/abstract.js
+664 silly gunzTarPerm extractEntry lib/factories/base.js
+665 silly gunzTarPerm extractEntry lib/factories/class.js
+666 silly gunzTarPerm extractEntry lib/factories/either.js
+667 silly gunzTarPerm extractEntry lib/factories/factory.js
+668 silly gunzTarPerm extractEntry lib/factories/fn.js
+669 silly gunzTarPerm extractEntry lib/mediator/index.js
+670 silly gunzTarPerm extractEntry lib/mediator/mediator.js
+671 silly gunzTarPerm extractEntry lib/models/locator.js
+672 silly gunzTarPerm extractEntry lib/templates/factory.js
+673 silly gunzTarPerm extractEntry lib/templates/template.js
+674 silly gunzTarPerm extractEntry lib/templates/engines/base.js
+675 silly gunzTarPerm extractEntry lib/templates/engines/handlebars.js
+676 silly gunzTarPerm extractEntry lib/templates/engines/none.js
+677 silly gunzTarPerm extractEntry lib/templates/plugins/base.js
+678 silly gunzTarPerm extractEntry lib/templates/plugins/i18n.js
+679 silly gunzTarPerm extractEntry lib/utils/async.js
+680 silly gunzTarPerm extractEntry lib/utils/compose.js
+681 silly gunzTarPerm extractEntry lib/utils/getCallstackSize.js
+682 silly gunzTarPerm extractEntry lib/utils/idGenerator.js
+683 silly gunzTarPerm extractEntry lib/utils/logger.js
+684 silly gunzTarPerm extractEntry lib/views/base.js
+685 silly gunzTarPerm extractEntry lib/views/collection.js
+686 silly gunzTarPerm extractEntry lib/views/index.js
+687 silly gunzTarPerm extractEntry lib/views/internal.js
+688 silly gunzTarPerm extractEntry lib/views/states.js
+689 silly gunzTarPerm extractEntry lib/views/adapters/index.js
+690 silly gunzTarPerm extractEntry lib/views/adapters/backbone/collection.js
+691 silly gunzTarPerm extractEntry lib/views/adapters/backbone/index.js
+692 silly gunzTarPerm extractEntry lib/views/adapters/backbone/model.js
+693 silly gunzTarPerm extractEntry lib/views/adapters/backbone/view.js
+694 silly gunzTarPerm extractEntry lib/views/adapters/base/index.js
+695 silly gunzTarPerm extractEntry lib/views/decor/attributes.js
+696 silly gunzTarPerm extractEntry lib/views/decor/base.js
+697 silly gunzTarPerm extractEntry lib/views/decor/bindings.js
+698 silly gunzTarPerm extractEntry lib/views/decor/events.js
+699 silly gunzTarPerm extractEntry lib/views/decor/factory.js
+700 silly gunzTarPerm extractEntry lib/views/decor/preload.js
+701 silly gunzTarPerm extractEntry lib/views/decor/template.js
+702 silly gunzTarPerm extractEntry lib/views/decor/transition.js
+703 silly gunzTarPerm extractEntry lib/views/decor/dragdrop/collection.js
+704 silly gunzTarPerm extractEntry lib/views/decor/dragdrop/draggable.js
+705 silly gunzTarPerm extractEntry lib/views/decor/dragdrop/droppable.js
+706 silly gunzTarPerm extractEntry lib/views/decor/sections/index.js
+707 silly gunzTarPerm extractEntry lib/views/decor/sections/child/index.js
+708 silly gunzTarPerm extractEntry lib/views/decor/sections/list/index.js
+709 silly gunzTarPerm extractEntry lib/views/decor/sections/states/index.js
+710 silly gunzTarPerm extractEntry lib/views/decor/sections/states/state.js
+711 silly gunzTarPerm extractEntry lib/views/input/base.js
+712 silly gunzTarPerm extractEntry lib/views/input/form.js
+713 silly gunzTarPerm extractEntry lib/views/input/select.js
+714 silly gunzTarPerm extractEntry lib/views/input/text.js
+715 silly gunzTarPerm extractEntry makefile
+716 silly gunzTarPerm extractEntry docs/brainstorm/README.md
+717 silly gunzTarPerm extractEntry docs/brainstorm/views.md
+718 silly gunzTarPerm extractEntry docs/brainstorm/bindings.md
+719 silly gunzTarPerm extractEntry docs/brainstorm/collections.md
+720 silly gunzTarPerm extractEntry docs/brainstorm/factories.md
+721 silly gunzTarPerm extractEntry docs/brainstorm/guidlines.md
+722 silly gunzTarPerm extractEntry docs/brainstorm/input views.md
+723 silly gunzTarPerm extractEntry docs/brainstorm/ab testing javascript.md
+724 silly gunzTarPerm extractEntry docs/brainstorm/models.md
+725 silly gunzTarPerm extractEntry docs/brainstorm/names.md
+726 silly gunzTarPerm extractEntry docs/brainstorm/organization.md
+727 silly gunzTarPerm extractEntry docs/brainstorm/pseudo.md
+728 silly gunzTarPerm extractEntry docs/brainstorm/routing.md
+729 silly gunzTarPerm extractEntry docs/brainstorm/templates.md
+730 silly gunzTarPerm extractEntry docs/brainstorm/mixins.md
+731 silly gunzTarPerm extractEntry publish
+732 silly gunzTarPerm extractEntry src/bindable/inheritable.coffee
+733 silly gunzTarPerm extractEntry src/core/factories/abTest.coffee
+734 silly gunzTarPerm extractEntry src/core/factories/abstract.coffee
+735 silly gunzTarPerm extractEntry src/core/factories/base.coffee
+736 silly gunzTarPerm extractEntry src/core/factories/class.coffee
+737 silly gunzTarPerm extractEntry src/core/factories/either.coffee
+738 silly gunzTarPerm extractEntry src/core/factories/factory.coffee
+739 silly gunzTarPerm extractEntry src/core/factories/fn.coffee
+740 silly gunzTarPerm extractEntry src/core/index.coffee
+741 silly gunzTarPerm extractEntry src/core/mediator/index.coffee
+742 silly gunzTarPerm extractEntry src/core/mediator/mediator.coffee
+743 silly gunzTarPerm extractEntry src/core/models/locator.coffee
+744 silly gunzTarPerm extractEntry src/core/templates/engines/base.coffee
+745 silly gunzTarPerm extractEntry src/core/templates/engines/handlebars.coffee
+746 silly gunzTarPerm extractEntry src/core/templates/engines/none.coffee
+747 silly gunzTarPerm extractEntry src/core/templates/factory.coffee
+748 silly gunzTarPerm extractEntry src/core/templates/plugins/base.coffee
+749 silly gunzTarPerm extractEntry src/core/templates/plugins/i18n.coffee
+750 silly gunzTarPerm extractEntry src/core/templates/template.coffee
+751 silly gunzTarPerm extractEntry src/core/utils/async.coffee
+752 silly gunzTarPerm extractEntry src/core/utils/compose.coffee
+753 silly gunzTarPerm extractEntry src/core/utils/getCallstackSize.coffee
+754 silly gunzTarPerm extractEntry src/core/utils/idGenerator.coffee
+755 silly gunzTarPerm extractEntry src/core/utils/logger.coffee
+756 silly gunzTarPerm extractEntry src/core/utils/throttleCallback.coffee
+757 silly gunzTarPerm extractEntry src/core/views/adapters/backbone/collection.coffee
+758 silly gunzTarPerm extractEntry src/core/views/adapters/backbone/index.coffee
+759 silly gunzTarPerm extractEntry src/core/views/adapters/backbone/model.coffee
+760 silly gunzTarPerm extractEntry src/core/views/adapters/backbone/view.coffee
+761 silly gunzTarPerm extractEntry src/core/views/adapters/base/index.coffee
+762 silly gunzTarPerm extractEntry src/core/views/adapters/index.coffee
+763 silly gunzTarPerm extractEntry src/core/views/base.coffee
+764 silly gunzTarPerm extractEntry src/core/views/collection.coffee
+765 silly gunzTarPerm extractEntry src/core/views/decor/list/decorator.coffee
+766 silly gunzTarPerm extractEntry src/core/views/decor/list/list.coffee
+767 silly gunzTarPerm extractEntry src/core/views/decor/attributes.coffee
+768 silly gunzTarPerm extractEntry src/core/views/decor/bindings.coffee
+769 silly gunzTarPerm extractEntry src/core/views/decor/children.coffee
+770 silly gunzTarPerm extractEntry src/core/views/decor/dragdrop/collection.coffee
+771 silly gunzTarPerm extractEntry src/core/views/decor/dragdrop/draggable.coffee
+772 silly gunzTarPerm extractEntry src/core/views/decor/dragdrop/droppable.coffee
+773 silly gunzTarPerm extractEntry src/core/views/decor/events.coffee
+774 silly gunzTarPerm extractEntry src/core/views/decor/factory.coffee
+775 silly gunzTarPerm extractEntry src/core/views/decor/base.coffee
+776 silly gunzTarPerm extractEntry src/core/views/decor/preload.coffee
+777 silly gunzTarPerm extractEntry src/core/views/decor/sectionable/decor.coffee
+778 silly gunzTarPerm extractEntry src/core/views/decor/sectionable/index.coffee
+779 silly gunzTarPerm extractEntry src/core/views/decor/selectable.coffee
+780 silly gunzTarPerm extractEntry src/core/views/decor/states/decorator.coffee
+781 silly gunzTarPerm extractEntry src/core/views/decor/states/state.coffee
+782 silly gunzTarPerm extractEntry src/core/views/decor/states/states.coffee
+783 silly gunzTarPerm extractEntry src/core/views/decor/template.coffee
+784 silly gunzTarPerm extractEntry src/core/views/decor/transition.coffee
+785 silly gunzTarPerm extractEntry src/core/views/index.coffee
+786 silly gunzTarPerm extractEntry src/core/views/input/base.coffee
+787 silly gunzTarPerm extractEntry src/core/views/input/form.coffee
+788 silly gunzTarPerm extractEntry src/core/views/input/select.coffee
+789 silly gunzTarPerm extractEntry src/core/views/input/text.coffee
+790 silly gunzTarPerm extractEntry src/core/views/internal.coffee
+791 silly gunzTarPerm extractEntry src/core/views/states.coffee
+792 silly gunzTarPerm extractEntry src/factories/abTest.coffee
+793 silly gunzTarPerm extractEntry src/factories/abstract.coffee
+794 silly gunzTarPerm extractEntry src/factories/base.coffee
+795 silly gunzTarPerm extractEntry src/factories/class.coffee
+796 silly gunzTarPerm extractEntry src/factories/either.coffee
+797 silly gunzTarPerm extractEntry src/factories/factory.coffee
+798 silly gunzTarPerm extractEntry src/factories/fn.coffee
+799 silly gunzTarPerm extractEntry src/index.coffee
+800 silly gunzTarPerm extractEntry src/mediator/index.coffee
+801 silly gunzTarPerm extractEntry src/mediator/mediator.coffee
+802 silly gunzTarPerm extractEntry src/models/locator.coffee
+803 silly gunzTarPerm extractEntry src/templates/engines/base.coffee
+804 silly gunzTarPerm extractEntry src/templates/engines/handlebars.coffee
+805 silly gunzTarPerm extractEntry src/templates/engines/none.coffee
+806 silly gunzTarPerm extractEntry src/templates/factory.coffee
+807 silly gunzTarPerm extractEntry src/templates/plugins/base.coffee
+808 silly gunzTarPerm extractEntry src/templates/plugins/i18n.coffee
+809 silly gunzTarPerm extractEntry src/templates/template.coffee
+810 silly gunzTarPerm extractEntry src/utils/async.coffee
+811 silly gunzTarPerm extractEntry src/utils/compose.coffee
+812 silly gunzTarPerm extractEntry src/utils/getCallstackSize.coffee
+813 silly gunzTarPerm extractEntry src/utils/idGenerator.coffee
+814 silly gunzTarPerm extractEntry src/utils/logger.coffee
+815 silly gunzTarPerm extractEntry src/views/adapters/backbone/collection.coffee
+816 silly gunzTarPerm extractEntry src/views/adapters/backbone/index.coffee
+817 silly gunzTarPerm extractEntry src/views/adapters/backbone/model.coffee
+818 silly gunzTarPerm extractEntry src/views/adapters/backbone/view.coffee
+819 silly gunzTarPerm extractEntry src/views/adapters/base/index.coffee
+820 silly gunzTarPerm extractEntry src/views/adapters/index.coffee
+821 silly gunzTarPerm extractEntry src/views/base.coffee
+822 silly gunzTarPerm extractEntry src/views/collection.coffee
+823 silly gunzTarPerm extractEntry src/views/decor/attributes.coffee
+824 silly gunzTarPerm extractEntry src/views/decor/base.coffee
+825 silly gunzTarPerm extractEntry src/views/decor/bindings.coffee
+826 silly gunzTarPerm extractEntry src/views/decor/dragdrop/collection.coffee
+827 silly gunzTarPerm extractEntry src/views/decor/dragdrop/draggable.coffee
+828 silly gunzTarPerm extractEntry src/views/decor/dragdrop/droppable.coffee
+829 silly gunzTarPerm extractEntry src/views/decor/events.coffee
+830 silly gunzTarPerm extractEntry src/views/decor/factory.coffee
+831 silly gunzTarPerm extractEntry src/views/decor/preload.coffee
+832 silly gunzTarPerm extractEntry src/views/decor/sections/child/index.coffee
+833 silly gunzTarPerm extractEntry src/views/decor/sections/index.coffee
+834 silly gunzTarPerm extractEntry src/views/decor/sections/list/index.coffee
+835 silly gunzTarPerm extractEntry src/views/decor/sections/states/index.coffee
+836 silly gunzTarPerm extractEntry src/views/decor/sections/states/state.coffee
+837 silly gunzTarPerm extractEntry src/views/decor/template.coffee
+838 silly gunzTarPerm extractEntry src/views/decor/transition.coffee
+839 silly gunzTarPerm extractEntry src/views/index.coffee
+840 silly gunzTarPerm extractEntry src/views/input/base.coffee
+841 silly gunzTarPerm extractEntry src/views/input/form.coffee
+842 silly gunzTarPerm extractEntry src/views/input/select.coffee
+843 silly gunzTarPerm extractEntry src/views/input/text.coffee
+844 silly gunzTarPerm extractEntry src/views/internal.coffee
+845 silly gunzTarPerm extractEntry src/views/states.coffee
+846 verbose read json /Users/craig/.npm/mojo/0.4.13/package/package.json
+847 silly lockFile e3e6d079-rs-craig-npm-mojo-0-4-13-package /Users/craig/.npm/mojo/0.4.13/package
+848 silly lockFile e3e6d079-rs-craig-npm-mojo-0-4-13-package /Users/craig/.npm/mojo/0.4.13/package
+849 silly lockFile 2dd62db8-raig-npm-mojo-0-4-13-package-tgz /Users/craig/.npm/mojo/0.4.13/package.tgz
+850 silly lockFile 2dd62db8-raig-npm-mojo-0-4-13-package-tgz /Users/craig/.npm/mojo/0.4.13/package.tgz
+851 silly shasum updated bytes 45530
+852 info shasum fc46fe32bf006a1575183964bd7802f052400b67
+852 info shasum /Users/craig/.npm/mojo/0.4.13/package.tgz
+853 verbose from cache /Users/craig/.npm/mojo/0.4.13/package/package.json
+854 verbose chmod /Users/craig/.npm/mojo/0.4.13/package.tgz 644
+855 verbose chown /Users/craig/.npm/mojo/0.4.13/package.tgz [ 501, 20 ]
+856 silly lockFile 3a52ce78- .
+857 silly publish { name: 'mojo',
+857 silly publish   version: '0.4.13',
+857 silly publish   description: 'test',
+857 silly publish   main: './lib/index.js',
+857 silly publish   jam:
+857 silly publish    { baseUrl: 'public',
+857 silly publish      packageDir: 'public/vendor',
+857 silly publish      dependencies:
+857 silly publish       { jquery: '1.7.x',
+857 silly publish         'jquery-transit': '*',
+857 silly publish         underscore: '*',
+857 silly publish         events: '0.0.x',
+857 silly publish         async: '0.2.x' },
+857 silly publish      config:
+857 silly publish       { repository: 'http://npm.classdojo.com:5984/jam',
+857 silly publish         paths: [Object] } },
+857 silly publish   repository: { type: 'git', url: 'http://npm.classdojo.com:5984/jam' },
+857 silly publish   dependencies:
+857 silly publish    { dref: '0.0.x',
+857 silly publish      comerr: '0.0.x',
+857 silly publish      sift: '0.0.x',
+857 silly publish      cstep: '0.0.x',
+857 silly publish      outcome: '0.0.x',
+857 silly publish      step: '0.0.x',
+857 silly publish      'type-component': '0.0.x',
+857 silly publish      bindable: '0.2.x',
+857 silly publish      disposable: '0.0.x',
+857 silly publish      eventemitter2: '0.4.x',
+857 silly publish      structr: '0.2.x',
+857 silly publish      dolce: '0.0.x',
+857 silly publish      mannequin: '0.1.x',
+857 silly publish      hoist: '0.0.x',
+857 silly publish      'pilot-block': '0.0.x',
+857 silly publish      crema: '0.1.x',
+857 silly publish      hooks: '0.3.x',
+857 silly publish      flatstack: '0.0.x' },
+857 silly publish   readme: '### [Docs](./docs)\n\nInspired by [jquery](http://jquery.com/), [backbone](http://backbonejs.org/), and [ember](http://emberjs.com/)\n\n\n',
+857 silly publish   readmeFilename: 'README.md',
+857 silly publish   _id: 'mojo@0.4.13',
+857 silly publish   dist: { shasum: 'fc46fe32bf006a1575183964bd7802f052400b67' },
+857 silly publish   _from: '.' }
+858 verbose url raw mojo
+859 verbose url resolving [ 'http://registry.npmjs.org/', './mojo' ]
+860 verbose url resolved http://registry.npmjs.org/mojo
+861 info trying registry request attempt 1 at 19:13:39
+862 http PUT http://registry.npmjs.org/mojo
+863 http 409 http://registry.npmjs.org/mojo
+864 verbose url raw mojo
+865 verbose url resolving [ 'http://registry.npmjs.org/', './mojo' ]
+866 verbose url resolved http://registry.npmjs.org/mojo
+867 info trying registry request attempt 1 at 19:13:40
+868 http GET http://registry.npmjs.org/mojo
+869 http 200 http://registry.npmjs.org/mojo
+870 verbose uploading [ 'mojo/-/mojo-0.4.13.tgz/-rev/46-60732c97cf5f050087eed0d77d77b9c5',
+870 verbose uploading   '/Users/craig/.npm/mojo/0.4.13/package.tgz' ]
+871 verbose url raw mojo/-/mojo-0.4.13.tgz/-rev/46-60732c97cf5f050087eed0d77d77b9c5
+872 verbose url resolving [ 'http://registry.npmjs.org/',
+872 verbose url resolving   './mojo/-/mojo-0.4.13.tgz/-rev/46-60732c97cf5f050087eed0d77d77b9c5' ]
+873 verbose url resolved http://registry.npmjs.org/mojo/-/mojo-0.4.13.tgz/-rev/46-60732c97cf5f050087eed0d77d77b9c5
+874 info trying registry request attempt 1 at 19:13:40
+875 http PUT http://registry.npmjs.org/mojo/-/mojo-0.4.13.tgz/-rev/46-60732c97cf5f050087eed0d77d77b9c5
+876 http 403 http://registry.npmjs.org/mojo/-/mojo-0.4.13.tgz/-rev/46-60732c97cf5f050087eed0d77d77b9c5
+877 info trying registry request attempt 1 at 19:13:40
+878 http PUT http://registry.npmjs.org/mojo/-/mojo-0.4.13.tgz/-rev/46-60732c97cf5f050087eed0d77d77b9c5
+879 http 403 http://registry.npmjs.org/mojo/-/mojo-0.4.13.tgz/-rev/46-60732c97cf5f050087eed0d77d77b9c5
+880 error publish Error uploading package
+881 error Error: forbidden user: architectd not authorized to modify mojo
+881 error Added: _attachments.mojo-0.4.13.tgz: mojo/-/mojo-0.4.13.tgz/-rev/46-60732c97cf5f050087eed0d77d77b9c5
+881 error     at RegClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:269:14)
+881 error     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/index.js:142:22)
+881 error     at Request.EventEmitter.emit (events.js:98:17)
+881 error     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/index.js:856:14)
+881 error     at Request.EventEmitter.emit (events.js:117:20)
+881 error     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/index.js:808:12)
+881 error     at IncomingMessage.EventEmitter.emit (events.js:117:20)
+881 error     at _stream_readable.js:895:16
+881 error     at process._tickCallback (node.js:415:13)
+882 error If you need help, you may report this log at:
+882 error     <http://github.com/isaacs/npm/issues>
+882 error or email it to:
+882 error     <npm-@googlegroups.com>
+883 error System Darwin 12.3.0
+884 error command "node" "/usr/local/bin/npm" "publish"
+885 error cwd /Users/craig/Developer/Jobs/classdojo/mojo
+886 error node -v v0.10.5
+887 error npm -v 1.2.18
+888 verbose exit [ 1, true ]

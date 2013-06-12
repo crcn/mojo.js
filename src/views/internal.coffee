@@ -30,9 +30,8 @@ define ["jquery",
       data.currentState = ViewStates.NONE
 
       super data
-
-      # initialize the options
       @init()
+
 
     ###
     ###
@@ -45,10 +44,8 @@ define ["jquery",
 
       # create a default element block
       @section = pilot.createSection()
-
       @_initListeners()
-      @_initDecor()
-      @_initBindings()
+
 
     ###
     ###
@@ -88,6 +85,15 @@ define ["jquery",
     ###
     ###
 
+    _init: () =>
+      return if @_initialized
+      @_initialized = true
+      @_initDecor()
+      @_initBindings()
+
+    ###
+    ###
+
     dispose: () =>
       el = @$()
 
@@ -114,11 +120,13 @@ define ["jquery",
         remove    : @_onRemove 
         removed   : @_onRemoved
 
+        stateChange : @_init
+
+
     ###
     ###
 
     _initDecor: () ->
-      # OVERRIDE ME
 
     ###
     ###

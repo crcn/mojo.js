@@ -64,6 +64,8 @@ define ["bindable", "flatstack"], (bindable, flatstack) ->
 
     _call: (method, event, source, callback = (() ->)) ->
 
+      @emit "stateChange"
+
       # first time being called? It's NOW the current state
       if @get("currentState") isnt method
         @set "currentState", method
