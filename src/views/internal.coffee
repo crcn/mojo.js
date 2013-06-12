@@ -18,6 +18,11 @@ define ["jquery",
     ###
     ###
 
+    modelLocator: modelLocator
+
+    ###
+    ###
+
     constructor: (data = {}) ->
 
       @_id = dref.get(data.model or {}, "_id") or generateId()
