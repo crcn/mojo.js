@@ -32,6 +32,8 @@ define ["jquery",
 
       super data
       @init()
+      #@_init()
+      #console.log "IN"
 
 
     ###

@@ -87,8 +87,8 @@ define ["../../../collection",
         ops.model = model
         ops._id   = dref.get(model, "_id")
         ops
-      ).map((model) =>
-        view = modelViewFactory.create model
+      ).map((options) =>
+        view = modelViewFactory.create options
         @_hookModelView view
         view
       )
@@ -111,10 +111,12 @@ define ["../../../collection",
       @_sourceBinding?.dispose()
       @_sourceBinding = binding = @_sourceCollection.bind()
 
-      if @options.filter
-        @_sourceBinding.filter @options.filter
+      @_sourceBinding.filter (model) => 
+        return true unless @options.filter
+        @_watchModelChanges model
+        @options.filter(model)
 
-      binding.transform(@_modelTransformer).to(@_viewCollection).now()
+      binding.map(@_modelTransformer).to(@_viewCollection).now()
 
     ###
     ###
@@ -159,9 +161,38 @@ define ["../../../collection",
 
 
           next()
+
+
       
 
       modelView
+
+    ###
+    ###
+
+    _watchModelChanges: (model) ->
+      return unless @options.filter
+
+      filter = @options.filter model
+
+      removeListener = () ->
+        model.removeListener "change", onChange
+
+      model.on "change", onChange = () =>
+
+        newFilter = @options.filter model
+
+        return if filter is newFilter
+        filter = newFilter
+
+        if filter
+          @_viewCollection.push @_modelTransformer model
+        else
+
+          # note ~ @remove is overwritten, so we need to 
+          # fetch the object, and remove it manually
+          @_viewCollection.splice(@_viewCollection.indexOf({ _id: model.get("_id") }), 1)
+
 
     ###
     ###
