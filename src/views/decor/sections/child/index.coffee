@@ -11,6 +11,7 @@ define ["type-component"], (type) ->
     remove  : (next) -> @view.remove next
 
     toString: () -> 
+      @rendered = true
       @view.section.toString()
 
     @test: (options) -> 

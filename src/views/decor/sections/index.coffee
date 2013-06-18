@@ -27,13 +27,20 @@ define ["../../collection",
       for sectionName of @sectionOptions
         @_addSection sectionName, @sectionOptions[sectionName]
 
-
     ###
     ###
 
     load    : (next) -> @_sections.load next
     render  : (next) -> @_sections.render next
-    display : (next) -> @_sections.display next
+    display : (next) -> 
+
+      # all sections must be rendered - throw a warning otherwise
+      for section in @_sections.source()
+        unless section.rendered
+          console.warn "'#{@view.path()}' has no section outlet for 'sections.#{section.name}'"
+
+      @_sections.display next
+      
     remove  : (next) -> @_sections.remove next
 
     ###

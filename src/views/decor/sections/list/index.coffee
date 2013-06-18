@@ -28,6 +28,7 @@ define ["../../../collection",
     ###
 
     toString: () -> 
+      @rendered = true
       @section.toString()
 
 

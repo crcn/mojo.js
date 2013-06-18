@@ -49,6 +49,20 @@ define ["jquery",
       @section = pilot.createSection()
       @_initListeners()
 
+    ###
+     returns path to this view
+    ###
+
+    path: () ->
+      path = []
+      cp = @
+      while cp
+        path.unshift cp.constructor.name
+        cp = cp._parent
+
+      path.join "."
+
+
 
     ###
     ###

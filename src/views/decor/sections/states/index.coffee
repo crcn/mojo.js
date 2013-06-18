@@ -28,7 +28,9 @@ define ["pilot-block", "./state", "flatstack", "bindable"], (pilot, State, flats
     ###
     ###
 
-    toString: () -> @section.toString()
+    toString: () -> 
+      @rendered = true
+      @section.toString()
 
     ###
     ###
