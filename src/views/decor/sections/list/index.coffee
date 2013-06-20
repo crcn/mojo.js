@@ -115,7 +115,7 @@ define ["../../../collection",
       @_sourceBinding.filter (model) => 
         return true unless @options.filter
         @_watchModelChanges model
-        @options.filter(model)
+        @_filter(model)
 
       binding.map(@_modelTransformer).to(@_viewCollection).now()
 
@@ -174,14 +174,14 @@ define ["../../../collection",
     _watchModelChanges: (model) ->
       return unless @options.filter
 
-      filter = @options.filter model
+      filter = @_filter model
 
       removeListener = () ->
         model.removeListener "change", onChange
 
       model.on "change", onChange = () =>
 
-        newFilter = @options.filter model
+        newFilter = @_filter model
 
         return if filter is newFilter
         filter = newFilter
@@ -193,6 +193,11 @@ define ["../../../collection",
           # note ~ @remove is overwritten, so we need to 
           # fetch the object, and remove it manually
           @_viewCollection.splice(@_viewCollection.indexOf({ _id: model.get("_id") }), 1)
+
+    ###
+    ###
+
+    _filter: (model) -> @options.filter.call @view, model
 
 
     ###
