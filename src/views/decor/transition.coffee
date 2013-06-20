@@ -13,13 +13,13 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
     ###
 
     render: () ->
-      @view.$().css({display:"none"})
+      #@view.$().css({display:"none"})
 
     ###
     ###
 
     display: (callback) ->
-      @view.$().css({display:"block"})
+      #@view.$().css({display:"block"})
       @_transitionAll "enter", callback
     
     ###
@@ -77,7 +77,9 @@ define ["comerr", "./base", "underscore", "jquery-transit", "jquery", "../../uti
 
     _element: (transition) -> 
       selector = transition.selector or transition.el
-      return if selector then @view.$(selector) else @view.$()
+      element = if selector then @view.$(selector) else @view.$()
+      element.filter (index, element) ->
+        element.nodeType is 1
 
 
 
