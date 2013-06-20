@@ -141,6 +141,9 @@ define ["bindable", "flatstack"], (bindable, flatstack) ->
 
     _runOnce: (key, callback, run) =>
 
+      unless callback
+        callback = () ->
+
       # 2 = loaded
       if (code = @_running[key]) is 2
         return callback()
