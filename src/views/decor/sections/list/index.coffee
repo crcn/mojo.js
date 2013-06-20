@@ -118,6 +118,7 @@ define ["../../../collection",
         @_filter(model)
 
       binding.map(@_modelTransformer).to(@_viewCollection).now()
+      @_watchViewChanges()
 
     ###
     ###
@@ -174,25 +175,45 @@ define ["../../../collection",
     _watchModelChanges: (model) ->
       return unless @options.filter
 
-      filter = @_filter model
-
       removeListener = () ->
         model.removeListener "change", onChange
 
-      model.on "change", onChange = () =>
+      model.on "change", onChange = () => @_refilter [model]
 
-        newFilter = @_filter model
+    ###
+    ###
 
-        return if filter is newFilter
-        filter = newFilter
+    _watchViewChanges: () ->
+      return if @_watchingViewChanges
+      return if not @options.bind or not @options.filter
 
-        if filter
+      @_watchingViewChanges = true
+
+      for property in @options.bind then do (property) =>
+        @view.bind(property).to () => @_refilter @_sourceCollection.source()
+
+
+    ###
+    ###
+
+    _refilter: (models) ->
+      for model in models
+
+        useModel      = !!@_filter(model)
+        modelIndex    = @_viewCollection.indexOf({ _id: model.get("_id") })
+        containsModel = !!~modelIndex
+
+        continue if useModel is containsModel
+
+        if useModel
           @_viewCollection.push @_modelTransformer model
         else
 
           # note ~ @remove is overwritten, so we need to 
           # fetch the object, and remove it manually
-          @_viewCollection.splice(@_viewCollection.indexOf({ _id: model.get("_id") }), 1)
+          @_viewCollection.splice(modelIndex, 1)
+
+
 
     ###
     ###
