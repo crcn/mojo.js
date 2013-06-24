@@ -23,7 +23,7 @@ define ["bindable"], (bindable) ->
       # binding key already exists in this object? ignore inheritance
       ret = InheritableObject.__super__.get.call(@, bindingKey)
 
-      return undefined if ret
+      return undefined if ret?
 
       if @_parent and not @_parentBindings?[bindingKey]
 
