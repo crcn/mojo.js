@@ -116,7 +116,7 @@ Keep in mind that paperclip templates are functions, so you can mix & match your
 
 ```coffeescript
 
-define ["mojo", "./sweetMojo.pc", "./sweetMojo2.pc], (mojo, sweetMojoTemplate, sweetMojo2Template) ->
+define ["mojo", "./sweetMojo.pc", "./sweetMojo2.pc"], (mojo, sweetMojoTemplate, sweetMojo2Template) ->
     
   class SweetMojoView extends mojo.View
       
