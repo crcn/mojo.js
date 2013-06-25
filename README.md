@@ -30,6 +30,7 @@ define ["mojo"], (mojo) ->
     ###
     
     _onLoad: () ->
+      super() # super is used in mojo.View - make sure to call it!
       console.log "mojo is cool"
 ```
 
