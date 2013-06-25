@@ -1,5 +1,3 @@
-The un-opinionated javascript framework.
-
 ### [Docs](./docs)
 
 Inspired by [jquery](http://jquery.com/), [backbone](http://backbonejs.org/), and [ember](http://emberjs.com/)
@@ -78,7 +76,6 @@ define ["mojo", "./sweetMojoView", "./containerTemplate.pc"], (mojo, sweetMojoVi
     
     
 ### Render a "section" in a Paperclip template
-
 Our paperclip file "containerTemplate.pc" from the above code just needs one line:
 
     {{ html:sections.main }}
@@ -94,7 +91,6 @@ Our paperclip file "containerTemplate.pc" from the above code just needs one lin
 
 
 ### Events in Paperclip
-
 Use html attribute "data-bind", like so:
 
     <a class="button" data-bind="{{ onClick: doSomething() }}">Click me!</a>
@@ -121,9 +117,23 @@ Or even the results of a function:
 
 ### Show and Hide Paperclip elements based on Mojo view properties
 
-    <a class="button" data-bind="{{show:
+Show a button based on a Mojo model property. 
 
+    <a class="button" data-bind="{{ show:model.isShareable }}"> Share! </a>
 
+Show an empty state based on a model function
+
+```html
+<!-- Empty state -->
+<div class="no-monsters" data-bind="{{ show:monsters.length == 0 }}">
+  <h1> No Monsters Yet! </h1>
+</div>
+    
+<!-- Non-empty state -->
+<div class="has-monsters" data-bind="{{ show:monsters.length > 0 }}">
+  {{ html:sections.monsterList }}
+</div>
+```
 
 ### Displaying a list of items using "sections"
 
