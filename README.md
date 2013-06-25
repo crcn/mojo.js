@@ -1,8 +1,7 @@
 ### [Docs](./docs)
 
-Inspired by [jquery](http://jquery.com/), [backbone](http://backbonejs.org/), 
-[angular](http://angularjs.org/), [derby](http://derbyjs.com/), Adobe Flex, [knockout](http://knockoutjs.com/),
-and [ember](http://emberjs.com/).
+Inspired by [jquery](http://jquery.com/), [backbone](http://backbonejs.org/), and [ember](http://emberjs.com/)
+
 
 ### Render a Mojo view in Backbone
 
@@ -113,6 +112,27 @@ Or, a property of the view:
 Or even the results of a function:
 
     <p> {{ getParagraphText() }} </p>
+
+
+
+### Computed Properties in Mojo Views
+Use "bindings" to make computed properties
+
+```coffeescript
+# Compute a property called numUnviewed by iterating over the "viewed" property of notifications
+"notifications.@each.viewed": 
+  "numUnviewed":
+    "map": (viewed) -> 
+      viewed.filter((viewed) -> not viewed).length
+      
+# Compute full name - update if either firstName or lastName change
+"firstName, lastName":
+  "fullName": 
+    map: (firstName, lastName) -> [firstName, lastName].join(" ")
+```
+
+In a paperclip template, you reference computed properties like normal properties:
+    <p> Hi, {{ fullName }}!  You have {{ numUnviewed  }} notifications </p>
 
 
 
