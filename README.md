@@ -71,11 +71,66 @@ And in our paperclip file "containerTemplate.pc", we have:
     
 Now, SomeContainerView will render SweetMojoView!
 
-### More on Sections
+### Displaying a list of items using "sections"
 
 You can do some neat stuff with sections.  Por ejemplo...
 
     sections:
-      type:             list
-      modelViewClass:   MonsterListItemView
-      source:           "monsters"
+      monsterList:
+        type:             "list"
+        modelViewClass:   MonsterListItemView
+        source:           "monsters"
+
+
+
+Then, in your paperclip template, you could display your monster list like so:
+
+    {{ html:sections.monsterList }}
+    
+*Note:  in your MosterListItemView class, "model" will automagically be set to the model that was passed in from the "source" property.
+    
+### Really nice templating
+
+Let's make a nice empty state for when there is no data to display yet.  This is easy to do with Paperclip:
+
+    <!-- Empty state -->
+    <div data-bind="{{ show:monsters.length==0 }}">
+      You don't have any monsters right now!
+    </div>
+
+    <!-- Non-empty state -->
+    <div data-bind="{{ show:monsters.length > 0 }}">
+      {{ html:sections.monsterList }}
+    </div>
+
+
+Make a button trigger an event.  
+
+Paperclip:
+
+    <a class="button" data-bind="{{ onClick:_makeItHot() }}">Make it hot!</a>
+
+Mojo View:
+
+    _makeItHot: () ->
+      console.log "Make it hot button got clicked"
+      
+To render a property of the view in your template:
+
+    <h1> {{ model.title }} </h1>
+      
+
+### Really easy state views
+
+(Not sure about this right now)
+
+State views are helpful for doing things like tabs.  Let's look at howo
+First, our view:
+
+    sections:
+      tabContent:
+        type:             "states"
+        index:            0
+        views: [
+          { class: FirstTabView },
+          { class: SecondTabView }
