@@ -1,7 +1,8 @@
 ### [Docs](./docs)
 
-Inspired by [jquery](http://jquery.com/), [backbone](http://backbonejs.org/), and [ember](http://emberjs.com/)
-
+Inspired by [jquery](http://jquery.com/), [backbone](http://backbonejs.org/), 
+[angular](http://angularjs.org/), [derby](http://derbyjs.com/), Adobe Flex, [knockout](http://knockoutjs.com/),
+and [ember](http://emberjs.com/).
 
 ### Render a Mojo view in Backbone
 
