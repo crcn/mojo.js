@@ -112,6 +112,25 @@ define ["mojo", "./sweetMojo.pc"], (mojo, sweetMojoTemplate) ->
         
 ```
 
+Keep in mind that paperclip templates are functions, so you can mix & match your templates. For example:
+
+```coffeescript
+
+define ["mojo", "./sweetMojo.pc", "./sweetMojo2.pc], (mojo, sweetMojoTemplate, sweetMojo2Template) ->
+    
+  class SweetMojoView extends mojo.View
+      
+    ###
+    ###
+        
+    paper: (paper) ->
+      if @get("model.type") is "something"
+        return sweetMojoTemplate(paper)
+      else
+        return sweetMojo2Template(paper)
+        
+```
+
 
 
 ### Subviews with Mojo
