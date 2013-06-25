@@ -3,21 +3,23 @@
 Inspired by [jquery](http://jquery.com/), [backbone](http://backbonejs.org/), and [ember](http://emberjs.com/)
 
 
-### Mojo In The Wild
+### Render a Mojo view in Backbone
 
-Here's how you render a Mojo view in Backbone.  You might do this if your current site is written in Backbone and you don't want to switch to Mojo all at once.
+You might do this if your current site is written in Backbone and you don't want to switch to Mojo all at once.
 
-
-    define ["app2/views/teacherScopeDropdown/index"], (TeacherScopeDropdownView) ->
+```coffeescript
+define ["app2/views/teacherScopeDropdown/index"], (TeacherScopeDropdownView) ->
     
-      SomeView = Backbone.View.extend
+SomeView = Backbone.View.extend
     
-        initialize: () ->
-          teacherScopeDropdown = new TeacherScopeDropdownView()
-          teacherScopeDropdown.attach( $("#teacherScoper") )
+  initialize: () ->
+    teacherScopeDropdown = new TeacherScopeDropdownView()
+    teacherScopeDropdown.attach( $("#teacherScoper") )
+```
 
 
-Making a new Mojo view is a lot like Backbone:
+### Create a new Mojo view
+It's a lot like making a Backbone view
 
 ```coffeescript
 define ["mojo"], (mojo) ->
@@ -32,46 +34,94 @@ define ["mojo"], (mojo) ->
 ```
 
 
-At ClassDojo, we use Mojo with Paperclip.  Let's make a view that will render a Paperclip template:
 
-    define ["mojo", "./sweetMojo.pc"], (mojo, sweetMojoTemplate) ->
+### Use Paperclip templates with Mojo
+
+```coffeescript
+
+define ["mojo", "./sweetMojo.pc"], (mojo, sweetMojoTemplate) ->
     
-      class SweetMojoView extends mojo.View
+  class SweetMojoView extends mojo.View
       
-        ###
-        ###
+    ###
+    ###
         
-        paper: sweetMojoTemplate
+    paper: sweetMojoTemplate
         
-        ###
-        ###
-        
-        _onLoad: () ->
-          console.log "Now our template will be rendered"
-          
+```
 
-Pretty nifty, eh?  But wait, how do we render our SweetMojoView from within another Mojo view?  
 
-    define ["mojo", "./sweetMojoView", "./containerTemplate.pc"], (mojo, sweetMojoView, containerTemplate) ->
+
+### Subviews with Mojo
+
+```coffeescript
+  
+# Notice how we include paperclip template and sweetMojoView
+define ["mojo", "./sweetMojoView", "./containerTemplate.pc"], (mojo, sweetMojoView, containerTemplate) ->
     
-      class SomeContainerView extends mojo.View
+  class SomeContainerView extends mojo.View
       
-        ###
-        ###
+    ###
+    ###
         
-        paper: containerTemplate
+    paper: containerTemplate
         
-        ###
-        ###
+    ###
+    ###
         
-        sections: 
-          main:  sweetMojoView
-          
-And in our paperclip file "containerTemplate.pc", we have:
+    sections: 
+      main:  sweetMojoView
+```
+    
+    
+    
+### Render a "section" in a Paperclip template
+
+Our paperclip file "containerTemplate.pc" from the above code just needs one line:
 
     {{ html:sections.main }}
     
-Now, SomeContainerView will render SweetMojoView!
+    
+    
+### You can write HTML in Paperclip
+
+    <div class="main-container">
+      {{ html:sections.main }}
+    </div>
+
+
+
+### Events in Paperclip
+
+Use html attribute "data-bind", like so:
+
+    <a class="button" data-bind="{{ onClick: doSomething() }}">Click me!</a>
+    
+( we should be exhaustive here about what you can do with data-bind ) 
+
+
+
+### Render Mojo properties in Paperclip
+
+You could render a property of the model:
+
+    <h1> {{ model.title }} </h1>
+    
+Or, a property of the view:
+  
+    <p> {{ propertyName }} </p>
+    
+Or even the results of a function:
+
+    <p> {{ getParagraphText() }} </p>
+
+
+
+### Show and Hide Paperclip elements based on Mojo view properties
+
+    <a class="button" data-bind="{{show:
+
+
 
 ### Displaying a list of items using "sections"
 
@@ -90,6 +140,8 @@ Then, in your paperclip template, you could display your monster list like so:
     {{ html:sections.monsterList }}
     
 *Note:  in your MosterListItemView class, "model" will automagically be set to the model that was passed in from the "source" property.
+    
+    
     
 ### Really nice templating
 
