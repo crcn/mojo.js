@@ -166,50 +166,85 @@ You can do some neat stuff with sections.  Por ejemplo...
         modelViewClass:   MonsterListItemView
         source:           "monsters"
 
-
-
 Then, in your paperclip template, you could display your monster list like so:
 
     {{ html:sections.monsterList }}
     
 *Note:  in your MosterListItemView class, "model" will automagically be set to the model that was passed in from the "source" property.
-    
-    
-    
-### Really nice templating
-
-Let's make a nice empty state for when there is no data to display yet.  This is easy to do with Paperclip:
-
-    <!-- Empty state -->
-    <div data-bind="{{ show:monsters.length==0 }}">
-      You don't have any monsters right now!
-    </div>
-
-    <!-- Non-empty state -->
-    <div data-bind="{{ show:monsters.length > 0 }}">
-      {{ html:sections.monsterList }}
-    </div>
 
 
-Make a button trigger an event.  
+
+### Use a different Mojo view for each model in a collection
+For instance, if we want a list of notifications, but want to use a different Mojo view to handle the logic for the different types of notifications:
+```coffeescript
+sections:
+  notifications:
+    type: "list"
+    source:"notifications"
+    modelViewFactory:  (options) ->
+        viewClass = notificationViews[options.model.get("type")] or notificationViews.default
+        new viewClass { notification: options.model }
+```
+
+
+### Accessing properties of Mojo views
+```coffeescript
+# Define a property
+notifications:  notificationCollection
+
+# access notifications property
+@get("notifications")
+
+
+_markAllViewed: () ->
+        @get("notifications").each (notification) -> 
+          notification.set "viewed", true
+```
+
+
+### Setting properties in Mojo views with Paperclip
+Let's show how you can use a Paperclip template and Mojo view to set a property of a model.
 
 Paperclip:
+```html
+<a class="button" data-bind="{{ onClick:_updateConnectionStatus() }}"> Connect! </a>
+````
 
-    <a class="button" data-bind="{{ onClick:_makeItHot() }}">Make it hot!</a>
+Mojo view
+```coffeescript
+_updateConnectionStatus: () =>
+  @set "model.connectionStatus", "connected"
+```
 
-Mojo View:
 
-    _makeItHot: () ->
-      console.log "Make it hot button got clicked"
-      
-To render a property of the view in your template:
+### Event bubbling in Mojo
+Events will not bubble by default.  If an event is emitted within a child view, you'll need to explicitly bubble the event to any parent views:
+```coffeescript
+someEventHandler: () =>
+  @bubble "eventNameToPropagate"
+```
 
-    <h1> {{ model.title }} </h1>
-      
 
-### Really easy state views
+### Working with Popups in Mojo
+There is a base class that handles modals in /base/modal.  
+```coffeescript
+define ["mojo", "./base/modal", "./happyMojoModalTemplate.pc], (mojo, modalView, happyMojoModalTemplate) ->
 
-(Not sure about this right now)
+  class HappyMojoModal extends modalView
+  
+    paper: happyMojoModalTemplate
+    
+    # a static method to show a popup
+    # Just call this and pass in a model to render the popup
+    @show: (model) ->
+      popup = new ShareClassesModal()
+      popup.set "classroom", model
+      mojo.mediator.execute("popup", popup)
+
+```
+
+
+### State Vies in Mojo (incomplete)
 
 State views are helpful for doing things like tabs.  Let's look at howo
 First, our view:
