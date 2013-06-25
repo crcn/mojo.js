@@ -19,15 +19,17 @@ Here's how you render a Mojo view in Backbone.  You might do this if your curren
 
 Making a new Mojo view is a lot like Backbone:
 
-    define ["mojo"], (mojo) ->
+```coffeescript
+define ["mojo"], (mojo) ->
       
-      class SweetMojoView extends mojo.View
-      
-        ###
-        ###
-        
-        _onLoad: () ->
-          console.log "mojo is cool"
+  class SweetMojoView extends mojo.View
+  
+    ###
+    ###
+    
+    _onLoad: () ->
+      console.log "mojo is cool"
+```
 
 
 At ClassDojo, we use Mojo with Paperclip.  Let's make a view that will render a Paperclip template:
