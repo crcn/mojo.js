@@ -27,11 +27,72 @@ define ["mojo"], (mojo) ->
   class SweetMojoView extends mojo.View
   
     ###
+     called immediately after .attach() is called, and before any
+     asynchronous loading functions are called - such as templates, and sections.
     ###
     
     _onLoad: () ->
       super() # super is used in mojo.View - make sure to call it!
       console.log "mojo is cool"
+      
+    ###
+     called after the view has loaded, including all the templates
+    ###
+    
+    _onLoaded: () ->
+      super()
+     
+    ###
+     called just before the view is attached to the DOM. This is where
+     data-bindings are wired up.
+    ###
+    
+    _onRender: () ->
+      super() 
+    
+    ###
+     called after the view has rendered completely. At this point, it's 
+     ready to be attached to the DOM
+    ###
+    
+    _onRendered: () ->
+      super()
+      
+    
+    ### 
+     called just before the view is added to the DOM. This is where decorators
+     such as transitions get fired.
+    ###
+    
+    _onDisplay: () ->
+      super()
+     
+    ###
+     called after the view is added, to the dom, and all decorators have finished, such
+     as transitions.
+    ###
+    
+    _onDisplayed: () ->
+      super()
+     
+    ###
+     called just before the view is removed from the DOM. Also keep in mind that decorators
+     such as transitions might also be triggered here.
+    ###
+    
+    _onRemove: () ->
+      super()
+    
+    ###
+     called after the view has been completely removed from the DOM. At this point, transitions
+     have also finished.
+    ###
+    
+    _onRemoved: () ->
+      super()
+        
+
+    
 ```
 
 
