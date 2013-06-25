@@ -112,7 +112,7 @@ define ["mojo", "./sweetMojo.pc"], (mojo, sweetMojoTemplate) ->
         
 ```
 
-Keep in mind that paperclip templates are functions, so you can mix & match your templates. For example:
+Keep in mind that paperclip templates are compiled into javascript - they're functions, so you can mix & match your templates. For example:
 
 ```coffeescript
 
@@ -123,11 +123,15 @@ define ["mojo", "./sweetMojo.pc", "./sweetMojo2.pc"], (mojo, sweetMojoTemplate, 
     ###
     ###
         
-    paper: (paper) ->
+    paper: (builder) =>
+    
+      # builder is an internal utility which builds on the paperclip template
+      # don't worry about physically interacting with it - just pass it along
+      # to whatever template you want to use.
       if @get("model.type") is "something"
-        return sweetMojoTemplate(paper)
+        return sweetMojoTemplate(builder)
       else
-        return sweetMojo2Template(paper)
+        return sweetMojo2Template(builder)
         
 ```
 
