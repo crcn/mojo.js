@@ -142,7 +142,7 @@ define ["mojo", "./sweetMojo.pc", "./sweetMojo2.pc"], (mojo, sweetMojoTemplate, 
 ```coffeescript
   
 # Notice how we include paperclip template and sweetMojoView
-define ["mojo", "./sweetMojoView", "./containerTemplate.pc"], (mojo, sweetMojoView, containerTemplate) ->
+define ["mojo", "./sweetMojoView", "./containerTemplate.pc"], (mojo, SweetMojoView, containerTemplate) ->
     
   class SomeContainerView extends mojo.View
       
@@ -155,9 +155,35 @@ define ["mojo", "./sweetMojoView", "./containerTemplate.pc"], (mojo, sweetMojoVi
     ###
         
     sections: 
-      main:  sweetMojoView
+      
+      # child view
+      main:  SweetMojoView
+      
+      # list view
+      sweetMojos: 
+        type: "list"
+        source: [model1, model2, model3]
+        modelViewClass: SweetMojoView
+        
+      # state view
+      pages:
+        type: "state"
+        index: 0 # the initial index for the state
+        views: [
+         { class: SweetMojoView, anyPropertyYouWantBaby: "no" },
+         { class: SweetMojoView }
+        ]
+      
+      
 ```
-    
+
+### Sections
+
+#### Lists
+
+#### States
+
+#### Children
     
     
 ### Render a "section" in a Paperclip template
