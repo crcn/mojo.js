@@ -200,21 +200,57 @@ content will be sanitized for html entities, and all you'll see is html code.
 A basic example of a list section:
 
 ```coffeescript
-class SomeAwesomeView extends mojo.View
 
-    paper: someAwesomeTemplate
+define ["mojo", "./person.pc", "./people.pc", (personTemplate, peopleTemplate) ->
+
+    people = new bindable.Collection [
+        new bindable.Object({
+            name: "Joe"
+        }),
+        new bindable.Object({
+            name: "John"
+        })
+    ]
     
-    sections:
-        someAwesomeList
+    class PersonView extends mojo.View
+        paper: personTemplate
+    
+    class PeopleView extends mojo.View
+    
+        paper: peopleTemplate
+        
+        sections:
+            people: 
+                type: "list"
+                source: people
+                modelViewClass: PersonView
+            
 
 ```
-In your paperclip template:
 
+In your `people` template, you'll need to again, specify where you want the section to go:
 
 ```html
-{{
+List of people:
+<ul>{{ html: sections.people }}</ul>
 ```
 
+In your `person` template, you can write something like this:
+
+```
+<li>{{ model.name }}</li>
+```
+
+Note that the `people` section automatically adds a `model` property to each `PersonView` created in the list. If the above
+code were to be rendered in a browser, here's what you'd get:
+
+```html
+List of people:
+<ul>
+    <li>Joe</li>
+    <li>John</li>
+</ul>
+```
 
 #### States
 
