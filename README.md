@@ -136,6 +136,13 @@ define ["mojo", "./sweetMojo.pc", "./sweetMojo2.pc"], (mojo, sweetMojoTemplate, 
         
 ```
 
+### Events in Paperclip
+Use html attribute "data-bind", like so:
+
+```html
+<a class="button" data-bind="{{ onClick: doSomething() }}">Click me!</a>
+```
+
 
 
 ## Subviews (sections) with Mojo
@@ -494,30 +501,6 @@ stores all the state objects
 
 the current state index
 
-
-
-
-    
-    
-### Render a "section" in a Paperclip template
-Our paperclip file "containerTemplate.pc" from the above code just needs one line:
-
-    {{ html: sections.main }}
-    
-    
-    
-### You can write HTML in Paperclip
-
-    <div class="main-container">
-      {{ html:sections.main }}
-    </div>
-
-
-
-### Events in Paperclip
-Use html attribute "data-bind", like so:
-
-    <a class="button" data-bind="{{ onClick: doSomething() }}">Click me!</a>
     
 ( we should be exhaustive here about what you can do with data-bind ) 
 
