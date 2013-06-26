@@ -97,7 +97,9 @@ define ["mojo"], (mojo) ->
 
 
 
-## Use Paperclip templates with Mojo
+## Paperclip + Mojo.js
+
+[Paperclip](/classdojo/paperclip.js) is the templating engine used for mojo.js. Here's how you use it:
 
 ```coffeescript
 
@@ -462,6 +464,35 @@ pages.pc:
 {{ html: sections.pages }} 
 ```
 
+#### States API
+
+##### state states.currentState
+
+the current state
+
+##### states.next()
+
+moves to the next state index 
+
+##### states.prev()
+
+moves to the previous state index
+
+##### states.move(position = 1)
+
+moves the states index +- the given position
+
+##### states.select(index)
+
+selects a state based on the index
+
+##### states.source
+
+stores all the state objects
+
+##### states.index
+
+the current state index
 
 
 
