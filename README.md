@@ -316,7 +316,9 @@ class NotificationsView extends mojo.View
     sections:
         notifications:
             source: notificationsCollection
-            modelViewFactory: (notification) -> availableTemplates[notification.get("type")] or availableTemplates.default
+            modelViewFactory: (options) -> 
+                viewClass = availableTemplates[options.model.get("type")] or availableTemplates.default
+                new viewClass options
 ```
 
 ### States
