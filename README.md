@@ -115,7 +115,6 @@ define ["mojo", "./sweetMojo.pc"], (mojo, sweetMojoTemplate) ->
 Keep in mind that paperclip templates are compiled into javascript - they're functions, so you can mix & match your templates. For example:
 
 ```coffeescript
-
 define ["mojo", "./sweetMojo.pc", "./sweetMojo2.pc"], (mojo, sweetMojoTemplate, sweetMojo2Template) ->
     
   class SweetMojoView extends mojo.View
@@ -137,7 +136,10 @@ define ["mojo", "./sweetMojo.pc", "./sweetMojo2.pc"], (mojo, sweetMojoTemplate, 
 
 
 
-### Subviews with Mojo
+### Subviews (sections) with Mojo
+
+Sections are sub-views which are specified in a template file. Right now there are `lists`, and `states`. You can also
+add a view class as a section in an html template. Here's a basic example demonstrating all 3 types of sections:
 
 ```coffeescript
   
@@ -177,9 +179,42 @@ define ["mojo", "./sweetMojoView", "./containerTemplate.pc"], (mojo, SweetMojoVi
       
 ```
 
-### Sections
+Once you've specified your view sections, you'll need to define them in the view's template. The above example might
+be something like:
+
+```html
+<div>
+    {{ html: sections.main }} <!-- SweetMojoView is added here-->
+    
+    {{ html: sections.sweetMojos }} <!-- list view here -->
+    
+    {{ html: pages }} <!-- states view here -->
+</div>
+```
+
+
+
 
 #### Lists
+
+A basic example of a list section:
+
+```coffeescript
+class SomeAwesomeView extends mojo.View
+
+    paper: someAwesomeTemplate
+    
+    sections:
+        someAwesomeList
+
+```
+In your paperclip template:
+
+
+```html
+{{
+```
+
 
 #### States
 
