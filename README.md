@@ -195,6 +195,29 @@ be something like:
 Keep in mind that `{{ html: content }}` tells paperclip to treat the target content as html. If you ommit `html:`, the data-bound
 content will be sanitized for html entities, and all you'll see is html code.
 
+### Children
+
+Sectons can also be view classes. Here's an example:
+
+```coffeescript
+# assuming you have profileInfoView, and newsFeedView defined
+class SidebarView extends mojo.View
+    paper: sidebarTemplate
+    sections:
+        profile: ProfileInfoView
+        newsFeed: NewsFeedView
+
+```
+
+In your sidebar template file:
+
+```html
+<div>
+    {{ html: sections.profile }}
+    {{ html: sections.newsFeed }}
+</div>
+```
+
 ### Lists
 
 Here are the basic options for a list section:
@@ -323,13 +346,132 @@ class NotificationsView extends mojo.View
 
 ### States
 
-### Children
+- `type` - must be `states`
+- `index` - the initial index to start on - this is `0` by default
+- `views` - the views to use for each state
+    - the only expected property here is `class`, but you can add anything you want as 
+    - metadata for each state.
+
+Combining what we know so far 'bout `children`, and `lists`, here's a realistic example of using the `states` 
+section:
+
+```coffeescript
+define ["mojo", 
+    "./main.pc", 
+    "./tabs.pc", 
+    "./tab.pc",
+    "./pages.pc"], (mojo, mainTemplate, 
+    tabsTemplate, tabTemplate, pagesTemplate) ->
+
+    class PagesView extends mojo.View
+    
+        ###
+        ###
+        
+        paper: pagesTemplate
+        
+        ###
+        ###
+        
+        sections:
+            pages: 
+                type: "states"
+                index: 0
+                views: [
+                    { class: ContactView , label: "Contact" },
+                    { class: HomeView    , label: "Home"    }
+                ]
+                    
+    class TabView extends mojo.View
+        paper: tabTemplate
+        
+        ###
+         selects the current state
+        ###
+        
+        select: () -> @get("model").select()
+                
+    
+    class TabsView extends mojo.View
+    
+        ###
+        ###
+        
+        paper: tabsTemplate
+        
+        ###
+        ###
+        
+        sections:
+            pages: 
+                type: "list"
+                source: "states"
+                modelViewClass: TabView
+                
+                
+    class MainView extends mojo.View
+    
+        ###
+        ###
+        
+        paper: mainTemplate
+        
+        ###
+         create a binding from the pages states (source), to the tabs pages property.
+        ###
+        
+        bindings:
+            "sections.pages.source": "sections.tabs.pages"
+        
+        ###
+        ###
+        
+        sections:
+            tabs: TabsView
+            pages: PagesView
+        
+```
+
+main.pc:
+```html
+
+Current Page: {{ sections.pages.currentState.label  }}
+{{ html: sections.tabs }}
+{{ html: sections.pages }}
+```
+
+tab.pc:
+```html
+<li 
+    data-bind="{{
+        onClick: select()
+    }}">
+    {{ model.label }}
+</li>
+```
+
+tabs.pc:
+```html
+<ul>
+    {{ html: sections.pages }}
+</ul>
+```
+
+pages.pc:
+```html
+{{ html: sections.pages }} 
+```
+
+
+
+
+
     
     
 ### Render a "section" in a Paperclip template
 Our paperclip file "containerTemplate.pc" from the above code just needs one line:
 
-    {{ html:sections.main }}
+    {{ html: sections.main }}
     
     
     
