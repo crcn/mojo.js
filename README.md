@@ -138,7 +138,7 @@ define ["mojo", "./sweetMojo.pc", "./sweetMojo2.pc"], (mojo, sweetMojoTemplate, 
 
 ### Subviews (sections) with Mojo
 
-Sections are sub-views which are specified in a template file. Right now there are `lists`, and `states`. You can also
+Sections are sub-views which are used in a template file. Right now there are `lists`, and `states`. You can also
 add a view class as a section in an html template. Here's a basic example demonstrating all 3 types of sections:
 
 ```coffeescript
@@ -192,8 +192,8 @@ be something like:
 </div>
 ```
 
-
-
+Keep in mind that `{{ html: content }}` tells paperclip to treat the target content as html. If you ommit `html:`, the data-bound
+content will be sanitized for html entities, and all you'll see is html code.
 
 #### Lists
 
