@@ -1,5 +1,8 @@
 define ["hooks", "type-component", "crema", "underscore"], (hooks, type, crema, _) ->
 
+  if typeof window._ isnt undefined
+    _ = window._
+
   class Mediator
 
     ###
