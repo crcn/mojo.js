@@ -1,9 +1,9 @@
-### [Docs](./docs)
+## [Docs](./docs)
 
 Inspired by [jquery](http://jquery.com/), [backbone](http://backbonejs.org/), and [ember](http://emberjs.com/)
 
 
-### Render a Mojo view in Backbone
+## Render a Mojo view in Backbone
 
 You might do this if your current site is written in Backbone and you don't want to switch to Mojo all at once.
 
@@ -18,7 +18,7 @@ SomeView = Backbone.View.extend
 ```
 
 
-### Create a new Mojo view
+## Create a new Mojo view
 It's a lot like making a Backbone view
 
 ```coffeescript
@@ -97,7 +97,7 @@ define ["mojo"], (mojo) ->
 
 
 
-### Use Paperclip templates with Mojo
+## Use Paperclip templates with Mojo
 
 ```coffeescript
 
@@ -136,7 +136,7 @@ define ["mojo", "./sweetMojo.pc", "./sweetMojo2.pc"], (mojo, sweetMojoTemplate, 
 
 
 
-### Subviews (sections) with Mojo
+## Subviews (sections) with Mojo
 
 Sections are sub-views which are used in a template file. Right now there are `lists`, and `states`. You can also
 add a view class as a section in an html template. Here's a basic example demonstrating all 3 types of sections:
@@ -195,20 +195,30 @@ be something like:
 Keep in mind that `{{ html: content }}` tells paperclip to treat the target content as html. If you ommit `html:`, the data-bound
 content will be sanitized for html entities, and all you'll see is html code.
 
-#### Lists
+### Lists
+
+Here are the basic options for a list section:
+
+- `type` (required) - the type of section - must be `list`
+- `source` (required) - the source of the list 
+- `modelViewClass` (required) - the view class to use 
+- `modelViewFactory` - used instead of the modelViewClass. Use this if you might have different views within a list
+- `filter` - filters out the source collection for items to display in the section
 
 A basic example of a list section:
 
 ```coffeescript
 
-define ["mojo", "./person.pc", "./people.pc", (personTemplate, peopleTemplate) ->
+define ["mojo", "./person.pc", "./people.pc"], (mojo, personTemplate, peopleTemplate) ->
 
     people = new bindable.Collection [
         new bindable.Object({
-            name: "Joe"
+            name: "Joe",
+            age: 18
         }),
         new bindable.Object({
-            name: "John"
+            name: "John",
+            age: 21
         })
     ]
     
@@ -238,7 +248,7 @@ List of people:
 In your `person` template, you can write something like this:
 
 ```
-<li>{{ model.name }}</li>
+<li>{{ model.name }} is {{ model.age }} years old</li>
 ```
 
 Note that the `people` section automatically adds a `model` property to each `PersonView` created in the list. If the above
@@ -247,14 +257,71 @@ code were to be rendered in a browser, here's what you'd get:
 ```html
 List of people:
 <ul>
-    <li>Joe</li>
-    <li>John</li>
+    <li>Joe is 18 years old</li>
+    <li>John 21 years old</li>
 </ul>
 ```
 
-#### States
+#### Filtering Lists
 
-#### Children
+You can also filter lists pretty easily. Here's an example using our `people` example:
+
+```coffeescript
+class PeopleView extends mojo.View
+    
+    paper: peopleTemplate
+        
+    sections:
+        people: 
+            type: "list"
+            source: people
+            modelViewClass: PersonView
+            filter: (person) -> person.get("age") > 20
+```
+
+The above example will only display people who's age is greater than 20. If we use the same model used above, the
+expected HTML outcome would be:
+
+```html
+List of people:
+<ul>
+    <li>John 21 years old</li>
+</ul>
+```
+
+Note that lists are *automatically updated* if any object within the source collection changes. So if you change
+Joe's age to 25, the people list will automatically update to include Joe as a person who's older than 21.
+
+
+#### using modelViewFactory
+
+There might be some cases where a list has an object that might need a different view. Here's a basic example
+
+```coffeescript
+class RequestView extends mojo.View
+    paper: requestTemplate
+    
+class MessageView extends mojo.View
+    paper: messageTemplate
+    
+class DefaultView extends mojo.View
+    paper: defaultTemplate
+    
+availableTemplates = 
+    message: MessageView
+    RequestView: RequestView
+    default: DefaultView
+    
+class NotificationsView extends mojo.View
+    sections:
+        notifications:
+            source: notificationsCollection
+            modelViewFactory: (notification) -> availableTemplates[notification.get("type")] or availableTemplates.default
+```
+
+### States
+
+### Children
     
     
 ### Render a "section" in a Paperclip template
