@@ -526,16 +526,17 @@ Or even the results of a function:
 Use "bindings" to make computed properties
 
 ```coffeescript
-# Compute a property called numUnviewed by iterating over the "viewed" property of notifications
-"notifications.@each.viewed": 
-  "numUnviewed":
-    "map": (viewed) -> 
-      viewed.filter((viewed) -> not viewed).length
-      
-# Compute full name - update if either firstName or lastName change
-"firstName, lastName":
-  "fullName": 
-    map: (firstName, lastName) -> [firstName, lastName].join(" ")
+bindings:
+    # Compute a property called numUnviewed by iterating over the "viewed" property of notifications
+    "notifications.@each.viewed": 
+      "numUnviewed":
+        "map": (viewed) -> 
+          viewed.filter((viewed) -> not viewed).length
+          
+    # Compute full name - update if either firstName or lastName change
+    "firstName, lastName":
+      "fullName": 
+        map: (firstName, lastName) -> [firstName, lastName].join(" ")
 ```
 
 In a paperclip template, you reference computed properties like normal properties:
