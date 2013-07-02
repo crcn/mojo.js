@@ -1,5 +1,6 @@
 BaseView  = require "./base"
 templates = require "../../templates/factory"
+textTemplate = require "./text.pc"
 
 
 class TextInputView extends BaseView
@@ -7,7 +8,7 @@ class TextInputView extends BaseView
   ###
   ###
 
-  template: templates.fromSource("<input type='text' name='{{view.name}}'>", { engine: "handlebars" })
+  paper: textTemplate
 
   ###
   ###
