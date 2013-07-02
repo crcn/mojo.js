@@ -1,7 +1,7 @@
-<select name="{{view.name}}">
+<select name="{{ name }}" data-bind="{{ onChange: _changeSelect(event), preventDefault: false }}">
 
-  <option>
-    {{ view.selectLabel }}
+  <option value="nil" selected="{{ nothingSelected ? 'selected' : undefined }}">
+    {{ selectLabel }}
   </option>
 
   {{ html: sections.selectList }}

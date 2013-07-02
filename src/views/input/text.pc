@@ -1,1 +1,1 @@
-<input type='text' name='{{ name }}'>
+<input type="text" name="{{ name }}" data-bind="{{ value: value, bothWays: true }}" />

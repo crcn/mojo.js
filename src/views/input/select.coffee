@@ -54,17 +54,17 @@ class SelectInputView extends InputView
   ###
   ###
 
-  events: 
-    "change": (event) ->
-      selected    = @$(":selected")
-      selectedVal = selected.val()
+  _changeSelect: (event) ->
 
-      # de-select the model
-      if not selectedVal.length
-        return @deselect()
+    selected    = @$(":selected")
+    selectedVal = selected.val()
 
-      # need to offset the default value
-      @select selected.index() - 1
+    # de-select the model
+    if selectedVal is "nil"
+      return @deselect()
+
+    # need to offset the default value
+    @select selected.index() - 1
       
   ###
    Selects an model based on the index
@@ -95,13 +95,16 @@ class SelectInputView extends InputView
 
     for model, i in @get("source").source()
       if model.value is value
-        # offset the default model
-        index = i + 1
+        index = i
         break
 
-    if not ~index
-      index = 0
 
-    @$().children().eq(index).attr("selected", "selected")
+
+    if not ~index
+      @set "nothingSelected", Math.random()
+      return
+
+
+    @get("sections.selectList").modelViews.at(index).set "selected", Math.random()
 
 module.exports = SelectInputView

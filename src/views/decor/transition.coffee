@@ -17,13 +17,13 @@ class TransitionDecorator extends BaseViewDecorator
   ###
 
   render: () ->
-    #@view.$().css({display:"none"})
+    @view.$().css({opacity:0})
 
   ###
   ###
 
   display: (callback) ->
-    #@view.$().css({display:"block"})
+    @view.$().css({opacity:1})
     @_transitionAll "enter", callback
   
   ###
