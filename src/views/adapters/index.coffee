@@ -1,47 +1,46 @@
-define ["./backbone/index"], (BackboneAdapter) ->
-
+BackboneAdapter = require "./backbone/index"
 
   
 
-  class Adapter
+class Adapter
 
-    ###
-    ###
+  ###
+  ###
 
-    constructor: () ->
-      @_adapters = [
-        new BackboneAdapter()
-      ]
+  constructor: () ->
+    @_adapters = [
+      new BackboneAdapter()
+    ]
 
-    ###
-     returns a bindable object
-    ###
+  ###
+   returns a bindable object
+  ###
 
-    getItem        : (value) -> @_get "getItem", value
+  getItem        : (value) -> @_get "getItem", value
 
-    ###
-     returns a bindable collection
-    ###
+  ###
+   returns a bindable collection
+  ###
 
-    getCollection  : (value) -> @_get "getCollection", value
+  getCollection  : (value) -> @_get "getCollection", value
 
-    ###
-     returns a mojo view
-    ###
+  ###
+   returns a mojo view
+  ###
 
-    getViewClass   : (value) -> @_get "getViewClass", value
+  getViewClass   : (value) -> @_get "getViewClass", value
 
-    ###
-    ###
+  ###
+  ###
 
-    _get: (method, value) ->
-      for adapter in @_adapters
-        result = adapter[method].call adapter, value
-        return result if result
-      return value
+  _get: (method, value) ->
+    for adapter in @_adapters
+      result = adapter[method].call adapter, value
+      return result if result
+    return value
 
-  new Adapter()
+module.exports = new Adapter()
 
 
-    
+  
 

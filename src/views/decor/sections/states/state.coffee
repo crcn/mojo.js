@@ -1,50 +1,53 @@
-define ["bindable", "underscore"], (bindable, _) ->
-  
-  class extends bindable.Object
+bindable = require "bindable"
+_        = require "underscore"
 
-    ###
-    ###
+class State extends bindable.Object
 
-    constructor: (@states, options, index) ->
+  ###
+  ###
 
-      ops = {}
+  constructor: (@states, options, index) ->
 
-      if not options.class
-        ops.class = options
-      else
-        ops = options
+    ops = {}
 
-      @_id = options.name or Math.random()
-      ops.index = index
-      ops.selected = false
+    if not options.class
+      ops.class = options
+    else
+      ops = options
 
-      super ops
+    @_id = options.name or Math.random()
+    ops.index = index
+    ops.selected = false
 
-    ###
-    ###
+    super ops
 
-    select: () ->
-      @states.select @
+  ###
+  ###
 
-    ###
-    ###
+  select: () ->
+    @states.select @
 
-    hide: () ->
-      @_view.section.detach()
-      @_view.set "visible", false
+  ###
+  ###
 
-    ###
-    ###
+  hide: () ->
+    @_view.section.detach()
+    @_view.set "visible", false
 
-    show: () ->
-      @_view.section.attach()
-      @_view.set "visible", true
+  ###
+  ###
 
-    ###
-    ###
+  show: () ->
+    @_view.section.attach()
+    @_view.set "visible", true
 
-    getView: () -> 
-      return @_view if @_view
-      clazz = @get("class")
-      @_view = new clazz()
+  ###
+  ###
+
+  getView: () -> 
+    return @_view if @_view
+    clazz = @get("class")
+    @_view = new clazz()
+
+module.exports = State
 

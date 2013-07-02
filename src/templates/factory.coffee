@@ -1,73 +1,73 @@
-define ["require", "./template", "asyngleton", "underscore", "./engines/handlebars"], (require, Template, asyngleton, _, Handlebars) ->
+Template = require "./template"
+asyngleton = require "asyngleton"
+_ = require "underscore"
+
 
   
-  class TemplateFactory
+class TemplateFactory
 
-    ###
-    ###
+  ###
+  ###
 
-    constructor: (options = {}) ->
-      @_engine    = options.engine    or "handlebars"
-      @_directory = options.directory or "/templates"
-      @_extension = options.extension
-      @_templates = {}
-      @_loadedEngines = {}
-      @plugins = []
+  constructor: (options = {}) ->
+    @_engine    = options.engine    or "handlebars"
+    @_directory = options.directory or "/templates"
+    @_extension = options.extension
+    @_templates = {}
+    @_loadedEngines = {}
+    @plugins = []
 
-    ###
-     Sets the target template engine
-    ###
+  ###
+   Sets the target template engine
+  ###
 
-    engine: (value) ->
-      return @_engine if not arguments.length
-      @_engine = value
+  engine: (value) ->
+    return @_engine if not arguments.length
+    @_engine = value
 
-    ###
-    ###
+  ###
+  ###
 
-    use: (plugin) -> @plugins.push plugin
+  use: (plugin) -> @plugins.push plugin
 
-    ###
-    ###
+  ###
+  ###
 
-    directory: (value) ->
-      return @_directory if not arguments.length
-      @_directroy = value
+  directory: (value) ->
+    return @_directory if not arguments.length
+    @_directroy = value
 
-    ###
-    ###
+  ###
+  ###
 
-    fromSource: (source, options = {}) -> 
-      options.source = source
-      @get source, options
+  fromSource: (source, options = {}) -> 
+    options.source = source
+    @get source, options
 
-    ###
-    ###
+  ###
+  ###
 
-    loadEngine: (name, callback) ->
-      callback(null, @_loadedEngines[name] or (@_loadedEngines[name] = new Handlebars(@)))
-      #require ["./engines/#{@_engine}"], (Engine) =>
-        #callback null, (@_loadedEngines[name] or (@_loadedEngines[name] = new Engine(@)))
+  loadEngine: (name, callback) -> callback new Error "not supported"
 
-    ###
-    ###
+  ###
+  ###
 
-    get: (name, options = {}) -> 
+  get: (name, options = {}) -> 
 
-      _.defaults(options, {
-        engine: @_engine,
-        directory: @_directory,
-        extension: @_extension,
-        plugins: @plugins,
-        factory: @,
-        name: name
-      })
+    _.defaults(options, {
+      engine: @_engine,
+      directory: @_directory,
+      extension: @_extension,
+      plugins: @plugins,
+      factory: @,
+      name: name
+    })
 
-      @_templates[name] or (@_templates[name] = new Template(options))
+    @_templates[name] or (@_templates[name] = new Template(options))
 
 
-  mainFactory = new TemplateFactory()
-  TemplateFactory.fromSource = () -> mainFactory.fromSource.apply mainFactory, arguments
+mainFactory = new TemplateFactory()
+TemplateFactory.fromSource = () -> mainFactory.fromSource.apply mainFactory, arguments
 
-  TemplateFactory
+module.exports = TemplateFactory
 

@@ -9,53 +9,52 @@
 ###
 
 
-define () ->
 
-  class FactoryFactory 
+class FactoryFactory 
 
-    ###
-    ###
+  ###
+  ###
 
-    constructor: () ->
-      @_classes = []
+  constructor: () ->
+    @_classes = []
 
-    ###
-    ###
+  ###
+  ###
 
-    addFactoryClass: (factoryClass) ->
-      @_classes.push factoryClass
+  addFactoryClass: (factoryClass) ->
+    @_classes.push factoryClass
 
-    ###
-    ###
+  ###
+  ###
 
-    test: (item) -> !!@getFactoryClass item
+  test: (item) -> !!@getFactoryClass item
 
-    ###
-    ###
+  ###
+  ###
 
-    create: (item) ->
+  create: (item) ->
 
-      # is it already a factory? return it!
-      if item.create 
-        return item
+    # is it already a factory? return it!
+    if item.create 
+      return item
 
-      # otherwise find the factory
-      factoryClass = getFactoryClass(item)
-
-
-      if factoryClass
-        return new factoryClass(item)
+    # otherwise find the factory
+    factoryClass = getFactoryClass(item)
 
 
-    ###
-    ###
-
-    getFactoryClass: (item) ->
-      for factoryClass in @_classes
-        if factoryClass.test item
-          return factoryClass
+    if factoryClass
+      return new factoryClass(item)
 
 
-  new FactoryFactory()
+  ###
+  ###
+
+  getFactoryClass: (item) ->
+    for factoryClass in @_classes
+      if factoryClass.test item
+        return factoryClass
+
+
+module.exports = new FactoryFactory()
 
 

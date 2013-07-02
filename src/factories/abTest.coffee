@@ -1,15 +1,19 @@
-define ["./factory"], (factoryFactory) ->
-
-  class ABTestFactory
-
-    ###
-    ###
-
-    constructor: (control, tests) ->
-      @factory = factoryFactory.create control.choose tests
+factoryFactory = require "./factory"
 
 
-    ###
-    ###
 
-    create: (item) -> @factory.create
+class ABTestFactory
+
+  ###
+  ###
+
+  constructor: (control, tests) ->
+    @factory = factoryFactory.create control.choose tests
+
+
+  ###
+  ###
+
+  create: (item) -> @factory.create
+
+module.exports = ABTestFactory

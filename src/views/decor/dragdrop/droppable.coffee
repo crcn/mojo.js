@@ -1,29 +1,28 @@
-define ["../base", "./collection", "jquery"], (BaseViewDecorator, droppables, $) ->
+BaseViewDecorator = require "../base"
+droppables        = require "./collection"
+
+class DroppableDecorator extends BaseViewDecorator
+
+  ###
+  ###
+
+  init: () ->
+    super()
+    @name = @view.droppable
+
+  ###
+  ###
+
+  display: () ->
+    droppables.add @name, @
+
+  ###
+  ###
+
+  remove: () ->  
+    droppables.remove @name, @
 
 
-  class DroppableDecorator extends BaseViewDecorator
-  
-    ###
-    ###
+DroppableDecorator.getOptions = (view) -> view.droppable
 
-    init: () ->
-      super()
-      @name = @view.droppable
-
-    ###
-    ###
-
-    display: () ->
-      droppables.add @name, @
-
-    ###
-    ###
-
-    remove: () ->  
-      droppables.remove @name, @
-
-
-
-  DroppableDecorator.getOptions = (view) -> view.droppable
-
-  DroppableDecorator
+module.exports = DroppableDecorator

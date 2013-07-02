@@ -1,4 +1,4 @@
-define [], () ->
+module.exports = 
   NONE       : "none"
   LOADING    : "load"
   RENDERING  : "render"

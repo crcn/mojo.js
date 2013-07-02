@@ -1,0 +1,28 @@
+{
+  "name": "pilot-block",
+  "version": "0.0.19",
+  "description": "```javascript var pilot = require(\"pilot\"); pilot.addController(\"hello\", {   elements: function(elements) {     elements.append(\"Hello World\");   } });",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/classdojo/pilot.js.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "430c6067a2cc460be61f968a3e197dfb550e4d15",
+  "devDependencies": {
+    "sardines": "0.4.x",
+    "mocha": "1.9.x",
+    "expect.js": "0.2.x"
+  },
+  "dependencies": {
+    "toarray": "0.0.x"
+  },
+  "readme": "```javascript\nvar pilot = require(\"pilot\");\npilot.addController(\"hello\", {\n  elements: function(elements) {\n    elements.append(\"Hello World\");\n  }\n});\n\npilot.attach(document.body);\n```\n\n\n```html\n\n<html>\n  <head>\n  </head>\n  <body>\n    <!--spc:hello-->\n    <!--epc:hello-->\n  </body>\n</html>\n\n```\n",
+  "_id": "pilot-block@0.0.19",
+  "_from": "pilot-block@0.0.x"
+}

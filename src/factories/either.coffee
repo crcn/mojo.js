@@ -1,29 +1,31 @@
-define [], () ->
+
   
-  class EitherFactory
+class EitherFactory
 
-    ###
-    ###
+  ###
+  ###
 
-    constructor: () ->
-      @_factories = Array.prototype.slice.call(arguments)
+  constructor: () ->
+    @_factories = Array.prototype.slice.call(arguments)
 
-    ###
-    ###
+  ###
+  ###
 
-    test: (item) ->
-      for factory in @_factories
-        return true if factory.test item
+  test: (item) ->
+    for factory in @_factories
+      return true if factory.test item
 
-      return false
+    return false
 
-    ###
-    ###
+  ###
+  ###
 
-    create: (item) ->
+  create: (item) ->
 
-      for factory in @_factories
-        if factory.test item
-          return factory.create item
+    for factory in @_factories
+      if factory.test item
+        return factory.create item
+
+module.exports = EitherFactory
 
 

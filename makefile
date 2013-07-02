@@ -1,7 +1,9 @@
 all:
-	coffee -o public/lib -c src;
-	cp -rf public/lib lib;
-	jam rebuild;
+	coffee -o lib -c src;
+
+web:
+	amdify -e ./lib/index.js -o ./web
+
 
 all-watch:
 	coffee -o lib -cw src;

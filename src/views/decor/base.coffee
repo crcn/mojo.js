@@ -1,6 +1,5 @@
-define () ->
-  
-  class ViewDecorator 
+
+class ViewDecorator 
 
     ###
     ###
@@ -17,3 +16,5 @@ define () ->
     ###
 
     dispose: () ->
+
+module.exports = ViewDecorator

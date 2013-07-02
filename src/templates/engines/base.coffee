@@ -1,20 +1,21 @@
-define () ->
-  
-  class BaseEngine
 
-    ###
-    ###
+class BaseEngine
 
-    constructor: (@factory) -> @init()
+  ###
+  ###
 
-    ###
-    ###
+  constructor: (@factory) -> @init()
 
-    init: () ->
+  ###
+  ###
+
+  init: () ->
 
 
-    ###
-     renders a template - must always be asynchronous
-    ###
+  ###
+   renders a template - must always be asynchronous
+  ###
 
-    compile: (source) -> throw new Error("must be overridden")
+  compile: (source) -> throw new Error("must be overridden")
+
+module.exports = BaseEngine

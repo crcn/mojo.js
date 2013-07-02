@@ -1,4 +1,8 @@
-define ["mojo/lib/views/index", "mojo/lib/mediator/index", "bindable"], (View, mediator, bindable) ->
+View = require "./views"
+mediator = require "./mediator"
+bindable = require "bindable"
+
+module.exports = 
   View     : View
   mediator : mediator
   bindable : bindable

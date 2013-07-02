@@ -1,47 +1,48 @@
-define ["./base", "pilot-block"], (BaseViewDecorator, pilot) ->
-  
-  class TemplateViewDecorator extends BaseViewDecorator
+BaseViewDecorator = require "./base"
+pilot             = require "pilot-block"
 
-    ###
-    ###
+class TemplateViewDecorator extends BaseViewDecorator
 
-    init: () ->
-      super()
-      @template = @options
+  ###
+  ###
 
-    ###
-    ###
+  init: () ->
+    super()
+    @template = @options
 
-    load: (callback) ->  
-      @template.render @templateData(), (err, content) => 
-      
-        return callback(err) if err
+  ###
+  ###
 
-        p = @view.section.start
+  load: (callback) ->  
+    @template.render @templateData(), (err, content) => 
+    
+      return callback(err) if err
 
-        @view.section.html content
-        @view.set "html", @view.section.html()
+      p = @view.section.start
 
-        # template might have already been compiled, so give a delay
-        callback()
+      @view.section.html content
+      @view.set "html", @view.section.html()
 
-    ###
-    ###
+      # template might have already been compiled, so give a delay
+      callback()
 
-    templateData: () -> 
-      model = @view.getFlatten("model") ? @view.getFlatten("item")
+  ###
+  ###
 
-      # todo ~ return @view.toObject()
-      
-      item     : model # DEPRECATED
-      model    : model
-      sections : @view.get("sections") 
-      view     : @view 
+  templateData: () -> 
+    model = @view.getFlatten("model") ? @view.getFlatten("item")
 
-
-
-
-  TemplateViewDecorator.getOptions = (view) -> view.template
+    # todo ~ return @view.toObject()
+    
+    item     : model # DEPRECATED
+    model    : model
+    sections : @view.get("sections") 
+    view     : @view 
 
 
-  TemplateViewDecorator
+
+
+TemplateViewDecorator.getOptions = (view) -> view.template
+
+
+module.exports = TemplateViewDecorator

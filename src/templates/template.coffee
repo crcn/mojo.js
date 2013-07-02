@@ -1,64 +1,67 @@
-define ["require", "asyngleton", "outcome"], (require, asyngleton, outcome) ->
+asyngleton = require "asyngleton"
+outcome    = require "outcome"
+
   
-  class Template
+class Template
 
-    ###
-    ###
+  ###
+  ###
 
-    constructor: (@options) ->
+  constructor: (@options) ->
 
-      @_engine   = options.engine
-      @_baseDir  = options.directory
-      @source    = options.source
-      @extension = options.extension
-      @factory   = options.factory
-      @name      = options.name
+    @_engine   = options.engine
+    @_baseDir  = options.directory
+    @source    = options.source
+    @extension = options.extension
+    @factory   = options.factory
+    @name      = options.name
 
-    ###
-     renders the template with the given options
-    ###
+  ###
+   renders the template with the given options
+  ###
 
-    render: (options, callback) ->
+  render: (options, callback) ->
 
-      # load will be skipped if the template is already loaded
-      @load () => 
-        @_renderer.render options, callback
+    # load will be skipped if the template is already loaded
+    @load () => 
+      @_renderer.render options, callback
 
-      @
-      
+    @
+    
 
-    ###
-     Loads the template source
-    ###
+  ###
+   Loads the template source
+  ###
 
-    load: asyngleton (callback) ->
+  load: asyngleton (callback) ->
 
-      # first load the engine
-      @factory.loadEngine @_engine, outcome.s (engine) =>
+    # first load the engine
+    @factory.loadEngine @_engine, outcome.s (engine) =>
 
-        onSource = (@source) =>
+      onSource = (@source) =>
 
-          # grab the renderer
-          @_renderer = engine.compile source
+        # grab the renderer
+        @_renderer = engine.compile source
 
-          callback null, source
-
-
-        if @source
-          return onSource @source
-
-        @_loadFromFile onSource
+        callback null, source
 
 
-      @
+      if @source
+        return onSource @source
+
+      @_loadFromFile onSource
 
 
-    ###
-    ###
-
-    _loadFromFile: (callback) ->
-      require ["text!#{@_baseDir}/#{@name}.#{@extension || engine.extension}"], callback
+    @
 
 
+  ###
+  ###
+
+  _loadFromFile: (callback) ->
+    require ["text!#{@_baseDir}/#{@name}.#{@extension || engine.extension}"], callback
+
+
+module.exports = Template
 
 

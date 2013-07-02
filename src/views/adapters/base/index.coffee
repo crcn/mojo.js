@@ -1,7 +1,5 @@
-define [], () ->
-  
 
-  class Adapter
+class Adapter
 
     ###
      returns a bindable object
@@ -20,4 +18,6 @@ define [], () ->
     ###
 
     getViewClass    : (viewClass) ->
+    
+module.exports = Adapter
     

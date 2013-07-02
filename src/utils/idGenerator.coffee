@@ -1,3 +1,3 @@
-define () ->
-  i = 0
-  () -> i++
+
+i = 0
+module.exports = () -> i++

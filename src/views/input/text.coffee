@@ -1,30 +1,33 @@
-define ["./base", "../../templates/factory"], (BaseView, templates) ->
+BaseView  = require "./base"
+templates = require "../../templates/factory"
 
-  class TextInputView extends BaseView
 
-    ###
-    ###
+class TextInputView extends BaseView
 
-    template: templates.fromSource("<input type='text' name='{{view.name}}'>", { engine: "handlebars" })
+  ###
+  ###
 
-    ###
-    ###
+  template: templates.fromSource("<input type='text' name='{{view.name}}'>", { engine: "handlebars" })
 
-    events: 
-      "keyup": "_onInputChange"
+  ###
+  ###
 
-    ###
-     on input change, set the value of this text input to the element value
-    ###
+  events: 
+    "keyup": "_onInputChange"
 
-    _onInputChange: () ->
-      @set "value", @$().val()
+  ###
+   on input change, set the value of this text input to the element value
+  ###
 
-    ###
-     Reflect the value change in the text input
-    ###
+  _onInputChange: () ->
+    @set "value", @$().val()
 
-    _onValueChanged: (value) =>
-      super value
-      @$().val value
+  ###
+   Reflect the value change in the text input
+  ###
 
+  _onValueChanged: (value) =>
+    super value
+    @$().val value
+
+module.exports = TextInputView

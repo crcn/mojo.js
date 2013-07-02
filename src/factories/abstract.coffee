@@ -1,25 +1,25 @@
+BaseFactory = require "./base"
+
 ###
  Abstract factory combines multiple factories into one.
 ###
 
 
-define ["factories/base"], (BasFactory) ->
+
+class AbstractFactory extends BaseFactory
+
+  ###
+  ###
+
+  constructor: () ->
+    super()
 
 
+  ###
+  ###
 
-  class AbstractFactory extends BaseFactory
+  register: () ->
 
-    ###
-    ###
-
-    constructor: () ->
-      super()
-
-
-    ###
-    ###
-
-    register: () ->
-
+module.exports = AbstractFactory
 
   

@@ -1,34 +1,36 @@
-define ["bindable"], (bindable) ->
+bindable = require "bindable"
+
+
+###
+ TODO - implement virtual methods
+###
+
+class BackboneWrapperModel extends bindable.Object
 
   ###
-   TODO - implement virtual methods
+  ###
+  
+  constructor: (model) ->
+    super model.attributes
+    @model = model
+    model.model = @
+
+    for key of model then do (key) =>
+      v = model[key]
+      if typeof v is "function" and not @[key]
+        @[key] = () -> v.apply model, arguments
+
+  ###
   ###
 
-  class BackboneWrapperModel extends bindable.Object
+  get: () -> 
+    @model.get arguments...
 
-    ###
-    ###
-    
-    constructor: (model) ->
-      super model.attributes
-      @model = model
-      model.model = @
+  ###
+  ###
 
-      for key of model then do (key) =>
-        v = model[key]
-        if typeof v is "function" and not @[key]
-          @[key] = () -> v.apply model, arguments
+  _set: () -> 
+    @model.set arguments...
+    super arguments...
 
-    ###
-    ###
-
-    get: () -> 
-      @model.get arguments...
-
-    ###
-    ###
-
-    _set: () -> 
-      @model.set arguments...
-      super arguments...
-
+module.exports = BackboneWrapperModel

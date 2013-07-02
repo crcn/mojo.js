@@ -1,20 +1,22 @@
-define ["asyngleton"], (asyngleton) ->
+asyngleton = require "asyngleton"
   
-  class TemplatePlugin
+class TemplatePlugin
 
-    ###
-    ###
+  ###
+  ###
 
-    constructor: (@target) ->
+  constructor: (@target) ->
 
-    ###
-    ###
+  ###
+  ###
 
-    templateHelper: () =>
-      
+  templateHelper: () =>
+    
 
-    ###
-    ###
+  ###
+  ###
 
-    load: asyngleton (callback) -> callback()
+  load: asyngleton (callback) -> callback()
+
+module.exports = TemplatePlugin
 

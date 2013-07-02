@@ -1,1 +1,6 @@
-define ["./base", "./decor/factory"], (BaseView, DecorFactory) -> BaseView
+require "./input"
+
+BaseView     = require "./base"
+DecorFactory = require "./decor/factory"
+
+module.exports = BaseView

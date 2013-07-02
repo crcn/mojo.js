@@ -1,24 +1,27 @@
-define ["../index", "../../templates/factory"], (BaseView, templates) ->
+BaseView  = require "../base"
+templates = require "../../templates/factory"
 
-  class BaseInputView extends BaseView
 
-    ###
-    ###
+class BaseInputView extends BaseView
 
-    _onRendered: () ->
-      super()
-      @bind "value", @_onValueChanged
+  ###
+  ###
 
-    ###
-    ###
+  _onRendered: () ->
+    super()
+    @bind "value", @_onValueChanged
 
-    changed: () ->
-      @emit "data", { name: @get("name"), value: @get("value") }
+  ###
+  ###
 
-    ###
-     Reflect the value change in the text input
-    ###
+  changed: () ->
+    @emit "data", { name: @get("name"), value: @get("value") }
 
-    _onValueChanged: (value) =>
-      @changed()
+  ###
+   Reflect the value change in the text input
+  ###
 
+  _onValueChanged: (value) =>
+    @changed()
+
+module.exports = BaseInputView

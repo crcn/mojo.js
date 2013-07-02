@@ -1,16 +1,19 @@
-define ["./base"], (Base) ->
 
-  class VanillaEngine extends Base
 
-    constructor: () ->
-      super "tpl"
 
-    ###
-    ###
+class VanillaEngine extends Base
 
-    compile: (source) ->
+  constructor: () ->
+    super "tpl"
 
-      return {
-        render: (options, callback) ->
-          callback null, source
-      }
+  ###
+  ###
+
+  compile: (source) ->
+
+    return {
+      render: (options, callback) ->
+        callback null, source
+    }
+
+module.exports = VanillaEngine

@@ -1,8 +1,9 @@
-define [], () ->
 
-  class FnFactory
+class FnFactory
 
-    ###
-    ###
+  ###
+  ###
 
-    constructor: (@create) ->
+  constructor: (@create) ->
+
+module.exports = FnFactory

@@ -1,16 +1,17 @@
-define () ->
-  
-  class Base
 
-    ###
-    ###
+class Base
 
-    constructor: (@options) ->
+  ###
+  ###
+
+  constructor: (@options) ->
 
 
-    ###
-     creates a new item
-    ###
+  ###
+   creates a new item
+  ###
 
-    create: (options) ->
-      # OVERRIDE ME
+  create: (options) ->
+    # OVERRIDE ME
+
+module.exports = Base

@@ -1,0 +1,23 @@
+{
+  "name": "toarray",
+  "version": "0.0.1",
+  "description": "I find myself writing `item = item instanceof Array ? item : [item]` a lot, so I decided to make a simple library to does it for me. A few examples:",
+  "main": "./index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/crcn/toarray.js.git"
+  },
+  "devDependencies": {
+    "mocha": "1.9.x",
+    "expect.js": "0.2.x"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "readme": "I find myself writing `item = item instanceof Array ? item : [item]` a lot, so I decided to make a simple library to does\nit for me. A few examples:\n\n```javascript\ntoArray = require(\"toarray\");\n\nconsole.log(toArray(\"hello-world!\")); //[\"hello-world!\"]\nconsole.log(toArray([\"hello-world!\"])); //[\"hello-world!\"]\nconsole.log(toArray(undefined)); //[]\n```\n",
+  "_id": "toarray@0.0.1",
+  "_from": "toarray@0.0.x"
+}

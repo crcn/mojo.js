@@ -1,0 +1,9 @@
+<select name="{{view.name}}">
+
+  <option>
+    {{ view.selectLabel }}
+  </option>
+
+  {{ html: sections.selectList }}
+
+</select>

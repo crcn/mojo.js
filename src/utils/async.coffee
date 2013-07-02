@@ -2,70 +2,68 @@
 this library is used over async.js since it doesn't use setImmediate, which causes a delay. Don't want that for rendering views
 ###
 
-define () ->
-  
+
+###
+###
+
+async = 
 
   ###
+   Runs all items at the same time
   ###
 
-  async = 
+  forEach: (items, each, next) -> async.eachLimit items, -1, each, next
 
-    ###
-     Runs all items at the same time
-    ###
+  ###
+   Runs items sequentially 
+  ###
 
-    forEach: (items, each, next) -> async.eachLimit items, -1, each, next
+  eachSeries: (items, each, next) -> async.eachLimit items, 1, each, next
 
-    ###
-     Runs items sequentially 
-    ###
+  ###
+   Allows for any number of items to be run in parallel
+  ###
 
-    eachSeries: (items, each, next) -> async.eachLimit items, 1, each, next
+  eachLimit: (items, limit, each, next) ->  
 
-    ###
-     Allows for any number of items to be run in parallel
-    ###
-
-    eachLimit: (items, limit, each, next) ->  
-
-      numRunning = 0
-      currentIndex = 0
-      called = false
-      err = null
-      finished = false
+    numRunning = 0
+    currentIndex = 0
+    called = false
+    err = null
+    finished = false
 
 
-      finish = () ->
+    finish = () ->
 
-        # return if already finished, or there are no more running items
-        return if finished or (numRunning and not err)
-        finished = true
-        next()
+      # return if already finished, or there are no more running items
+      return if finished or (numRunning and not err)
+      finished = true
+      next()
 
-      nextItem = () ->
+    nextItem = () ->
 
-        # finish if we're at the end
-        return finish(err) if (currentIndex >= items.length) or err
+      # finish if we're at the end
+      return finish(err) if (currentIndex >= items.length) or err
 
-        # increment the number of running items
-        numRunning++
-        item = items[currentIndex++]
-
-
-        each item, (e) ->
-          numRunning--
-          return nextItem()
-          
-        # can we have an unlimited number of parallel processes, or is the num running less than the max allowed?
-        if not ~limit or numRunning < limit
-
-          # then 
-          nextItem()
+      # increment the number of running items
+      numRunning++
+      item = items[currentIndex++]
 
 
-      nextItem()
+      each item, (e) ->
+        numRunning--
+        return nextItem()
+        
+      # can we have an unlimited number of parallel processes, or is the num running less than the max allowed?
+      if not ~limit or numRunning < limit
+
+        # then 
+        nextItem()
+
+
+    nextItem()
 
 
 
-  
-  async
+
+module.exports = async
