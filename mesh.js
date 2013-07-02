@@ -202,10 +202,7 @@ module.exports = function(mesh, next) {
       "run": function(context, next) {
         var output = context.get("output") + ".js";
         context.set("output", output);
-
         var cmd = "rm " + output + "; ./node_modules/.bin/paperclip -p -i " + context.get("input") + " -o " + output;
-        cmd += "; ./node_modules/.bin/amdify -e " + output + " -o " + output;
-
         exec(cmd, next);
       }
     },

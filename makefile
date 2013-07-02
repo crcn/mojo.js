@@ -1,12 +1,12 @@
 all:
-	coffee -o lib -c src;
+	mesh build-src;
 
 web:
 	amdify -e ./lib/index.js -o ./web
 
 
 all-watch:
-	coffee -o lib -cw src;
+	mesh build-src --watch;
 
 clean:
 	rm -rf public/lib

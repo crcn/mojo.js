@@ -1,5 +1,5 @@
 InternalView  = require "./internal"
-DecorFactory = require "./decor/factory"
+DecorFactory  = require "./decor/factory"
 
 class BaseView extends InternalView
 

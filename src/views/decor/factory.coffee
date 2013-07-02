@@ -1,6 +1,7 @@
 BaseViewDecorator   = require "./base"
 ViewCollection      = require "../collection"
 TemplateDecorator   = require "./template"
+PaperclipDecorator  = require "./paperclip"
 AttributesDecorator = require "./attributes"
 EventsDecorator     = require "./events"
 BindingsDecorator   = require "./bindings"
@@ -38,6 +39,7 @@ availableDecorators = [
 
   # loads a template, and injects the sections / children (from above) on load
   _decor("template"   , TemplateDecorator, false),
+  _decor("paperclip"  , PaperclipDecorator, false),
 
   # additional decorators that don't have high priority - get added on .render() & .display()
   _decor("preload"    , PreloadDecorator),
