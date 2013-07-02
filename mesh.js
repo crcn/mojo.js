@@ -130,7 +130,7 @@ module.exports = function(mesh, next) {
           "eachFile": {
             "input": __dirname + "/src/**",
             "inputBaseDir": "/src",
-            "outputBaseDir": "/public/js",
+            "outputBaseDir": "/lib",
             "parallel": 30,
             "run": ["process_file"]
           }
