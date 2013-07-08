@@ -105,6 +105,6 @@ class SelectInputView extends InputView
       return
 
 
-    @get("sections.selectList").modelViews.at(index).set "selected", Math.random()
+    $($(this.section.elements).find("option")[index + 1]).attr("selected", "selected")
 
 module.exports = SelectInputView

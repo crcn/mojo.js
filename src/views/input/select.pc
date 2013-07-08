@@ -1,6 +1,6 @@
 <select name="{{ name }}" data-bind="{{ onChange: _changeSelect(event), preventDefault: false }}">
 
-  <option value="nil" selected="{{ nothingSelected ? 'selected' : undefined }}">
+  <option value="nil">
     {{ selectLabel }}
   </option>
 
