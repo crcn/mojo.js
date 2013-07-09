@@ -10,11 +10,6 @@ class FormView extends BaseView
   ###
   ###
 
-  modelClass: null
-
-  ###
-  ###
-
   paper: formTemplate
 
   ###
@@ -69,13 +64,7 @@ class FormView extends BaseView
   ###
   ###
 
-  _model: () =>
-    model = @get("model")
-    return model if @get("model")
-    clazz = @get "modelClass"
-    model = new clazz
-    @set "model", model
-    model
+  _model: () => @get("model")
 
 
 module.exports = FormView
