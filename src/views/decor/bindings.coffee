@@ -29,7 +29,6 @@ class BindingsDecorator extends BaseViewDecorator
   ###
 
   _setupBinding: (property, to) ->
-    keyParts = property.split " "
 
     options = {}
 
@@ -43,9 +42,9 @@ class BindingsDecorator extends BaseViewDecorator
     else
       options = { to: to }
 
-    for keyPart in keyParts
-      options.property = keyPart
-      @view.bind(options).now()
+
+    options.property = keyPart
+    @view.bind(options).now()
 
 
 

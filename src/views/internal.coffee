@@ -150,7 +150,6 @@ class InternalView extends BindableInheritableObject
   ###
 
   _initBindings: () ->
-
     @decorators.bind("currentState").to(@, "currentState").now()
 
   ###
