@@ -46,7 +46,8 @@ class ListSection extends bindable.Object
 
   _fetchRemote: (next) -> 
     return next() if not @_sourceCollection?.fetch
-    @_sourceCollection?.fetch next
+    #@_sourceCollection?.fetch next
+    next()
 
   ###
   ###
@@ -105,11 +106,14 @@ class ListSection extends bindable.Object
     @_viewCollection.source []
     @_deferredSections = []
 
+    @_sourceBinding?.dispose()
+
+    return unless source
+
     # might be a bindable.Collection / backbone / spine collection
     @_sourceCollection = adapters.getCollection source
 
 
-    @_sourceBinding?.dispose()
     @_sourceBinding = binding = @_sourceCollection.bind()
 
     @_sourceBinding.filter (model) => 
