@@ -43,7 +43,7 @@ class BindingsDecorator extends BaseViewDecorator
       options = { to: to }
 
 
-    options.property = keyPart
+    options.property = property
     @view.bind(options).now()
 
 
