@@ -64,7 +64,7 @@ class SelectInputView extends InputView
       return @deselect()
 
     # need to offset the default value
-    @select selected.index() - 1
+    @select selected.index() - @_inc()
       
   ###
    Selects an model based on the index
@@ -75,7 +75,8 @@ class SelectInputView extends InputView
     if !~index
       return @deselect()
 
-    @set "value", @get("source").at(index).value
+    model = @get("source").at(index)
+    @set "value", model.value or model
 
   ###
    deselects the model
@@ -87,9 +88,15 @@ class SelectInputView extends InputView
   ###
   ###
 
+  _inc: () -> if @get("selectLabel") then 1 else 0
+
+  ###
+  ###
+
   _onValueChanged: (value) =>
 
     super value
+
 
     index = -1
 
@@ -105,6 +112,6 @@ class SelectInputView extends InputView
       return
 
 
-    $($(this.section.elements).find("option")[index + 1]).attr("selected", "selected")
+    $($(this.section.elements).find("option")[index + @_inc()]).attr("selected", "selected")
 
 module.exports = SelectInputView

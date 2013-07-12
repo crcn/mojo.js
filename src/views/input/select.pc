@@ -1,8 +1,10 @@
 <select name="{{ name }}" data-bind="{{ onChange: _changeSelect(event), preventDefault: false }}">
-
-  <option value="nil">
-    {{ selectLabel }}
-  </option>
+    
+  {{#when: selectLabel }}
+    <option value="nil">
+      {{ selectLabel }}
+    </option>
+  {{/}}
 
   {{ html: sections.selectList }}
 
