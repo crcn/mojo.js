@@ -46,8 +46,8 @@ class ListSection extends bindable.Object
 
   _fetchRemote: (next) -> 
     return next() if not @_sourceCollection?.fetch
-    #@_sourceCollection?.fetch next
-    next()
+    @_sourceCollection?.fetch next
+    #next()
 
   ###
   ###
