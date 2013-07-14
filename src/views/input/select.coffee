@@ -31,7 +31,7 @@ class SelectInputView extends InputView
         view = list.view
         
         _id   : dref.get(model, "_id"),
-        value : (dref.get(model, view.get("modelValue")) or dref.get(model, view.get("modelLabel"))),
+        value : view._modelValue(model),
         label : dref.get(model, view.get("modelLabel")),
         data  : model
         
@@ -76,7 +76,8 @@ class SelectInputView extends InputView
       return @deselect()
 
     model = @get("source").at(index)
-    @set "value", model.value or model
+    @set "selectedModel", model
+    @set "value", @_modelValue(model)
 
   ###
    deselects the model
@@ -90,6 +91,12 @@ class SelectInputView extends InputView
 
   _inc: () -> if @get("selectLabel") then 1 else 0
 
+
+  ###
+  ###
+
+  _modelValue: (model) -> (dref.get(model, @get("modelValue")) or dref.get(model, @get("modelLabel")))
+
   ###
   ###
 
@@ -97,19 +104,19 @@ class SelectInputView extends InputView
 
     super value
 
-
     index = -1
 
     for model, i in @get("source").source()
-      if model.value is value
+      if @_modelValue(model) is value
         index = i
         break
-
 
 
     if not ~index
       @set "nothingSelected", Math.random()
       return
+
+    @set "selectedModel", model
 
 
     $($(this.section.elements).find("option")[index + @_inc()]).attr("selected", "selected")
