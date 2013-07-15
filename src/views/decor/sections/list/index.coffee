@@ -163,7 +163,10 @@ class ListSection extends bindable.Object
         if self._loaded
           self._deferInsert modelView.section
         else
-          self.section.append modelView.section
+          if self.options.prepend
+            self.section.prepend modelView.section
+          else
+            self.section.append modelView.section
 
 
         next()
