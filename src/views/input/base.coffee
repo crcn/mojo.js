@@ -9,7 +9,7 @@ class BaseInputView extends BaseView
 
   _onRendered: () ->
     super()
-    @bind "value", @_onValueChanged
+    @bind("value", @_onValueChanged).now()
 
   ###
   ###
