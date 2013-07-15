@@ -95,7 +95,7 @@ class SelectInputView extends InputView
   ###
   ###
 
-  _modelValue: (model) -> (dref.get(model, @get("modelValue")) or dref.get(model, @get("modelLabel")))
+  _modelValue: (model) -> (dref.get(model, @get("modelValue")) ? dref.get(model, @get("modelLabel")))
 
   ###
   ###
