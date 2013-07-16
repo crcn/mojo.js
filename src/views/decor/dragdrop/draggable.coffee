@@ -34,7 +34,7 @@ class DraggableDecorator extends BaseViewDecorator
 
   _startDrag: (e) =>
 
-    el = @view.$()
+    el = $ @view.section.elements.filter (node) -> node.nodeType is 1
 
 
     @document.bind "mousemove", @_drag
@@ -45,7 +45,7 @@ class DraggableDecorator extends BaseViewDecorator
 
 
 
-    @draggedItem = @document.find("body").append(el.html()).children().last()
+    @draggedItem = @document.find("body").append("<div>" + el.html() + "</div>").children().last()
 
 
 
