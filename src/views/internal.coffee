@@ -80,7 +80,10 @@ class InternalView extends BindableInheritableObject
   ###
 
   $: (search) -> 
-    el = $(@section.elements)
+
+    el = $(@section.elements.filter((node) ->
+      noe.nodeType == 1
+    ))
 
     if arguments.length
       return el.find search
