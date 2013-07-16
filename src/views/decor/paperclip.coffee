@@ -30,7 +30,7 @@ class PaperclipViewDecorator
       @paper.node.bind()
     catch e
       console.error "unable to bind paperclip template to #{@_traceViewPath()}"
-      console.error e.stack
+      console.error e
 
   ###
   ###
