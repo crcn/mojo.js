@@ -54,14 +54,14 @@ class EventsDecorator extends BaseDecorator
       elements = @view.$(selectors)
 
 
-    elements.bind(actions.toLowerCase(), cb)
+    elements.bind(lowerActions = actions.toLowerCase(), cb)
     for action in actions.split " " then do (action) =>
       @_disposable.add @view.on action, () ->
         cb.apply @, [$.Event(action)].concat Array.prototype.slice.call arguments
 
 
     @_disposable.add () ->
-      elements.unbind actions, cb
+      elements.unbind lowerActions, cb
     
   ###
   ###
