@@ -35,6 +35,16 @@ class PaperclipViewDecorator
   ###
   ###
 
+  remove: () ->
+    try
+      @paper.node.dispose()
+    catch e
+      console.error "unable to unbind paperclip template to #{@_traceViewPath()}"
+      console.error e
+
+  ###
+  ###
+
   _traceViewPath: () ->
 
     path = []

@@ -115,13 +115,19 @@ class InternalView extends BindableInheritableObject
   ###
 
   dispose: () =>
+
+    # call super - important to cleanup any listeners / bindings
+    super()
+
+    # if the parent is currently being removed, then don't bother cleaning up the 
+    # element listeners, and section. 
+    return if @_parent?.get("currentState") is ViewStates.REMOVING
     el = @$()
 
     # TODO - this chunk should be removed - leave it up
     # to the event decorator.
     el.unbind "*"
     @section.dispose()
-    super()
 
   ###
   ###
@@ -181,9 +187,7 @@ class InternalView extends BindableInheritableObject
   ###
   
   _onRemove    : () =>
-  _onRemoved   : () =>
-    return if @_parent?.get("currentState") is ViewStates.REMOVING
-    @dispose()
+  _onRemoved   : () => @dispose()
 
 
 
