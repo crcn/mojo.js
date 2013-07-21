@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.5.15",
+  "version": "0.5.16",
   "description": "test",
   "main": "./lib/index.js",
   "jam": {
@@ -42,7 +42,8 @@
     "flatstack": "0.0.x",
     "asyngleton": "0.1.x",
     "rivets": "0.3.x",
-    "paperclip": "0.1.x"
+    "paperclip": "0.1.x",
+    "toarray": "0.0.1"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",
