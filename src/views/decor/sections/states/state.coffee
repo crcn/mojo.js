@@ -19,6 +19,7 @@ class State extends bindable.Object
     ops.index = index
     ops.selected = false
 
+
     super ops
 
   ###
@@ -40,6 +41,11 @@ class State extends bindable.Object
   show: () ->
     @_view.section.attach()
     @_view.set "visible", true
+
+  ###
+  ###
+
+  hasView: () -> !!@_view
 
   ###
   ###

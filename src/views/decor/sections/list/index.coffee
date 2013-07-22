@@ -91,6 +91,12 @@ class ListSection extends bindable.Object
       ops
     ).map((options) =>
       view = modelViewFactory.create options
+
+      # set the view incase the factory is manual - in which 
+      # case the _id might never exist in the view. We won't be able to
+      # find a reference to it!
+      view.set "_id", options._id
+      
       @_hookModelView view
       view
     )

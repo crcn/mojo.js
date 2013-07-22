@@ -2,6 +2,7 @@ pilot = require "pilot-block"
 State = require "./state"
 flatstack = require "flatstack"
 bindable = require "bindable"
+ViewCollection = require "../../../collection"
 
 class StatesSection extends bindable.Object
 
@@ -10,6 +11,8 @@ class StatesSection extends bindable.Object
 
   constructor: (@view, @name, @options) ->
     super()
+
+    @_views = new ViewCollection()
 
     # the view states
     @source = new bindable.Collection()
@@ -26,6 +29,7 @@ class StatesSection extends bindable.Object
     # rotate back to zero if at the end
     @rotate = @options.rotate or false
 
+
     @_callstack = flatstack @
     @section = pilot.createSection()
 
@@ -40,23 +44,25 @@ class StatesSection extends bindable.Object
   ###
 
   load: (next) ->
+    @bind("index", @_setIndex).once().now()
+    @_views.load next
+
+  ###
+  ###
+
+  render: (next) -> 
     @bind("index", @_setIndex).now()
-    @bind("currentView").once().to(next).now()
+    @_views.render next
 
   ###
   ###
 
-  render: (next) -> @_currentView.render next
+  display: (next) -> @_views.display next
 
   ###
   ###
 
-  display: (next) -> @_currentView.display next
-
-  ###
-  ###
-
-  remove: (next) -> @_currentView.remove next
+  remove: (next) -> @_views.remove next
 
   ###
    selects a state 
@@ -116,37 +122,26 @@ class StatesSection extends bindable.Object
 
     self           = @
     state          = @currentState = @source.at index or 0
+    isNew          = !state.hasView()
     newStateView   = state.getView()
     @view.linkChild newStateView
+
 
     @view.set "index", index
 
     @currentState.set "selected", true
+    
+    oldState?.hide()
+    
+    if isNew
+      @_views.push newStateView
+      @section.append newStateView.section
 
-    @_callstack.push(
 
+    @currentState.show()
 
-      # first load the new state in
-      ((next) ->
-        newStateView[self.view.get("currentState")].call newStateView, next
-      ),
+    @set "currentView", newStateView
 
-      # just hide the state - might want to re-use it again
-      (() ->
-        oldState?.hide()
-      ),
-
-      # finally, add the new state
-      (() =>
-        # set the nw start
-        @_currentView = newStateView
-
-        @section.append newStateView.section
-        @currentState.show()
-
-        @set "currentView", newStateView
-      )
-    )
 
   ###
   ###
