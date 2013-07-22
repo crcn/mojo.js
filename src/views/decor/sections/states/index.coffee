@@ -51,13 +51,14 @@ class StatesSection extends bindable.Object
   ###
 
   render: (next) -> 
-    @bind("index", @_setIndex).now()
     @_views.render next
 
   ###
   ###
 
-  display: (next) -> @_views.display next
+  display: (next) -> 
+    @bind("index", @_setIndex).now()
+    @_views.display next
 
   ###
   ###
