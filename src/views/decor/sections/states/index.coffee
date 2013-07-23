@@ -34,6 +34,8 @@ class StatesSection extends bindable.Object
     @_callstack = flatstack @
     @section = pilot.createSection()
 
+    @bind("currentName").to(@_setName).now()
+
   ###
   ###
 
@@ -111,6 +113,15 @@ class StatesSection extends bindable.Object
         @emit "ended"
 
     @set "index", newIndex
+
+  ###
+  ###
+
+  _setName: (name) =>
+    for state, i in @source.source()
+      if state.get("name") is name
+        @set "index", i
+        break
 
   ###
   ###
