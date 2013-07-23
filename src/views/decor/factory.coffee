@@ -32,6 +32,9 @@ availableDecorators = [
 
   # bindings = priority for explicit data-bindings
   _decor("bindings"   , BindingsDecorator),
+  
+  # additional decorators that don't have high priority - get added on .render() & .display()
+  _decor("preload"    , PreloadDecorator),
 
   # section / child decorators. These have (almost) highest
   # priority since they should be added before the template is loaded
@@ -41,8 +44,6 @@ availableDecorators = [
   _decor("template"   , TemplateDecorator, false),
   _decor("paperclip"  , PaperclipDecorator, false),
 
-  # additional decorators that don't have high priority - get added on .render() & .display()
-  _decor("preload"    , PreloadDecorator),
   _decor("attributes" , AttributesDecorator),
   _decor("transition" , TransitionDecorator),
   _decor("events"     , EventsDecorator),
