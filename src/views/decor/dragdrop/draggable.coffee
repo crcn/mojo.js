@@ -27,7 +27,7 @@ class DraggableDecorator extends BaseViewDecorator
     el.bind "mousedown", @_startDrag
 
     # gets IE to work
-    el.bind "dragstart", () =>
+    # el.bind "dragstart", () =>
 
   ###
   ###
