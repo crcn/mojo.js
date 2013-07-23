@@ -3,7 +3,7 @@ _                         = require "underscore"
 ViewCollection            = require "./collection"
 generateId                = require "../utils/idGenerator"
 dref                      = require "dref"
-modelLocator              = require "../models/locator"
+models                    = require "../models"
 pilot                     = require "pilot-block"
 ViewStates                = require "./states"
 type                      = require "type-component"
@@ -19,12 +19,12 @@ class InternalView extends BindableInheritableObject
   ###
   ###
 
-  modelLocator: modelLocator
+  modelLocator: models
 
   ###
   ###
 
-  models: modelLocator
+  models: models
 
   ###
   ###
