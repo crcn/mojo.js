@@ -137,7 +137,7 @@ class StatesSection extends bindable.Object
 
     if oldState and oldState isnt @currentState 
       if newStateView.get("currentState") isnt "display"
-        @_displayListener = newStateView.once "load render", () =>
+        @_displayListener = newStateView.once "render display", () =>
           oldState.hide()
       else
         oldState.hide()
