@@ -1,5 +1,6 @@
 pilot = require "pilot-block"
 State = require "./state"
+states = require "../../../states"
 flatstack = require "flatstack"
 bindable = require "bindable"
 ViewCollection = require "../../../collection"
@@ -131,8 +132,16 @@ class StatesSection extends bindable.Object
     @view.set "index", index
 
     @currentState.set "selected", true
+
+    @_displayListener?.dispose()
+
+    if oldState and oldState isnt @currentState 
+      if newStateView.get("currentState") isnt "display"
+        @_displayListener = newStateView.once "load render", () =>
+          oldState.hide()
+      else
+        oldState.hide()
     
-    oldState?.hide()
     
     if isNew
       @_views.push newStateView
