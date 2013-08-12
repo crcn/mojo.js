@@ -87,7 +87,7 @@ class ListSection extends bindable.Object
     map((model) => 
       ops       = {}
       ops.model = model
-      ops._id   = model?.get("_id")
+      ops._id   = model?.get?("_id") ? model?._id
       ops
     ).map((options) =>
       view = modelViewFactory.create options
