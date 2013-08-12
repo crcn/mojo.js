@@ -31,7 +31,7 @@ class InternalView extends BindableInheritableObject
 
   constructor: (data = {}) ->
 
-    @_id = dref.get(data.model or {}, "_id") or generateId()
+    @_id = data.model?.get?("_id") ? data.model?._id ? generateId()
 
     data.currentState = ViewStates.NONE
     data.this = @
