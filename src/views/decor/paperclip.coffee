@@ -30,7 +30,7 @@ class PaperclipViewDecorator
       @paper.node.bind()
     catch e
       console.error "unable to bind paperclip template to #{@_traceViewPath()}"
-      console.error e
+      console.error e.stack or e
 
   ###
   ###
@@ -40,7 +40,7 @@ class PaperclipViewDecorator
       @paper.node.dispose()
     catch e
       console.error "unable to unbind paperclip template to #{@_traceViewPath()}"
-      console.error e
+      console.error e.stack or e
 
   ###
   ###
