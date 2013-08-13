@@ -24,6 +24,8 @@ class DraggableDecorator extends BaseViewDecorator
   _initListeners: () =>
     el = @view.$()
     @document = $(document)
+    el.bind "selectstart", () -> false
+    el.bind "dragstart", () -> false
     el.bind "mousedown", @_startDrag
 
     # gets IE to work
@@ -56,7 +58,7 @@ class DraggableDecorator extends BaseViewDecorator
     # prevent original drag - might be an image
     # e.preventDefault()
     e.stopPropagation()
-    true
+    false
 
   ###
   ###
