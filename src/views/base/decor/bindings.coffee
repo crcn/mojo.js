@@ -6,14 +6,16 @@ class BindingsDecorator extends BaseViewDecorator
   ###
   ###
 
-  init: () ->
+  init: () =>
     super()
+    console.log "INIT"
     @bindings = if typeof @options is "object" then @options else undefined
+    @view.once "render", @render
 
   ###
   ###
 
-  load: () ->
+  render: () =>
     @_setupExplicitBindings() if @bindings
 
 

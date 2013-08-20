@@ -1,24 +1,15 @@
 bindable = require "bindable"
-ViewCollection = require "./base/collection"
+ViewCollection = require "../base/collection"
 State = require "./state"
 flatstack = require "flatstack"
 
-class StatesView extends require("./base/decorable")
+class StatesView extends require("../base/decorable")
   
   ###
   ###
 
   _init: () ->
     super()
-
-    @decorators.push {
-      load    : @_load
-      render  : @_render
-      display : @_display
-      remove  : @_remove
-    }
-
-    @_views = new ViewCollection()
 
     # the view states
     @source = new bindable.Collection()
@@ -34,33 +25,23 @@ class StatesView extends require("./base/decorable")
     @rotate = @get("rotate") ? false
 
 
-    @_callstack = flatstack @
-
     @bind("currentName").to(@_setName).now()
 
-  ###
-  ###
-
-  _load: (next) =>
-    @bind("index", @_setIndex).once().now()
-    @_views.load next
 
   ###
   ###
 
-  _render: (next) => @_views.render next
-
-  ###
-  ###
-
-  _display: (next) => 
+  _onRender: () -> 
+    super()
     @bind("index", @_setIndex).now()
-    @_views.display next
+    
 
   ###
   ###
 
-  _remove: (next) => @_views.remove next
+  _onRendered: () ->
+    super()
+
 
   ###
    selects a state 
@@ -131,6 +112,7 @@ class StatesView extends require("./base/decorable")
     state          = @currentState = @source.at index or 0
     isNew          = !state.hasView()
     newStateView   = state.getView()
+
     @linkChild newStateView
 
 
@@ -139,15 +121,11 @@ class StatesView extends require("./base/decorable")
     @_displayListener?.dispose()
 
     if oldState and oldState isnt @currentState 
-      if newStateView.get("currentState") isnt "display"
-        @_displayListener = newStateView.once "render display", () =>
-          oldState.hide()
-      else
         oldState.hide()
     
     
     if isNew
-      @_views.push newStateView
+      newStateView.render()
       @section.append newStateView.section
 
 

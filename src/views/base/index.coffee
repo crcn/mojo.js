@@ -29,9 +29,7 @@ class BaseView extends BindableInheritableObject
   ###
 
   init    : () ->
-  load    : (next) -> next()
   render  : (next) -> next()
-  display : (next) -> next()
   remove  : (next) -> next()
 
 module.exports = BaseView

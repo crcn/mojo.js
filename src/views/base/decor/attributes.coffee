@@ -9,11 +9,12 @@ class AttributesDecorator extends BaseDecorator
   init: () ->
     super()
     @attrs = @options
+    @view.once "render", @render
 
   ###
   ###
 
-  render: () ->
+  render: () =>
     for props in @_properties()
       for key of props.attributes
         props.element.attr(key, props.attributes[key])

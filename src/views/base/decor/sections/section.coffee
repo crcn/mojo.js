@@ -14,16 +14,12 @@ class Section extends require("bindable").Object
 
   createFragment: () ->
 
-
     unless @view
       @view = new @viewClass @
       @view._parent = @sections.view
-      @sections._initialized @
+      @sections.view.callstack.push @view.render
 
     @view.section.toFragment()
-
-
-
 
 
 

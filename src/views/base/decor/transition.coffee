@@ -12,25 +12,33 @@ class TransitionDecorator extends BaseViewDecorator
   init: () ->
     super()
     @transition = @options
+    @view.once "render"   , @_onRender
+    @view.once "rendered" , @_onRendered
+    @view.once "remove"   , @_onRemove
+
 
   ###
   ###
 
-  render: () ->
+  _onRender: () =>
     @view.$().css({opacity:0})
 
   ###
   ###
 
-  display: (callback) ->
-    @view.$().css({opacity:1})
+  _onRendered: () =>
     @_transitionAll "enter", callback
-  
+
   ###
   ###
 
-  remove: (callback)  -> 
-    @_transitionAll "exit", callback
+  _onRemove: () =>
+    @view.$().css({opacity:1})
+    # @view.callstack.push (next) ->
+    #   @_transitionAll "exit", callback
+
+  ###
+  ###
 
   ###
   ###

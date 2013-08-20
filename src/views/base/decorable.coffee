@@ -5,6 +5,7 @@ dref                      = require "dref"
 ViewStates                = require "./states"
 type                      = require "type-component"
 DecorFactory              = require "./decor/factory"
+flatstack                 = require "flatstack"
 
 
 class DecorableView extends require("./index")
@@ -16,7 +17,6 @@ class DecorableView extends require("./index")
 
     @_id = data.model?.get?("_id") ? data.model?._id ? generateId()
 
-    data.currentState = ViewStates.NONE
     data.this = @
 
     super data
@@ -26,16 +26,10 @@ class DecorableView extends require("./index")
 
   init: () -> 
     super()
-
-    # items to load with the view
-    # TODO - viewCollections.create() - should be a recycled item
-    @decorators = @loadables = new ViewCollection()
-    @decorators.view = @
-
-    @_initListeners()
+    @callstack = flatstack()
 
   ###
-   returns path to this view
+   returns path to this view. Useful for debugging.
   ###
 
   path: () ->
@@ -50,10 +44,31 @@ class DecorableView extends require("./index")
   ###
   ###
 
-  load    : (next) -> @decorators.load next
-  render  : (next) -> @decorators.render next
-  display : (next) -> @decorators.display next
-  remove  : (next) -> @decorators.remove next
+  render: (next) =>
+
+    @_init()
+
+    # notify we're ready to render
+    @_onRender()
+    @emit "render"
+
+    # add to the end of the queue - there might be decorators
+    # that have added stuff in the rendering process
+    @callstack.push () =>
+      next?()
+      @_onRendered()
+      @emit "rendered"
+
+  ###
+  ###
+
+  remove: (next) =>
+    @emit "remove"
+    @_onRemove()
+
+    @callstack.push () =>
+      next()
+      @_onRemoved()
 
   ###
    returns a search for a particular element
@@ -77,13 +92,12 @@ class DecorableView extends require("./index")
    attaches to an element to the DOM
   ###
 
-  attach: (element, callback) ->
-    @_domElement = element[0] or element
+  attach: (element, next) ->
 
-    @decorators.once "display", () =>
-      @_domElement.appendChild @section.toFragment()
+    @render () =>
+      (element[0] or element).appendChild @section.toFragment()
+      next?()
 
-    @display callback
 
   ###
    dynamically added decorators
@@ -98,8 +112,7 @@ class DecorableView extends require("./index")
   _init: (event) =>
     return if @_initialized
     @_initialized = true
-    @_initDecor()
-    @_initBindings()
+    DecorFactory.setup @
 
   ###
   ###
@@ -115,24 +128,6 @@ class DecorableView extends require("./index")
     
     @section.dispose()
 
-  ###
-  ###
-
-  _initListeners: () ->
-    @decorators.on 
-      load      : @_onLoad
-      loaded    : @_onLoaded
-
-      render    : @_onRender
-      rendered  : @_onRendered
-
-      display   : @_onDisplay
-      displayed : @_onDisplayed
-
-      remove    : @_onRemove 
-      removed   : @_onRemoved
-
-    @decorators.once "stateChange", @_init
 
   ###
   ###
@@ -143,26 +138,8 @@ class DecorableView extends require("./index")
   ###
   ###
 
-  _initBindings: () ->
-    @decorators.bind("currentState").to(@, "currentState").now()
-
-  ###
-  ###
-
-  _onLoad      : () =>
-  _onLoaded    : () =>
-
-  ###
-  ###
-
   _onRender    : () => 
   _onRendered  : () =>
-
-  ###
-  ###
-
-  _onDisplay   : () => 
-  _onDisplayed : () => 
 
   ###
   ###

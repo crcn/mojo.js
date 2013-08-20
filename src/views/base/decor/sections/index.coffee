@@ -9,16 +9,7 @@ class SectionsDecorator
   ###
 
   constructor: (@view, @sectionOptions) ->
-    @_views = new ViewCollection()
     @init()
-
-  ###
-  ###
-
-  load    : (next) -> @_views.load next
-  render  : (next) -> @_views.render next
-  display : (next) -> @_views.display next
-  remove  : (next) -> @_views.remove next
 
   ###
   ###
@@ -32,13 +23,6 @@ class SectionsDecorator
 
   _addSection: (name, options) ->
     @view.set "sections.#{name}", new Section(@, name, @_getSectionClass(options), options)
-
-  ###
-  ###
-
-  _initialized: (section) -> 
-    @_views.push section.view
-
 
   ###
   ###

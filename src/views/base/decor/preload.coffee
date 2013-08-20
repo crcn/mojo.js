@@ -20,22 +20,27 @@ class PreloadDecorator extends BaseDecor
 
     @preload = toarray pl
 
+    @view.once "render", @_onRender
+
   ###
   ###
 
-  load: (next) ->
+  _onRender: () =>
+    @view.callstack.push (next) ->
+      async.forEach @preload, ((property, next) =>
 
-    async.forEach @preload, ((property, next) =>
+        # bind incase the value doesn't exist yet
+        @view.bind(property).to((model) =>
+          return next() if not model or not model?.fetch
+          model.fetch next
+        ).once().now()
 
-      # bind incase the value doesn't exist yet
-      @view.bind(property).to((model) =>
-        return next() if not model or not model?.fetch
-        model.fetch next
-      ).once().now()
-
-    ), next
+      ), next
 
 
-PreloadDecorator.getOptions = (view) -> view.preload
+  ###
+  ###
+
+  @getOptions: (view) -> view.preload
 
 module.exports = PreloadDecorator

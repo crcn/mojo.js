@@ -13,17 +13,20 @@ class PaperclipViewDecorator
 
     @template = paperclip.template @template
 
+    @view.once "render", @render
+    @view.once "remove", @remove
+
   ###
   ###
 
-  load: () ->
+  render: () =>
     @content = @template.bind @view
     @view.section.append @content.section.toFragment()
 
   ###
   ###
 
-  remove: () ->
+  remove: () =>
     @content.unbind()
 
   ###

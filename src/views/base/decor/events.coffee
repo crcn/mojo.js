@@ -11,11 +11,13 @@ class EventsDecorator extends BaseDecorator
   init: () ->
     super()
     @events = @options
+    @view.once "render", @render
+    @view.once "remove", @remove
 
   ###
   ###
 
-  render: () ->
+  render: () =>
     e = @_events()
     @_disposeBindings()
     @_disposable = disposable.create()
@@ -26,7 +28,7 @@ class EventsDecorator extends BaseDecorator
   ###
   ###
 
-  remove: () ->
+  remove: () =>
     @_disposeBindings()
 
   ###

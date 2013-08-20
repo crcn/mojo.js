@@ -1,6 +1,6 @@
 BaseViewDecorator   = require "./base"
 ViewCollection      = require "../collection"
-TemplateDecorator   = require "./template"
+#TemplateDecorator   = require "./template"
 PaperclipDecorator  = require "./paperclip"
 AttributesDecorator = require "./attributes"
 EventsDecorator     = require "./events"
@@ -41,7 +41,7 @@ availableDecorators = [
   _decor("sections"   , SectionsDecorator),
 
   # loads a template, and injects the sections / children (from above) on load
-  _decor("template"   , TemplateDecorator, false),
+  # _decor("template"   , TemplateDecorator, false),
   _decor("paperclip"  , PaperclipDecorator, false),
 
   _decor("attributes" , AttributesDecorator),
@@ -132,7 +132,6 @@ module.exports =
     for decor in decorators
       d = new decor.clazz view, decor.options
       d._id = decor.name
-      view.decorators.push d
 
 
 
