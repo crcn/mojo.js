@@ -1,4 +1,4 @@
-pilot = require "pilot-block"
+loaf = require "loaf"
 State = require "./state"
 states = require "../../../states"
 flatstack = require "flatstack"
@@ -6,12 +6,15 @@ bindable = require "bindable"
 ViewCollection = require "../../../collection"
 
 class StatesSection extends bindable.Object
+  
+  __isLoader: true
 
   ###
   ### 
 
   constructor: (@view, @name, @options) ->
     super()
+
 
     @_views = new ViewCollection()
 
@@ -32,16 +35,9 @@ class StatesSection extends bindable.Object
 
 
     @_callstack = flatstack @
-    @section = pilot.createSection()
+    @section = loaf()
 
     @bind("currentName").to(@_setName).now()
-
-  ###
-  ###
-
-  toString: () -> 
-    @rendered = true
-    @section.toString()
 
   ###
   ###

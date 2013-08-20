@@ -32,14 +32,14 @@ class State extends bindable.Object
   ###
 
   hide: () ->
-    @_view.section.detach()
+    @_view.section.hide()
     @_view.set "visible", false
 
   ###
   ###
 
   show: () ->
-    @_view.section.attach()
+    @_view.section.show()
     @_view.set "visible", true
 
   ###

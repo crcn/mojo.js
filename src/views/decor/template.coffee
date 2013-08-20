@@ -1,5 +1,4 @@
 BaseViewDecorator = require "./base"
-pilot             = require "pilot-block"
 
 class TemplateViewDecorator extends BaseViewDecorator
 

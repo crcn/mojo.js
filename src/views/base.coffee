@@ -16,7 +16,6 @@ class BaseView extends InternalView
     super()
     DecorFactory.setup @
 
-
   ###
    dynamically added decorators
   ###

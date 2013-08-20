@@ -36,9 +36,9 @@ class SectionDecorator
   display : (next) -> 
 
     # all sections must be rendered - throw a warning otherwise
-    for section in @_sections.source()
-      unless section.rendered
-        console.warn "view '#{@view.path()}' has no section outlet for 'sections.#{section.name}'"
+    #for section in @_sections.source()
+    #  unless section.rendered
+    #    console.warn "view '#{@view.path()}' has no section outlet for 'sections.#{section.name}'"
 
     @_sections.display next
 

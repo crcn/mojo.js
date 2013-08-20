@@ -11,33 +11,19 @@ class PaperclipViewDecorator
     if type(template) isnt "function"
       throw new Error "paper template must be a function for view \"#{@view.constructor.name}\""
 
-    @paper = paperclip.paper @template
+    @template = paperclip.template @template
 
   ###
   ###
 
   load: () ->
-    @paper.load @view
-    @view.section.html @view.buffer.join("")
+    @content = @template.bind @view
+    @view.section.append @content.section.toFragment()
 
-  ###
-  ###
-
-  render: () ->
-
-    try 
-      # binds the "clips" with the DOM
-      @paper.node.bind()
-    catch e
-      console.error "unable to bind paperclip template to #{@_traceViewPath()}"
-      console.error e.stack or e
-
-  ###
-  ###
 
   remove: () ->
     try
-      @paper.node.dispose()
+      @content.dispose()
     catch e
       console.error "unable to unbind paperclip template to #{@_traceViewPath()}"
       console.error e.stack or e

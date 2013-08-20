@@ -2,7 +2,7 @@ ViewCollection = require "../../../collection"
 adapters       = require "../../../adapters/index"
 dref           = require "dref"
 hoist          = require "hoist"
-pilot          = require "pilot-block"
+loaf           = require "loaf"
 bindable       = require "bindable"
 type           = require "type-component"
 FnFactory      = require "../../../../factories/fn"
@@ -10,6 +10,9 @@ ClassFactory   = require "../../../../factories/class"
 
   
 class ListSection extends bindable.Object
+  
+  __isLoader: true
+
   constructor: (@view, @name, @options) ->
     super()
 
@@ -20,16 +23,9 @@ class ListSection extends bindable.Object
     @_viewCollection.bind({ remove: @_removeModelView }).now()
 
     @_deferredSections = []
-    @section = pilot.createSection()
+    @section = loaf()
 
     @_viewCollection.bind("length").to(@, "length")
-
-  ###
-  ###
-
-  toString: () -> 
-    @rendered = true
-    @section.toString()
 
 
   load: (next) ->

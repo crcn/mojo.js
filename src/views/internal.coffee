@@ -4,7 +4,7 @@ ViewCollection            = require "./collection"
 generateId                = require "../utils/idGenerator"
 dref                      = require "dref"
 models                    = require "../models"
-pilot                     = require "pilot-block"
+loaf                     = require "loaf"
 ViewStates                = require "./states"
 type                      = require "type-component"
 
@@ -52,7 +52,7 @@ class InternalView extends BindableInheritableObject
     @decorators.view = @
 
     # create a default element block
-    @section = pilot.createSection()
+    @section = loaf()
     @_initListeners()
 
   ###
@@ -87,9 +87,8 @@ class InternalView extends BindableInheritableObject
 
   $: (search) -> 
 
-    el = $(@section.elements.filter((node) ->
-      node.nodeType == 1
-    ))
+
+    el = $(@section.getChildNodes())
 
     if arguments.length
       return el.find search
@@ -104,7 +103,7 @@ class InternalView extends BindableInheritableObject
     @_domElement = element[0] or element
 
     @decorators.once "display", () =>
-      @section.replaceChildren @_domElement
+      @_domElement.appendChild @section.toFragment()
 
     @display callback
 
@@ -174,8 +173,6 @@ class InternalView extends BindableInheritableObject
     #@_init()
 
   _onLoaded    : () =>
-    return if @_parent?.get("currentState") is ViewStates.LOADING
-    @section.updateChildren()
 
   ###
   ###
