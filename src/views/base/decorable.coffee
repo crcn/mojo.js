@@ -129,12 +129,15 @@ class DecorableView extends require("./index")
 
   _onRender    : () => 
   _onRendered  : () =>
+    @_rendered = true
 
   ###
   ###
   
   _onRemove    : () =>
-  _onRemoved   : () => @dispose()
+  _onRemoved   : () => 
+    @_removed = true
+    @dispose()
 
   ###
    expose this so third-party modules can add a decorator

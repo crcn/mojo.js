@@ -26,7 +26,7 @@ class PreloadDecorator extends BaseDecor
   ###
 
   _onRender: () =>
-    @view.callstack.push (next) ->
+    @view.callstack.push (next) =>
       async.forEach @preload, ((property, next) =>
 
         # bind incase the value doesn't exist yet
@@ -40,6 +40,7 @@ class PreloadDecorator extends BaseDecor
   ###
   ###
 
-  @getOptions: (view) -> view.preload
+  @getOptions : (view) -> undefined
+  @decorate   : (view, options) -> new PreloadDecorator view, options
 
 module.exports = PreloadDecorator
