@@ -1,7 +1,6 @@
 BaseViewDecorator   = require "./base"
 SelectorDecorator   = require "./selector"
 PaperclipDecorator  = require "./paperclip"
-AttributesDecorator = require "./attributes"
 EventsDecorator     = require "./events"
 BindingsDecorator   = require "./bindings"
 SectionsDecorator   = require "./sections/index"
@@ -44,7 +43,6 @@ availableDecorators = [
   # _decor("template"   , TemplateDecorator, false),
   _decor("paperclip"  , PaperclipDecorator, false),
 
-  _decor("attributes" , AttributesDecorator),
   _decor("transition" , TransitionDecorator),
   _decor("events"     , EventsDecorator),
   _decor("draggable"  , DraggableDecorator),
