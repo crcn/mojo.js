@@ -7,8 +7,6 @@ class Section extends require("bindable").Object
 
   constructor: (@sections, @name, @viewClass, options) ->
     super options
-
-    @on "change", @_onDataChange
     
   
   ###
@@ -24,11 +22,6 @@ class Section extends require("bindable").Object
 
     @view.section.toFragment()
 
-  ###
-  ###
-
-  _onDataChange: (key, value) =>
-    console.log key, value
 
 
 
