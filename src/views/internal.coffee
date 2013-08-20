@@ -125,9 +125,6 @@ class InternalView extends BindableInheritableObject
     return if @_parent?.get("currentState") is ViewStates.REMOVING
     el = @$()
 
-    # TODO - this chunk should be removed - leave it up
-    # to the event decorator.
-    el.unbind "*"
     @section.dispose()
 
   ###
