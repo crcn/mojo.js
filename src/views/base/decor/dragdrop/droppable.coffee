@@ -25,7 +25,7 @@ class DroppableDecorator extends BaseViewDecorator
   ###
   ###
 
-  @getOptions: (view) -> view.droppable
-  @decorate: (view, options) -> new DroppableDecorator view, options
+  @getOptions : (view) -> view.droppable
+  @decorate   : (view, options) -> new DroppableDecorator view, options
 
 module.exports = DroppableDecorator

@@ -95,7 +95,7 @@ class DraggableDecorator extends BaseViewDecorator
   ###
   ###
 
-  @getOptions: (view) -> view.draggable
-  @decorate: (view, options) -> new DraggableDecorator view, options
+  @getOptions : (view) -> view.draggable
+  @decorate   : (view, options) -> new DraggableDecorator view, options
 
 module.exports = DraggableDecorator

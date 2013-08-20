@@ -10,7 +10,6 @@ TransitionDecorator = require "./transition"
 PreloadDecorator    = require "./preload"
 
 
-
 _decor = (name, clazz, inheritable = true) ->
    name        : name
    clazz       : clazz
