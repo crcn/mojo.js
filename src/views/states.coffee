@@ -1,6 +1,20 @@
-module.exports = 
-  NONE       : "none"
-  LOADING    : "load"
-  RENDERING  : "render"
-  DISPLAYING : "display"
-  REMOVING   : "remove"
+class StatesView extends require("./base")
+  
+  ###
+  ###
+
+  _init: () ->
+    super()
+
+    @bind("index", @_setIndex)
+
+  ###
+  ###
+
+  _setIndex: (index) =>
+    
+
+
+  
+
+module.exports = StatesView

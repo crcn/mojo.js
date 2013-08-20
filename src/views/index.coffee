@@ -1,4 +1,10 @@
+models       = require "../models"
+
 BaseView     = require "./base"
-DecorFactory = require "./decor/factory"
+ListView     = require "./list"
+StatesView   = require "./states"
+
+models.set "components.list", ListView
+models.set "components.states", StatesView
 
 module.exports = BaseView
