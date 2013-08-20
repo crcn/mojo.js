@@ -17,7 +17,7 @@ class Section extends require("bindable").Object
     unless @view
       @view = new @viewClass @
       @view._parent = @sections.view
-      @sections.view.callstack.push @view.render
+      @sections.view.callstack.unshift @view.render
 
     @view.section.toFragment()
 

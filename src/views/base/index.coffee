@@ -1,6 +1,7 @@
 BindableInheritableObject = require "../../bindable/inheritable"
 models                    = require "../../models"
 loaf                      = require "loaf"
+flatstack                 = require "flatstack"
 
 class BaseView extends BindableInheritableObject
 
@@ -22,14 +23,17 @@ class BaseView extends BindableInheritableObject
 
     # bleh - this is a tempory bug. remove!
     @set "models", models
-    @section = loaf()
+
+    @section   = loaf()
+    @callstack = flatstack()
+    
     @init()
 
   ###
   ###
 
   init    : () ->
-  render  : (next) -> next()
-  remove  : (next) -> next()
+  render  : (next) -> next?()
+  remove  : (next) -> next?()
 
 module.exports = BaseView

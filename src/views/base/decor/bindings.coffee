@@ -8,7 +8,6 @@ class BindingsDecorator extends BaseViewDecorator
 
   init: () =>
     super()
-    console.log "INIT"
     @bindings = if typeof @options is "object" then @options else undefined
     @view.once "render", @render
 
@@ -17,7 +16,6 @@ class BindingsDecorator extends BaseViewDecorator
 
   render: () =>
     @_setupExplicitBindings() if @bindings
-
 
   ###
    explicit bindings are properties from & to properties of the view controller
@@ -48,9 +46,11 @@ class BindingsDecorator extends BaseViewDecorator
     options.property = property
     @view.bind(options).now()
 
+  ###
+  ###
 
+  @getOptions : (view) -> view.bindings
+  @decorate   : (view, options) -> new BindingsDecorator view, options
 
-
-BindingsDecorator.getOptions = (view) -> view.bindings
 
 module.exports = BindingsDecorator

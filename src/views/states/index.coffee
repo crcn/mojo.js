@@ -1,5 +1,4 @@
 bindable = require "bindable"
-ViewCollection = require "../base/collection"
 State = require "./state"
 flatstack = require "flatstack"
 
@@ -18,30 +17,8 @@ class StatesView extends require("../base/decorable")
       new State @, stateOptions, i
 
     @set "source", @source
-
-    @selector = @get("selector")
-
-    # rotate back to zero if at the end
-    @rotate = @get("rotate") ? false
-
-
-    @bind("currentName").to(@_setName).now()
-
-
-  ###
-  ###
-
-  _onRender: () -> 
-    super()
     @bind("index", @_setIndex).now()
-    
-
-  ###
-  ###
-
-  _onRendered: () ->
-    super()
-
+    @bind("currentName").to(@_setName).now()
 
   ###
    selects a state 
@@ -74,14 +51,14 @@ class StatesView extends require("../base/decorable")
     newIndex = @get("index") + position
 
     if newIndex < 0
-      if @rotate
+      if @get("rotate")
         newIndex = @source.length() - 1
       else
         newIndex = 0
         @emit "ended" 
         
     else if newIndex >= @source.length() 
-      if @rotate
+      if @get("rotate")
         newIndex = 0
       else
         newIndex = @source.length() - 1

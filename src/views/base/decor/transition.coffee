@@ -93,10 +93,12 @@ class TransitionDecorator extends BaseViewDecorator
     element.filter (index, element) ->
       element.nodeType is 1
 
+  ###
+  ###
 
+  @getOptions : (view) -> view.transition
+  @decorate   : (view, options) -> new TransitionDecorator view, options
 
-
-
-TransitionDecorator.getOptions = (view) -> view.transition
+ 
 
 module.exports = TransitionDecorator

@@ -1,6 +1,5 @@
 Section = require "./section"
 type    = require "type-component"
-ViewCollection = require "../../collection"
 
 class SectionsDecorator
 
@@ -36,7 +35,7 @@ class SectionsDecorator
   ###
   ###
 
-  @getOptions: (view) -> view.sections
-
+  @getOptions : (view) -> view.sections
+  @decorate   : (view, options) -> new SectionsDecorator view, options
 
 module.exports = SectionsDecorator

@@ -16,7 +16,8 @@ class State extends bindable.Object
       ops = options
 
     @_id = options.name or Math.random()
-    ops.index = index
+    
+    ops.index    = index
     ops.selected = false
 
 

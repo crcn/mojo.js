@@ -1,6 +1,5 @@
 BaseViewDecorator   = require "./base"
-ViewCollection      = require "../collection"
-#TemplateDecorator   = require "./template"
+SelectorDecorator   = require "./selector"
 PaperclipDecorator  = require "./paperclip"
 AttributesDecorator = require "./attributes"
 EventsDecorator     = require "./events"
@@ -32,6 +31,7 @@ availableDecorators = [
 
   # bindings = priority for explicit data-bindings
   _decor("bindings"   , BindingsDecorator),
+  _decor("selector"   , SelectorDecorator),
   
   # additional decorators that don't have high priority - get added on .render() & .display()
   _decor("preload"    , PreloadDecorator),
@@ -130,8 +130,7 @@ module.exports =
 
   setDecorators: (view, decorators) ->
     for decor in decorators
-      d = new decor.clazz view, decor.options
-      d._id = decor.name
+      d = decor.clazz.decorate view, decor.options
 
 
 

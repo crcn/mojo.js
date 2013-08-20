@@ -79,7 +79,8 @@ class EventsDecorator extends BaseDecorator
   _events: () -> @events
 
 
-  @getOptions = (view) -> view.events
+  @getOptions : (view) -> view.events
+  @decorate   : (view, options) -> new EventsDecorator view, options
 
 
 module.exports = EventsDecorator

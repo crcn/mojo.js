@@ -32,7 +32,8 @@ class PaperclipViewDecorator
   ###
   ###
 
-  @getOptions: (view) -> view.paper
+  @getOptions : (view) -> view.paper
+  @decorate   : (view, options) -> new PaperclipViewDecorator view, options
 
 
 module.exports = PaperclipViewDecorator

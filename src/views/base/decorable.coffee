@@ -1,11 +1,9 @@
 _                         = require "underscore"
-ViewCollection            = require "./collection"
 generateId                = require "../../utils/idGenerator"
 dref                      = require "dref"
 ViewStates                = require "./states"
 type                      = require "type-component"
 DecorFactory              = require "./decor/factory"
-flatstack                 = require "flatstack"
 
 
 class DecorableView extends require("./index")
@@ -14,19 +12,10 @@ class DecorableView extends require("./index")
   ###
 
   constructor: (data = {}) ->
-
     @_id = data.model?.get?("_id") ? data.model?._id ? generateId()
-
     data.this = @
-
     super data
 
-  ###
-  ###
-
-  init: () -> 
-    super()
-    @callstack = flatstack()
 
   ###
    returns path to this view. Useful for debugging.
@@ -63,11 +52,12 @@ class DecorableView extends require("./index")
   ###
 
   remove: (next) =>
+
     @emit "remove"
     @_onRemove()
 
     @callstack.push () =>
-      next()
+      next?()
       @_onRemoved()
 
   ###
