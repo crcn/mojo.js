@@ -1,12 +1,10 @@
-dref = require "dref"
-
 class Section extends require("bindable").Object
   
   ###
   ###
 
-  constructor: (@sections, @name, @viewClass, options) ->
-    super options
+  constructor: (@sections, @name, @viewClass, @options) ->
+    super()
 
     @on "change", @_onDataChange
     
@@ -16,21 +14,20 @@ class Section extends require("bindable").Object
 
   createFragment: () ->
 
-
     unless @view
-      @view = new @viewClass @
+      @view = new @viewClass()
+      @view.set @options
       @view._parent = @sections.view
       @sections._initialized @
 
     @view.section.toFragment()
 
+
   ###
   ###
 
-  _onDataChange: (key, value) =>
+  _onDataChange: (key, value) >
     console.log key, value
-
-
 
 
 

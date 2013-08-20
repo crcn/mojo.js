@@ -1,27 +1,37 @@
-InternalView  = require "./internal"
-DecorFactory  = require "./decor/factory"
+BindableInheritableObject = require "../../bindable/inheritable"
+models                    = require "../../models"
+loaf                      = require "loaf"
 
-class BaseView extends InternalView
-
-  ###
-   expose this so third-party modules can add a decorator
-  ###
-
-  @addDecoratorClass: DecorFactory.addDecoratorClass
+class BaseView extends BindableInheritableObject
 
   ###
   ###
   
-  _initDecor: () ->
-    super()
-    DecorFactory.setup @
+  __isView: true
 
   ###
-   dynamically added decorators
   ###
 
-  decorate: (options) ->
-    DecorFactory.setup @, options
+  models: models
 
+  ###
+  ###
+
+  constructor: (data = {}) ->
+    super data
+
+    # bleh - this is a tempory bug. remove!
+    @set "models", models
+    @section = loaf()
+    @init()
+
+  ###
+  ###
+
+  init    : () ->
+  load    : (next) -> next()
+  render  : (next) -> next()
+  display : (next) -> next()
+  remove  : (next) -> next()
 
 module.exports = BaseView

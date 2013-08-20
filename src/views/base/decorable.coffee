@@ -1,30 +1,13 @@
-BindableInheritableObject = require "../../bindable/inheritable"
 _                         = require "underscore"
 ViewCollection            = require "./collection"
 generateId                = require "../../utils/idGenerator"
 dref                      = require "dref"
-models                    = require "../../models"
-loaf                     = require "loaf"
 ViewStates                = require "./states"
 type                      = require "type-component"
+DecorFactory              = require "./decor/factory"
 
-  
-class InternalView extends BindableInheritableObject
 
-  ###
-  ###
-  
-  __isView: true
-
-  ###
-  ###
-
-  modelLocator: models
-
-  ###
-  ###
-
-  models: models
+class DecorableView extends require("./index")
 
   ###
   ###
@@ -37,19 +20,18 @@ class InternalView extends BindableInheritableObject
     data.this = @
 
     super data
-    @init()
 
   ###
   ###
 
   init: () -> 
+    super()
+
     # items to load with the view
     # TODO - viewCollections.create() - should be a recycled item
     @decorators = @loadables = new ViewCollection()
     @decorators.view = @
 
-    # create a default element block
-    @section = loaf()
     @_initListeners()
 
   ###
@@ -104,6 +86,13 @@ class InternalView extends BindableInheritableObject
     @display callback
 
   ###
+   dynamically added decorators
+  ###
+
+  decorate: (options) ->
+    DecorFactory.setup @, options
+
+  ###
   ###
 
   _init: (event) =>
@@ -123,8 +112,7 @@ class InternalView extends BindableInheritableObject
     # if the parent is currently being removed, then don't bother cleaning up the 
     # element listeners, and section. 
     return if @_parent?.get("currentState") is ViewStates.REMOVING
-    el = @$()
-
+    
     @section.dispose()
 
   ###
@@ -150,6 +138,7 @@ class InternalView extends BindableInheritableObject
   ###
 
   _initDecor: () ->
+    DecorFactory.setup @
 
   ###
   ###
@@ -181,5 +170,11 @@ class InternalView extends BindableInheritableObject
   _onRemove    : () =>
   _onRemoved   : () => @dispose()
 
+  ###
+   expose this so third-party modules can add a decorator
+  ###
 
-module.exports = InternalView
+  @addDecoratorClass: DecorFactory.addDecoratorClass
+
+
+module.exports = DecorableView
