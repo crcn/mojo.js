@@ -44,7 +44,8 @@
     "rivets": "0.3.x",
     "paperclip": "0.1.x",
     "toarray": "0.0.1",
-    "factories": "0.0.1"
+    "factories": "0.0.1",
+    "loaf": "0.0.5"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",

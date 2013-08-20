@@ -26,7 +26,7 @@ class PaperclipViewDecorator
   ###
   ###
 
-  remove: () =>
+  remove: () => 
     @content.unbind()
 
   ###

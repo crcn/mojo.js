@@ -34,31 +34,26 @@ class DecorableView extends require("./index")
   ###
 
   render: (next) =>
-
     @_init()
-
-    # notify we're ready to render
-    @_onRender()
-    @emit "render"
-
-    # add to the end of the queue - there might be decorators
-    # that have added stuff in the rendering process
-    @callstack.push () =>
-      next?()
-      @_onRendered()
-      @emit "rendered"
+    @_call "render", "rendered", next
 
   ###
   ###
 
-  remove: (next) =>
+  remove: (next) => 
+    @_call "remove", "removed", next
 
-    @emit "remove"
+  ###
+  ###
+
+  _call: (startEvent, endEvent, next) ->
+
+    @emit startEvent
     @_onRemove()
 
     @callstack.push () =>
       next?()
-      @_onRemoved()
+      @emit endEvent
 
   ###
    returns a search for a particular element
@@ -102,6 +97,10 @@ class DecorableView extends require("./index")
   _init: (event) =>
     return if @_initialized
     @_initialized = true
+    @on "render", @_onRender
+    @on "rendered", @_onRendered
+    @on "remove", @_onRemove
+    @on "removed", @_onRemoved
     DecorFactory.setup @
 
   ###

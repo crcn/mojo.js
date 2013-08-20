@@ -92,6 +92,10 @@ class DraggableDecorator extends BaseViewDecorator
   _followMouse: (e) =>
     @draggedItem.css @_coords(e)
 
-DraggableDecorator.getOptions = (view) -> view.draggable
+  ###
+  ###
+
+  @getOptions: (view) -> view.draggable
+  @decorate: (view, options) -> new DraggableDecorator view, options
 
 module.exports = DraggableDecorator

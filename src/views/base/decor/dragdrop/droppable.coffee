@@ -22,7 +22,10 @@ class DroppableDecorator extends BaseViewDecorator
   remove: () ->  
     droppables.remove @name, @
 
+  ###
+  ###
 
-DroppableDecorator.getOptions = (view) -> view.droppable
+  @getOptions: (view) -> view.droppable
+  @decorate: (view, options) -> new DroppableDecorator view, options
 
 module.exports = DroppableDecorator
