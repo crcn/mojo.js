@@ -20,28 +20,11 @@ class PaperclipViewDecorator
     @content = @template.bind @view
     @view.section.append @content.section.toFragment()
 
+  ###
+  ###
 
   remove: () ->
-    try
-      @content.dispose()
-    catch e
-      console.error "unable to unbind paperclip template to #{@_traceViewPath()}"
-      console.error e.stack or e
-
-  ###
-  ###
-
-  _traceViewPath: () ->
-
-    path = []
-
-    cv = @view
-
-    while cv
-      path.unshift cv.constructor.name
-      cv = cv._parent
-
-    path.join(".")
+    @content.unbind()
 
   ###
   ###

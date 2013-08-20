@@ -1,2 +1,0 @@
-<form data-bind="{{ onSubmit: submit() }}">
-</form>

@@ -43,7 +43,8 @@
     "asyngleton": "0.1.x",
     "rivets": "0.3.x",
     "paperclip": "0.1.x",
-    "toarray": "0.0.1"
+    "toarray": "0.0.1",
+    "factories": "0.0.1"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",

@@ -1,12 +1,11 @@
 ViewCollection = require "../../../collection"
-adapters       = require "../../../adapters/index"
 dref           = require "dref"
 hoist          = require "hoist"
 loaf           = require "loaf"
 bindable       = require "bindable"
 type           = require "type-component"
-FnFactory      = require "../../../../factories/fn"
-ClassFactory   = require "../../../../factories/class"
+factories      = require "factories"
+
 
   
 class ListSection extends bindable.Object
@@ -70,11 +69,11 @@ class ListSection extends bindable.Object
     hoister = hoist()
     map = @options.map or @options.transform
 
-    modelViewFactory = @options.modelViewFactory or new ClassFactory adapters.getViewClass @options.modelViewClass
+    modelViewFactory = @options.modelViewFactory or factories.class @options.modelViewClass
 
     # must turn it into a factory
     if type(modelViewFactory) is "function"
-      modelViewFactory = new FnFactory modelViewFactory
+      modelViewFactory = factories.fn modelViewFactory
 
     if map
       hoister.map (model) => map model, @
@@ -113,8 +112,7 @@ class ListSection extends bindable.Object
     return unless source
 
     # might be a bindable.Collection / backbone / spine collection
-    @_sourceCollection = adapters.getCollection source
-
+    @_sourceCollection = source
 
     @_sourceBinding = binding = @_sourceCollection.bind()
 
