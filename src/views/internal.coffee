@@ -38,9 +38,6 @@ class InternalView extends BindableInheritableObject
 
     super data
     @init()
-    #@_init()
-    #console.log "IN"
-
 
   ###
   ###
@@ -68,8 +65,6 @@ class InternalView extends BindableInheritableObject
 
     path.join "."
 
-
-
   ###
   ###
 
@@ -87,8 +82,9 @@ class InternalView extends BindableInheritableObject
 
   $: (search) -> 
 
-
-    el = $(@section.getChildNodes())
+    # a little overhead, but we need to re-scan the elements
+    # each time $() is called
+    el = $ @section.getChildNodes()
 
     if arguments.length
       return el.find search
@@ -151,8 +147,6 @@ class InternalView extends BindableInheritableObject
       remove    : @_onRemove 
       removed   : @_onRemoved
 
-      # stateChange: @_init
-
     @decorators.once "stateChange", @_init
 
   ###
@@ -170,8 +164,6 @@ class InternalView extends BindableInheritableObject
   ###
 
   _onLoad      : () =>
-    #@_init()
-
   _onLoaded    : () =>
 
   ###
@@ -191,8 +183,6 @@ class InternalView extends BindableInheritableObject
   
   _onRemove    : () =>
   _onRemoved   : () => @dispose()
-
-
 
 
 module.exports = InternalView
