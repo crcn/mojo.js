@@ -31,6 +31,7 @@ class PreloadDecorator extends BaseDecor
 
         # bind incase the value doesn't exist yet
         @view.bind(property).to((model) =>
+          console.log property
           return next() if not model or not model?.fetch
           model.fetch next
         ).once().now()
@@ -40,7 +41,7 @@ class PreloadDecorator extends BaseDecor
   ###
   ###
 
-  @getOptions : (view) -> undefined
+  @getOptions : (view) -> view.preload
   @decorate   : (view, options) -> new PreloadDecorator view, options
 
 module.exports = PreloadDecorator
