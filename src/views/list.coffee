@@ -72,6 +72,9 @@ class ListView extends require("./base/decorable")
 
   _onSourceOptionChange: (source) =>
 
+
+    @_strSource = source
+
     @_sourceOptionBinding?.dispose()
     @_sourceOptionBinding = undefined
 

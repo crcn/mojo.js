@@ -5,8 +5,9 @@ class Section extends require("bindable").Object
   ###
   ###
 
-  constructor: (@sections, @name, @viewClass, options) ->
+  constructor: (@sections, @name, @viewClass, @options) ->
     super options
+    @on "change", @_onChange
     
   
   ###
@@ -15,11 +16,18 @@ class Section extends require("bindable").Object
   createFragment: () ->
 
     unless @view
-      @view = new @viewClass @
+      @view = new @viewClass()
+      @view.set @data
       @view._parent = @sections.view
       @sections.view.callstack.unshift @view.render
 
     @view.section.toFragment()
+
+  ###
+  ###
+
+  _onChange: (key, value) =>
+    @view?.set key, value
 
 
 

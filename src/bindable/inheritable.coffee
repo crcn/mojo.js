@@ -7,11 +7,9 @@ _getBindingKey = (key) -> key.split(".").shift()
 class InheritableObject extends bindable.Object
 
   ###
-   If the key doesn't exist, then inherit it from the parent
   ###
 
-  get: (key) -> 
-    super(key) ? @_inherit(key)
+  get: (key) -> super(key) ? @_inherit(key)
 
   ###
    inherits a property from the parent

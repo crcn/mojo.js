@@ -3,7 +3,13 @@ State = require "./state"
 flatstack = require "flatstack"
 
 class StatesView extends require("../base/decorable")
-  
+
+  ###
+  ###
+
+  init: () ->
+    super()
+
   ###
   ###
 
@@ -70,6 +76,7 @@ class StatesView extends require("../base/decorable")
   ###
 
   _setName: (name) =>
+    console.log(name, @path())
     for state, i in @source.source()
       if state.get("name") is name
         @set "index", i

@@ -8,12 +8,13 @@ class SectionsDecorator
   ###
 
   constructor: (@view, @sectionOptions) ->
-    @init()
+    @view.set "sections", {}
+    @view.once "render", @render
 
   ###
   ###
 
-  init: () ->
+  render: () =>
     for sectionName of @sectionOptions
       @_addSection sectionName, @sectionOptions[sectionName]
 
@@ -21,7 +22,14 @@ class SectionsDecorator
   ###
 
   _addSection: (name, options) ->
-    @view.set "sections.#{name}", new Section(@, name, @_getSectionClass(options), options)
+
+    viewClass = @_getSectionClass(options)
+
+    view = new viewClass options
+    view._parent = @view
+    @view.callstack.unshift view.render
+    @view.set "sections.#{name}", view
+    # @view.set "sections.#{name}", new Section(@, name, @_getSectionClass(options), options)
 
   ###
   ###

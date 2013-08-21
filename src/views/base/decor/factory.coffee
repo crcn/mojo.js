@@ -9,7 +9,6 @@ DroppableDecorator  = require "./dragdrop/droppable"
 TransitionDecorator = require "./transition"
 PreloadDecorator    = require "./preload"
 
-
 _decor = (name, clazz, inheritable = true) ->
    name        : name
    clazz       : clazz
@@ -34,18 +33,18 @@ availableDecorators = [
   # additional decorators that don't have high priority - get added on .render() & .display()
   _decor("preload"    , PreloadDecorator),
 
-  # section / child decorators. These have (almost) highest
-  # priority since they should be added before the template is loaded
-  _decor("sections"   , SectionsDecorator),
-
   # loads a template, and injects the sections / children (from above) on load
   # _decor("template"   , TemplateDecorator, false),
   _decor("paperclip"  , PaperclipDecorator, false),
 
+
   _decor("transition" , TransitionDecorator),
   _decor("events"     , EventsDecorator),
   _decor("draggable"  , DraggableDecorator),
-  _decor("droppable"  , DroppableDecorator)
+  _decor("droppable"  , DroppableDecorator),
+  # section / child decorators. These have (almost) highest
+  # priority since they should be added before the template is loaded
+  _decor("sections"   , SectionsDecorator)
 ]
 
 module.exports = 

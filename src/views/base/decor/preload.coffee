@@ -31,7 +31,6 @@ class PreloadDecorator extends BaseDecor
 
         # bind incase the value doesn't exist yet
         @view.bind(property).to((model) =>
-          console.log property
           return next() if not model or not model?.fetch
           model.fetch next
         ).once().now()
