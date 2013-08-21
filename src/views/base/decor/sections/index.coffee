@@ -27,6 +27,7 @@ class SectionsDecorator
 
     view = new viewClass options
     view._parent = @view
+    view.once "initialize", () -> view.decorate options
     @view.callstack.unshift view.render
     @view.set "sections.#{name}", view
     # @view.set "sections.#{name}", new Section(@, name, @_getSectionClass(options), options)

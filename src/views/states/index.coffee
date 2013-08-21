@@ -26,6 +26,7 @@ class StatesView extends require("../base/decorable")
     @bind("index", @_setIndex).now()
     @bind("currentName").to(@_setName).now()
 
+
   ###
    selects a state 
   ###
@@ -96,6 +97,9 @@ class StatesView extends require("../base/decorable")
     state          = @currentState = @source.at index or 0
     isNew          = !state.hasView()
     newStateView   = state.getView()
+
+    if @get("inherit")
+      newStateView.decorate { inherit: @get("inherit") }
 
     @linkChild newStateView
 

@@ -97,6 +97,9 @@ class DecorableView extends require("./index")
   _init: (event) =>
     return if @_initialized
     @_initialized = true
+    
+    @emit "initialize"
+
     @on "render", @_onRender
     @on "rendered", @_onRendered
     @on "remove", @_onRemove

@@ -1,9 +1,9 @@
-BindableInheritableObject = require "../../bindable/inheritable"
+bindable                  = require "bindable"
 models                    = require "../../models"
 loaf                      = require "loaf"
 flatstack                 = require "flatstack"
 
-class BaseView extends BindableInheritableObject
+class BaseView extends bindable.Object
 
   ###
   ###
@@ -33,7 +33,32 @@ class BaseView extends BindableInheritableObject
   ###
 
   init    : () ->
+
+  ###
+  ###
+  
   render  : (next) -> next?()
+
+  ###
+  ###
+
   remove  : (next) -> next?()
+
+
+  ###
+  ###
+
+  linkChild: () ->
+    for child in arguments
+      child._parent = @
+    @
+    
+  ###
+   bubbles up an event to the root object
+  ###
+
+  bubble: () ->
+    @emit arguments...
+    @_parent?.bubble arguments...
 
 module.exports = BaseView

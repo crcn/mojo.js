@@ -8,6 +8,7 @@ DraggableDecorator  = require "./dragdrop/draggable"
 DroppableDecorator  = require "./dragdrop/droppable"
 TransitionDecorator = require "./transition"
 PreloadDecorator    = require "./preload"
+InheritDecorator    = require "./inherit"
 
 _decor = (name, clazz, inheritable = true) ->
    name        : name
@@ -25,6 +26,9 @@ loading order:
 
 # note that the decorator order is very important
 availableDecorators = [
+  
+  # inherit variables from the parent view
+  _decor("inherit", InheritDecorator),
 
   # bindings = priority for explicit data-bindings
   _decor("bindings"   , BindingsDecorator),
@@ -36,7 +40,6 @@ availableDecorators = [
   # loads a template, and injects the sections / children (from above) on load
   # _decor("template"   , TemplateDecorator, false),
   _decor("paperclip"  , PaperclipDecorator, false),
-
 
   _decor("transition" , TransitionDecorator),
   _decor("events"     , EventsDecorator),
