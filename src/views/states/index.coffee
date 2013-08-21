@@ -104,9 +104,10 @@ class StatesView extends require("../base/decorable")
     if isNew
       newStateView.render()
       @section.append newStateView.section
+    else
+      @currentState.show()
 
 
-    @currentState.show()
 
     @set "currentView", newStateView
 
