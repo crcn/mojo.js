@@ -97,11 +97,11 @@ class StatesView extends require("../base/decorable")
     state          = @currentState = @source.at index or 0
     isNew          = !state.hasView()
     newStateView   = state.getView()
+    @linkChild newStateView
+
 
     if @get("inherit")
       newStateView.decorate { inherit: @get("inherit") }
-
-    @linkChild newStateView
 
 
     @currentState.set "selected", true

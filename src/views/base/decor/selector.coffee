@@ -4,7 +4,7 @@ class SelectorDecorator
   ###
   ###
 
-  @getOptions : (view) -> true
+  @getOptions : (view) -> !!view.prototype
   @decorate   : (view) ->
 
     view.$ = (search) -> 

@@ -119,10 +119,12 @@ module.exports =
 
       if options = clazz.getOptions proto
 
+        if proto.inherit
+        console.log proto
+
         #skip if the options are exactly the same
         continue if child and options is clazz.getOptions child
         decorators.push { clazz: clazz, name: d.name, options: options, priority: priority }
-
 
     decorators
 

@@ -88,7 +88,7 @@ class DecorableView extends require("./index")
    dynamically added decorators
   ###
 
-  decorate: (options) ->
+  decorate: (options) ->  
     DecorFactory.setup @, options
 
   ###
