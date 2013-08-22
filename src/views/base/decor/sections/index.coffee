@@ -1,4 +1,3 @@
-Section = require "./section"
 type    = require "type-component"
 
 class SectionsDecorator
@@ -9,12 +8,12 @@ class SectionsDecorator
 
   constructor: (@view, @sectionOptions) ->
     @view.set "sections", {}
-    @view.once "render", @render
+    @init()
 
   ###
   ###
 
-  render: () =>
+  init: () ->
     for sectionName of @sectionOptions
       @_addSection sectionName, @sectionOptions[sectionName]
 
@@ -28,18 +27,33 @@ class SectionsDecorator
     view = new viewClass options
     view._parent = @view
     view.once "initialize", () -> view.decorate options
-    @view.callstack.unshift view.render
+
+    
+    view.createFragment = () =>
+      return view.section.toFragment() if view._createdFragment
+      view._createdFragment = true
+      @view.callstack.unshift view.render
+      view.section.toFragment()
+
     @view.set "sections.#{name}", view
-    # @view.set "sections.#{name}", new Section(@, name, @_getSectionClass(options), options)
 
   ###
   ###
 
   _getSectionClass: (options) ->
-    if type(options) is "function"
-      return options
-    else
+
+    # type must exist. If it doesn't then the options are a type. E.g:
+    # section: View
+    # section: "component"
+    unless options.type
+      options = { type: options }
+
+    if (t = type(options.type)) is "function"
+      return options.type
+    else if t is "string"
       return @view.get("models.components.#{options.type}")
+    else
+      throw new Error "cannot get section class for type #{t}"
 
   ###
   ###

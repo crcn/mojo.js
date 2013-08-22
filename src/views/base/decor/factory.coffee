@@ -15,7 +15,6 @@ _decor = (name, clazz, inheritable = true) ->
    clazz       : clazz
    inheritable : inheritable
 
-
 ###
 loading order:
 

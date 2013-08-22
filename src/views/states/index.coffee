@@ -2,13 +2,7 @@ bindable = require "bindable"
 State = require "./state"
 flatstack = require "flatstack"
 
-class StatesView extends require("../base/decorable")
-
-  ###
-  ###
-
-  init: () ->
-    super()
+class StatesView extends require("../base")
 
   ###
   ###

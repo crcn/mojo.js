@@ -5,7 +5,7 @@ hoist     = require "hoist"
 dref      = require "dref"
 nofactor  = require "nofactor"
 
-class ListView extends require("../base/decorable")  
+class ListView extends require("../base")  
   
   ###
   ###

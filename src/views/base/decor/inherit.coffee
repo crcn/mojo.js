@@ -14,6 +14,7 @@ class InheritDecorator
   render: () =>
     return unless @view._parent
     @_bindings = for inherit in @inherit then do (inherit) =>
+      console.log @view.path(), "inherit", inherit
       @view._parent.bind(inherit).to(@view, inherit).now()
 
   ###

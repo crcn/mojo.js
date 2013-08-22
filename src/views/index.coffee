@@ -1,10 +1,10 @@
 models       = require "../models"
 
-DecorableView  = require "./base/decorable"
+BaseView       = require "./base/index"
 ListView       = require "./list"
 StatesView     = require "./states"
 
 models.set "components.list", ListView
 models.set "components.states", StatesView
 
-module.exports = DecorableView
+module.exports = BaseView
