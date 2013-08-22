@@ -1,6 +1,0 @@
-class InheritDecorator
-
-  ###
-  ###
-
-  constructor: (view, ) ->
