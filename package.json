@@ -29,7 +29,7 @@
     "outcome": "0.0.x",
     "step": "0.0.x",
     "type-component": "0.0.x",
-    "bindable": "0.2.x",
+    "bindable": "0.4.x",
     "disposable": "0.0.x",
     "eventemitter2": "0.4.x",
     "structr": "0.2.x",
