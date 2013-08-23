@@ -11,6 +11,7 @@ class PaperclipViewDecorator
     if type(template) isnt "function"
       throw new Error "paper template must be a function for view \"#{@view.constructor.name}\""
 
+
     @template = paperclip.template @template
 
     @view.once "render", @render

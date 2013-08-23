@@ -42,7 +42,7 @@
     "flatstack": "0.0.x",
     "asyngleton": "0.1.x",
     "rivets": "0.3.x",
-    "paperclip": "0.1.x",
+    "paperclip": "0.2.x",
     "toarray": "0.0.1",
     "factories": "0.0.1",
     "loaf": "0.0.5",
