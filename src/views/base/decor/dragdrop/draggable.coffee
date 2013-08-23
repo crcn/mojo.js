@@ -46,9 +46,7 @@ class DraggableDecorator extends BaseViewDecorator
     @_offset = { x: e.offsetX or el.width()/2, y: e.offsetY or el.height()/2 }
 
 
-
     @draggedItem = @document.find("body").append("<div>" + el.html() + "</div>").children().last()
-
 
 
     @draggedItem.css { "z-index": 99999999, "position": "absolute", "opacity": 0.8  }

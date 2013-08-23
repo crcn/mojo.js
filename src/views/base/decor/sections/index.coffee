@@ -15,7 +15,7 @@ class SectionsDecorator
 
   init: () ->
     for sectionName of @sectionOptions
-      @_addSection sectionName, @sectionOptions[sectionName]
+      @_addSection sectionName, @_fixOptions @sectionOptions[sectionName]
 
   ###
   ###
@@ -27,7 +27,6 @@ class SectionsDecorator
     view = new viewClass options
     view._parent = @view
     view.once "initialize", () -> view.decorate options
-
     
     view.createFragment = () =>
       return view.section.toFragment() if view._createdFragment
@@ -40,13 +39,21 @@ class SectionsDecorator
   ###
   ###
 
-  _getSectionClass: (options) ->
+  _fixOptions: (options) -> 
 
     # type must exist. If it doesn't then the options are a type. E.g:
     # section: View
     # section: "component"
     unless options.type
       options = { type: options }
+
+    options
+
+  ###
+  ###
+
+  _getSectionClass: (options) ->
+
 
     if (t = type(options.type)) is "function"
       return options.type

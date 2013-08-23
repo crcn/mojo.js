@@ -26,6 +26,8 @@ class StatesView extends require("../base")
     @bind("index", @_setIndex).now()
     @bind("currentName").to(@_setName).now()
 
+
+
   ###
    selects a state 
   ###
@@ -76,6 +78,7 @@ class StatesView extends require("../base")
   ###
 
   _setName: (name) =>
+    console.log(name, @path())
     for state, i in @source.source()
       if state.get("name") is name
         @set "index", i
@@ -85,6 +88,7 @@ class StatesView extends require("../base")
   ###
 
   _setIndex: (index) =>
+    console.log @index,
     return if not @source.length
 
 

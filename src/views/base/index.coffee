@@ -16,17 +16,24 @@ class DecorableView extends bindable.Object
   ###
   ###
 
+  models: models
+
+  ###
+  ###
+
   constructor: (data = {}) ->
 
-    @_id = data.model?.get?("_id") ? data.model?._id ? generateId()
-    data.this = @
+    if type(data) isnt "object"
+      throw new Error "data passed in view must be an object"
 
-    super data
+    super @
+    @set data
 
-    @_callInfo = {}
+    @this = @
+    @_id  = data._id ? data.model?.get?("_id") ? data.model?._id ? generateId()
 
-    # bleh - this is a tempory bug. remove!
-    @set "models", models
+    @_states = {}
+
     @section   = loaf()
     @callstack = flatstack()
 
@@ -37,8 +44,6 @@ class DecorableView extends bindable.Object
   ###
 
   init: () ->
-
-
 
   ###
    returns path to this view. Useful for debugging.
@@ -72,18 +77,18 @@ class DecorableView extends bindable.Object
 
   _call: (startEvent, endEvent, next = () ->) ->
 
-    return next() if @_callInfo[endEvent]
+    return next() if @_states[endEvent]
 
     @once endEvent, next
 
-    return if @_callInfo[startEvent]
-    @_callInfo[startEvent] = true
+    return if @_states[startEvent]
+    @_states[startEvent] = true
 
     @emit startEvent
     @_onRemove()
 
     @callstack.push () =>
-      @_callInfo[endEvent] = true
+      @_states[endEvent] = true
       @emit endEvent
 
   ###
@@ -147,7 +152,7 @@ class DecorableView extends bindable.Object
 
     # if the parent is currently being removed, then don't bother cleaning up the 
     # element listeners, and section. 
-    return if @_parent?.get("currentState") is ViewStates.REMOVING
+    return if @_parent and @_parent._states.remove and not @_parent._states.removed
     
     @section.dispose()
 
