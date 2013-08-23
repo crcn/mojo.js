@@ -17,6 +17,8 @@ class ListView extends require("../base")
     @_initModelMapper()
     @_initSourceBindings()
 
+    @_rmCount = 0
+
   ###
   ###
 
@@ -55,7 +57,6 @@ class ListView extends require("../base")
       # find a reference to it!
       view.set "_id", options._id
 
-      @_hookModelView view
       view
     )
 
@@ -64,7 +65,7 @@ class ListView extends require("../base")
 
   _initSourceBindings: () ->
     @_views.bind("length").to(@, "length").now()
-    @_views.bind({ remove: @_removeModelView }).now()
+    @_views.bind({ insert: @_insertModelView, remove: @_removeModelView }).now()
     @bind("source").to(@_onSourceOptionChange).now()
 
   ###
@@ -151,10 +152,11 @@ class ListView extends require("../base")
   ###
   ###
 
-  _hookModelView: (modelView) ->
+  _insertModelView: (modelView) =>
 
     @linkChild modelView
     modelView.render()
+    console.log("INS", @_rendered, @_modelViewClass.name)
 
     if @_rendered
       @_deferInsert modelView.section.toFragment()
@@ -173,6 +175,7 @@ class ListView extends require("../base")
   ###
 
   _insertDeferredSections: () =>
+    console.log @_deferredSections.length, "GG"
     @section.append nofactor.default.createFragment @_deferredSections
     @_deferredSections = []
 
@@ -180,8 +183,7 @@ class ListView extends require("../base")
   ###
 
   _removeModelView: (modelView) =>
-    return unless modelView
-    modelView.remove()
+    modelView.dispose()
 
 
 
