@@ -156,7 +156,6 @@ class ListView extends require("../base")
 
     @linkChild modelView
     modelView.render()
-    console.log("INS", @_rendered, @_modelViewClass.name)
 
     if @_rendered
       @_deferInsert modelView.section.toFragment()
@@ -175,7 +174,6 @@ class ListView extends require("../base")
   ###
 
   _insertDeferredSections: () =>
-    console.log @_deferredSections.length, "GG"
     @section.append nofactor.default.createFragment @_deferredSections
     @_deferredSections = []
 
