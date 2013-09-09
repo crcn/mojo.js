@@ -139,6 +139,7 @@ class ListView extends require("../base")
   ###
 
   _refilter: (models) ->
+
     for model in models
 
       useModel      = !!@_filter(model, @)
@@ -155,6 +156,8 @@ class ListView extends require("../base")
         # fetch the object, and remove it manually
         @_views.splice(modelIndex, 1)
 
+    @_resort()
+
   ###
   ###
 
@@ -167,6 +170,7 @@ class ListView extends require("../base")
       @_deferInsert modelView.section.toFragment()
     else
       @section.append modelView.section.toFragment()
+      @_resort()
 
   ###
   ###
@@ -181,6 +185,7 @@ class ListView extends require("../base")
 
   _insertDeferredSections: () =>
     @section.append nofactor.default.createFragment @_deferredSections
+    @_resort()
     @_deferredSections = []
 
   ###
@@ -188,6 +193,20 @@ class ListView extends require("../base")
 
   _removeModelView: (modelView) =>
     modelView.dispose()
+
+
+  ###
+  ###
+
+  _resort: () ->
+    return unless @_sort
+    frag = []
+
+    sorted = @_views.source().sort @_sort
+    for view in sorted
+      frag.push view.section.toFragment()
+
+    @section.append nofactor.default.createFragment frag
 
 
 
