@@ -44,7 +44,6 @@ class ListView extends require("../base")
       hoister.map (model) => @_map model, @
 
 
-    inherit = @get("inherit")
 
     hoister.
     map((model) =>
@@ -55,8 +54,6 @@ class ListView extends require("../base")
     ).map((options) =>
       view = modelViewFactory.create options
 
-      if inherit
-        view.inherit = inherit
 
       # set the view incase the factory is manual - in which 
       # case the _id might never exist in the view. We won't be able to
