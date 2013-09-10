@@ -24,11 +24,8 @@ class StatesView extends require("../base")
     @source.reset views.map (stateOptions, i) => 
       new State @, stateOptions, i
 
-    if @_states.rendered or @_states.render
-      if @currentName?
-        @_setName @currentName
-      else if @index?
-        @_setIndex @index
+    if @_states.rendered
+      
 
   ###
   ###
