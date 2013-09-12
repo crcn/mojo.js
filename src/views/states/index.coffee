@@ -24,19 +24,26 @@ class StatesView extends require("../base")
     @source.reset views.map (stateOptions, i) => 
       new State @, stateOptions, i
 
-    if @_states.rendered or @_states.render
-      if @currentName?
-        @_setName @currentName
-      else if @index?
-        @_setIndex @index
+    if @_states.render
+      @_rebind()
 
   ###
   ###
 
   _onRender: () ->
     super()
-    @bind("index", @_setIndex).now()
-    @bind("currentName").to(@_setName).now()
+    @_rebind()
+
+  ###
+  ###
+
+  _rebind: () ->
+
+    @_indexBinding?.dispose()
+    @_cnameBinding?.dispose()
+
+    @_indexBinding = @bind("index", @_setIndex).now()
+    @_cnameBinding = @bind("currentName", @_setName).now()
 
   ###
    selects a state 
