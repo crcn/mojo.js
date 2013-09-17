@@ -22,10 +22,9 @@ class SectionsDecorator
 
   _addSection: (name, options) ->
 
-    viewClass = @_getSectionClass(options)
-
-    view = new viewClass options
+    view  = @_createSectionView(options)
     view._parent = @view
+
     view.once "initialize", () -> view.decorate options
     
     view.createFragment = () =>
@@ -48,6 +47,17 @@ class SectionsDecorator
       options = { type: options }
 
     options
+
+  ###
+  ###
+
+  _createSectionView: (options) ->
+    if type(options.type) is "object"
+      return options.type
+    else
+      clazz = @_getSectionClass(options)
+      return new clazz options
+
 
   ###
   ###
