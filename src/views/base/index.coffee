@@ -125,6 +125,7 @@ class DecorableView extends bindable.Object
   ###
 
   decorate: (options) ->  
+    @__decorators = undefined
     DecorFactory.setup @, options
 
   ###
