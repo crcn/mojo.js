@@ -23,7 +23,6 @@ class SectionsDecorator
   _addSection: (name, options) ->
 
     view  = @_createSectionView(options)
-    view._parent = @view
 
     view.once "initialize", () -> view.decorate options
     
@@ -33,7 +32,7 @@ class SectionsDecorator
       @view.callstack.unshift view.render
       view.section.toFragment()
 
-    @view.set "sections.#{name}", view
+    @view.setChild name, view
 
   ###
   ###

@@ -75,9 +75,14 @@ class DecorableView extends bindable.Object
    memoize call fn
   ###
 
-  _call: (startEvent, endEvent, next = () ->) ->
+  _call: (startEvent, endEvent, next) ->
 
     return next() if @_states[endEvent]
+
+    # cover any case where next might not be a function. This might
+    # happen when an async function does something like - model.load @view.render
+    if type(next) isnt "function"
+      next = () ->
 
     @once endEvent, next
 
@@ -160,10 +165,12 @@ class DecorableView extends bindable.Object
   ###
   ###
 
-  linkChild: () ->
-    for child in arguments
-      child._parent = @
-    @
+  setChild: (name, child) ->
+    child.name = name
+    child._parent = @
+    @set "sections.#{name}", child
+    @emit "child", child
+
     
   ###
    bubbles up an event to the root object

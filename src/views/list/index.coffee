@@ -158,9 +158,9 @@ class ListView extends require("../base")
   ###
   ###
 
-  _insertModelView: (modelView) =>
+  _insertModelView: (modelView, index) =>
 
-    @linkChild modelView
+    @setChild index, modelView
     modelView.render()
 
     if @_rendered

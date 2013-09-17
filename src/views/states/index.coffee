@@ -114,7 +114,7 @@ class StatesView extends require("../base")
     state          = @currentState = @source.at index or 0
     isNew          = !state.hasView()
     newStateView   = state.getView()
-    @linkChild newStateView
+    @setChild "currentChild", newStateView
 
 
     if @get("inherit")
