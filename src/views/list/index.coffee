@@ -5,7 +5,12 @@ hoist     = require "hoist"
 dref      = require "dref"
 nofactor  = require "nofactor"
 
-class ListView extends require("../base")  
+class ListView extends require("../base") 
+
+  ###
+  ###
+
+  define: ["filter", "sort", "map", "modelViewFactory", "modelViewClass"] 
   
   ###
   ###

@@ -1,4 +1,5 @@
-type    = require "type-component"
+type     = require "type-component"
+
 
 class SectionsDecorator
 

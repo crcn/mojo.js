@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.6.16",
+  "version": "0.6.20",
   "description": "test",
   "main": "./lib/index.js",
   "jam": {
@@ -46,7 +46,8 @@
     "toarray": "0.0.1",
     "factories": "0.0.x",
     "loaf": "0.0.5",
-    "nofactor": "0.0.x"
+    "nofactor": "0.0.x",
+    "traverse": "~0.6.5"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",

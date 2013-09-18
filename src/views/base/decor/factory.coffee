@@ -8,8 +8,7 @@ DraggableDecorator  = require "./dragdrop/draggable"
 DroppableDecorator  = require "./dragdrop/droppable"
 TransitionDecorator = require "./transition"
 PreloadDecorator    = require "./preload"
-InheritDecorator    = require "./inherit"
-GlobalDecorator     = require "./global"
+IsolateDecorator     = require "./isolate"
 
 _decor = (name, clazz, inheritable = true) ->
    name        : name
@@ -26,10 +25,6 @@ loading order:
 
 # note that the decorator order is very important
 availableDecorators = [
-  
-  # inherit variables from the parent view
-  _decor("inherit", InheritDecorator),
-  _decor("global", GlobalDecorator),
 
   # bindings = priority for explicit data-bindings
   _decor("bindings"   , BindingsDecorator),

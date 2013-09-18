@@ -4,25 +4,6 @@ _ = require "underscore"
 
 _getBindingKey = (key) -> key.split(".").shift()
 
-_combineSuperProps = (target, property) ->
-  constructor = target.constructor
-  unless constructor.__combined
-    constructor.__combined = {}
-
-  return if constructor.__combined[property]
-  constructor.__combined[property] = true
-
-  p = constructor.prototype
-  defined = []
-  while p
-    defined = (p.define or []).concat(defined)
-
-    p = p.constructor.__super__
-
-  constructor.prototype[property] = target[property] = defined
-
-
-
 
 class InheritableObject extends bindable.Object
   
@@ -38,8 +19,10 @@ class InheritableObject extends bindable.Object
     super @
     @_defined = {}
 
-    _combineSuperProps(@, "define")
-    @_define @define...
+    unless @constructor.__defined
+      @constructor.__defined = true
+      p = @constructor
+      while p
 
 
 
@@ -71,6 +54,19 @@ class InheritableObject extends bindable.Object
 
     # return the value inherited
     super key
+
+  ###
+  ###
+
+  __createDefinitions: () ->
+    p = @constructor
+    console.log("DEFINE")
+    while p
+      console.log p.name
+      p = p.__super__
+    @_define ((@isolate ? @define ? []).concat(["parent", "sections"]))...
+
+
 
   ###
   ###

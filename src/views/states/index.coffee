@@ -7,6 +7,11 @@ class StatesView extends require("../base")
   ###
   ###
 
+  define: ["currentName", "index", "source"]
+
+  ###
+  ###
+
   _init: () ->
     super()
 
@@ -115,11 +120,6 @@ class StatesView extends require("../base")
     isNew          = !state.hasView()
     newStateView   = state.getView()
     @setChild "currentChild", newStateView
-
-
-    if @get("inherit")
-      newStateView.decorate { inherit: @get("inherit") }
-
 
     @currentState.set "selected", true
 

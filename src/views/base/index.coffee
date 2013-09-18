@@ -7,11 +7,20 @@ loaf                      = require "loaf"
 flatstack                 = require "flatstack"
 models                    = require "../../models"
 bindable                  = require "bindable"
+Inheritable               = require "../../bindable/inheritable"
 
 
-class DecorableView extends bindable.Object
+class DecorableView extends Inheritable
+  
+  ###
+  ###
 
   __isView: true
+
+  ###
+  ###
+  
+  define: ["sections"]
 
   ###
   ###
@@ -26,7 +35,8 @@ class DecorableView extends bindable.Object
     if type(data) isnt "object"
       throw new Error "data passed in view must be an object"
 
-    super @
+    super()
+    
     @set data
 
     @this = @
@@ -167,7 +177,10 @@ class DecorableView extends bindable.Object
 
   setChild: (name, child) ->
     child.name = name
-    child._parent = @
+
+    # deprecated
+    child.set "_parent", @
+    child.set "parent", @
     @set "sections.#{name}", child
     @emit "child", child
 
