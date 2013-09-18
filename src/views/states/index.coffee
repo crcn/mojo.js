@@ -7,7 +7,7 @@ class StatesView extends require("../base")
   ###
   ###
 
-  define: ["currentName", "index", "source", "currentView"]
+  define: ["currentName", "index", "source", "currentView", "rotate"]
 
   ###
   ###
