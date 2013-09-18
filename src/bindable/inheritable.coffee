@@ -41,10 +41,7 @@ class InheritableObject extends bindable.Object
     _combineSuperProps(@, "define")
     @_define @define...
 
-
-
   ###
-
   ###
 
   get: (key) ->
