@@ -87,12 +87,12 @@ class DecorableView extends Inheritable
 
   _call: (startEvent, endEvent, next) ->
 
-    return next() if @_states[endEvent]
-
     # cover any case where next might not be a function. This might
     # happen when an async function does something like - model.load @view.render
     if type(next) isnt "function"
       next = () ->
+      
+    return next() if @_states[endEvent]
 
     @once endEvent, next
 
