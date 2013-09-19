@@ -166,9 +166,13 @@ class DecorableView extends Inheritable
     # call super - important to cleanup any listeners / bindings
     super()
 
+    if @sections
+      for childName of @sections
+        @sections[childName].dispose()
+
     # if the parent is currently being removed, then don't bother cleaning up the 
     # element listeners, and section. 
-    return if @_parent and @_parent._states.remove and not @_parent._states.removed
+    return if @parent and @parent._states.remove and not @parent._states.removed
     
     @section.dispose()
 
