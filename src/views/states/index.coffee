@@ -7,7 +7,12 @@ class StatesView extends require("../base")
   ###
   ###
 
-  define: ["currentName", "index", "source", "currentView", "rotate"]
+  define: ["currentName", "index", "source", "currentView", "rotate", "ended"]
+
+  ###
+  ###
+  
+  ended: false
 
   ###
   ###
@@ -85,14 +90,14 @@ class StatesView extends require("../base")
         newIndex = @source.length - 1
       else
         newIndex = 0
-        @emit "ended" 
+        @set "ended", true
         
     else if newIndex >= @source.length
       if @get("rotate")
         newIndex = 0
       else
         newIndex = @source.length - 1
-        @emit "ended"
+        @set "ended", true
 
     @set "index", newIndex
 
