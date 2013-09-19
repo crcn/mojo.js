@@ -7,7 +7,7 @@ class Collection
 
   constructor: () ->
     @_droppables = {}
-    @_current = {}
+    @_current    = {}
 
   ###
   ###
@@ -52,7 +52,7 @@ class Collection
 
 
     for droppable, i in droppables
-      del = $ droppable.view.section.elements.filter (node) -> node.nodeType is 1
+      del = $ droppable.view.section.getChildNodes().filter (el) -> el.nodeType is 1
       offset = del.offset()
       continue if not offset
 

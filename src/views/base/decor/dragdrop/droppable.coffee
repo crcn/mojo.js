@@ -9,17 +9,19 @@ class DroppableDecorator extends BaseViewDecorator
   init: () ->
     super()
     @name = @view.droppable
+    @view.once "render", @render
+    @view.once "remove", @remove
 
   ###
   ###
 
-  display: () ->
+  render: () =>
     droppables.add @name, @
 
   ###
   ###
 
-  remove: () ->  
+  remove: () =>  
     droppables.remove @name, @
 
   ###

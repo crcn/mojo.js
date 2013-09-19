@@ -11,11 +11,12 @@ class DraggableDecorator extends BaseViewDecorator
   init: () ->
     super()
     @name = @view.draggable
+    @view.once "render", @render
 
   ###
   ###
 
-  display: () ->
+  render: () =>
     @_initListeners()
 
   ###
@@ -36,8 +37,7 @@ class DraggableDecorator extends BaseViewDecorator
 
   _startDrag: (e) =>
 
-    el = $ @view.section.elements.filter (node) -> node.nodeType is 1
-
+    el = $ @view.section.getChildNodes().filter (el) -> el.nodeType is 1
 
     @document.bind "mousemove", @_drag
     @document.one "mouseup", @_stopDrag
