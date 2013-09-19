@@ -64,7 +64,7 @@ class DecorableView extends Inheritable
     cp = @
     while cp
       path.unshift cp.constructor.name
-      cp = cp._parent
+      cp = cp.parent
 
     path.join "."
 
@@ -156,6 +156,8 @@ class DecorableView extends Inheritable
     @on "rendered", @_onRendered
     @on "remove", @_onRemove
     @on "removed", @_onRemoved
+    @bind("parent").to(@_onParent).now()
+
     DecorFactory.setup @
 
   ###
@@ -166,13 +168,9 @@ class DecorableView extends Inheritable
     # call super - important to cleanup any listeners / bindings
     super()
 
-    if @sections
-      for childName of @sections
-        @sections[childName].dispose()
-
     # if the parent is currently being removed, then don't bother cleaning up the 
     # element listeners, and section. 
-    return if @parent and @parent._states.remove and not @parent._states.removed
+    return if @parent and @parent._states.remove
     
     @section.dispose()
 
@@ -195,7 +193,7 @@ class DecorableView extends Inheritable
 
   bubble: () ->
     @emit arguments...
-    @_parent?.bubble arguments...
+    @parent?.bubble arguments...
 
   ###
   ###
@@ -211,6 +209,15 @@ class DecorableView extends Inheritable
   _onRemoved   : () => 
     @_removed = true
     @dispose()
+
+  ###
+   listen when the parent is removed
+  ###
+
+  _onParent: (parent) =>
+    @_parentDisposeListener?.dispose()
+    return unless parent
+    @_parentDisposeListener = parent.on "dispose", @remove
 
   ###
    expose this so third-party modules can add a decorator
