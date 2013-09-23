@@ -9,24 +9,15 @@ class TransitionDecorator extends BaseViewDecorator
   ###
   ###
 
-  init: () ->
-    super()
-    @transition = @options
-    @view.once "render"   , @_onRender
-    @view.once "rendered" , @_onRendered
-    @view.once "remove"   , @_onRemove
+  constructor: (@view, @transition) ->
+    @view.once "render"  , @_onRender
+    @view.once "removed" , @_onRemove
 
 
   ###
   ###
 
   _onRender: () =>
-    @view.$().css({opacity:0})
-
-  ###
-  ###
-
-  _onRendered: () =>
     @_transitionAll "enter", () ->
 
   ###
@@ -58,7 +49,9 @@ class TransitionDecorator extends BaseViewDecorator
     if transition.from
       element.css transition.from
 
-    element.transit transition.to or transition, next
+    setTimeout (() =>
+      element.transit transition.to or transition, next
+    ), 0
 
   ###
   ###
@@ -75,6 +68,7 @@ class TransitionDecorator extends BaseViewDecorator
       trans.selector = selector
       transitions.push trans
 
+    console.log transitions
 
     transitions
 
