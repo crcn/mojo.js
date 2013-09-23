@@ -27,7 +27,7 @@ class TransitionDecorator extends BaseViewDecorator
   ###
 
   _onRendered: () =>
-    @_transitionAll "enter", callback
+    @_transitionAll "enter", () ->
 
   ###
   ###
@@ -43,22 +43,22 @@ class TransitionDecorator extends BaseViewDecorator
   ###
   ###
 
-  _transitionAll: (type, callback) ->
+  _transitionAll: (type, next) ->
     async.forEach @_filterTransitions(type), ((transition, next) =>
       @_transition @_element(transition), transition[type], next
-    ), callback
+    ), next
 
   ###
   ###
 
-  _transition: (element, transition, callback) ->
+  _transition: (element, transition, next) ->
     # if the element doesn't exist, then return an error
-    return callback(new comerr.NotFound("element does not exist")) if not element.length
+    return next(new comerr.NotFound("element does not exist")) if not element.length
 
     if transition.from
       element.css transition.from
 
-    element.transit transition.to or transition, callback
+    element.transit transition.to or transition, next
 
   ###
   ###
