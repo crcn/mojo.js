@@ -11,7 +11,7 @@ class TransitionDecorator extends BaseViewDecorator
 
   constructor: (@view, @transition) ->
     @view.once "render"  , @_onRender
-    @view.once "removed" , @_onRemove
+    @view.once "remove"  , @_onRemove
 
 
   ###
@@ -25,8 +25,8 @@ class TransitionDecorator extends BaseViewDecorator
 
   _onRemove: () =>
     @view.$().css({opacity:1})
-    # @view.callstack.push (next) ->
-    #   @_transitionAll "exit", callback
+    @view.callstack.push (next) =>
+      @_transitionAll "exit", next
 
   ###
   ###
