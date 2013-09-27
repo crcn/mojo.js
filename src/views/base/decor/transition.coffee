@@ -31,9 +31,6 @@ class TransitionDecorator extends BaseViewDecorator
   ###
   ###
 
-  ###
-  ###
-
   _transitionAll: (type, next) ->
     async.forEach @_filterTransitions(type), ((transition, next) =>
       @_transition @_element(transition), transition[type], next

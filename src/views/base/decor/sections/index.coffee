@@ -40,6 +40,10 @@ class SectionsDecorator
 
   _fixOptions: (options) -> 
 
+    # validate
+    unless options
+      throw new Error "'sections' is invalid for view #{@view.path()}"
+
     # type must exist. If it doesn't then the options are a type. E.g:
     # section: View
     # section: "component"
