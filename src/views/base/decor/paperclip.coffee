@@ -22,7 +22,13 @@ class PaperclipViewDecorator
     @template = paperclip.template template
 
     if @content
+
+      # unbind everything
+      @content.unbind()
+
+      # the section might re-used, so just hide the content
       @content.section.hide()
+
       @render()
 
 
