@@ -19,11 +19,10 @@ class PaperclipViewDecorator
     if type(template) isnt "function"
       throw new Error "paper template must be a function for view \"#{@view.constructor.name}\""
 
-
     @template = paperclip.template template
 
     if @content
-      @content.dispose()
+      @content.section.hide()
       @render()
 
 
@@ -32,6 +31,7 @@ class PaperclipViewDecorator
 
   render: () =>
     @content = @template.bind @view
+    @content.section.show()
     @view.section.append @content.section.toFragment()
 
   ###

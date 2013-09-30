@@ -200,14 +200,12 @@ class DecorableView extends Inheritable
 
   _onRender    : () => 
   _onRendered  : () =>
-    @_rendered = true
 
   ###
   ###
   
   _onRemove    : () =>
   _onRemoved   : () => 
-    @_removed = true
     @dispose()
 
   ###
