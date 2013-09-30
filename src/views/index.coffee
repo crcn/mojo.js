@@ -6,8 +6,8 @@ ListView       = require "./list"
 StatesView     = require "./states"
 
 models.set "components", new bindable.Object {
-  list: ListView,
-  states: StatesView
+  list   : ListView,
+  states : StatesView
 }
 
 

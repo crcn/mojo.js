@@ -17,6 +17,8 @@ class PaperclipViewDecorator
 
   _onTemplateChange: (template) =>
 
+    console.log @view.path(), "G"
+
     if type(template) isnt "function"
       throw new Error "paper template must be a function for view \"#{@view.constructor.name}\""
 
@@ -55,7 +57,13 @@ class PaperclipViewDecorator
   ###
   ###
 
-  @getOptions : (view) -> view.__isView
+  @getOptions : (view) -> 
+
+    return if (/StatesView|ListView/.test(String(view.constructor?.name))
+
+
+    return (type(view) is "object") and not /StatesView|ListView/.test(String())
+
   @decorate   : (view, options) -> new PaperclipViewDecorator view, options
 
 
