@@ -62,7 +62,6 @@ class SectionsDecorator
       clazz = @_getSectionClass(options)
       return new clazz options
 
-
   ###
   ###
 

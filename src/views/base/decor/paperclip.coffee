@@ -6,16 +6,27 @@ class PaperclipViewDecorator
   ###
   ###
 
-  constructor: (@view, @template) ->
+  constructor: (@view) ->
 
     if type(template) isnt "function"
       throw new Error "paper template must be a function for view \"#{@view.constructor.name}\""
 
 
-    @template = paperclip.template @template
 
     @view.once "render", @render
     @view.once "remove", @remove
+    @view.bind("paper").to(@_onTemplateChange).now()
+
+  ###
+  ###
+
+  _onTemplateChange: (template) =>
+      @template = paperclip.template @template
+
+      if @content
+        @content.dispose()
+        @render()
+
 
   ###
   ###
