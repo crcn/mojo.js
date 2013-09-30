@@ -8,7 +8,6 @@ DraggableDecorator  = require "./dragdrop/draggable"
 DroppableDecorator  = require "./dragdrop/droppable"
 TransitionDecorator = require "./transition"
 PreloadDecorator    = require "./preload"
-IsolateDecorator     = require "./isolate"
 
 _decor = (name, clazz, inheritable = true) ->
    name        : name
@@ -63,6 +62,7 @@ module.exports =
 
   setup: (view, decor) -> 
 
+
     if decor
       _decorators = @_findDecorators decor
     else
@@ -88,6 +88,7 @@ module.exports =
     cv = view
     pv = undefined
 
+
     # inherit from the parent classes
     while cv and cv.__isView
 
@@ -96,7 +97,18 @@ module.exports =
       pv = cv
       cv = cv.__super__
 
-    decorators.sort (a, b) -> if a.priority > b.priority then 1 else -1
+    used = {}
+
+    decorators.sort((a, b) -> 
+      if a.priority > b.priority then 1 else -1
+    ).filter (a) ->
+
+      unless used[a.name]
+        used[a.name] = true
+        return true
+
+      used[a.name] and a.inheritable
+
 
   ###
   ###
@@ -104,20 +116,20 @@ module.exports =
   _findDecorators: (proto, child) ->
     decorators = []
 
-
     for d, priority in availableDecorators
       clazz       = d.clazz
-
-      # skip if the decorator is not inheritable
-      if child and not d.inheritable
-        continue
-
 
       if options = clazz.getOptions proto
 
         #skip if the options are exactly the same
         continue if child and options is clazz.getOptions child
-        decorators.push { clazz: clazz, name: d.name, options: options, priority: priority }
+        decorators.push { 
+          clazz       : clazz, 
+          name        : d.name, 
+          inheritable : d.inheritable
+          options     : options, 
+          priority    : priority 
+        }
 
 
     decorators

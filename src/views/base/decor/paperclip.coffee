@@ -9,6 +9,7 @@ class PaperclipViewDecorator
   constructor: (@view) ->
     @view.once "render", @render
     @view.once "remove", @remove
+    @view._define "paper"
     @view.bind("paper").to(@_onTemplateChange).now()
 
   ###
@@ -21,14 +22,8 @@ class PaperclipViewDecorator
 
     @template = paperclip.template template
 
-    if @content
-
-      # unbind everything
-      @content.unbind()
-
-      # the section might re-used, so just hide the content
-      @content.section.hide()
-
+    if @_rendered
+      @cleanup true
       @render()
 
 
@@ -36,6 +31,9 @@ class PaperclipViewDecorator
   ###
 
   render: () =>
+    @_rendered = true
+    @content = undefined
+    return unless @template
     @content = @template.bind @view
     @content.section.show()
     @view.section.append @content.section.toFragment()
@@ -44,12 +42,20 @@ class PaperclipViewDecorator
   ###
 
   remove: () => 
-    @content.unbind()
+    @cleanup()
 
   ###
   ###
 
-  @getOptions : (view) -> view.paper
+  cleanup: (hide) =>
+    @content?.unbind()
+    if hide
+      @content?.section.hide()
+
+  ###
+  ###
+
+  @getOptions : (view) -> true
   @decorate   : (view, options) -> new PaperclipViewDecorator view, options
 
 
