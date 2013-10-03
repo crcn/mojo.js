@@ -55,6 +55,9 @@
             bindable: bindable,
             models: models
         };
+        if (typeof window !== "undefined") {
+            window.mojo = module.exports;
+        }
         return module.exports;
     });
     define("mojojs/lib/views/index.js", function(require, module, exports, __dirname, __filename) {
@@ -5913,6 +5916,106 @@
         module.exports = new Collection;
         return module.exports;
     });
+    define("comerr/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        var DEFAULT_CODES = {
+            401: "Unauthorized",
+            402: "Payment Required",
+            404: "Not Found",
+            403: "Forbidden",
+            408: "Timeout",
+            423: "Locked",
+            429: "Too Many Requests",
+            500: "Unknown",
+            501: "Not Implemented",
+            601: "Incorrect Input",
+            602: "Invalid",
+            604: "Already Exists",
+            605: "Expired",
+            606: "Unable To Connect",
+            607: "Already Called",
+            608: "Not Enough Info",
+            609: "Incorrect Type"
+        };
+        exports.codes = {};
+        exports.byCode = {};
+        exports.register = function(codes) {
+            Object.keys(codes).forEach(function(code) {
+                var name = codes[code], message = name, className = name.replace(/\s+/g, "");
+                if (exports[className]) {
+                    throw new Error("Error code '" + code + "' already exists.");
+                }
+                function addInfo(err, tags) {
+                    err.code = code;
+                    if (tags) err.tags = tags;
+                    return err;
+                }
+                var Err = exports[className] = function(message, tags) {
+                    Error.call(this, message);
+                    this.message = message || name;
+                    this.stack = (new Error(this.message)).stack;
+                    addInfo(this);
+                };
+                Err.prototype = new Error;
+                Err.prototype.constructor = Err;
+                Err.prototype.name = name;
+                exports.byCode[code] = Err;
+                exports.codes[className] = code;
+                exports[className.substr(0, 1).toLowerCase() + className.substr(1)] = Err.fn = function(message, tags) {
+                    return addInfo(new Error(message || name), tags);
+                };
+            });
+        };
+        exports.fromCode = function(code, message) {
+            var clazz = exports.byCode[Number(code)] || exports.Unknown;
+            return clazz.fn(message);
+        };
+        exports.register(DEFAULT_CODES);
+        return module.exports;
+    });
+    define("mojojs/lib/utils/async.js", function(require, module, exports, __dirname, __filename) {
+        var async;
+        async = {
+            forEach: function(items, each, next) {
+                return async.eachLimit(items, -1, each, next);
+            },
+            eachSeries: function(items, each, next) {
+                return async.eachLimit(items, 1, each, next);
+            },
+            eachLimit: function(items, limit, each, next) {
+                var called, currentIndex, err, finish, finished, nextItem, numRunning;
+                numRunning = 0;
+                currentIndex = 0;
+                called = false;
+                err = null;
+                finished = false;
+                finish = function() {
+                    if (finished || numRunning && !err) {
+                        return;
+                    }
+                    finished = true;
+                    return next();
+                };
+                nextItem = function() {
+                    var item;
+                    if (currentIndex >= items.length || err) {
+                        return finish(err);
+                    }
+                    numRunning++;
+                    item = items[currentIndex++];
+                    each(item, function(e) {
+                        numRunning--;
+                        return nextItem();
+                    });
+                    if (!~limit || numRunning < limit) {
+                        return nextItem();
+                    }
+                };
+                return nextItem();
+            }
+        };
+        module.exports = async;
+        return module.exports;
+    });
     define("async/lib/async.js", function(require, module, exports, __dirname, __filename) {
         (function() {
             var async = {};
@@ -6762,106 +6865,6 @@
                 root.async = async;
             }
         })();
-        return module.exports;
-    });
-    define("comerr/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        var DEFAULT_CODES = {
-            401: "Unauthorized",
-            402: "Payment Required",
-            404: "Not Found",
-            403: "Forbidden",
-            408: "Timeout",
-            423: "Locked",
-            429: "Too Many Requests",
-            500: "Unknown",
-            501: "Not Implemented",
-            601: "Incorrect Input",
-            602: "Invalid",
-            604: "Already Exists",
-            605: "Expired",
-            606: "Unable To Connect",
-            607: "Already Called",
-            608: "Not Enough Info",
-            609: "Incorrect Type"
-        };
-        exports.codes = {};
-        exports.byCode = {};
-        exports.register = function(codes) {
-            Object.keys(codes).forEach(function(code) {
-                var name = codes[code], message = name, className = name.replace(/\s+/g, "");
-                if (exports[className]) {
-                    throw new Error("Error code '" + code + "' already exists.");
-                }
-                function addInfo(err, tags) {
-                    err.code = code;
-                    if (tags) err.tags = tags;
-                    return err;
-                }
-                var Err = exports[className] = function(message, tags) {
-                    Error.call(this, message);
-                    this.message = message || name;
-                    this.stack = (new Error(this.message)).stack;
-                    addInfo(this);
-                };
-                Err.prototype = new Error;
-                Err.prototype.constructor = Err;
-                Err.prototype.name = name;
-                exports.byCode[code] = Err;
-                exports.codes[className] = code;
-                exports[className.substr(0, 1).toLowerCase() + className.substr(1)] = Err.fn = function(message, tags) {
-                    return addInfo(new Error(message || name), tags);
-                };
-            });
-        };
-        exports.fromCode = function(code, message) {
-            var clazz = exports.byCode[Number(code)] || exports.Unknown;
-            return clazz.fn(message);
-        };
-        exports.register(DEFAULT_CODES);
-        return module.exports;
-    });
-    define("mojojs/lib/utils/async.js", function(require, module, exports, __dirname, __filename) {
-        var async;
-        async = {
-            forEach: function(items, each, next) {
-                return async.eachLimit(items, -1, each, next);
-            },
-            eachSeries: function(items, each, next) {
-                return async.eachLimit(items, 1, each, next);
-            },
-            eachLimit: function(items, limit, each, next) {
-                var called, currentIndex, err, finish, finished, nextItem, numRunning;
-                numRunning = 0;
-                currentIndex = 0;
-                called = false;
-                err = null;
-                finished = false;
-                finish = function() {
-                    if (finished || numRunning && !err) {
-                        return;
-                    }
-                    finished = true;
-                    return next();
-                };
-                nextItem = function() {
-                    var item;
-                    if (currentIndex >= items.length || err) {
-                        return finish(err);
-                    }
-                    numRunning++;
-                    item = items[currentIndex++];
-                    each(item, function(e) {
-                        numRunning--;
-                        return nextItem();
-                    });
-                    if (!~limit || numRunning < limit) {
-                        return nextItem();
-                    }
-                };
-                return nextItem();
-            }
-        };
-        module.exports = async;
         return module.exports;
     });
     define("factories/lib/base.js", function(require, module, exports, __dirname, __filename) {
@@ -8525,6 +8528,32 @@
         module.exports = ClipBinding;
         return module.exports;
     });
+    define("paperclip/lib/paper/utils/escapeHTML.js", function(require, module, exports, __dirname, __filename) {
+        var entities;
+        entities = {
+            "<": "lt",
+            "&": "amp",
+            ">": "gt",
+            '"': "quote"
+        };
+        module.exports = function(str) {
+            str = String(str);
+            return str.split("").map(function(c) {
+                var cc, e;
+                e = entities[c];
+                cc = c.charCodeAt(0);
+                if (e) {
+                    return "&" + e + ";";
+                } else if (c.match(/\s/)) {
+                    return c;
+                } else if (cc < 32 || cc > 126) {
+                    return "&#" + cc + ";";
+                }
+                return c;
+            }).join("");
+        };
+        return module.exports;
+    });
     define("paperclip/lib/clip/buffer.js", function(require, module, exports, __dirname, __filename) {
         var Clip, ClippedBuffer, ClippedBufferPart, bindable, __bind = function(fn, me) {
             return function() {
@@ -8630,32 +8659,6 @@
             return ClippedBuffer;
         }(bindable.Object);
         module.exports = ClippedBuffer;
-        return module.exports;
-    });
-    define("paperclip/lib/paper/utils/escapeHTML.js", function(require, module, exports, __dirname, __filename) {
-        var entities;
-        entities = {
-            "<": "lt",
-            "&": "amp",
-            ">": "gt",
-            '"': "quote"
-        };
-        module.exports = function(str) {
-            str = String(str);
-            return str.split("").map(function(c) {
-                var cc, e;
-                e = entities[c];
-                cc = c.charCodeAt(0);
-                if (e) {
-                    return "&" + e + ";";
-                } else if (c.match(/\s/)) {
-                    return c;
-                } else if (cc < 32 || cc > 126) {
-                    return "&#" + cc + ";";
-                }
-                return c;
-            }).join("");
-        };
         return module.exports;
     });
     define("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/show.js", function(require, module, exports, __dirname, __filename) {
