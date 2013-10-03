@@ -1,6 +1,14 @@
-require "./input"
+models       = require "../models"
 
-BaseView     = require "./base"
-DecorFactory = require "./decor/factory"
+bindable       = require "bindable"
+BaseView       = require "./base/index"
+ListView       = require "./list"
+StatesView     = require "./states"
+
+models.set "components", new bindable.Object {
+  list   : ListView,
+  states : StatesView
+}
+
 
 module.exports = BaseView

@@ -1,101 +1,120 @@
 bindable = require "bindable"
+_ = require "underscore"
 
 
 _getBindingKey = (key) -> key.split(".").shift()
 
+_combineSuperProps = (target, property) ->
+  constructor = target.constructor
+  unless constructor.__combined
+    constructor.__combined = {}
+
+  return if constructor.__combined[property]
+  constructor.__combined[property] = true
+
+  p = constructor.prototype
+  defined = []
+  while p
+    defined = (p.define or []).concat(defined)
+
+    p = p.constructor.__super__
+
+  constructor.prototype[property] = target[property] = defined
+
+
+
 
 class InheritableObject extends bindable.Object
-
+  
   ###
-   If the key doesn't exist, then inherit it from the parent
-  ###
-
-  get: (key) -> 
-    super(key) ? @_inherit(key)
-
-  ###
-   inherits a property from the parent
   ###
 
-  _inherit: (key) -> 
+  define: ["parent"]
+  
+  ###
+  ###
 
-    bindingKey = _getBindingKey(key)
+  constructor: () ->
+    super @
+    @_defined = {}
 
-    # binding key already exists in this object? ignore inheritance
-    ret = InheritableObject.__super__.get.call(@, bindingKey)
-
-    return undefined if ret?
-
-    if @_parent and not @_parentBindings?[bindingKey]
-
-      # create a binding incase the parent key changes - needs to be reflected
-      # in the object
-      unless @_parentBindings
-        @_parentBindings = {}
-
-      @_parentBindings[bindingKey]?.dispose()
-      @_parentBindings[bindingKey] = binding = @_parent.bind(bindingKey).to(@, bindingKey)
-      @_parentBindings[bindingKey].now()
-
-      # if the value changes in this object, then break it off from the parent
-      @bind bindingKey, (value) => 
-        # same as the parent value? ignore.
-        return if value is binding.value
-        
-        binding.dispose()
-        delete @_parentBindings[bindingKey]
-      
-    return @_parent?.get key
+    _combineSuperProps(@, "define")
+    @_define @define...
 
   ###
   ###
 
-  _set: (key, value) ->
-    @_inherit key
-    super key, value
+  get: (key) ->
+    ret = super(key) 
 
+    # return if the value exists
+    return ret if ret?
 
-  ###
-   finds the owner of a given property
-  ###
+    # the binding key is the first part of the property - could be something
+    # such as teacher.class.name. We ONLY want "teacher" property
+    bindingKey
 
-  owner: (property) ->  
-    @_owner _getBindingKey(property), @
-    
-  ###
-  ###
+    # fast way of grabbing the bindable key
+    if ~(i = key.indexOf("."))
+      bindingKey = key.slice(0, i)
+    else
+      bindingKey = key
 
-  _owner: (property, caller) ->
+    # if the property exists, then skip inheritance
+    return if @[bindingKey]?
 
-    return @_parent.owner(property, caller) if @_parent and @_parentBindings?[property]
+    # inherit from the parents
+    @_inherit bindingKey
 
-    # call super _get to bypass inheritance
-    return @ if InheritableObject.__super__.get.call(@, property)?
-
-    return caller
-
-  ###
-   bubbles up an event to the root object
-  ###
-
-  bubble: () ->
-    @emit arguments...
-    @_parent?.bubble arguments...
+    # return the value inherited
+    super key
 
   ###
   ###
 
-  dispose: () ->
-    super()
-    binding.dispose() for binding in @_parentBindings?
-    @_parentBindings = undefined
+  _define: () ->
+    for key in arguments
+      @_defined[key] = true
 
   ###
   ###
 
-  linkChild: () ->
-    for child in arguments
-      child._parent = @
-    @
+  _inherit: (key) ->
+    return if @_defined[key]
+    @_defined[key] = true
+
+    parentPropertyBinding = undefined
+    parentBinding         = undefined
+
+    # bind to the parent - it could change
+    parentBinding = @bind("parent").to((parent) =>
+      parentPropertyBinding?.dispose()
+
+      # bind the parent property to this property. Note that
+      # properties will be recursively bound
+      parentPropertyBinding = parent.bind(key).to(@, key).now()
+    ).now()
+
+    # if the property is defined on the view controller explicitly, then
+    # destroy inheritance
+    valueBinding = @bind(key).to((value) =>
+
+      # same value as parent? ignore.
+      return if @parent?[key] is value
+      valueBinding.dispose()
+      parentPropertyBinding?.dispose()
+      parentBinding?.dispose()
+    )
+
+    valueBinding.now()
+
+    # if the value doesn't exist, then log a warning - property is not defined
+    # in the view controller!
+    unless @[key]?
+      console.warn "inherted property %s doesn't exist in %s", key, @path()
+
+    undefined
+
+ 
 
 module.exports = InheritableObject

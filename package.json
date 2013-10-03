@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.5.30",
+  "version": "0.6.39",
   "description": "test",
   "main": "./lib/index.js",
   "jam": {
@@ -29,10 +29,10 @@
     "outcome": "0.0.x",
     "step": "0.0.x",
     "type-component": "0.0.x",
-    "bindable": "0.2.x",
+    "bindable": "0.4.x",
     "disposable": "0.0.x",
     "eventemitter2": "0.4.x",
-    "structr": "0.2.x",
+    "structr": "~0.2.3",
     "dolce": "0.0.x",
     "mannequin": "0.1.x",
     "hoist": "0.0.x",
@@ -42,8 +42,12 @@
     "flatstack": "0.0.x",
     "asyngleton": "0.1.x",
     "rivets": "0.3.x",
-    "paperclip": "0.1.x",
-    "toarray": "0.0.1"
+    "paperclip": "0.2.x",
+    "toarray": "0.0.1",
+    "factories": "0.0.x",
+    "loaf": "0.0.5",
+    "nofactor": "0.0.x",
+    "traverse": "~0.6.5"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",

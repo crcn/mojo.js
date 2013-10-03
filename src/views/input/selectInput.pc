@@ -1,3 +1,0 @@
-<option value="{{ model.value }}" selected="{{ selected ? 'selected' : undefined }}">
-  {{ model.label }}
-</option>
