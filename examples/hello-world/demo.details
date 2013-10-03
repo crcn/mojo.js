@@ -1,0 +1,10 @@
+---
+name: Hello World
+description: Hello world
+authors:
+  - Craig Condon
+resources:
+  - https://raw.github.com/classdojo/paperclip.js/master/build/paperclip.js
+  - https://raw.github.com/classdojo/paperclip.js/master/build/paperclip-compiler.js
+  - https://raw.github.com/classdojo/bindable.js/master/build/bindable.js
+...

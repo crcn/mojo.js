@@ -1,13 +1,15 @@
-_                         = require "underscore"
-generateId                = require "../../utils/idGenerator"
-dref                      = require "dref"
-type                      = require "type-component"
-DecorFactory              = require "./decor/factory"
-loaf                      = require "loaf"
-flatstack                 = require "flatstack"
-models                    = require "../../models"
-bindable                  = require "bindable"
-Inheritable               = require "../../bindable/inheritable"
+_            = require "underscore"
+generateId   = require "../../utils/idGenerator"
+dref         = require "dref"
+type         = require "type-component"
+DecorFactory = require "./decor/factory"
+loaf         = require "loaf"
+flatstack    = require "flatstack"
+models       = require "../../models"
+bindable     = require "bindable"
+Inheritable  = require "../../bindable/inheritable"
+structr      = require "structr"    
+
 
 
 class DecorableView extends Inheritable
@@ -222,6 +224,17 @@ class DecorableView extends Inheritable
   ###
 
   @addDecoratorClass: DecorFactory.addDecoratorClass
+
+
+  ###
+  ###
+
+  @extend: (proto) ->
+    clazz = structr @, proto
+    clazz
+
+
+
 
 
 module.exports = DecorableView
