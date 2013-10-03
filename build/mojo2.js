@@ -3756,6 +3756,121 @@
         }).call(this);
         return module.exports;
     });
+    define("bindable/lib/collection/binding.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var SettersFactory, settersFactory, utils;
+            SettersFactory = require("bindable/lib/collection/setters/factory.js");
+            settersFactory = new SettersFactory;
+            utils = require("bindable/lib/core/utils.js");
+            module.exports = function() {
+                function _Class(_from) {
+                    this._from = _from;
+                    this._limit = -1;
+                    this._setters = [];
+                    this._listen();
+                    this.map(function(value) {
+                        return value;
+                    });
+                }
+                _Class.prototype.transform = function() {
+                    return this.map.apply(this, arguments);
+                };
+                _Class.prototype.map = function(value) {
+                    if (!arguments.length) {
+                        return this._transformer;
+                    }
+                    this._transformer = utils.transformer(value);
+                    return this;
+                };
+                _Class.prototype.now = function() {
+                    var item, setter, _i, _j, _len, _len1, _ref, _ref1;
+                    _ref = this._setters;
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                        setter = _ref[_i];
+                        setter.now();
+                    }
+                    _ref1 = this._from.source();
+                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                        item = _ref1[_j];
+                        this._callSetters("insert", item);
+                    }
+                    return this;
+                };
+                _Class.prototype.dispose = function() {
+                    this._dispose(this._setters);
+                    this._setters = void 0;
+                    this._dispose(this._listeners);
+                    return this._listeners = void 0;
+                };
+                _Class.prototype.copyId = function(value) {
+                    if (!arguments.length) {
+                        return this._copyId;
+                    }
+                    this._copyId = value;
+                    return this;
+                };
+                _Class.prototype._dispose = function(collection) {
+                    var disposable, _i, _len, _results;
+                    if (collection) {
+                        _results = [];
+                        for (_i = 0, _len = collection.length; _i < _len; _i++) {
+                            disposable = collection[_i];
+                            _results.push(disposable.dispose());
+                        }
+                        return _results;
+                    }
+                };
+                _Class.prototype.filter = function(search) {
+                    if (!arguments.length) {
+                        return this._filter;
+                    }
+                    this._filter = search;
+                    return this;
+                };
+                _Class.prototype.to = function(collection, now) {
+                    var setter;
+                    if (now == null) {
+                        now = true;
+                    }
+                    setter = settersFactory.createSetter(this, collection);
+                    if (setter) {
+                        this._setters.push(setter);
+                        if (now === true) {
+                            setter.now();
+                        }
+                    }
+                    return this;
+                };
+                _Class.prototype._listen = function() {
+                    var event, _i, _len, _ref, _results, _this = this;
+                    this._listeners = [];
+                    _ref = [ "insert", "remove", "reset" ];
+                    _results = [];
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                        event = _ref[_i];
+                        _results.push(function(event) {
+                            return _this._listeners.push(_this._from.on(event, function(item, index) {
+                                return _this._callSetters(event, item, index);
+                            }));
+                        }(event));
+                    }
+                    return _results;
+                };
+                _Class.prototype._callSetters = function(method, item, index) {
+                    var setter, _i, _len, _ref, _results;
+                    _ref = this._setters;
+                    _results = [];
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                        setter = _ref[_i];
+                        _results.push(setter.change(method, item, index));
+                    }
+                    return _results;
+                };
+                return _Class;
+            }();
+        }).call(this);
+        return module.exports;
+    });
     define("events/index.js", function(require, module, exports, __dirname, __filename) {
         var isArray = Array.isArray;
         function EventEmitter() {}
@@ -3954,121 +4069,6 @@
                 window.disposable = _disposable;
             }
         })();
-        return module.exports;
-    });
-    define("bindable/lib/collection/binding.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var SettersFactory, settersFactory, utils;
-            SettersFactory = require("bindable/lib/collection/setters/factory.js");
-            settersFactory = new SettersFactory;
-            utils = require("bindable/lib/core/utils.js");
-            module.exports = function() {
-                function _Class(_from) {
-                    this._from = _from;
-                    this._limit = -1;
-                    this._setters = [];
-                    this._listen();
-                    this.map(function(value) {
-                        return value;
-                    });
-                }
-                _Class.prototype.transform = function() {
-                    return this.map.apply(this, arguments);
-                };
-                _Class.prototype.map = function(value) {
-                    if (!arguments.length) {
-                        return this._transformer;
-                    }
-                    this._transformer = utils.transformer(value);
-                    return this;
-                };
-                _Class.prototype.now = function() {
-                    var item, setter, _i, _j, _len, _len1, _ref, _ref1;
-                    _ref = this._setters;
-                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                        setter = _ref[_i];
-                        setter.now();
-                    }
-                    _ref1 = this._from.source();
-                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                        item = _ref1[_j];
-                        this._callSetters("insert", item);
-                    }
-                    return this;
-                };
-                _Class.prototype.dispose = function() {
-                    this._dispose(this._setters);
-                    this._setters = void 0;
-                    this._dispose(this._listeners);
-                    return this._listeners = void 0;
-                };
-                _Class.prototype.copyId = function(value) {
-                    if (!arguments.length) {
-                        return this._copyId;
-                    }
-                    this._copyId = value;
-                    return this;
-                };
-                _Class.prototype._dispose = function(collection) {
-                    var disposable, _i, _len, _results;
-                    if (collection) {
-                        _results = [];
-                        for (_i = 0, _len = collection.length; _i < _len; _i++) {
-                            disposable = collection[_i];
-                            _results.push(disposable.dispose());
-                        }
-                        return _results;
-                    }
-                };
-                _Class.prototype.filter = function(search) {
-                    if (!arguments.length) {
-                        return this._filter;
-                    }
-                    this._filter = search;
-                    return this;
-                };
-                _Class.prototype.to = function(collection, now) {
-                    var setter;
-                    if (now == null) {
-                        now = true;
-                    }
-                    setter = settersFactory.createSetter(this, collection);
-                    if (setter) {
-                        this._setters.push(setter);
-                        if (now === true) {
-                            setter.now();
-                        }
-                    }
-                    return this;
-                };
-                _Class.prototype._listen = function() {
-                    var event, _i, _len, _ref, _results, _this = this;
-                    this._listeners = [];
-                    _ref = [ "insert", "remove", "reset" ];
-                    _results = [];
-                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                        event = _ref[_i];
-                        _results.push(function(event) {
-                            return _this._listeners.push(_this._from.on(event, function(item, index) {
-                                return _this._callSetters(event, item, index);
-                            }));
-                        }(event));
-                    }
-                    return _results;
-                };
-                _Class.prototype._callSetters = function(method, item, index) {
-                    var setter, _i, _len, _ref, _results;
-                    _ref = this._setters;
-                    _results = [];
-                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                        setter = _ref[_i];
-                        _results.push(setter.change(method, item, index));
-                    }
-                    return _results;
-                };
-                return _Class;
-            }();
-        }).call(this);
         return module.exports;
     });
     define("mojojs/lib/views/base/decor/base.js", function(require, module, exports, __dirname, __filename) {
@@ -9028,7 +9028,9 @@
                 if (value == null || value === "") {
                     return void 0;
                 }
-                console.log(value, type(value));
+                if (type(value) !== "string") {
+                    return value;
+                }
                 if (isNaN(v = Number(value)) || String(value).substr(0, 1) === "0" && String(value).length > 1) {
                     return value;
                 } else {
@@ -9068,7 +9070,7 @@
                 isRadioOrCheckbox = isCheckbox || isRadio;
                 if (!arguments.length) {
                     if (isRadioOrCheckbox) {
-                        return String($(this.node).is(":checked"));
+                        return Boolean($(this.node).is(":checked"));
                     } else {
                         return this.node.value;
                     }
