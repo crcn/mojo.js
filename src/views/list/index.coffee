@@ -54,9 +54,9 @@ class ListView extends require("../base")
     map((model) =>
       ops       = {}
       ops.model = model
-      
+
       unless model?.get?("_id")
-        model?.set?("_id", Math.random() * 999999)
+        model?.set?("_id", Date.now() + "_" + Math.random() * 999999)
 
       ops._id   = model?.get?("_id") ? model?._id
       ops
