@@ -7386,7 +7386,7 @@
             function Clip(options) {
                 var scripts;
                 this.options = options;
-                this._self = new bindable.Object;
+                this._self = this.context = options.context || new bindable.Object;
                 this.reset(options.data, false);
                 scripts = this.options.scripts || this.options.script;
                 if (scripts) {
@@ -7634,6 +7634,11 @@
                 this.bindings.bind(this.context);
                 return this;
             };
+            Loader.prototype.dispose = function() {
+                this.unbind();
+                this.section.dispose();
+                return this;
+            };
             Loader.prototype.unbind = function() {
                 this.bindings.unbind();
                 return this;
@@ -7725,7 +7730,8 @@
         return module.exports;
     });
     define("paperclip/lib/paper/bindings/node/factory.js", function(require, module, exports, __dirname, __filename) {
-        var NodeBindingFactory, allBindingClasses, classes, clazz, dataBind, defaultBindingClasses, nodeFactory, type, _i, _len;
+        var NodeBindingFactory, allBindingClasses, bdble, classes, clazz, dataBind, defaultBindingClasses, nodeFactory, type, _i, _len;
+        bdble = require("bindable/lib/index.js");
         allBindingClasses = {
             node: {},
             attr: {
@@ -7735,7 +7741,7 @@
         NodeBindingFactory = function() {
             function NodeBindingFactory() {}
             NodeBindingFactory.prototype.getBindings = function(options) {
-                var attrName, attributes, bindable, bindables, bindingClass, bindingClasses, bindings, node, nodeName, _i, _j, _len, _len1;
+                var attrName, attributes, bindable, bindables, bindingClass, bindingClasses, bindings, context, node, nodeName, _i, _j, _len, _len1;
                 bindings = [];
                 attributes = options.attributes;
                 nodeName = options.nodeName;
@@ -7753,6 +7759,7 @@
                     type: "node",
                     node: node
                 } ];
+                context = void 0;
                 for (attrName in attributes) {
                     bindables.push({
                         node: node,
@@ -7775,6 +7782,10 @@
                     for (_j = 0, _len1 = bindingClasses.length; _j < _len1; _j++) {
                         bindingClass = bindingClasses[_j];
                         if (bindingClass.prototype.test(bindable)) {
+                            if (!context) {
+                                context = new bdble.Object;
+                            }
+                            bindable.context = context;
                             bindings.push(new bindingClass(bindable));
                         }
                     }
@@ -7834,6 +7845,7 @@
                 this.name = options.name || this.name;
                 this.node = options.node;
                 this.value = options.value;
+                this.nodeModel = options.context;
             }
             BaseNodeBinding.prototype.bind = function(context) {
                 this.context = context;
@@ -8366,7 +8378,8 @@
                     this.node.removeAttribute(this.name);
                     return;
                 }
-                return this.node.setAttribute(this.name, text);
+                this.node.setAttribute(this.name, text);
+                return this.nodeModel.set(this.name, text);
             };
             AttrTextBinding.prototype.test = function(binding) {
                 var v, _i, _len, _ref;
@@ -8440,7 +8453,8 @@
                 AttrDataBinding.__super__.constructor.call(this, options);
                 this.clip = new Clip({
                     scripts: options.value[0],
-                    watch: false
+                    watch: false,
+                    context: options.context
                 });
                 this._bindings = new BindingCollection;
                 _ref = this.clip.scripts.names;
@@ -8859,6 +8873,7 @@
                     var ref, value, _i, _len, _ref1;
                     value = _this._elementValue();
                     if (_this.clip.get("bothWays")) {
+                        _this._currentValue = value;
                         _ref1 = _this.refs;
                         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
                             ref = _ref1[_i];
@@ -8949,7 +8964,8 @@
             ModelAttrBinding.prototype.bind = function() {
                 ModelAttrBinding.__super__.bind.apply(this, arguments);
                 (this.$element = $(this.node)).bind(ChangeDecor.events, this._onElementChange);
-                return this._onChange(this.clip.get("model"));
+                this._onChange();
+                return this.clip.context.bind("name", this._onChange);
             };
             ModelAttrBinding.prototype._onElementChange = function(event) {
                 var _this = this;
@@ -8984,15 +9000,16 @@
                 }
                 return (_ref2 = this.$element) != null ? _ref2.unbind(ChangeDecor.events, this._onElementChange) : void 0;
             };
-            ModelAttrBinding.prototype._onChange = function(model) {
-                var name, _ref1;
+            ModelAttrBinding.prototype._onChange = function() {
+                var model, name, _ref1;
+                model = this.clip.get("model");
                 name = this._elementName();
                 if ((_ref1 = this._modelBinding) != null) {
                     _ref1.dispose();
                 }
                 if (name) {
                     return this._modelBinding = model != null ? model.bind(name).to(this._onValueChange).now() : void 0;
-                } else {
+                } else if (type(model) !== "object") {
                     return this._onValueChange(model);
                 }
             };
