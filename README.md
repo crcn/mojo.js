@@ -22,11 +22,7 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 ### Basic Examples:
 
 - [Hello World](http://jsfiddle.net/BZA8K/1/)
-- [Todo List]
-- States
-- Sections (sub views)
-- Bindings Decorator
-- Block Helpers
+- [Todo List](http://jsfiddle.net/BZA8K/2/)
 
 ### Framework Similarities
 
