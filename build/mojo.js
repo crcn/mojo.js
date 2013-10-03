@@ -3136,6 +3136,64 @@
         module.exports = Structr;
         return module.exports;
     });
+    define("mojojs/lib/views/states/state.js", function(require, module, exports, __dirname, __filename) {
+        var State, bindable, _, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        bindable = require("bindable/lib/index.js");
+        _ = require("underscore/underscore.js");
+        State = function(_super) {
+            __extends(State, _super);
+            function State(states, options, index) {
+                var ops;
+                this.states = states;
+                ops = {};
+                if (!options["class"]) {
+                    ops["class"] = options;
+                } else {
+                    ops = options;
+                }
+                ops.index = index;
+                ops.selected = false;
+                ops._id = options.name || Math.random();
+                State.__super__.constructor.call(this, ops);
+            }
+            State.prototype.select = function() {
+                return this.states.select(this);
+            };
+            State.prototype.hide = function() {
+                this._view.section.hide();
+                return this._view.set("visible", false);
+            };
+            State.prototype.show = function() {
+                this._view.section.show();
+                return this._view.set("visible", true);
+            };
+            State.prototype.hasView = function() {
+                return !!this._view;
+            };
+            State.prototype.getView = function() {
+                var clazz;
+                if (this._view) {
+                    return this._view;
+                }
+                clazz = this.get("class");
+                return this._view = new clazz;
+            };
+            return State;
+        }(bindable.Object);
+        module.exports = State;
+        return module.exports;
+    });
     define("factories/lib/index.js", function(require, module, exports, __dirname, __filename) {
         (function() {
             module.exports = {
@@ -3348,64 +3406,6 @@
             stringified.push(thru);
             return stringified.join(" ");
         };
-        return module.exports;
-    });
-    define("mojojs/lib/views/states/state.js", function(require, module, exports, __dirname, __filename) {
-        var State, bindable, _, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        bindable = require("bindable/lib/index.js");
-        _ = require("underscore/underscore.js");
-        State = function(_super) {
-            __extends(State, _super);
-            function State(states, options, index) {
-                var ops;
-                this.states = states;
-                ops = {};
-                if (!options["class"]) {
-                    ops["class"] = options;
-                } else {
-                    ops = options;
-                }
-                ops.index = index;
-                ops.selected = false;
-                ops._id = options.name || Math.random();
-                State.__super__.constructor.call(this, ops);
-            }
-            State.prototype.select = function() {
-                return this.states.select(this);
-            };
-            State.prototype.hide = function() {
-                this._view.section.hide();
-                return this._view.set("visible", false);
-            };
-            State.prototype.show = function() {
-                this._view.section.show();
-                return this._view.set("visible", true);
-            };
-            State.prototype.hasView = function() {
-                return !!this._view;
-            };
-            State.prototype.getView = function() {
-                var clazz;
-                if (this._view) {
-                    return this._view;
-                }
-                clazz = this.get("class");
-                return this._view = new clazz;
-            };
-            return State;
-        }(bindable.Object);
-        module.exports = State;
         return module.exports;
     });
     define("bindable/lib/object/setters/factory.js", function(require, module, exports, __dirname, __filename) {
@@ -9067,7 +9067,7 @@
                 isRadioOrCheckbox = isCheckbox || isRadio;
                 if (!arguments.length) {
                     if (isRadioOrCheckbox) {
-                        return $(this.node).val();
+                        return $(this.node).is(":checked");
                     } else {
                         return this.node.value;
                     }
