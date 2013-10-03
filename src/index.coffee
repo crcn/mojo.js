@@ -8,3 +8,7 @@ module.exports =
   mediator : mediator
   bindable : bindable
   models   : models
+
+
+if typeof window isnt "undefined"
+  window.mojo = module.exports
