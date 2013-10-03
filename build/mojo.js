@@ -9067,7 +9067,7 @@
                 isRadioOrCheckbox = isCheckbox || isRadio;
                 if (!arguments.length) {
                     if (isRadioOrCheckbox) {
-                        return $(this.node).is(":checked");
+                        return Boolean($(this.node).is(":checked"));
                     } else {
                         return this.node.value;
                     }
