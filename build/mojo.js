@@ -100,183 +100,6 @@
         module.exports = new bindable.Object;
         return module.exports;
     });
-    define("mojojs/lib/mediator/mediator.js", function(require, module, exports, __dirname, __filename) {
-        var Mediator, crema, hooks, type, _;
-        hooks = require("hooks/hooks.js");
-        type = require("type-component/index.js");
-        crema = require("crema/lib/index.js");
-        _ = require("underscore/underscore.js");
-        Mediator = function() {
-            function Mediator() {
-                this.commands = {};
-                _.extend(this.commands, hooks);
-            }
-            Mediator.prototype.on = function(name, callback) {
-                var commands;
-                if (type(name) === "object") {
-                    commands = name;
-                    for (name in commands) {
-                        this.on(name, commands[name]);
-                    }
-                    return;
-                }
-                return this._register(name, callback);
-            };
-            Mediator.prototype.execute = function() {
-                var args, name;
-                args = Array.prototype.slice.call(arguments);
-                name = args.shift();
-                if (!this.commands[name]) {
-                    return;
-                }
-                return this.commands[name].apply(this.commands, args);
-            };
-            Mediator.prototype._register = function(routes, callback) {
-                var name, route, _i, _len, _results;
-                routes = crema(routes);
-                _results = [];
-                for (_i = 0, _len = routes.length; _i < _len; _i++) {
-                    route = routes[_i];
-                    if (!this.commands[name = route.path.value.substr(1)]) {
-                        this.commands[name] = function() {};
-                    }
-                    if (!route.type) {
-                        route.type = "hook";
-                    }
-                    _results.push(hooks[route.type].call(this.commands, name, callback));
-                }
-                return _results;
-            };
-            return Mediator;
-        }();
-        module.exports = Mediator;
-        return module.exports;
-    });
-    define("hooks/hooks.js", function(require, module, exports, __dirname, __filename) {
-        module.exports = {
-            hook: function(name, fn, errorCb) {
-                if (arguments.length === 1 && typeof name === "object") {
-                    for (var k in name) {
-                        this.hook(k, name[k]);
-                    }
-                    return;
-                }
-                var proto = this.prototype || this, pres = proto._pres = proto._pres || {}, posts = proto._posts = proto._posts || {};
-                pres[name] = pres[name] || [];
-                posts[name] = posts[name] || [];
-                proto[name] = function() {
-                    var self = this, hookArgs, lastArg = arguments[arguments.length - 1], pres = this._pres[name], posts = this._posts[name], _total = pres.length, _current = -1, _asyncsLeft = proto[name].numAsyncPres, _next = function() {
-                        if (arguments[0] instanceof Error) {
-                            return handleError(arguments[0]);
-                        }
-                        var _args = Array.prototype.slice.call(arguments), currPre, preArgs;
-                        if (_args.length && !(arguments[0] == null && typeof lastArg === "function")) hookArgs = _args;
-                        if (++_current < _total) {
-                            currPre = pres[_current];
-                            if (currPre.isAsync && currPre.length < 2) throw new Error("Your pre must have next and done arguments -- e.g., function (next, done, ...)");
-                            if (currPre.length < 1) throw new Error("Your pre must have a next argument -- e.g., function (next, ...)");
-                            preArgs = (currPre.isAsync ? [ once(_next), once(_asyncsDone) ] : [ once(_next) ]).concat(hookArgs);
-                            return currPre.apply(self, preArgs);
-                        } else if (!proto[name].numAsyncPres) {
-                            return _done.apply(self, hookArgs);
-                        }
-                    }, _done = function() {
-                        var args_ = Array.prototype.slice.call(arguments), ret, total_, current_, next_, done_, postArgs;
-                        if (_current === _total) {
-                            next_ = function() {
-                                if (arguments[0] instanceof Error) {
-                                    return handleError(arguments[0]);
-                                }
-                                var args_ = Array.prototype.slice.call(arguments, 1), currPost, postArgs;
-                                if (args_.length) hookArgs = args_;
-                                if (++current_ < total_) {
-                                    currPost = posts[current_];
-                                    if (currPost.length < 1) throw new Error("Your post must have a next argument -- e.g., function (next, ...)");
-                                    postArgs = [ once(next_) ].concat(hookArgs);
-                                    return currPost.apply(self, postArgs);
-                                } else if (typeof lastArg === "function") {
-                                    return lastArg.apply(self);
-                                }
-                            };
-                            if (typeof lastArg === "function") {
-                                args_[args_.length - 1] = once(next_);
-                            }
-                            total_ = posts.length;
-                            current_ = -1;
-                            ret = fn.apply(self, args_);
-                            if (total_ && typeof lastArg !== "function") return next_();
-                            return ret;
-                        }
-                    };
-                    if (_asyncsLeft) {
-                        function _asyncsDone(err) {
-                            if (err && err instanceof Error) {
-                                return handleError(err);
-                            }
-                            --_asyncsLeft || _done.apply(self, hookArgs);
-                        }
-                    }
-                    function handleError(err) {
-                        if ("function" == typeof lastArg) return lastArg(err);
-                        if (errorCb) return errorCb.call(self, err);
-                        throw err;
-                    }
-                    return _next.apply(this, arguments);
-                };
-                proto[name].numAsyncPres = 0;
-                return this;
-            },
-            pre: function(name, isAsync, fn, errorCb) {
-                if ("boolean" !== typeof arguments[1]) {
-                    errorCb = fn;
-                    fn = isAsync;
-                    isAsync = false;
-                }
-                var proto = this.prototype || this, pres = proto._pres = proto._pres || {};
-                this._lazySetupHooks(proto, name, errorCb);
-                if (fn.isAsync = isAsync) {
-                    proto[name].numAsyncPres++;
-                }
-                (pres[name] = pres[name] || []).push(fn);
-                return this;
-            },
-            post: function(name, isAsync, fn) {
-                if (arguments.length === 2) {
-                    fn = isAsync;
-                    isAsync = false;
-                }
-                var proto = this.prototype || this, posts = proto._posts = proto._posts || {};
-                this._lazySetupHooks(proto, name);
-                (posts[name] = posts[name] || []).push(fn);
-                return this;
-            },
-            removePre: function(name, fnToRemove) {
-                var proto = this.prototype || this, pres = proto._pres || proto._pres || {};
-                if (!pres[name]) return this;
-                if (arguments.length === 1) {
-                    pres[name].length = 0;
-                } else {
-                    pres[name] = pres[name].filter(function(currFn) {
-                        return currFn !== fnToRemove;
-                    });
-                }
-                return this;
-            },
-            _lazySetupHooks: function(proto, methodName, errorCb) {
-                if ("undefined" === typeof proto[methodName].numAsyncPres) {
-                    this.hook(methodName, proto[methodName], errorCb);
-                }
-            }
-        };
-        function once(fn, scope) {
-            return function fnWrapper() {
-                if (fnWrapper.hookCalled) return;
-                fnWrapper.hookCalled = true;
-                fn.apply(scope, arguments);
-            };
-        }
-        return module.exports;
-    });
     define("mojojs/lib/views/base/index.js", function(require, module, exports, __dirname, __filename) {
         var DecorFactory, DecorableView, Inheritable, bindable, dref, flatstack, generateId, loaf, models, structr, type, _, __bind = function(fn, me) {
             return function() {
@@ -819,6 +642,183 @@
             return StatesView;
         }(require("mojojs/lib/views/base/index.js"));
         module.exports = StatesView;
+        return module.exports;
+    });
+    define("mojojs/lib/mediator/mediator.js", function(require, module, exports, __dirname, __filename) {
+        var Mediator, crema, hooks, type, _;
+        hooks = require("hooks/hooks.js");
+        type = require("type-component/index.js");
+        crema = require("crema/lib/index.js");
+        _ = require("underscore/underscore.js");
+        Mediator = function() {
+            function Mediator() {
+                this.commands = {};
+                _.extend(this.commands, hooks);
+            }
+            Mediator.prototype.on = function(name, callback) {
+                var commands;
+                if (type(name) === "object") {
+                    commands = name;
+                    for (name in commands) {
+                        this.on(name, commands[name]);
+                    }
+                    return;
+                }
+                return this._register(name, callback);
+            };
+            Mediator.prototype.execute = function() {
+                var args, name;
+                args = Array.prototype.slice.call(arguments);
+                name = args.shift();
+                if (!this.commands[name]) {
+                    return;
+                }
+                return this.commands[name].apply(this.commands, args);
+            };
+            Mediator.prototype._register = function(routes, callback) {
+                var name, route, _i, _len, _results;
+                routes = crema(routes);
+                _results = [];
+                for (_i = 0, _len = routes.length; _i < _len; _i++) {
+                    route = routes[_i];
+                    if (!this.commands[name = route.path.value.substr(1)]) {
+                        this.commands[name] = function() {};
+                    }
+                    if (!route.type) {
+                        route.type = "hook";
+                    }
+                    _results.push(hooks[route.type].call(this.commands, name, callback));
+                }
+                return _results;
+            };
+            return Mediator;
+        }();
+        module.exports = Mediator;
+        return module.exports;
+    });
+    define("hooks/hooks.js", function(require, module, exports, __dirname, __filename) {
+        module.exports = {
+            hook: function(name, fn, errorCb) {
+                if (arguments.length === 1 && typeof name === "object") {
+                    for (var k in name) {
+                        this.hook(k, name[k]);
+                    }
+                    return;
+                }
+                var proto = this.prototype || this, pres = proto._pres = proto._pres || {}, posts = proto._posts = proto._posts || {};
+                pres[name] = pres[name] || [];
+                posts[name] = posts[name] || [];
+                proto[name] = function() {
+                    var self = this, hookArgs, lastArg = arguments[arguments.length - 1], pres = this._pres[name], posts = this._posts[name], _total = pres.length, _current = -1, _asyncsLeft = proto[name].numAsyncPres, _next = function() {
+                        if (arguments[0] instanceof Error) {
+                            return handleError(arguments[0]);
+                        }
+                        var _args = Array.prototype.slice.call(arguments), currPre, preArgs;
+                        if (_args.length && !(arguments[0] == null && typeof lastArg === "function")) hookArgs = _args;
+                        if (++_current < _total) {
+                            currPre = pres[_current];
+                            if (currPre.isAsync && currPre.length < 2) throw new Error("Your pre must have next and done arguments -- e.g., function (next, done, ...)");
+                            if (currPre.length < 1) throw new Error("Your pre must have a next argument -- e.g., function (next, ...)");
+                            preArgs = (currPre.isAsync ? [ once(_next), once(_asyncsDone) ] : [ once(_next) ]).concat(hookArgs);
+                            return currPre.apply(self, preArgs);
+                        } else if (!proto[name].numAsyncPres) {
+                            return _done.apply(self, hookArgs);
+                        }
+                    }, _done = function() {
+                        var args_ = Array.prototype.slice.call(arguments), ret, total_, current_, next_, done_, postArgs;
+                        if (_current === _total) {
+                            next_ = function() {
+                                if (arguments[0] instanceof Error) {
+                                    return handleError(arguments[0]);
+                                }
+                                var args_ = Array.prototype.slice.call(arguments, 1), currPost, postArgs;
+                                if (args_.length) hookArgs = args_;
+                                if (++current_ < total_) {
+                                    currPost = posts[current_];
+                                    if (currPost.length < 1) throw new Error("Your post must have a next argument -- e.g., function (next, ...)");
+                                    postArgs = [ once(next_) ].concat(hookArgs);
+                                    return currPost.apply(self, postArgs);
+                                } else if (typeof lastArg === "function") {
+                                    return lastArg.apply(self);
+                                }
+                            };
+                            if (typeof lastArg === "function") {
+                                args_[args_.length - 1] = once(next_);
+                            }
+                            total_ = posts.length;
+                            current_ = -1;
+                            ret = fn.apply(self, args_);
+                            if (total_ && typeof lastArg !== "function") return next_();
+                            return ret;
+                        }
+                    };
+                    if (_asyncsLeft) {
+                        function _asyncsDone(err) {
+                            if (err && err instanceof Error) {
+                                return handleError(err);
+                            }
+                            --_asyncsLeft || _done.apply(self, hookArgs);
+                        }
+                    }
+                    function handleError(err) {
+                        if ("function" == typeof lastArg) return lastArg(err);
+                        if (errorCb) return errorCb.call(self, err);
+                        throw err;
+                    }
+                    return _next.apply(this, arguments);
+                };
+                proto[name].numAsyncPres = 0;
+                return this;
+            },
+            pre: function(name, isAsync, fn, errorCb) {
+                if ("boolean" !== typeof arguments[1]) {
+                    errorCb = fn;
+                    fn = isAsync;
+                    isAsync = false;
+                }
+                var proto = this.prototype || this, pres = proto._pres = proto._pres || {};
+                this._lazySetupHooks(proto, name, errorCb);
+                if (fn.isAsync = isAsync) {
+                    proto[name].numAsyncPres++;
+                }
+                (pres[name] = pres[name] || []).push(fn);
+                return this;
+            },
+            post: function(name, isAsync, fn) {
+                if (arguments.length === 2) {
+                    fn = isAsync;
+                    isAsync = false;
+                }
+                var proto = this.prototype || this, posts = proto._posts = proto._posts || {};
+                this._lazySetupHooks(proto, name);
+                (posts[name] = posts[name] || []).push(fn);
+                return this;
+            },
+            removePre: function(name, fnToRemove) {
+                var proto = this.prototype || this, pres = proto._pres || proto._pres || {};
+                if (!pres[name]) return this;
+                if (arguments.length === 1) {
+                    pres[name].length = 0;
+                } else {
+                    pres[name] = pres[name].filter(function(currFn) {
+                        return currFn !== fnToRemove;
+                    });
+                }
+                return this;
+            },
+            _lazySetupHooks: function(proto, methodName, errorCb) {
+                if ("undefined" === typeof proto[methodName].numAsyncPres) {
+                    this.hook(methodName, proto[methodName], errorCb);
+                }
+            }
+        };
+        function once(fn, scope) {
+            return function fnWrapper() {
+                if (fnWrapper.hookCalled) return;
+                fnWrapper.hookCalled = true;
+                fn.apply(scope, arguments);
+            };
+        }
         return module.exports;
     });
     define("bindable/lib/object/binding.js", function(require, module, exports, __dirname, __filename) {
@@ -1531,202 +1531,6 @@
                 computedDelay: 0
             };
         }).call(this);
-        return module.exports;
-    });
-    define("type-component/index.js", function(require, module, exports, __dirname, __filename) {
-        var toString = Object.prototype.toString;
-        module.exports = function(val) {
-            switch (toString.call(val)) {
-              case "[object Function]":
-                return "function";
-              case "[object Date]":
-                return "date";
-              case "[object RegExp]":
-                return "regexp";
-              case "[object Arguments]":
-                return "arguments";
-              case "[object Array]":
-                return "array";
-            }
-            if (val === null) return "null";
-            if (val === undefined) return "undefined";
-            if (val === Object(val)) return "object";
-            return typeof val;
-        };
-        return module.exports;
-    });
-    define("crema/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        var strscanner = require("strscanner/lib/index.js");
-        function parseTokens(route) {
-            return route.replace(/\s+/g, " ").split(" ");
-        }
-        function splitOr(tokens, route, routes, start) {
-            for (var i = start, n = tokens.length; i < n; i++) {
-                var token = tokens[i];
-                if (token.toLowerCase() == "or") {
-                    var orRoute = route.concat();
-                    orRoute.pop();
-                    orRoute.push(tokens[++i]);
-                    splitOr(tokens, orRoute, routes, i + 1);
-                    while (i < n - 1 && tokens[i + 1].toLowerCase() == "or") {
-                        i += 2;
-                    }
-                } else {
-                    route.push(token);
-                }
-            }
-            routes.push(route);
-            return routes;
-        }
-        function scanGroups(scanner) {
-            var buffer = "(";
-            while (scanner.cchar() != ")") {
-                buffer += scanner.cchar();
-                scanner.nextChar();
-                if (scanner.cchar() == "(") {
-                    scanner.nextChar();
-                    buffer += scanGroups(scanner);
-                }
-            }
-            scanner.nextChar();
-            return buffer + ")";
-        }
-        function parsePath(path) {
-            var scanner = strscanner(path), segs = [];
-            while (!scanner.eof()) {
-                var cchar = scanner.cchar();
-                if (cchar != "/") {
-                    var isParam = false, name = null, test = null;
-                    if (cchar == ":") {
-                        isParam = true;
-                        cchar = scanner.nextChar();
-                    }
-                    if (cchar != "(") {
-                        name = scanner.nextUntil(/[\/(]/);
-                        cchar = scanner.cchar();
-                    }
-                    if (cchar == "(") {
-                        scanner.nextChar();
-                        test = new RegExp(scanGroups(scanner));
-                    }
-                    segs.push({
-                        value: name,
-                        param: isParam,
-                        test: test
-                    });
-                }
-                scanner.nextChar();
-            }
-            if (!segs.length) {
-                segs.push({
-                    value: "",
-                    param: false,
-                    test: null
-                });
-            }
-            return {
-                value: module.exports.stringifySegments(segs),
-                segments: segs
-            };
-        }
-        function parseRoutePaths(rootExpr, tokens, start) {
-            var n = tokens.length, currentExpression = rootExpr;
-            currentExpression.path = parsePath(tokens[n - 1]);
-            for (var i = n - 2; i >= start; i--) {
-                var token = tokens[i], buffer = [];
-                if (token == "->") continue;
-                currentExpression = currentExpression.thru = {
-                    path: parsePath(token)
-                };
-            }
-            return rootExpr;
-        }
-        function fixRoute(route, grammar) {
-            for (var expr in grammar) {
-                route = route.replace(grammar[expr], expr);
-            }
-            return route;
-        }
-        function parseRoute(route, grammar) {
-            if (grammar) {
-                route = fixRoute(route, grammar);
-            }
-            var tokens = parseTokens(route), routes = splitOr(tokens, [], [], 0), currentRoute, expressions = [];
-            for (var i = 0, n = routes.length; i < n; i++) {
-                var routeTokens = routes[i], expr = {
-                    tags: {}
-                }, start = 0;
-                if (routeTokens[0].match(/^\w+$/) && routeTokens[1] != "->" && routeTokens.length - 1) {
-                    start = 1;
-                    expr.type = routeTokens[0];
-                }
-                for (var j = start, jn = routeTokens.length; j < jn; j++) {
-                    var routeToken = routeTokens[j];
-                    if (routeToken.substr(0, 1) == "-") {
-                        var tagParts = routeToken.split("=");
-                        var tagName = tagParts[0].substr(1);
-                        expr.tags[tagName] = tagParts.length > 1 ? tagParts[1] : true;
-                        continue;
-                    }
-                    expressions.push(parseRoutePaths(expr, routeTokens, j));
-                    break;
-                }
-            }
-            return expressions;
-        }
-        module.exports = function(source, grammar) {
-            return parseRoute(source, grammar);
-        };
-        module.exports.grammar = function(grammar) {
-            return {
-                fixRoute: function(source) {
-                    return fixRoute(source, grammar);
-                },
-                parse: function(source) {
-                    return parseRoute(source, grammar);
-                }
-            };
-        };
-        module.exports.parsePath = parsePath;
-        module.exports.stringifySegments = function(segments, params, ignoreParams) {
-            var segs = segments.map(function(seg) {
-                var buffer = "";
-                if (seg.param) buffer += ":";
-                if (seg.value) buffer += seg.value;
-                if (seg.test) buffer += seg.test.source;
-                return buffer;
-            }).join("/");
-            if (segs.substr(0, 1) != ".") return "/" + segs;
-            return segs;
-        };
-        module.exports.stringifyTags = function(tags) {
-            var stringified = [];
-            for (var tagName in tags) {
-                var tagValue = tags[tagName];
-                if (tagValue === true) {
-                    stringified.push("-" + tagName);
-                } else {
-                    stringified.push("-" + tagName + "=" + tagValue);
-                }
-            }
-            return stringified.join(" ");
-        };
-        module.exports.stringifyThru = function(cthru) {
-            var thru = [];
-            while (cthru) {
-                thru.push(module.exports.stringifySegments(cthru.path.segments));
-                cthru = cthru.thru;
-            }
-            return thru.reverse().join(" -> ");
-        };
-        module.exports.stringify = function(route, includeType) {
-            var stringified = [];
-            if (route.type && includeType !== false) stringified.push(route.type);
-            var tags = module.exports.stringifyTags(route.tags), thru = module.exports.stringifyThru(route);
-            if (tags.length) stringified.push(tags);
-            stringified.push(thru);
-            return stringified.join(" ");
-        };
         return module.exports;
     });
     define("underscore/underscore.js", function(require, module, exports, __dirname, __filename) {
@@ -2661,6 +2465,28 @@
         };
         return module.exports;
     });
+    define("type-component/index.js", function(require, module, exports, __dirname, __filename) {
+        var toString = Object.prototype.toString;
+        module.exports = function(val) {
+            switch (toString.call(val)) {
+              case "[object Function]":
+                return "function";
+              case "[object Date]":
+                return "date";
+              case "[object RegExp]":
+                return "regexp";
+              case "[object Arguments]":
+                return "arguments";
+              case "[object Array]":
+                return "array";
+            }
+            if (val === null) return "null";
+            if (val === undefined) return "undefined";
+            if (val === Object(val)) return "object";
+            return typeof val;
+        };
+        return module.exports;
+    });
     define("mojojs/lib/views/base/decor/factory.js", function(require, module, exports, __dirname, __filename) {
         var BaseViewDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, EventsDecorator, PaperclipDecorator, PreloadDecorator, SectionsDecorator, SelectorDecorator, TransitionDecorator, availableDecorators, _decor;
         BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
@@ -2765,9 +2591,128 @@
         return module.exports;
     });
     define("loaf/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        var Section;
-        Section = require("loaf/lib/section.js");
-        module.exports = function(nodeFactory) {
+        var Section, loaf, nofactor, __slice = [].slice;
+        nofactor = require("nofactor/lib/index.js");
+        Section = function() {
+            Section.prototype.__isLoafSection = true;
+            function Section(nodeFactory) {
+                var parent;
+                this.nodeFactory = nodeFactory != null ? nodeFactory : nofactor["default"];
+                this.start = this.nodeFactory.createTextNode("");
+                this.end = this.nodeFactory.createTextNode("");
+                parent = this.nodeFactory.createElement("div");
+                parent.appendChild(this.start);
+                parent.appendChild(this.end);
+            }
+            Section.prototype.replace = function(node) {
+                node.parentNode.insertBefore(this.toFragment(), node);
+                return node.parentNode.removeChild(node);
+            };
+            Section.prototype.show = function() {
+                if (!this._detached) {
+                    return this;
+                }
+                this.append.apply(this, this._detached.getInnerChildNodes());
+                this._detached = void 0;
+                return this;
+            };
+            Section.prototype.hide = function() {
+                this._detached = this.removeAll();
+                return this;
+            };
+            Section.prototype.removeAll = function() {
+                return this._loaf(this._removeAll());
+            };
+            Section.prototype._removeAll = function() {
+                var children, current, start;
+                start = this.start;
+                current = start.nextSibling;
+                children = [];
+                while (current !== this.end) {
+                    current.parentNode.removeChild(current);
+                    children.push(current);
+                    current = this.start.nextSibling;
+                }
+                return children;
+            };
+            Section.prototype.append = function() {
+                var children;
+                children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+                return this._insertAfter(children, this.end.previousSibling);
+            };
+            Section.prototype.prepend = function() {
+                var children;
+                children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+                return this._insertAfter(children, this.start);
+            };
+            Section.prototype.replaceChildNodes = function() {
+                this.removeAll();
+                return this.append.apply(this, arguments);
+            };
+            Section.prototype.toString = function() {
+                var buffer;
+                buffer = this.getChildNodes().map(function(node) {
+                    return node.innerHTML || node.value || String(node);
+                });
+                return buffer.join("");
+            };
+            Section.prototype.toFragment = function() {
+                return this.nodeFactory.createFragment(this.getChildNodes());
+            };
+            Section.prototype.dispose = function() {
+                if (this._disposed) {
+                    return;
+                }
+                this._disposed = true;
+                this._removeAll();
+                this.start.parentNode.removeChild(this.start);
+                return this.end.parentNode.removeChild(this.end);
+            };
+            Section.prototype.getChildNodes = function() {
+                var children, cn, end;
+                cn = this.start;
+                end = this.end.nextSibling;
+                children = [];
+                while (cn !== end) {
+                    children.push(cn);
+                    cn = cn.nextSibling;
+                }
+                return children;
+            };
+            Section.prototype.getInnerChildNodes = function() {
+                var cn;
+                cn = this.getChildNodes();
+                cn.shift();
+                cn.pop();
+                return cn;
+            };
+            Section.prototype._insertAfter = function(newNodes, refNode) {
+                if (!newNodes.length) {
+                    return;
+                }
+                newNodes = newNodes.map(function(node) {
+                    if (node.__isLoafSection) {
+                        return node.toFragment();
+                    } else {
+                        return node;
+                    }
+                });
+                if (newNodes.length > 1) {
+                    newNodes = this.nodeFactory.createFragment(newNodes);
+                } else {
+                    newNodes = newNodes[0];
+                }
+                return refNode.parentNode.insertBefore(newNodes, refNode.nextSibling);
+            };
+            Section.prototype._loaf = function(children) {
+                var l;
+                l = new loaf;
+                l.append.apply(l, children);
+                return l;
+            };
+            return Section;
+        }();
+        module.exports = loaf = function(nodeFactory) {
             return new Section(nodeFactory);
         };
         return module.exports;
@@ -3408,86 +3353,239 @@
         module.exports = State;
         return module.exports;
     });
-    define("bindable/lib/object/setters/factory.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var BindableSetter, CollectionSetter, FnSetter;
-            FnSetter = require("bindable/lib/object/setters/fn.js");
-            BindableSetter = require("bindable/lib/object/setters/bindable.js");
-            CollectionSetter = require("bindable/lib/object/setters/collection.js");
-            module.exports = function() {
-                function _Class() {}
-                _Class.prototype.createSetter = function(binding, target, property) {
-                    var callback, to, toProperty;
-                    to = null;
-                    toProperty = null;
-                    callback = null;
-                    if (!target && !property) {
-                        return null;
+    define("crema/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        var strscanner = require("strscanner/lib/index.js");
+        function parseTokens(route) {
+            return route.replace(/\s+/g, " ").split(" ");
+        }
+        function splitOr(tokens, route, routes, start) {
+            for (var i = start, n = tokens.length; i < n; i++) {
+                var token = tokens[i];
+                if (token.toLowerCase() == "or") {
+                    var orRoute = route.concat();
+                    orRoute.pop();
+                    orRoute.push(tokens[++i]);
+                    splitOr(tokens, orRoute, routes, i + 1);
+                    while (i < n - 1 && tokens[i + 1].toLowerCase() == "or") {
+                        i += 2;
                     }
-                    if (typeof property === "string") {
-                        to = target;
-                        toProperty = property;
-                    } else if (typeof target === "string") {
-                        to = binding._from;
-                        toProperty = target;
-                    } else if (typeof target === "function") {
-                        callback = target;
-                    } else if (typeof target === "object" && target) {
-                        if (target.__isBinding) {
-                            throw new Error("Cannot bind to a binding.");
-                        } else if (target.__isCollection) {
-                            return new CollectionSetter(binding, target);
+                } else {
+                    route.push(token);
+                }
+            }
+            routes.push(route);
+            return routes;
+        }
+        function scanGroups(scanner) {
+            var buffer = "(";
+            while (scanner.cchar() != ")") {
+                buffer += scanner.cchar();
+                scanner.nextChar();
+                if (scanner.cchar() == "(") {
+                    scanner.nextChar();
+                    buffer += scanGroups(scanner);
+                }
+            }
+            scanner.nextChar();
+            return buffer + ")";
+        }
+        function parsePath(path) {
+            var scanner = strscanner(path), segs = [];
+            while (!scanner.eof()) {
+                var cchar = scanner.cchar();
+                if (cchar != "/") {
+                    var isParam = false, name = null, test = null;
+                    if (cchar == ":") {
+                        isParam = true;
+                        cchar = scanner.nextChar();
+                    }
+                    if (cchar != "(") {
+                        name = scanner.nextUntil(/[\/(]/);
+                        cchar = scanner.cchar();
+                    }
+                    if (cchar == "(") {
+                        scanner.nextChar();
+                        test = new RegExp(scanGroups(scanner));
+                    }
+                    segs.push({
+                        value: name,
+                        param: isParam,
+                        test: test
+                    });
+                }
+                scanner.nextChar();
+            }
+            if (!segs.length) {
+                segs.push({
+                    value: "",
+                    param: false,
+                    test: null
+                });
+            }
+            return {
+                value: module.exports.stringifySegments(segs),
+                segments: segs
+            };
+        }
+        function parseRoutePaths(rootExpr, tokens, start) {
+            var n = tokens.length, currentExpression = rootExpr;
+            currentExpression.path = parsePath(tokens[n - 1]);
+            for (var i = n - 2; i >= start; i--) {
+                var token = tokens[i], buffer = [];
+                if (token == "->") continue;
+                currentExpression = currentExpression.thru = {
+                    path: parsePath(token)
+                };
+            }
+            return rootExpr;
+        }
+        function fixRoute(route, grammar) {
+            for (var expr in grammar) {
+                route = route.replace(grammar[expr], expr);
+            }
+            return route;
+        }
+        function parseRoute(route, grammar) {
+            if (grammar) {
+                route = fixRoute(route, grammar);
+            }
+            var tokens = parseTokens(route), routes = splitOr(tokens, [], [], 0), currentRoute, expressions = [];
+            for (var i = 0, n = routes.length; i < n; i++) {
+                var routeTokens = routes[i], expr = {
+                    tags: {}
+                }, start = 0;
+                if (routeTokens[0].match(/^\w+$/) && routeTokens[1] != "->" && routeTokens.length - 1) {
+                    start = 1;
+                    expr.type = routeTokens[0];
+                }
+                for (var j = start, jn = routeTokens.length; j < jn; j++) {
+                    var routeToken = routeTokens[j];
+                    if (routeToken.substr(0, 1) == "-") {
+                        var tagParts = routeToken.split("=");
+                        var tagName = tagParts[0].substr(1);
+                        expr.tags[tagName] = tagParts.length > 1 ? tagParts[1] : true;
+                        continue;
+                    }
+                    expressions.push(parseRoutePaths(expr, routeTokens, j));
+                    break;
+                }
+            }
+            return expressions;
+        }
+        module.exports = function(source, grammar) {
+            return parseRoute(source, grammar);
+        };
+        module.exports.grammar = function(grammar) {
+            return {
+                fixRoute: function(source) {
+                    return fixRoute(source, grammar);
+                },
+                parse: function(source) {
+                    return parseRoute(source, grammar);
+                }
+            };
+        };
+        module.exports.parsePath = parsePath;
+        module.exports.stringifySegments = function(segments, params, ignoreParams) {
+            var segs = segments.map(function(seg) {
+                var buffer = "";
+                if (seg.param) buffer += ":";
+                if (seg.value) buffer += seg.value;
+                if (seg.test) buffer += seg.test.source;
+                return buffer;
+            }).join("/");
+            if (segs.substr(0, 1) != ".") return "/" + segs;
+            return segs;
+        };
+        module.exports.stringifyTags = function(tags) {
+            var stringified = [];
+            for (var tagName in tags) {
+                var tagValue = tags[tagName];
+                if (tagValue === true) {
+                    stringified.push("-" + tagName);
+                } else {
+                    stringified.push("-" + tagName + "=" + tagValue);
+                }
+            }
+            return stringified.join(" ");
+        };
+        module.exports.stringifyThru = function(cthru) {
+            var thru = [];
+            while (cthru) {
+                thru.push(module.exports.stringifySegments(cthru.path.segments));
+                cthru = cthru.thru;
+            }
+            return thru.reverse().join(" -> ");
+        };
+        module.exports.stringify = function(route, includeType) {
+            var stringified = [];
+            if (route.type && includeType !== false) stringified.push(route.type);
+            var tags = module.exports.stringifyTags(route.tags), thru = module.exports.stringifyThru(route);
+            if (tags.length) stringified.push(tags);
+            stringified.push(thru);
+            return stringified.join(" ");
+        };
+        return module.exports;
+    });
+    define("bindable/lib/object/dref.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            exports.get = function(bindable, context, keyParts, flatten) {
+                var ct, i, k, _i, _len;
+                if (flatten == null) {
+                    flatten = true;
+                }
+                if (!context) {
+                    return context;
+                }
+                if (!keyParts) {
+                    keyParts = [];
+                }
+                if (typeof keyParts === "string") {
+                    keyParts = keyParts.split(".");
+                }
+                ct = context;
+                for (i = _i = 0, _len = keyParts.length; _i < _len; i = ++_i) {
+                    k = keyParts[i];
+                    if (!ct) {
+                        return;
+                    }
+                    if (ct.__isBindable && ct !== bindable) {
+                        return ct.get(keyParts.slice(i));
+                    }
+                    ct = ct[k];
+                }
+                if (flatten && ct && ct.__isBindable) {
+                    return ct.get();
+                }
+                return ct;
+            };
+            exports.set = function(bindable, key, value) {
+                var ct, i, k, keyParts, n, nv, _i, _len;
+                keyParts = key.split(".");
+                n = keyParts.length;
+                ct = bindable.__context;
+                for (i = _i = 0, _len = keyParts.length; _i < _len; i = ++_i) {
+                    k = keyParts[i];
+                    if (ct.__isBindable && ct !== bindable) {
+                        return ct.set(keyParts.slice(i).join("."), value);
+                    } else {
+                        if (i === n - 1) {
+                            if (ct[k] === value) {
+                                return false;
+                            }
+                            ct[k] = value;
+                            return true;
+                        } else {
+                            nv = ct[k];
+                            if (!nv || typeof nv !== "object") {
+                                nv = ct[k] = {};
+                            }
+                            ct = nv;
                         }
                     }
-                    if (callback) {
-                        return new FnSetter(binding, callback);
-                    } else if (to && toProperty) {
-                        return new BindableSetter(binding, to, toProperty);
-                    }
-                    return null;
-                };
-                return _Class;
-            }();
-        }).call(this);
-        return module.exports;
-    });
-    define("bindable/lib/core/utils.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var hoist;
-            hoist = require("hoist/lib/index.js");
-            exports.tryTransform = function(transformer, method, value) {
-                if (!transformer) {
-                    return value[0];
                 }
-                return transformer[method].call(transformer, value);
-            };
-            exports.transformer = function(options) {
-                if (typeof options === "function") {
-                    options = {
-                        from: options,
-                        to: options
-                    };
-                }
-                if (!options.from) {
-                    options.from = function(value) {
-                        return value;
-                    };
-                }
-                if (!options.to) {
-                    options.to = function(value) {
-                        return value;
-                    };
-                }
-                return options;
             };
         }).call(this);
-        return module.exports;
-    });
-    define("toarray/index.js", function(require, module, exports, __dirname, __filename) {
-        module.exports = function(item) {
-            if (item === undefined) return [];
-            return Object.prototype.toString.call(item) === "[object Array]" ? item : [ item ];
-        };
         return module.exports;
     });
     define("bindable/lib/object/deepPropertyWatcher.js", function(require, module, exports, __dirname, __filename) {
@@ -3695,65 +3793,86 @@
         }).call(this);
         return module.exports;
     });
-    define("bindable/lib/object/dref.js", function(require, module, exports, __dirname, __filename) {
+    define("bindable/lib/object/setters/factory.js", function(require, module, exports, __dirname, __filename) {
         (function() {
-            exports.get = function(bindable, context, keyParts, flatten) {
-                var ct, i, k, _i, _len;
-                if (flatten == null) {
-                    flatten = true;
-                }
-                if (!context) {
-                    return context;
-                }
-                if (!keyParts) {
-                    keyParts = [];
-                }
-                if (typeof keyParts === "string") {
-                    keyParts = keyParts.split(".");
-                }
-                ct = context;
-                for (i = _i = 0, _len = keyParts.length; _i < _len; i = ++_i) {
-                    k = keyParts[i];
-                    if (!ct) {
-                        return;
+            var BindableSetter, CollectionSetter, FnSetter;
+            FnSetter = require("bindable/lib/object/setters/fn.js");
+            BindableSetter = require("bindable/lib/object/setters/bindable.js");
+            CollectionSetter = require("bindable/lib/object/setters/collection.js");
+            module.exports = function() {
+                function _Class() {}
+                _Class.prototype.createSetter = function(binding, target, property) {
+                    var callback, to, toProperty;
+                    to = null;
+                    toProperty = null;
+                    callback = null;
+                    if (!target && !property) {
+                        return null;
                     }
-                    if (ct.__isBindable && ct !== bindable) {
-                        return ct.get(keyParts.slice(i));
-                    }
-                    ct = ct[k];
-                }
-                if (flatten && ct && ct.__isBindable) {
-                    return ct.get();
-                }
-                return ct;
-            };
-            exports.set = function(bindable, key, value) {
-                var ct, i, k, keyParts, n, nv, _i, _len;
-                keyParts = key.split(".");
-                n = keyParts.length;
-                ct = bindable.__context;
-                for (i = _i = 0, _len = keyParts.length; _i < _len; i = ++_i) {
-                    k = keyParts[i];
-                    if (ct.__isBindable && ct !== bindable) {
-                        return ct.set(keyParts.slice(i).join("."), value);
-                    } else {
-                        if (i === n - 1) {
-                            if (ct[k] === value) {
-                                return false;
-                            }
-                            ct[k] = value;
-                            return true;
-                        } else {
-                            nv = ct[k];
-                            if (!nv || typeof nv !== "object") {
-                                nv = ct[k] = {};
-                            }
-                            ct = nv;
+                    if (typeof property === "string") {
+                        to = target;
+                        toProperty = property;
+                    } else if (typeof target === "string") {
+                        to = binding._from;
+                        toProperty = target;
+                    } else if (typeof target === "function") {
+                        callback = target;
+                    } else if (typeof target === "object" && target) {
+                        if (target.__isBinding) {
+                            throw new Error("Cannot bind to a binding.");
+                        } else if (target.__isCollection) {
+                            return new CollectionSetter(binding, target);
                         }
                     }
+                    if (callback) {
+                        return new FnSetter(binding, callback);
+                    } else if (to && toProperty) {
+                        return new BindableSetter(binding, to, toProperty);
+                    }
+                    return null;
+                };
+                return _Class;
+            }();
+        }).call(this);
+        return module.exports;
+    });
+    define("bindable/lib/core/utils.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var hoist;
+            hoist = require("hoist/lib/index.js");
+            exports.tryTransform = function(transformer, method, value) {
+                if (!transformer) {
+                    return value[0];
                 }
+                return transformer[method].call(transformer, value);
+            };
+            exports.transformer = function(options) {
+                if (typeof options === "function") {
+                    options = {
+                        from: options,
+                        to: options
+                    };
+                }
+                if (!options.from) {
+                    options.from = function(value) {
+                        return value;
+                    };
+                }
+                if (!options.to) {
+                    options.to = function(value) {
+                        return value;
+                    };
+                }
+                return options;
             };
         }).call(this);
+        return module.exports;
+    });
+    define("toarray/index.js", function(require, module, exports, __dirname, __filename) {
+        module.exports = function(item) {
+            if (item === undefined) return [];
+            return Object.prototype.toString.call(item) === "[object Array]" ? item : [ item ];
+        };
         return module.exports;
     });
     define("bindable/lib/collection/binding.js", function(require, module, exports, __dirname, __filename) {
@@ -4069,118 +4188,6 @@
                 window.disposable = _disposable;
             }
         })();
-        return module.exports;
-    });
-    define("strscanner/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        module.exports = function(source, options) {
-            if (!options) {
-                options = {
-                    skipWhitespace: true
-                };
-            }
-            var _cchar = "", _ccode = 0, _pos = 0, _len = 0, _src = source;
-            var self = {
-                source: function(value) {
-                    _src = value;
-                    _len = value.length;
-                    self.pos(0);
-                },
-                skipWhitespace: function(value) {
-                    if (!arguments.length) {
-                        return options.skipWhitespace;
-                    }
-                    options.skipWhitespace = value;
-                },
-                eof: function() {
-                    return _pos >= _len;
-                },
-                pos: function(value) {
-                    if (!arguments.length) return _pos;
-                    _pos = value;
-                    _cchar = _src.charAt(value);
-                    _ccode = _cchar.charCodeAt(0);
-                    self.skipWs();
-                },
-                skip: function(count) {
-                    return self.pos(Math.min(_pos + count, _len));
-                },
-                rewind: function(count) {
-                    _pos = Math.max(_pos - count || 1, 0);
-                    return _pos;
-                },
-                peek: function(count) {
-                    return _src.substr(_pos, count || 1);
-                },
-                nextChar: function() {
-                    self.pos(_pos + 1);
-                    self.skipWs();
-                    return _cchar;
-                },
-                skipWs: function() {
-                    if (options.skipWhitespace) {
-                        if (self.isWs()) {
-                            self.nextChar();
-                        }
-                    }
-                },
-                cchar: function() {
-                    return _cchar;
-                },
-                ccode: function() {
-                    return _ccode;
-                },
-                isAZ: function() {
-                    return _ccode > 64 && _ccode < 91 || _ccode > 96 && _ccode < 123;
-                },
-                is09: function() {
-                    return _ccode > 47 && _ccode < 58;
-                },
-                isWs: function() {
-                    return _ccode === 9 || _ccode === 10 || _ccode === 13 || _ccode === 32;
-                },
-                isAlpha: function() {
-                    return self.isAZ() || self.is09();
-                },
-                matches: function(search) {
-                    return !!_src.substr(_pos).match(search);
-                },
-                next: function(search) {
-                    var buffer = _src.substr(_pos), match = buffer.match(search);
-                    _pos += match.index + Math.max(0, match[0].length - 1);
-                    return match[0];
-                },
-                nextWord: function() {
-                    if (self.isAZ()) return self.next(/[a-zA-Z]+/);
-                },
-                nextNumber: function() {
-                    if (self.is09()) return self.next(/[0-9]+/);
-                },
-                nextAlpha: function() {
-                    if (self.isAlpha()) return self.next(/[a-zA-Z0-9]+/);
-                },
-                nextNonAlpha: function() {
-                    if (!self.isAlpha()) return self.next(/[^a-zA-Z0-9]+/);
-                },
-                nextWs: function() {
-                    if (self.isWs()) return self.next(/[\s\r\n\t]+/);
-                },
-                nextUntil: function(match) {
-                    var buffer = "";
-                    while (!self.eof() && !_cchar.match(match)) {
-                        buffer += _cchar;
-                        self.nextChar();
-                    }
-                    return buffer;
-                },
-                to: function(count) {
-                    var buffer = _src.substr(_pos, count);
-                    _pos += count;
-                    return buffer;
-                }
-            };
-            self.source(source);
-            return self;
-        };
         return module.exports;
     });
     define("mojojs/lib/views/base/decor/base.js", function(require, module, exports, __dirname, __filename) {
@@ -4858,133 +4865,6 @@
             return PreloadDecorator;
         }(BaseDecor);
         module.exports = PreloadDecorator;
-        return module.exports;
-    });
-    define("loaf/lib/section.js", function(require, module, exports, __dirname, __filename) {
-        var Section, nofactor, __slice = [].slice;
-        nofactor = require("nofactor/lib/index.js");
-        Section = function() {
-            Section.prototype.__isLoafSection = true;
-            function Section(nodeFactory) {
-                this.nodeFactory = nodeFactory != null ? nodeFactory : nofactor["default"];
-                this.start = this.nodeFactory.createTextNode("");
-                this.end = this.nodeFactory.createTextNode("");
-                this._addParent();
-            }
-            Section.prototype.replace = function(node) {
-                node.parentNode.insertBefore(this.toFragment(), node);
-                return node.parentNode.removeChild(node);
-            };
-            Section.prototype.show = function() {
-                var allElements, childLoad, node, _i, _len, _ref;
-                if (!this._detached) {
-                    return this;
-                }
-                this._addParent();
-                allElements = [];
-                _ref = this._detached;
-                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                    node = _ref[_i];
-                    if (node.parentNode && (childLoad = node.parentNode._loaf)) {
-                        node.parentNode._loaf = void 0;
-                        allElements.push(childLoad.toFragment());
-                    } else {
-                        allElements.push(node);
-                    }
-                }
-                this.append.apply(this, allElements);
-                this._detached = void 0;
-                return this;
-            };
-            Section.prototype.hide = function() {
-                this._detached = this.removeAll();
-                return this;
-            };
-            Section.prototype.removeAll = function() {
-                var child, children, _i, _len;
-                children = this.getChildNodes();
-                children.shift();
-                children.pop();
-                for (_i = 0, _len = children.length; _i < _len; _i++) {
-                    child = children[_i];
-                    this.start.parentNode.removeChild(child);
-                }
-                return children;
-            };
-            Section.prototype.append = function() {
-                var children;
-                children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-                return this._insertAfter(children, this.end.previousSibling);
-            };
-            Section.prototype.prepend = function() {
-                var children;
-                children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-                return this._insertAfter(children, this.start);
-            };
-            Section.prototype.replaceChildNodes = function() {
-                this.removeAll();
-                return this.append.apply(this, arguments);
-            };
-            Section.prototype.toString = function() {
-                var buffer;
-                buffer = this.getChildNodes().map(function(node) {
-                    return node.innerHTML || String(node);
-                });
-                return buffer.join("");
-            };
-            Section.prototype.toFragment = function() {
-                return this.nodeFactory.createFragment(this.getChildNodes());
-            };
-            Section.prototype.dispose = function() {
-                var child, _i, _len, _ref, _results;
-                _ref = this.getChildNodes();
-                _results = [];
-                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                    child = _ref[_i];
-                    _results.push(child.parentNode.removeChild(child));
-                }
-                return _results;
-            };
-            Section.prototype.getChildNodes = function() {
-                var children, cn, end;
-                this._addParent();
-                cn = this.start;
-                end = this.end.nextSibling;
-                children = [];
-                while (cn !== end) {
-                    children.push(cn);
-                    cn = cn.nextSibling;
-                }
-                return children;
-            };
-            Section.prototype._insertAfter = function(newNodes, refNode) {
-                newNodes = newNodes.map(function(node) {
-                    if (node.__isLoafSection) {
-                        return node.toFragment();
-                    } else {
-                        return node;
-                    }
-                });
-                if (newNodes.length > 1) {
-                    newNodes = this.nodeFactory.createFragment(newNodes);
-                } else {
-                    newNodes = newNodes[0];
-                }
-                this._addParent();
-                return refNode.parentNode.insertBefore(newNodes, refNode.nextSibling);
-            };
-            Section.prototype._addParent = function() {
-                var parent;
-                if (!this.start.parentNode) {
-                    parent = this.nodeFactory.createElement("div");
-                    parent._loaf = this;
-                    parent.appendChild(this.start);
-                    return parent.appendChild(this.end);
-                }
-            };
-            return Section;
-        }();
-        module.exports = Section;
         return module.exports;
     });
     define("factories/lib/any.js", function(require, module, exports, __dirname, __filename) {
@@ -5676,6 +5556,118 @@
             return DomFactory;
         }(require("nofactor/lib/base.js"));
         module.exports = new DomFactory;
+        return module.exports;
+    });
+    define("strscanner/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        module.exports = function(source, options) {
+            if (!options) {
+                options = {
+                    skipWhitespace: true
+                };
+            }
+            var _cchar = "", _ccode = 0, _pos = 0, _len = 0, _src = source;
+            var self = {
+                source: function(value) {
+                    _src = value;
+                    _len = value.length;
+                    self.pos(0);
+                },
+                skipWhitespace: function(value) {
+                    if (!arguments.length) {
+                        return options.skipWhitespace;
+                    }
+                    options.skipWhitespace = value;
+                },
+                eof: function() {
+                    return _pos >= _len;
+                },
+                pos: function(value) {
+                    if (!arguments.length) return _pos;
+                    _pos = value;
+                    _cchar = _src.charAt(value);
+                    _ccode = _cchar.charCodeAt(0);
+                    self.skipWs();
+                },
+                skip: function(count) {
+                    return self.pos(Math.min(_pos + count, _len));
+                },
+                rewind: function(count) {
+                    _pos = Math.max(_pos - count || 1, 0);
+                    return _pos;
+                },
+                peek: function(count) {
+                    return _src.substr(_pos, count || 1);
+                },
+                nextChar: function() {
+                    self.pos(_pos + 1);
+                    self.skipWs();
+                    return _cchar;
+                },
+                skipWs: function() {
+                    if (options.skipWhitespace) {
+                        if (self.isWs()) {
+                            self.nextChar();
+                        }
+                    }
+                },
+                cchar: function() {
+                    return _cchar;
+                },
+                ccode: function() {
+                    return _ccode;
+                },
+                isAZ: function() {
+                    return _ccode > 64 && _ccode < 91 || _ccode > 96 && _ccode < 123;
+                },
+                is09: function() {
+                    return _ccode > 47 && _ccode < 58;
+                },
+                isWs: function() {
+                    return _ccode === 9 || _ccode === 10 || _ccode === 13 || _ccode === 32;
+                },
+                isAlpha: function() {
+                    return self.isAZ() || self.is09();
+                },
+                matches: function(search) {
+                    return !!_src.substr(_pos).match(search);
+                },
+                next: function(search) {
+                    var buffer = _src.substr(_pos), match = buffer.match(search);
+                    _pos += match.index + Math.max(0, match[0].length - 1);
+                    return match[0];
+                },
+                nextWord: function() {
+                    if (self.isAZ()) return self.next(/[a-zA-Z]+/);
+                },
+                nextNumber: function() {
+                    if (self.is09()) return self.next(/[0-9]+/);
+                },
+                nextAlpha: function() {
+                    if (self.isAlpha()) return self.next(/[a-zA-Z0-9]+/);
+                },
+                nextNonAlpha: function() {
+                    if (!self.isAlpha()) return self.next(/[^a-zA-Z0-9]+/);
+                },
+                nextWs: function() {
+                    if (self.isWs()) return self.next(/[\s\r\n\t]+/);
+                },
+                nextUntil: function(match) {
+                    var buffer = "";
+                    while (!self.eof() && !_cchar.match(match)) {
+                        buffer += _cchar;
+                        self.nextChar();
+                    }
+                    return buffer;
+                },
+                to: function(count) {
+                    var buffer = _src.substr(_pos, count);
+                    _pos += count;
+                    return buffer;
+                }
+            };
+            self.source(source);
+            return self;
+        };
         return module.exports;
     });
     define("bindable/lib/object/setters/fn.js", function(require, module, exports, __dirname, __filename) {
@@ -8157,58 +8149,6 @@
         module.exports = Collection;
         return module.exports;
     });
-    define("paperclip/lib/paper/bindings/base/script.js", function(require, module, exports, __dirname, __filename) {
-        var ScriptBinding, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        ScriptBinding = function(_super) {
-            __extends(ScriptBinding, _super);
-            function ScriptBinding(clip, scriptName) {
-                this.clip = clip;
-                this.scriptName = scriptName;
-                this._onChange = __bind(this._onChange, this);
-                this.script = clip.script(this.scriptName);
-            }
-            ScriptBinding.prototype.bind = function(context) {
-                this.context = context;
-                if (this.watch !== false) {
-                    this.script.watch().update();
-                }
-                this._binding = this.clip.bind(this.scriptName);
-                if (this._map) {
-                    this._binding.map(this._map);
-                }
-                this._binding.to(this._onChange);
-                this._binding.now();
-                return this;
-            };
-            ScriptBinding.prototype.unbind = function() {
-                var _ref;
-                if ((_ref = this._binding) != null) {
-                    _ref.dispose();
-                }
-                this._binding = void 0;
-                return this;
-            };
-            ScriptBinding.prototype._onChange = function(value) {};
-            return ScriptBinding;
-        }(require("paperclip/lib/paper/bindings/base/index.js"));
-        module.exports = ScriptBinding;
-        return module.exports;
-    });
     define("paperclip/lib/paper/bindings/block/html.js", function(require, module, exports, __dirname, __filename) {
         var HtmlDecor, type, _ref, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
             for (var key in parent) {
@@ -8340,6 +8280,58 @@
             return ValueDecor;
         }(require("paperclip/lib/paper/bindings/block/base.js"));
         module.exports = ValueDecor;
+        return module.exports;
+    });
+    define("paperclip/lib/paper/bindings/base/script.js", function(require, module, exports, __dirname, __filename) {
+        var ScriptBinding, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        ScriptBinding = function(_super) {
+            __extends(ScriptBinding, _super);
+            function ScriptBinding(clip, scriptName) {
+                this.clip = clip;
+                this.scriptName = scriptName;
+                this._onChange = __bind(this._onChange, this);
+                this.script = clip.script(this.scriptName);
+            }
+            ScriptBinding.prototype.bind = function(context) {
+                this.context = context;
+                if (this.watch !== false) {
+                    this.script.watch().update();
+                }
+                this._binding = this.clip.bind(this.scriptName);
+                if (this._map) {
+                    this._binding.map(this._map);
+                }
+                this._binding.to(this._onChange);
+                this._binding.now();
+                return this;
+            };
+            ScriptBinding.prototype.unbind = function() {
+                var _ref;
+                if ((_ref = this._binding) != null) {
+                    _ref.dispose();
+                }
+                this._binding = void 0;
+                return this;
+            };
+            ScriptBinding.prototype._onChange = function(value) {};
+            return ScriptBinding;
+        }(require("paperclip/lib/paper/bindings/base/index.js"));
+        module.exports = ScriptBinding;
         return module.exports;
     });
     define("paperclip/lib/paper/bindings/node/attrs/text/index.js", function(require, module, exports, __dirname, __filename) {
