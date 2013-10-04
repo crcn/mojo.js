@@ -2652,7 +2652,7 @@
             Section.prototype.toString = function() {
                 var buffer;
                 buffer = this.getChildNodes().map(function(node) {
-                    return node.innerHTML || node.value || String(node);
+                    return node.innerHTML || node.value || node.text || String(node);
                 });
                 return buffer.join("");
             };
@@ -3875,121 +3875,6 @@
         };
         return module.exports;
     });
-    define("bindable/lib/collection/binding.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var SettersFactory, settersFactory, utils;
-            SettersFactory = require("bindable/lib/collection/setters/factory.js");
-            settersFactory = new SettersFactory;
-            utils = require("bindable/lib/core/utils.js");
-            module.exports = function() {
-                function _Class(_from) {
-                    this._from = _from;
-                    this._limit = -1;
-                    this._setters = [];
-                    this._listen();
-                    this.map(function(value) {
-                        return value;
-                    });
-                }
-                _Class.prototype.transform = function() {
-                    return this.map.apply(this, arguments);
-                };
-                _Class.prototype.map = function(value) {
-                    if (!arguments.length) {
-                        return this._transformer;
-                    }
-                    this._transformer = utils.transformer(value);
-                    return this;
-                };
-                _Class.prototype.now = function() {
-                    var item, setter, _i, _j, _len, _len1, _ref, _ref1;
-                    _ref = this._setters;
-                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                        setter = _ref[_i];
-                        setter.now();
-                    }
-                    _ref1 = this._from.source();
-                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                        item = _ref1[_j];
-                        this._callSetters("insert", item);
-                    }
-                    return this;
-                };
-                _Class.prototype.dispose = function() {
-                    this._dispose(this._setters);
-                    this._setters = void 0;
-                    this._dispose(this._listeners);
-                    return this._listeners = void 0;
-                };
-                _Class.prototype.copyId = function(value) {
-                    if (!arguments.length) {
-                        return this._copyId;
-                    }
-                    this._copyId = value;
-                    return this;
-                };
-                _Class.prototype._dispose = function(collection) {
-                    var disposable, _i, _len, _results;
-                    if (collection) {
-                        _results = [];
-                        for (_i = 0, _len = collection.length; _i < _len; _i++) {
-                            disposable = collection[_i];
-                            _results.push(disposable.dispose());
-                        }
-                        return _results;
-                    }
-                };
-                _Class.prototype.filter = function(search) {
-                    if (!arguments.length) {
-                        return this._filter;
-                    }
-                    this._filter = search;
-                    return this;
-                };
-                _Class.prototype.to = function(collection, now) {
-                    var setter;
-                    if (now == null) {
-                        now = true;
-                    }
-                    setter = settersFactory.createSetter(this, collection);
-                    if (setter) {
-                        this._setters.push(setter);
-                        if (now === true) {
-                            setter.now();
-                        }
-                    }
-                    return this;
-                };
-                _Class.prototype._listen = function() {
-                    var event, _i, _len, _ref, _results, _this = this;
-                    this._listeners = [];
-                    _ref = [ "insert", "remove", "reset" ];
-                    _results = [];
-                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                        event = _ref[_i];
-                        _results.push(function(event) {
-                            return _this._listeners.push(_this._from.on(event, function(item, index) {
-                                return _this._callSetters(event, item, index);
-                            }));
-                        }(event));
-                    }
-                    return _results;
-                };
-                _Class.prototype._callSetters = function(method, item, index) {
-                    var setter, _i, _len, _ref, _results;
-                    _ref = this._setters;
-                    _results = [];
-                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                        setter = _ref[_i];
-                        _results.push(setter.change(method, item, index));
-                    }
-                    return _results;
-                };
-                return _Class;
-            }();
-        }).call(this);
-        return module.exports;
-    });
     define("events/index.js", function(require, module, exports, __dirname, __filename) {
         var isArray = Array.isArray;
         function EventEmitter() {}
@@ -4188,6 +4073,121 @@
                 window.disposable = _disposable;
             }
         })();
+        return module.exports;
+    });
+    define("bindable/lib/collection/binding.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var SettersFactory, settersFactory, utils;
+            SettersFactory = require("bindable/lib/collection/setters/factory.js");
+            settersFactory = new SettersFactory;
+            utils = require("bindable/lib/core/utils.js");
+            module.exports = function() {
+                function _Class(_from) {
+                    this._from = _from;
+                    this._limit = -1;
+                    this._setters = [];
+                    this._listen();
+                    this.map(function(value) {
+                        return value;
+                    });
+                }
+                _Class.prototype.transform = function() {
+                    return this.map.apply(this, arguments);
+                };
+                _Class.prototype.map = function(value) {
+                    if (!arguments.length) {
+                        return this._transformer;
+                    }
+                    this._transformer = utils.transformer(value);
+                    return this;
+                };
+                _Class.prototype.now = function() {
+                    var item, setter, _i, _j, _len, _len1, _ref, _ref1;
+                    _ref = this._setters;
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                        setter = _ref[_i];
+                        setter.now();
+                    }
+                    _ref1 = this._from.source();
+                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                        item = _ref1[_j];
+                        this._callSetters("insert", item);
+                    }
+                    return this;
+                };
+                _Class.prototype.dispose = function() {
+                    this._dispose(this._setters);
+                    this._setters = void 0;
+                    this._dispose(this._listeners);
+                    return this._listeners = void 0;
+                };
+                _Class.prototype.copyId = function(value) {
+                    if (!arguments.length) {
+                        return this._copyId;
+                    }
+                    this._copyId = value;
+                    return this;
+                };
+                _Class.prototype._dispose = function(collection) {
+                    var disposable, _i, _len, _results;
+                    if (collection) {
+                        _results = [];
+                        for (_i = 0, _len = collection.length; _i < _len; _i++) {
+                            disposable = collection[_i];
+                            _results.push(disposable.dispose());
+                        }
+                        return _results;
+                    }
+                };
+                _Class.prototype.filter = function(search) {
+                    if (!arguments.length) {
+                        return this._filter;
+                    }
+                    this._filter = search;
+                    return this;
+                };
+                _Class.prototype.to = function(collection, now) {
+                    var setter;
+                    if (now == null) {
+                        now = true;
+                    }
+                    setter = settersFactory.createSetter(this, collection);
+                    if (setter) {
+                        this._setters.push(setter);
+                        if (now === true) {
+                            setter.now();
+                        }
+                    }
+                    return this;
+                };
+                _Class.prototype._listen = function() {
+                    var event, _i, _len, _ref, _results, _this = this;
+                    this._listeners = [];
+                    _ref = [ "insert", "remove", "reset" ];
+                    _results = [];
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                        event = _ref[_i];
+                        _results.push(function(event) {
+                            return _this._listeners.push(_this._from.on(event, function(item, index) {
+                                return _this._callSetters(event, item, index);
+                            }));
+                        }(event));
+                    }
+                    return _results;
+                };
+                _Class.prototype._callSetters = function(method, item, index) {
+                    var setter, _i, _len, _ref, _results;
+                    _ref = this._setters;
+                    _results = [];
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                        setter = _ref[_i];
+                        _results.push(setter.change(method, item, index));
+                    }
+                    return _results;
+                };
+                return _Class;
+            }();
+        }).call(this);
         return module.exports;
     });
     define("mojojs/lib/views/base/decor/base.js", function(require, module, exports, __dirname, __filename) {
@@ -8149,6 +8149,58 @@
         module.exports = Collection;
         return module.exports;
     });
+    define("paperclip/lib/paper/bindings/base/script.js", function(require, module, exports, __dirname, __filename) {
+        var ScriptBinding, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        ScriptBinding = function(_super) {
+            __extends(ScriptBinding, _super);
+            function ScriptBinding(clip, scriptName) {
+                this.clip = clip;
+                this.scriptName = scriptName;
+                this._onChange = __bind(this._onChange, this);
+                this.script = clip.script(this.scriptName);
+            }
+            ScriptBinding.prototype.bind = function(context) {
+                this.context = context;
+                if (this.watch !== false) {
+                    this.script.watch().update();
+                }
+                this._binding = this.clip.bind(this.scriptName);
+                if (this._map) {
+                    this._binding.map(this._map);
+                }
+                this._binding.to(this._onChange);
+                this._binding.now();
+                return this;
+            };
+            ScriptBinding.prototype.unbind = function() {
+                var _ref;
+                if ((_ref = this._binding) != null) {
+                    _ref.dispose();
+                }
+                this._binding = void 0;
+                return this;
+            };
+            ScriptBinding.prototype._onChange = function(value) {};
+            return ScriptBinding;
+        }(require("paperclip/lib/paper/bindings/base/index.js"));
+        module.exports = ScriptBinding;
+        return module.exports;
+    });
     define("paperclip/lib/paper/bindings/block/html.js", function(require, module, exports, __dirname, __filename) {
         var HtmlDecor, type, _ref, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
             for (var key in parent) {
@@ -8280,58 +8332,6 @@
             return ValueDecor;
         }(require("paperclip/lib/paper/bindings/block/base.js"));
         module.exports = ValueDecor;
-        return module.exports;
-    });
-    define("paperclip/lib/paper/bindings/base/script.js", function(require, module, exports, __dirname, __filename) {
-        var ScriptBinding, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        ScriptBinding = function(_super) {
-            __extends(ScriptBinding, _super);
-            function ScriptBinding(clip, scriptName) {
-                this.clip = clip;
-                this.scriptName = scriptName;
-                this._onChange = __bind(this._onChange, this);
-                this.script = clip.script(this.scriptName);
-            }
-            ScriptBinding.prototype.bind = function(context) {
-                this.context = context;
-                if (this.watch !== false) {
-                    this.script.watch().update();
-                }
-                this._binding = this.clip.bind(this.scriptName);
-                if (this._map) {
-                    this._binding.map(this._map);
-                }
-                this._binding.to(this._onChange);
-                this._binding.now();
-                return this;
-            };
-            ScriptBinding.prototype.unbind = function() {
-                var _ref;
-                if ((_ref = this._binding) != null) {
-                    _ref.dispose();
-                }
-                this._binding = void 0;
-                return this;
-            };
-            ScriptBinding.prototype._onChange = function(value) {};
-            return ScriptBinding;
-        }(require("paperclip/lib/paper/bindings/base/index.js"));
-        module.exports = ScriptBinding;
         return module.exports;
     });
     define("paperclip/lib/paper/bindings/node/attrs/text/index.js", function(require, module, exports, __dirname, __filename) {
