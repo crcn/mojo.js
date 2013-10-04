@@ -30,12 +30,12 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 
 - [installation](/docs/installation) - tutorial on how to get mojo.js setup in node / amd / browserify.
 - [data-bindings](https://github.com/classdojo/bindable.js)
-- [view](/docs/view)
-- [sub views](/docs/sections)
-- [paperclip templates](/docs/paperclip-templates)
-- [list view](/docs/list-view)
-- [states view](/docs/states-view)
-- [view bindings & computed properties](/docs/bindings)
+- [view](/docs/view.md)
+- [sub views](/docs/sections.md)
+- [paperclip templates](/docs/paperclip-templates.md)
+- [list view](/docs/list-view.md)
+- [states view](/docs/states-view.md)
+- [view bindings & computed properties](/docs/bindings.md)
 
 
 
