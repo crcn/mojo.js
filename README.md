@@ -24,8 +24,8 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 ### Examples:
 
 - [Hello World](http://jsfiddle.net/BZA8K/16/)
-- [Hello Input](http://jsfiddle.net/BZA8K/1/)
-- [Todo List](http://jsfiddle.net/BZA8K/2/)
+- [Hello Input](http://jsfiddle.net/BZA8K/17/)
+- [Todo List](http://jsfiddle.net/BZA8K/18/)
 
 ### Installation
 
