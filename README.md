@@ -58,7 +58,7 @@ console.log(view.get("name"));
 ```
 
 
-### view.attach(selector)
+#### view.attach(selector)
 
 Renders, and adds the view to the DOM. [Here's an example](http://jsfiddle.net/BZA8K/12/):
 
@@ -69,7 +69,7 @@ var view = new mojo.View({
 view.attach($("#application"));
 ```
 
-### view.render(callback)
+#### view.render(callback)
 
 Renders the view. [For example](http://jsfiddle.net/BZA8K/14/):
 
@@ -82,19 +82,19 @@ view.render(function() {
 });
 ```
 
-### view.section
+#### view.section
 
 The [loaf section](https://github.com/classdojo/loaf.js). This is where everything is rendered to.
 
-### view.remove(callback)
+#### view.remove(callback)
 
 Removes the view from the DOM.
 
-### view.callstack
+#### view.callstack
 
 the queue for rendering / removing views. This is particularly useful if you need to perform an action before a view is completely rendered, or removed. [Transitions](https://github.com/classdojo/mojo.js/blob/master/src/views/base/decor/transition.coffee) are a good example.
 
-### view.emit(event [, data...])
+#### view.emit(event [, data...])
 
 emits an event
 
@@ -110,15 +110,15 @@ view.on("hello", function() {
 view.emit("hello"); //trigger listener
 ```
 
-### view.bubble(event [, data...])
+#### view.bubble(event [, data...])
 
 bubbles an event up to the root view.
 
-### view.parent
+#### view.parent
 
 reference to the parent view
 
-### events
+#### events
 
 - `render` - emitted when `view.render()` is called.
 - `rendered` - emitted after the view has been rendered.
@@ -127,7 +127,7 @@ reference to the parent view
 - `dispose` - emitted when the view is being disposed.
 
 
-### protected methods
+#### protected methods
 
 Mojo.js has a few methods you can override if you need to something durring render / remove. 
 
