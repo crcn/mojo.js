@@ -153,6 +153,17 @@ var view = new mojo.View({
 
 Mojo.js views are incredibly flexible. Views are decorator based, so they don't really depend on any of the following features:
 
+
+### Bindings
+
+Bindings are similar to Ember's computed properties. [For example](http://jsfiddle.net/BZA8K/5/):
+
+```javascript
+var view = new mojo.View({
+  bindings:
+});
+```
+
 ### Templates
 
 By default, Mojo.js uses [paperclip.js](https://github.com/classdojo/paperclip.js) for the template engine. [Here's a basic example](http://jsfiddle.net/BZA8K/5/):
@@ -164,17 +175,33 @@ var view = new mojo.View({
 view.attach($("#application"));
 ```
 
-You can add your own template - just create a [custom decorator](#custom-decorators).
-
-### Bindings
-
-Bindings are similar to Ember's computed properties. [For example](http://jsfiddle.net/BZA8K/5/):
+You can also dynamically change the template, Say for instance you want to change the template depending on a model type, here's what you can do:
 
 ```javascript
-var view = new mojo.View({
-  bindings:
+
+var templates = {
+  alert   : paperclip.compile("notification-alert"),
+  photo   : paperclip.compile("notification-photo")
+  default : paperclip.compile("notification-default")
+}
+
+
+var NotificationView = mojo.View.extend({
+  bindings: {
+    "type":
+      "paper": 
+        "map": function(type) {
+          return templates[type] || templates.default;
+        }
+  }
 });
+
+var alertView = new NotificationView({ model: new bindable.Object({ type: "alert" }) });
+var photoView = new NotificationView({ model: new bindable.Object({ type: "photo" }) });
 ```
+
+You can add your own template - just create a [custom decorator](#custom-decorators).
+
 
 ### Events
 
