@@ -2,7 +2,7 @@
 
 - `parent`: [BindableObject](https://github.com/classdojo/bindable.js)
 
-Mojo view class. Views are bindable object [Example](http://jsfiddle.net/BZA8K/8/):
+Mojo view class. Views are bindable object [Example](http://jsfiddle.net/BZA8K/11/):
 
 `index.html`:
 
@@ -66,7 +66,7 @@ view.attach($("#application"));
 
 ### view.render(callback)
 
-renders the view. [Example](http://jsfiddle.net/BZA8K/7/):
+renders the view. [Example](http://jsfiddle.net/BZA8K/10/):
 
 ```javascript
 helloWorldView.render(function() {
