@@ -9,7 +9,7 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 - Supported in all major browsers: `IE 8+`, `Firefox`, `Chrome`, `Safari`, and `Opera`.
 - Supported in node.js.
 - Flexible data-binding API. 
-- Plays nicely with other frameworks such as Backbone.js, and Spine.js. Easily build new application code on top of old code.
+- Plays nicely with other frameworks such as Backbone.js, Spine.js, and jQuery. Easily build new application code on top of old code.
 - No magic. No assumptions. Mojo.js was built around explicity.
 - 100% javascript - [paperclip.js](https://github.com/classdojo/paperclip.js) templates are also translated to javascript.
 
