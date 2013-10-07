@@ -163,7 +163,7 @@ var view = new mojo.View({
 
 ## View Decorators
 
-Decorators are extensions to the Mojo.js framework - they help you describe how your view should function, but aren't necessarily required for Mojo.js to work. Therefore, you can easily mix decorators, or even create your own. This design was picked to allow you, the coder to pick whatever style suites you best. There are however a few built-in decorators that might help you get started. 
+Decorators are extensions to the Mojo.js framework - they help you describe how your view should function, but aren't necessary for Mojo.js to work. Therefore, you can easily mix decorators, or even [create your own](#custom-decorators). This design was picked to allow you, the coder to pick whatever style suites you best. There are however a few built-in decorators that might help you get started. 
 
 
 ### Templates
@@ -500,9 +500,42 @@ var MainView = mojo.View.extend({
 });
 ```
 
-## Variable Scope
+## models singleton
 
-Variable scope is implicit 
+Allows for models to be referenced anywhere in the application. [See the variable scope example]().
+
+## Property Scope
+
+Child views inherit properties from the parent view, just like variable scope in JavaScript. Therefore, you should always `define` properties you want to use within your views. [For example](http://jsfiddle.net/BZA8K/31/):
+
+```javascript
+var user = new mojo.bindable.Object({
+    name: "john"
+});
+
+mojo.models.set("user", user);
+
+var HeaderView = mojo.View.extend({
+    paper: paperclip.compile("header")
+});
+
+var MainView = mojo.View.extend({
+    define: ["user"],
+    paper: paperclip.compile("main"),
+    bindings: {
+        "models.user": "user"
+    },
+    sections: {
+        header: HeaderView
+    }
+});
+
+
+var view = new MainView();
+view.attach($("#application"));
+```
+
+[Checkout what happens](http://jsfiddle.net/BZA8K/32/) when we define `user` in HeaderView. Notice that `user` isn't inherited anymore, and remains `undefined`. 
 
 
 
