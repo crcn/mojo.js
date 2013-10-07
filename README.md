@@ -456,7 +456,49 @@ var view = new HelloView({
 
 ### Custom Decorators
 
-TODO
+There are some cases you might want to add your own decorator. Say for instance you want to add your own custom template engine. [No problem](http://jsfiddle.net/BZA8K/30/):
+
+decorator:
+
+```javascript
+var handlebarsDecorator = {
+
+    //returns the handlebar options. This decorator is ignore if the options are 
+    //undefined
+    getOptions: function(view) {
+        return view.handlebars;
+    },
+
+    //decorates the view with the given options
+    decorate: function(view, sourceName) {
+
+        //compile the template
+        var template = Handlebars.compile($("script[data-template-name='" + sourceName + "']").html());
+
+        //wait for the view to render, then add the elements
+        view.on("render", function() {
+
+            //temporary placeholder for the elements - use innerHTML to compile the template.
+            var div       = document.createElement("div");
+            div.innerHTML = template(view.context());
+
+            //append JUST the child nodes to the view section
+            view.section.append.apply(view.section, div.childNodes);
+        });
+    }
+}
+
+mojo.decorator(handlebarsDecorator);
+```
+
+usage: 
+
+```javascript
+var MainView = mojo.View.extend({
+    handlebars: "main",
+    name: "craig"
+});
+```
 
 ## Variable Scope
 
