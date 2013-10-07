@@ -495,8 +495,8 @@ usage:
 
 ```javascript
 var MainView = mojo.View.extend({
-    handlebars: "main",
-    name: "craig"
+    name       : "craig",
+    handlebars : "main"
 });
 ```
 
