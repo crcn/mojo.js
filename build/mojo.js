@@ -4868,6 +4868,219 @@
         module.exports = PreloadDecorator;
         return module.exports;
     });
+    define("factories/lib/any.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var AnyFactory, factoryFactory, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+                for (var key in parent) {
+                    if (__hasProp.call(parent, key)) child[key] = parent[key];
+                }
+                function ctor() {
+                    this.constructor = child;
+                }
+                ctor.prototype = parent.prototype;
+                child.prototype = new ctor;
+                child.__super__ = parent.prototype;
+                return child;
+            };
+            factoryFactory = require("factories/lib/factory.js");
+            AnyFactory = function(_super) {
+                __extends(AnyFactory, _super);
+                function AnyFactory(factories) {
+                    if (factories == null) {
+                        factories = [];
+                    }
+                    this.factories = factories.map(factoryFactory.create);
+                }
+                AnyFactory.prototype.test = function(data) {
+                    return !!this._getFactory(data);
+                };
+                AnyFactory.prototype.create = function(data) {
+                    var _ref;
+                    return (_ref = this._getFactory(data)) != null ? _ref.create(data) : void 0;
+                };
+                AnyFactory.prototype._getFactory = function(data) {
+                    var factory, _i, _len, _ref;
+                    _ref = this.factories;
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                        factory = _ref[_i];
+                        if (factory.test(data)) {
+                            return factory;
+                        }
+                    }
+                };
+                return AnyFactory;
+            }(require("factories/lib/base.js"));
+            module.exports = function(factories) {
+                return new AnyFactory(factories);
+            };
+        }).call(this);
+        return module.exports;
+    });
+    define("factories/lib/class.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var ClassFactory, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+                for (var key in parent) {
+                    if (__hasProp.call(parent, key)) child[key] = parent[key];
+                }
+                function ctor() {
+                    this.constructor = child;
+                }
+                ctor.prototype = parent.prototype;
+                child.prototype = new ctor;
+                child.__super__ = parent.prototype;
+                return child;
+            };
+            ClassFactory = function(_super) {
+                __extends(ClassFactory, _super);
+                function ClassFactory(clazz) {
+                    this.clazz = clazz;
+                }
+                ClassFactory.prototype.create = function(data) {
+                    return new this.clazz(data);
+                };
+                ClassFactory.prototype.test = function(data) {
+                    return this.clazz.test(data);
+                };
+                return ClassFactory;
+            }(require("factories/lib/base.js"));
+            module.exports = function(clazz) {
+                return new ClassFactory(clazz);
+            };
+        }).call(this);
+        return module.exports;
+    });
+    define("factories/lib/factory.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var ClassFactory, FactoryFactory, FnFactory, factory, type, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+                for (var key in parent) {
+                    if (__hasProp.call(parent, key)) child[key] = parent[key];
+                }
+                function ctor() {
+                    this.constructor = child;
+                }
+                ctor.prototype = parent.prototype;
+                child.prototype = new ctor;
+                child.__super__ = parent.prototype;
+                return child;
+            };
+            ClassFactory = require("factories/lib/class.js");
+            type = require("type-component/index.js");
+            FnFactory = require("factories/lib/fn.js");
+            FactoryFactory = function(_super) {
+                __extends(FactoryFactory, _super);
+                function FactoryFactory() {}
+                FactoryFactory.prototype.create = function(data) {
+                    var t;
+                    if ((t = type(data)) === "function") {
+                        if (data.prototype.constructor) {
+                            if (data.create && data.test) {
+                                return data;
+                            } else {
+                                return new ClassFactory(data);
+                            }
+                        }
+                        return new FnFactory(data);
+                    }
+                    return data;
+                };
+                return FactoryFactory;
+            }(require("factories/lib/base.js"));
+            factory = new FactoryFactory;
+            module.exports = function(data) {
+                return factory.create(data);
+            };
+        }).call(this);
+        return module.exports;
+    });
+    define("factories/lib/fn.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var FnFactory;
+            FnFactory = function() {
+                function FnFactory(fn) {
+                    this.fn = fn;
+                }
+                FnFactory.prototype.test = function(data) {
+                    return this.fn.test(data);
+                };
+                FnFactory.prototype.create = function(data) {
+                    return this.fn(data);
+                };
+                return FnFactory;
+            }();
+            module.exports = function(fn) {
+                return new FnFactory(fn);
+            };
+        }).call(this);
+        return module.exports;
+    });
+    define("factories/lib/group.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var GroupFactory, factoryFactory, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+                for (var key in parent) {
+                    if (__hasProp.call(parent, key)) child[key] = parent[key];
+                }
+                function ctor() {
+                    this.constructor = child;
+                }
+                ctor.prototype = parent.prototype;
+                child.prototype = new ctor;
+                child.__super__ = parent.prototype;
+                return child;
+            };
+            factoryFactory = require("factories/lib/factory.js");
+            GroupFactory = function(_super) {
+                __extends(GroupFactory, _super);
+                function GroupFactory(mandatory, optional, groupClass) {
+                    if (mandatory == null) {
+                        mandatory = [];
+                    }
+                    if (optional == null) {
+                        optional = [];
+                    }
+                    this.groupClass = groupClass;
+                    this.mandatory = mandatory.map(factoryFactory.create);
+                    this.optional = optional.map(factoryFactory.create);
+                }
+                GroupFactory.prototype.test = function(data) {
+                    return !!this._getFactories(data, this.mandatory).length;
+                };
+                GroupFactory.prototype.create = function(data) {
+                    var factory, items, _i, _j, _len, _len1, _ref, _ref1;
+                    items = [];
+                    _ref = this._getFactories(data, this.mandatory);
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                        factory = _ref[_i];
+                        items.push(factory.create(data));
+                    }
+                    _ref1 = this._getFactories(data, this.optional);
+                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                        factory = _ref1[_j];
+                        items.push(factory.create(data));
+                    }
+                    if (items.length === 1) {
+                        return items[0];
+                    }
+                    return new this.groupClass(data, items);
+                };
+                GroupFactory.prototype._getFactories = function(data, collection) {
+                    var factories, factory, _i, _len;
+                    factories = [];
+                    for (_i = 0, _len = collection.length; _i < _len; _i++) {
+                        factory = collection[_i];
+                        if (factory.test(data)) {
+                            factories.push(factory);
+                        }
+                    }
+                    return factories;
+                };
+                return GroupFactory;
+            }(require("factories/lib/base.js"));
+            module.exports = function(mandatory, optional, groupClass) {
+                return new GroupFactory(mandatory, optional, groupClass);
+            };
+        }).call(this);
+        return module.exports;
+    });
     define("hoist/lib/transformer.js", function(require, module, exports, __dirname, __filename) {
         (function() {
             var async, getArrayTypeCaster, getClassTypeCaster, getSimpleDataTypeCaster, getTypeCaster, type;
@@ -5344,219 +5557,6 @@
             return DomFactory;
         }(require("nofactor/lib/base.js"));
         module.exports = new DomFactory;
-        return module.exports;
-    });
-    define("factories/lib/any.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var AnyFactory, factoryFactory, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-                for (var key in parent) {
-                    if (__hasProp.call(parent, key)) child[key] = parent[key];
-                }
-                function ctor() {
-                    this.constructor = child;
-                }
-                ctor.prototype = parent.prototype;
-                child.prototype = new ctor;
-                child.__super__ = parent.prototype;
-                return child;
-            };
-            factoryFactory = require("factories/lib/factory.js");
-            AnyFactory = function(_super) {
-                __extends(AnyFactory, _super);
-                function AnyFactory(factories) {
-                    if (factories == null) {
-                        factories = [];
-                    }
-                    this.factories = factories.map(factoryFactory.create);
-                }
-                AnyFactory.prototype.test = function(data) {
-                    return !!this._getFactory(data);
-                };
-                AnyFactory.prototype.create = function(data) {
-                    var _ref;
-                    return (_ref = this._getFactory(data)) != null ? _ref.create(data) : void 0;
-                };
-                AnyFactory.prototype._getFactory = function(data) {
-                    var factory, _i, _len, _ref;
-                    _ref = this.factories;
-                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                        factory = _ref[_i];
-                        if (factory.test(data)) {
-                            return factory;
-                        }
-                    }
-                };
-                return AnyFactory;
-            }(require("factories/lib/base.js"));
-            module.exports = function(factories) {
-                return new AnyFactory(factories);
-            };
-        }).call(this);
-        return module.exports;
-    });
-    define("factories/lib/class.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var ClassFactory, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-                for (var key in parent) {
-                    if (__hasProp.call(parent, key)) child[key] = parent[key];
-                }
-                function ctor() {
-                    this.constructor = child;
-                }
-                ctor.prototype = parent.prototype;
-                child.prototype = new ctor;
-                child.__super__ = parent.prototype;
-                return child;
-            };
-            ClassFactory = function(_super) {
-                __extends(ClassFactory, _super);
-                function ClassFactory(clazz) {
-                    this.clazz = clazz;
-                }
-                ClassFactory.prototype.create = function(data) {
-                    return new this.clazz(data);
-                };
-                ClassFactory.prototype.test = function(data) {
-                    return this.clazz.test(data);
-                };
-                return ClassFactory;
-            }(require("factories/lib/base.js"));
-            module.exports = function(clazz) {
-                return new ClassFactory(clazz);
-            };
-        }).call(this);
-        return module.exports;
-    });
-    define("factories/lib/factory.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var ClassFactory, FactoryFactory, FnFactory, factory, type, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-                for (var key in parent) {
-                    if (__hasProp.call(parent, key)) child[key] = parent[key];
-                }
-                function ctor() {
-                    this.constructor = child;
-                }
-                ctor.prototype = parent.prototype;
-                child.prototype = new ctor;
-                child.__super__ = parent.prototype;
-                return child;
-            };
-            ClassFactory = require("factories/lib/class.js");
-            type = require("type-component/index.js");
-            FnFactory = require("factories/lib/fn.js");
-            FactoryFactory = function(_super) {
-                __extends(FactoryFactory, _super);
-                function FactoryFactory() {}
-                FactoryFactory.prototype.create = function(data) {
-                    var t;
-                    if ((t = type(data)) === "function") {
-                        if (data.prototype.constructor) {
-                            if (data.create && data.test) {
-                                return data;
-                            } else {
-                                return new ClassFactory(data);
-                            }
-                        }
-                        return new FnFactory(data);
-                    }
-                    return data;
-                };
-                return FactoryFactory;
-            }(require("factories/lib/base.js"));
-            factory = new FactoryFactory;
-            module.exports = function(data) {
-                return factory.create(data);
-            };
-        }).call(this);
-        return module.exports;
-    });
-    define("factories/lib/fn.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var FnFactory;
-            FnFactory = function() {
-                function FnFactory(fn) {
-                    this.fn = fn;
-                }
-                FnFactory.prototype.test = function(data) {
-                    return this.fn.test(data);
-                };
-                FnFactory.prototype.create = function(data) {
-                    return this.fn(data);
-                };
-                return FnFactory;
-            }();
-            module.exports = function(fn) {
-                return new FnFactory(fn);
-            };
-        }).call(this);
-        return module.exports;
-    });
-    define("factories/lib/group.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var GroupFactory, factoryFactory, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-                for (var key in parent) {
-                    if (__hasProp.call(parent, key)) child[key] = parent[key];
-                }
-                function ctor() {
-                    this.constructor = child;
-                }
-                ctor.prototype = parent.prototype;
-                child.prototype = new ctor;
-                child.__super__ = parent.prototype;
-                return child;
-            };
-            factoryFactory = require("factories/lib/factory.js");
-            GroupFactory = function(_super) {
-                __extends(GroupFactory, _super);
-                function GroupFactory(mandatory, optional, groupClass) {
-                    if (mandatory == null) {
-                        mandatory = [];
-                    }
-                    if (optional == null) {
-                        optional = [];
-                    }
-                    this.groupClass = groupClass;
-                    this.mandatory = mandatory.map(factoryFactory.create);
-                    this.optional = optional.map(factoryFactory.create);
-                }
-                GroupFactory.prototype.test = function(data) {
-                    return !!this._getFactories(data, this.mandatory).length;
-                };
-                GroupFactory.prototype.create = function(data) {
-                    var factory, items, _i, _j, _len, _len1, _ref, _ref1;
-                    items = [];
-                    _ref = this._getFactories(data, this.mandatory);
-                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                        factory = _ref[_i];
-                        items.push(factory.create(data));
-                    }
-                    _ref1 = this._getFactories(data, this.optional);
-                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                        factory = _ref1[_j];
-                        items.push(factory.create(data));
-                    }
-                    if (items.length === 1) {
-                        return items[0];
-                    }
-                    return new this.groupClass(data, items);
-                };
-                GroupFactory.prototype._getFactories = function(data, collection) {
-                    var factories, factory, _i, _len;
-                    factories = [];
-                    for (_i = 0, _len = collection.length; _i < _len; _i++) {
-                        factory = collection[_i];
-                        if (factory.test(data)) {
-                            factories.push(factory);
-                        }
-                    }
-                    return factories;
-                };
-                return GroupFactory;
-            }(require("factories/lib/base.js"));
-            module.exports = function(mandatory, optional, groupClass) {
-                return new GroupFactory(mandatory, optional, groupClass);
-            };
-        }).call(this);
         return module.exports;
     });
     define("strscanner/lib/index.js", function(require, module, exports, __dirname, __filename) {
@@ -6867,6 +6867,19 @@
         })();
         return module.exports;
     });
+    define("factories/lib/base.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var BaseFactory;
+            BaseFactory = function() {
+                function BaseFactory() {}
+                BaseFactory.prototype.create = function(data) {};
+                BaseFactory.prototype.test = function(data) {};
+                return BaseFactory;
+            }();
+            module.exports = BaseFactory;
+        }).call(this);
+        return module.exports;
+    });
     define("nofactor/lib/ent.js", function(require, module, exports, __dirname, __filename) {
         var entities;
         entities = {
@@ -6904,19 +6917,6 @@
             BaseFactory.prototype.parseHtml = function(content) {};
             return BaseFactory;
         }();
-        return module.exports;
-    });
-    define("factories/lib/base.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var BaseFactory;
-            BaseFactory = function() {
-                function BaseFactory() {}
-                BaseFactory.prototype.create = function(data) {};
-                BaseFactory.prototype.test = function(data) {};
-                return BaseFactory;
-            }();
-            module.exports = BaseFactory;
-        }).call(this);
         return module.exports;
     });
     define("bindable/lib/object/setters/base.js", function(require, module, exports, __dirname, __filename) {
@@ -8153,6 +8153,139 @@
         module.exports = Collection;
         return module.exports;
     });
+    define("paperclip/lib/paper/bindings/block/html.js", function(require, module, exports, __dirname, __filename) {
+        var HtmlDecor, type, _ref, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        type = require("type-component/index.js");
+        HtmlDecor = function(_super) {
+            __extends(HtmlDecor, _super);
+            function HtmlDecor() {
+                _ref = HtmlDecor.__super__.constructor.apply(this, arguments);
+                return _ref;
+            }
+            HtmlDecor.prototype._onChange = function(value, oldValue) {
+                var dom, node;
+                if (oldValue != null ? oldValue.section : void 0) {
+                    oldValue.section.hide();
+                }
+                this.section.removeAll();
+                if (!value) {
+                    return this.section.removeAll();
+                }
+                if (value.createFragment) {
+                    node = value.createFragment();
+                } else if (value.section) {
+                    node = value.section.show().toFragment();
+                } else if (value.nodeType != null) {
+                    node = value;
+                } else {
+                    if (this.nodeFactory.name === "string") {
+                        node = this.nodeFactory.createTextNode(String(value));
+                    } else {
+                        dom = this.nodeFactory.createElement("div");
+                        dom.innerHTML = String(value);
+                        node = this.nodeFactory.createFragment(dom.childNodes);
+                    }
+                }
+                return this.section.replaceChildNodes(node);
+            };
+            return HtmlDecor;
+        }(require("paperclip/lib/paper/bindings/block/base.js"));
+        module.exports = HtmlDecor;
+        return module.exports;
+    });
+    define("paperclip/lib/paper/bindings/block/conditional.js", function(require, module, exports, __dirname, __filename) {
+        var BlockDecor, _ref, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        BlockDecor = function(_super) {
+            __extends(BlockDecor, _super);
+            function BlockDecor() {
+                this._onChange = __bind(this._onChange, this);
+                _ref = BlockDecor.__super__.constructor.apply(this, arguments);
+                return _ref;
+            }
+            BlockDecor.prototype._map = function(value) {
+                return !!value;
+            };
+            BlockDecor.prototype._onChange = function(value) {
+                var childTemplate, oldChild, _ref1;
+                oldChild = this.child;
+                if ((_ref1 = this.child) != null) {
+                    _ref1.unbind();
+                }
+                this.child = void 0;
+                if (value) {
+                    childTemplate = this.contentTemplate;
+                } else {
+                    childTemplate = this.childBlockTemplate;
+                }
+                if (childTemplate) {
+                    this.child = childTemplate.bind(this.context);
+                    return this.section.replaceChildNodes(this.child.section.toFragment());
+                } else if (oldChild != null) {
+                    return oldChild.section.hide();
+                }
+            };
+            return BlockDecor;
+        }(require("paperclip/lib/paper/bindings/block/base.js"));
+        module.exports = BlockDecor;
+        return module.exports;
+    });
+    define("paperclip/lib/paper/bindings/block/value.js", function(require, module, exports, __dirname, __filename) {
+        var ValueDecor, escapeHTML, _ref, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        escapeHTML = require("paperclip/lib/paper/utils/escapeHTML.js");
+        ValueDecor = function(_super) {
+            __extends(ValueDecor, _super);
+            function ValueDecor() {
+                _ref = ValueDecor.__super__.constructor.apply(this, arguments);
+                return _ref;
+            }
+            ValueDecor.prototype._onChange = function(value) {
+                if (value == null) {
+                    value = "";
+                }
+                return this.section.replaceChildNodes(this.nodeFactory.createTextNode(String(value)));
+            };
+            return ValueDecor;
+        }(require("paperclip/lib/paper/bindings/block/base.js"));
+        module.exports = ValueDecor;
+        return module.exports;
+    });
     define("paperclip/lib/paper/bindings/base/script.js", function(require, module, exports, __dirname, __filename) {
         var ScriptBinding, __bind = function(fn, me) {
             return function() {
@@ -8352,139 +8485,6 @@
         };
         return module.exports;
     });
-    define("paperclip/lib/paper/bindings/block/html.js", function(require, module, exports, __dirname, __filename) {
-        var HtmlDecor, type, _ref, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        type = require("type-component/index.js");
-        HtmlDecor = function(_super) {
-            __extends(HtmlDecor, _super);
-            function HtmlDecor() {
-                _ref = HtmlDecor.__super__.constructor.apply(this, arguments);
-                return _ref;
-            }
-            HtmlDecor.prototype._onChange = function(value, oldValue) {
-                var dom, node;
-                if (oldValue != null ? oldValue.section : void 0) {
-                    oldValue.section.hide();
-                }
-                this.section.removeAll();
-                if (!value) {
-                    return this.section.removeAll();
-                }
-                if (value.createFragment) {
-                    node = value.createFragment();
-                } else if (value.section) {
-                    node = value.section.show().toFragment();
-                } else if (value.nodeType != null) {
-                    node = value;
-                } else {
-                    if (this.nodeFactory.name === "string") {
-                        node = this.nodeFactory.createTextNode(String(value));
-                    } else {
-                        dom = this.nodeFactory.createElement("div");
-                        dom.innerHTML = String(value);
-                        node = this.nodeFactory.createFragment(dom.childNodes);
-                    }
-                }
-                return this.section.replaceChildNodes(node);
-            };
-            return HtmlDecor;
-        }(require("paperclip/lib/paper/bindings/block/base.js"));
-        module.exports = HtmlDecor;
-        return module.exports;
-    });
-    define("paperclip/lib/paper/bindings/block/conditional.js", function(require, module, exports, __dirname, __filename) {
-        var BlockDecor, _ref, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        BlockDecor = function(_super) {
-            __extends(BlockDecor, _super);
-            function BlockDecor() {
-                this._onChange = __bind(this._onChange, this);
-                _ref = BlockDecor.__super__.constructor.apply(this, arguments);
-                return _ref;
-            }
-            BlockDecor.prototype._map = function(value) {
-                return !!value;
-            };
-            BlockDecor.prototype._onChange = function(value) {
-                var childTemplate, oldChild, _ref1;
-                oldChild = this.child;
-                if ((_ref1 = this.child) != null) {
-                    _ref1.unbind();
-                }
-                this.child = void 0;
-                if (value) {
-                    childTemplate = this.contentTemplate;
-                } else {
-                    childTemplate = this.childBlockTemplate;
-                }
-                if (childTemplate) {
-                    this.child = childTemplate.bind(this.context);
-                    return this.section.replaceChildNodes(this.child.section.toFragment());
-                } else if (oldChild != null) {
-                    return oldChild.section.hide();
-                }
-            };
-            return BlockDecor;
-        }(require("paperclip/lib/paper/bindings/block/base.js"));
-        module.exports = BlockDecor;
-        return module.exports;
-    });
-    define("paperclip/lib/paper/bindings/block/value.js", function(require, module, exports, __dirname, __filename) {
-        var ValueDecor, escapeHTML, _ref, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        escapeHTML = require("paperclip/lib/paper/utils/escapeHTML.js");
-        ValueDecor = function(_super) {
-            __extends(ValueDecor, _super);
-            function ValueDecor() {
-                _ref = ValueDecor.__super__.constructor.apply(this, arguments);
-                return _ref;
-            }
-            ValueDecor.prototype._onChange = function(value) {
-                if (value == null) {
-                    value = "";
-                }
-                return this.section.replaceChildNodes(this.nodeFactory.createTextNode(String(value)));
-            };
-            return ValueDecor;
-        }(require("paperclip/lib/paper/bindings/block/base.js"));
-        module.exports = ValueDecor;
-        return module.exports;
-    });
     define("paperclip/lib/paper/bindings/base/index.js", function(require, module, exports, __dirname, __filename) {
         var BaseBinding;
         BaseBinding = function() {
@@ -8543,6 +8543,32 @@
             return ClipBinding;
         }(require("paperclip/lib/paper/bindings/base/index.js"));
         module.exports = ClipBinding;
+        return module.exports;
+    });
+    define("paperclip/lib/paper/utils/escapeHTML.js", function(require, module, exports, __dirname, __filename) {
+        var entities;
+        entities = {
+            "<": "lt",
+            "&": "amp",
+            ">": "gt",
+            '"': "quote"
+        };
+        module.exports = function(str) {
+            str = String(str);
+            return str.split("").map(function(c) {
+                var cc, e;
+                e = entities[c];
+                cc = c.charCodeAt(0);
+                if (e) {
+                    return "&" + e + ";";
+                } else if (c.match(/\s/)) {
+                    return c;
+                } else if (cc < 32 || cc > 126) {
+                    return "&#" + cc + ";";
+                }
+                return c;
+            }).join("");
+        };
         return module.exports;
     });
     define("paperclip/lib/clip/buffer.js", function(require, module, exports, __dirname, __filename) {
@@ -9249,32 +9275,6 @@
             return ChangeAttrBinding;
         }(require("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/event.js"));
         module.exports = ChangeAttrBinding;
-        return module.exports;
-    });
-    define("paperclip/lib/paper/utils/escapeHTML.js", function(require, module, exports, __dirname, __filename) {
-        var entities;
-        entities = {
-            "<": "lt",
-            "&": "amp",
-            ">": "gt",
-            '"': "quote"
-        };
-        module.exports = function(str) {
-            str = String(str);
-            return str.split("").map(function(c) {
-                var cc, e;
-                e = entities[c];
-                cc = c.charCodeAt(0);
-                if (e) {
-                    return "&" + e + ";";
-                } else if (c.match(/\s/)) {
-                    return c;
-                } else if (cc < 32 || cc > 126) {
-                    return "&#" + cc + ";";
-                }
-                return c;
-            }).join("");
-        };
         return module.exports;
     });
     var entries = [ "mojojs/lib/index.js" ];
