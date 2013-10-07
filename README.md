@@ -12,6 +12,12 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 - Plays nicely with other frameworks such as Backbone.js, Spine.js, and jQuery. Easily build new application code on top of old code.
 - No magic. No assumptions. Mojo.js was built around explicity.
 - 100% javascript - [paperclip.js](https://github.com/classdojo/paperclip.js) templates are also translated to javascript.
+It's unopinionated
+There's no concept of inheritance, and all functionality is shoved in decorators. This concept is actually derrived from jquery plugins - where plugins can be attached to DOM elements, decorators are similar in the sense that they attach to one abstraction higher - the view controlling the DOM element.
+The framework itself is broken into multiple repositories - this makes it easier to encapsulate, and re-use bits of functionality. It also helps explain parts of the framework a little better.
+- It's unopinionated
+  - There's no concept of inheritance, and all functionality is shoved in `decorators`. This concept is actually derrived from jquery plugins - where plugins can be attached to DOM elements, `decorators` are similar in the sense that they attach to one abstraction higher - the view controlling the DOM element.
+  - The framework itself is broken into multiple repositories - this makes it easier to encapsulate, and re-use bits of functionality. It also helps explain parts of the framework a little better.
 
 ### Core Libraries
 
@@ -29,7 +35,7 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 
 ### Installation
 
-You can get started with Mojo.js by installing the [start kit](http://github.com/classdojo/mojo-boilerplate). In terminal run:
+You can get started with Mojo.js by installing the [starter kit](http://github.com/classdojo/mojo-boilerplate). In terminal run:
 
 ```bash
 git clone git@github.com:classdojo/mojo-boilerplate.git; cd mojo-boilerplate; npm install;
