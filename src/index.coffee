@@ -4,10 +4,11 @@ bindable = require "bindable"
 models   = require "./models"
 
 module.exports = 
-  View     : View
-  mediator : mediator
-  bindable : bindable
-  models   : models
+  View      : View
+  mediator  : mediator
+  bindable  : bindable
+  models    : models
+  decorator : View.addDecoratorClass
 
 
 if typeof window isnt "undefined"

@@ -110,7 +110,7 @@ the queue for rendering / removing views. This is particularly useful if you nee
 
 emits an event
 
-### view.on(event, listener)
+#### view.on(event, listener)
 
 listener for an event. For example:
 
