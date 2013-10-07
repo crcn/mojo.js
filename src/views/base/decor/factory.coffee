@@ -32,8 +32,6 @@ availableDecorators = [
   # additional decorators that don't have high priority - get added on .render() & .display()
   _decor("preload"    , PreloadDecorator),
 
-  # loads a template, and injects the sections / children (from above) on load
-  # _decor("template"   , TemplateDecorator, false),
   _decor("paperclip"  , PaperclipDecorator, false),
 
   _decor("transition" , TransitionDecorator),
