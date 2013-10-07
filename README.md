@@ -416,7 +416,6 @@ var view = new MainView();
 console.log(view.get("sections.pages.index")); //0
 ```
 
-
 ### Custom Components
 
 Mojo.js allows you to register your own components. [Here's a basic example](http://jsfiddle.net/BZA8K/24/):
