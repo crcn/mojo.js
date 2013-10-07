@@ -13,7 +13,7 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 - No magic. No assumptions. Mojo.js was built around explicity.
 - 100% javascript - [paperclip.js](https://github.com/classdojo/paperclip.js) templates are also translated to javascript.
 - It's unopinionated
-  - There's no concept of inheritance, and all functionality is shoved in `decorators`. This concept is actually derrived from jquery plugins - where plugins can be attached to DOM elements, `decorators` are similar in the sense that they attach to one abstraction higher - the view controlling the DOM element.
+  - There's no concept of inheritance, and all functionality is shoved in `decorators`. This is actually derrived from jquery plugins - where plugins can be attached to DOM elements, `decorators` are similar in the sense that they attach to one abstraction higher - the view controlling the DOM element.
   - The framework itself is broken into multiple repositories - this makes it easier to encapsulate, and re-use bits of functionality. It also helps explain parts of the framework a little better.
 
 ### Core Libraries
