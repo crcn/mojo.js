@@ -38,6 +38,8 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 
 - route docs
 - API docs
+- starter kit
+- testing docs
 
 ### Installation
 
