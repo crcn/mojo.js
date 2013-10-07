@@ -30,7 +30,9 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 - [Hello Input](http://jsfiddle.net/BZA8K/17/)
 - [Todo List](http://jsfiddle.net/BZA8K/18/)
 - [Dynamic Templates](http://jsfiddle.net/BZA8K/20/)
+- [States Component](http://jsfiddle.net/BZA8K/28/)
 - [Custom Components](http://jsfiddle.net/BZA8K/24/)
+- [Transitions](http://jsfiddle.net/BZA8K/22/)
 
 ### TODO:
 
@@ -246,7 +248,7 @@ var TestView = mojo.View.extend({
 //init view somewhere
 ```
 
-### Transitons
+### Transitions
 
 Pretty self explainatory - transitions allow you to ease a view into a particular state, whether entering, or exiting. Note that transitions require [jquery.transit](http://ricostacruz.com/jquery.transit/). [Here's an example](http://jsfiddle.net/BZA8K/22/): 
 
@@ -314,25 +316,106 @@ Mojo comes with a few built-in components: [lists](#list-component), and [states
 
 ### List Component
 
+List of views. [Here's an example](http://jsfiddle.net/BZA8K/18/):
 
+```javascript
+var TodosView = mojo.View.extend({
+  todos: todoCollection,
+  sections: {
+    items: {
+      type: "list",
+      source: "todos",
+      modelViewClass: TodoView
+    }
+  }
+})
+```
+
+Note that each model item in the source collection is assigned as `model` for each list item.
+
+#### list.filter(fn)
+
+Filters the list. For example:
+
+```javascript
+var TodosView = mojo.View.extend({
+  todos: todoCollection,
+  sections: {
+    items: {
+      type: "list",
+      source: "todos",
+      modelViewClass: TodoView,
+
+      //filter items that are NOT done.
+      filter: function(model) {
+        return !model.get("done");
+      }
+    }
+  }
+});
+```
+
+#### list.sort(fn)
+
+Sorts the list. For example:
+
+```javascript
+var TodosView = mojo.View.extend({
+  todos: todoCollection,
+  sections: {
+    items: {
+      type: "list",
+      source: "todos",
+      modelViewClass: TodoView,
+      sort: function(a, b) {
+        return a.get("priority") > b.get("priority") ? -1 : 1;
+      }
+    }
+  }
+});
+```
 
 ### States Component
 
-State components allow you to toggle between multiple views. This is useful if you want to introduce something like routes into your application. [Here's an example](http://jsfiddle.net/BZA8K/25/):
+The states component allow you to toggle between multiple views. This is useful if you want to introduce something like routes into your application. [Here's an example](http://jsfiddle.net/BZA8K/27/):
 
 ```javascript
 var MainView = mojo.View.extend({
   sections: {
     pages: {
       type: "states", 
+      index: 0,
       views: [
-        { class: ContactView, name: "contact" },
-        { class: HomeView, name: "home" },
+        { class: ContactView , name: "contact" },
+        { class: HomeView    , name: "home"    }
       ]
     }
   }
 })
 ```
+
+### states.index
+
+the current index of the state. [For example](http://jsfiddle.net/BZA8K/29/): 
+
+```javascript
+var MainView = mojo.View.extend({
+  sections: {
+    pages: {
+      type: "states", 
+      index: 0,
+      views: [
+        { class: ContactView , name: "contact" },
+        { class: HomeView    , name: "home"    }
+      ]
+    }
+  }
+});
+
+var view = new MainView();
+console.log(view.get("sections.pages.index")); //0
+```
+
 
 ### Custom Components
 
@@ -359,7 +442,6 @@ var MainView = mojo.View.extend({
         }
     }
 });
-
 
 var mainView = new MainView();
 mainView.attach($("#application"));
