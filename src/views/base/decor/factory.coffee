@@ -8,6 +8,8 @@ DraggableDecorator  = require "./dragdrop/draggable"
 DroppableDecorator  = require "./dragdrop/droppable"
 TransitionDecorator = require "./transition"
 PreloadDecorator    = require "./preload"
+idGenerator         = require "../../../utils/idGenerator"
+type = require "type-component"
 
 _decor = (name, clazz, inheritable = true) ->
    name        : name
@@ -49,9 +51,15 @@ module.exports =
   ###
 
   addDecoratorClass: (options = {}) -> 
+
+    if (type(options) is "function") or options.getOptions
+      options = {
+        factory: options
+      }
+
     availableDecorators.push( 
-      _decor options.name, 
-      options.class or options.clazz, 
+      _decor options.name or idGenerator(), 
+      options.class or options.clazz or options.factory, 
       options.inheritable
     )
 

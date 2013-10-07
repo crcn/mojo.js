@@ -1,3 +1,3 @@
 
 i = 0
-module.exports = () -> i++
+module.exports = () -> String i++
