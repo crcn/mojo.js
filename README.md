@@ -13,7 +13,7 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 - No magic. No assumptions. Mojo.js was built around explicity.
 - 100% javascript - [paperclip.js](https://github.com/classdojo/paperclip.js) templates are also translated to javascript.
 - It's unopinionated
-  - There's no concept of inheritance, and all functionality is shoved in `decorators`. This is actually derrived from jquery plugins - where plugins can be attached to DOM elements. `Decorators` are similar in the sense that they attach to one abstraction higher - the view controlling the DOM element. Mojo.js a few built-in decorators: `drag & drop`, `paperclip.js` (template), `bindings` (computed properties), `transition`, and `events` (backbone style). You can also [create your own](#custom-decorators). 
+  - There's no concept of inheritance, and all functionality is shoved in `decorators`. This is actually derrived from jquery plugins - where plugins can be attached to DOM elements. `Decorators` are similar in the sense that they attach to one abstraction higher - the view controlling the DOM element. Mojo.js has a few built-in decorators: `drag & drop`, `paperclip.js` (template), `bindings` (computed properties), `transition`, and `events` (backbone style). You can also [create your own](#custom-decorators). 
   - The framework itself is broken into multiple repositories - this makes it easier to encapsulate, and re-use bits of functionality. It also helps explain parts of the framework a little better.
 
 ### Core Libraries
@@ -178,25 +178,27 @@ var view = new mojo.View({
 view.attach($("#application"));
 ```
 
-You can also dynamically change the template, Say for instance you want to change the template depending on a model type, here's what you can do:
+You can also dynamically change the template, Say for instance you want to change the template depending on a model type, [here's what you can do](http://jsfiddle.net/BZA8K/20/):
 
 ```javascript
 
 var templates = {
-  alert   : paperclip.compile("notification-alert"),
-  photo   : paperclip.compile("notification-photo")
-  default : paperclip.compile("notification-default")
-}
-
+    notice  : paperclip.compile("notice"),
+    default : paperclip.compile("notice"),
+    warning : paperclip.compile("warning"),
+    error   : paperclip.compile("error")
+};
 
 var NotificationView = mojo.View.extend({
-  bindings: {
-    "type":
-      "paper": 
-        "map": function(type) {
-          return templates[type] || templates.default;
-        }
-  }
+    "bindings": {
+        "model.type": {
+            "paper": {
+                "map": function(type) {
+                    return templates[type] || templates.default;
+                 }
+             }
+         }
+     }                                  
 });
 
 var alertView = new NotificationView({ model: new bindable.Object({ type: "alert" }) });
