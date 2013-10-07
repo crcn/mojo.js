@@ -29,6 +29,13 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 - [Hello World](http://jsfiddle.net/BZA8K/16/)
 - [Hello Input](http://jsfiddle.net/BZA8K/17/)
 - [Todo List](http://jsfiddle.net/BZA8K/18/)
+- [Dynamic Templates](http://jsfiddle.net/BZA8K/20/)
+- [Custom Components](http://jsfiddle.net/BZA8K/24/)
+
+### TODO:
+
+- route docs
+- API docs
 
 ### Installation
 
@@ -154,18 +161,8 @@ var view = new mojo.View({
 
 ## View Decorators
 
-Mojo.js views are incredibly flexible. Views are decorator based, so they don't really depend on any of the following features:
+Decorators are extensions to the Mojo.js framework - they help you describe how your view should function, but aren't necessarily required for Mojo.js to work. Therefore, you can easily mix decorators, or even create your own. This design was picked to allow you, the coder to pick whatever style suites you best. There are however a few built-in decorators that might help you get started. 
 
-
-### Bindings
-
-Bindings are similar to Ember's computed properties. [For example](http://jsfiddle.net/BZA8K/5/):
-
-```javascript
-var view = new mojo.View({
-  bindings:
-});
-```
 
 ### Templates
 
@@ -178,7 +175,7 @@ var view = new mojo.View({
 view.attach($("#application"));
 ```
 
-You can also dynamically change the template, Say for instance you want to change the template depending on a model type, [here's what you can do](http://jsfiddle.net/BZA8K/20/):
+You can also dynamically change the template. Say for instance you want to change the template depending on a model type, [here's what you can do](http://jsfiddle.net/BZA8K/20/):
 
 ```javascript
 
@@ -207,21 +204,182 @@ var photoView = new NotificationView({ model: new bindable.Object({ type: "photo
 
 You can add your own template - just create a [custom decorator](#custom-decorators).
 
+### Bindings
 
-### Events
+The bindings decorator is similar to Ember's computed properties feature. [For example](http://jsfiddle.net/BZA8K/21/):
 
-### Definitions
+```javascript
+var TestView = mojo.View.extend({
+  paper: paperclip.compile("hello-world"),
+  bindings: {
+      
+      //join first & last name
+      "firstName, lastName": {
+          "fullName": {
+              "map": function(firstName, lastName) {
+                  return [firstName, lastName].join(" ");
+              }
+          }
+      },
+      
+      //uppercase & lowercase fullName
+      "fullName": {
+          "fullNameUpper": {
+              "map": function(fullName) {
+                  return String(fullName).toUpperCase();
+              }
+          },
+          "fullNameLower": {
+              "map": function(fullName) {
+                  return String(fullName).toLowerCase();
+              }
+          }
+      },
+      
+      //wait for fullNameUpper to change
+      "fullNameUpper": function(fullNameUpper) {
+          console.log("CHANGE!");
+      }
+  }
+});
+
+//init view somewhere
+```
 
 ### Transitons
 
+Pretty self explainatory - transitions allow you to ease a view into a particular state, whether entering, or exiting. Note that transitions require [jquery.transit](http://ricostacruz.com/jquery.transit/). [Here's an example](http://jsfiddle.net/BZA8K/22/): 
+
+```javascript
+var HelloView = mojo.View.extend({
+
+    paper: paperclip.compile("notice"),
+
+    transition: {
+
+        enter: {
+            from: { opacity: 0, top: "-10px", position: "relative" },
+            to: { opacity: 1, top: "0px" }
+        },
+
+        exit: {
+            to: { opacity: 0, top: "10px" }
+        }
+    }
+});
+
+var view = new HelloView();
+view.attach($("#application"));
+```
+
+
 ### Sections
 
-### List Sections
 
-### State Sections
+Sections are what make up your application - they allow you to break down your app into smaller, more modular pieces. [Here's a basic example](http://jsfiddle.net/BZA8K/23/): 
+
+```javascript
+//views/main/header/logo.js
+var LogoView = mojo.View.extend({
+    paper: paperclip.compile("header-logo")
+});
+
+//views/main/header/index.js
+var HeaderView = mojo.View.extend({
+    paper: paperclip.compile("header"),
+    sections: {
+        logo: LogoView
+    }
+});
+
+//views/main/content/index.js
+var ContentView = mojo.View.extend({
+    paper: paperclip.compile("content")
+});
+
+//views/main/index.js
+var MainView = mojo.View.extend({
+    paper: paperclip.compile("main"),
+    sections: {
+        header: HeaderView,
+        content: ContentView
+    }
+});
+
+var mainView = new MainView();
+mainView.attach($("#application"));
+```
+
+Mojo comes with a few built-in components: [lists](#list-component), and [states](#states-component).
+
+### List Component
+
+
+
+### States Component
+
+State components allow you to toggle between multiple views. This is useful if you want to introduce something like routes into your application. [Here's an example](http://jsfiddle.net/BZA8K/25/):
+
+```javascript
+var MainView = mojo.View.extend({
+  sections: {
+    pages: {
+      type: "states", 
+      views: [
+        { class: ContactView, name: "contact" },
+        { class: HomeView, name: "home" },
+      ]
+    }
+  }
+})
+```
+
+### Custom Components
+
+Mojo.js allows you to register your own components. [Here's a basic example](http://jsfiddle.net/BZA8K/24/):
+
+```javascript
+//views/main/header/logo.js
+var HelloView = mojo.View.extend({
+    paper: paperclip.compile("hello")
+});
+
+mojo.models.set("components.hello", HelloView);
+
+var MainView = mojo.View.extend({
+    paper: paperclip.compile("main"),
+    sections: {
+        hello1: {
+            type: "hello",
+            message: "craig"
+        },
+        hello2: {
+            type: "hello",
+            message: "john"
+        }
+    }
+});
+
+
+var mainView = new MainView();
+mainView.attach($("#application"));
+```
+
+Note that options provided for each section are automatically set to the component being created. The above equivalent might be:
+
+```javascript
+var view = new HelloView({
+  message: "john"
+});
+```
 
 ### Custom Decorators
 
+TODO
+
+## Variable Scope
+
+Variable scope is implicit 
 
 
 
