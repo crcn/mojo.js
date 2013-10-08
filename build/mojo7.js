@@ -53,7 +53,8 @@
             View: View,
             mediator: mediator,
             bindable: bindable,
-            models: models
+            models: models,
+            decorator: View.addDecoratorClass
         };
         if (typeof window !== "undefined") {
             window.mojo = module.exports;
@@ -2385,7 +2386,7 @@
         var i;
         i = 0;
         module.exports = function() {
-            return i++;
+            return String(i++);
         };
         return module.exports;
     });
@@ -2488,7 +2489,7 @@
         return module.exports;
     });
     define("mojojs/lib/views/base/decor/factory.js", function(require, module, exports, __dirname, __filename) {
-        var BaseViewDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, EventsDecorator, PaperclipDecorator, PreloadDecorator, SectionsDecorator, SelectorDecorator, TransitionDecorator, availableDecorators, _decor;
+        var BaseViewDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, EventsDecorator, PaperclipDecorator, PreloadDecorator, SectionsDecorator, SelectorDecorator, TransitionDecorator, availableDecorators, idGenerator, type, _decor;
         BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
         SelectorDecorator = require("mojojs/lib/views/base/decor/selector.js");
         PaperclipDecorator = require("mojojs/lib/views/base/decor/paperclip.js");
@@ -2499,6 +2500,8 @@
         DroppableDecorator = require("mojojs/lib/views/base/decor/dragdrop/droppable.js");
         TransitionDecorator = require("mojojs/lib/views/base/decor/transition.js");
         PreloadDecorator = require("mojojs/lib/views/base/decor/preload.js");
+        idGenerator = require("mojojs/lib/utils/idGenerator.js");
+        type = require("type-component/index.js");
         _decor = function(name, clazz, inheritable) {
             if (inheritable == null) {
                 inheritable = true;
@@ -2515,7 +2518,12 @@
                 if (options == null) {
                     options = {};
                 }
-                return availableDecorators.push(_decor(options.name, options["class"] || options.clazz, options.inheritable));
+                if (type(options) === "function" || options.getOptions) {
+                    options = {
+                        factory: options
+                    };
+                }
+                return availableDecorators.push(_decor(options.name || idGenerator(), options["class"] || options.clazz || options.factory, options.inheritable));
             },
             setup: function(view, decor) {
                 var _decorators;
@@ -7885,6 +7893,58 @@
         module.exports = BaseDataBindHandler;
         return module.exports;
     });
+    define("paperclip/lib/paper/bindings/base/script.js", function(require, module, exports, __dirname, __filename) {
+        var ScriptBinding, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        ScriptBinding = function(_super) {
+            __extends(ScriptBinding, _super);
+            function ScriptBinding(clip, scriptName) {
+                this.clip = clip;
+                this.scriptName = scriptName;
+                this._onChange = __bind(this._onChange, this);
+                this.script = clip.script(this.scriptName);
+            }
+            ScriptBinding.prototype.bind = function(context) {
+                this.context = context;
+                if (this.watch !== false) {
+                    this.script.watch().update();
+                }
+                this._binding = this.clip.bind(this.scriptName);
+                if (this._map) {
+                    this._binding.map(this._map);
+                }
+                this._binding.to(this._onChange);
+                this._binding.now();
+                return this;
+            };
+            ScriptBinding.prototype.unbind = function() {
+                var _ref;
+                if ((_ref = this._binding) != null) {
+                    _ref.dispose();
+                }
+                this._binding = void 0;
+                return this;
+            };
+            ScriptBinding.prototype._onChange = function(value) {};
+            return ScriptBinding;
+        }(require("paperclip/lib/paper/bindings/base/index.js"));
+        module.exports = ScriptBinding;
+        return module.exports;
+    });
     define("paperclip/lib/paper/writers/fragment.js", function(require, module, exports, __dirname, __filename) {
         var FragmentWriter, _ref, __bind = function(fn, me) {
             return function() {
@@ -8151,58 +8211,6 @@
             return Collection;
         }(BaseBinding);
         module.exports = Collection;
-        return module.exports;
-    });
-    define("paperclip/lib/paper/bindings/base/script.js", function(require, module, exports, __dirname, __filename) {
-        var ScriptBinding, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        ScriptBinding = function(_super) {
-            __extends(ScriptBinding, _super);
-            function ScriptBinding(clip, scriptName) {
-                this.clip = clip;
-                this.scriptName = scriptName;
-                this._onChange = __bind(this._onChange, this);
-                this.script = clip.script(this.scriptName);
-            }
-            ScriptBinding.prototype.bind = function(context) {
-                this.context = context;
-                if (this.watch !== false) {
-                    this.script.watch().update();
-                }
-                this._binding = this.clip.bind(this.scriptName);
-                if (this._map) {
-                    this._binding.map(this._map);
-                }
-                this._binding.to(this._onChange);
-                this._binding.now();
-                return this;
-            };
-            ScriptBinding.prototype.unbind = function() {
-                var _ref;
-                if ((_ref = this._binding) != null) {
-                    _ref.dispose();
-                }
-                this._binding = void 0;
-                return this;
-            };
-            ScriptBinding.prototype._onChange = function(value) {};
-            return ScriptBinding;
-        }(require("paperclip/lib/paper/bindings/base/index.js"));
-        module.exports = ScriptBinding;
         return module.exports;
     });
     define("paperclip/lib/paper/bindings/block/html.js", function(require, module, exports, __dirname, __filename) {
