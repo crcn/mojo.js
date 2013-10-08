@@ -53,7 +53,8 @@
             View: View,
             mediator: mediator,
             bindable: bindable,
-            models: models
+            models: models,
+            decorator: View.addDecoratorClass
         };
         if (typeof window !== "undefined") {
             window.mojo = module.exports;
@@ -2385,7 +2386,7 @@
         var i;
         i = 0;
         module.exports = function() {
-            return i++;
+            return String(i++);
         };
         return module.exports;
     });
@@ -2488,7 +2489,7 @@
         return module.exports;
     });
     define("mojojs/lib/views/base/decor/factory.js", function(require, module, exports, __dirname, __filename) {
-        var BaseViewDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, EventsDecorator, PaperclipDecorator, PreloadDecorator, SectionsDecorator, SelectorDecorator, TransitionDecorator, availableDecorators, _decor;
+        var BaseViewDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, EventsDecorator, PaperclipDecorator, PreloadDecorator, SectionsDecorator, SelectorDecorator, TransitionDecorator, availableDecorators, idGenerator, type, _decor;
         BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
         SelectorDecorator = require("mojojs/lib/views/base/decor/selector.js");
         PaperclipDecorator = require("mojojs/lib/views/base/decor/paperclip.js");
@@ -2499,6 +2500,8 @@
         DroppableDecorator = require("mojojs/lib/views/base/decor/dragdrop/droppable.js");
         TransitionDecorator = require("mojojs/lib/views/base/decor/transition.js");
         PreloadDecorator = require("mojojs/lib/views/base/decor/preload.js");
+        idGenerator = require("mojojs/lib/utils/idGenerator.js");
+        type = require("type-component/index.js");
         _decor = function(name, clazz, inheritable) {
             if (inheritable == null) {
                 inheritable = true;
@@ -2515,7 +2518,12 @@
                 if (options == null) {
                     options = {};
                 }
-                return availableDecorators.push(_decor(options.name, options["class"] || options.clazz, options.inheritable));
+                if (type(options) === "function" || options.getOptions) {
+                    options = {
+                        factory: options
+                    };
+                }
+                return availableDecorators.push(_decor(options.name || idGenerator(), options["class"] || options.clazz || options.factory, options.inheritable));
             },
             setup: function(view, decor) {
                 var _decorators;
@@ -2591,9 +2599,129 @@
         return module.exports;
     });
     define("loaf/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        var Section;
-        Section = require("loaf/lib/section.js");
-        module.exports = function(nodeFactory) {
+        var Section, loaf, nofactor, __slice = [].slice;
+        nofactor = require("nofactor/lib/index.js");
+        Section = function() {
+            Section.prototype.__isLoafSection = true;
+            function Section(nodeFactory) {
+                var parent;
+                this.nodeFactory = nodeFactory != null ? nodeFactory : nofactor["default"];
+                this.start = this.nodeFactory.createTextNode("");
+                this.end = this.nodeFactory.createTextNode("");
+                parent = this.nodeFactory.createElement("div");
+                parent.appendChild(this.start);
+                parent.appendChild(this.end);
+            }
+            Section.prototype.replace = function(node) {
+                node.parentNode.insertBefore(this.toFragment(), node);
+                return node.parentNode.removeChild(node);
+            };
+            Section.prototype.show = function() {
+                if (!this._detached) {
+                    return this;
+                }
+                this.append.apply(this, this._detached.getInnerChildNodes());
+                this._detached = void 0;
+                return this;
+            };
+            Section.prototype.hide = function() {
+                this._detached = this.removeAll();
+                return this;
+            };
+            Section.prototype.removeAll = function() {
+                return this._loaf(this._removeAll());
+            };
+            Section.prototype._removeAll = function() {
+                var children, current, start;
+                start = this.start;
+                current = start.nextSibling;
+                children = [];
+                while (current !== this.end) {
+                    current.parentNode.removeChild(current);
+                    children.push(current);
+                    current = this.start.nextSibling;
+                }
+                return children;
+            };
+            Section.prototype.append = function() {
+                var children;
+                children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+                return this._insertAfter(children, this.end.previousSibling);
+            };
+            Section.prototype.prepend = function() {
+                var children;
+                children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+                return this._insertAfter(children, this.start);
+            };
+            Section.prototype.replaceChildNodes = function() {
+                this.removeAll();
+                return this.append.apply(this, arguments);
+            };
+            Section.prototype.toString = function() {
+                var buffer;
+                buffer = this.getChildNodes().map(function(node) {
+                    var _ref;
+                    return node.innerHTML || ((_ref = node.nodeValue) != null ? _ref : String(node));
+                });
+                return buffer.join("");
+            };
+            Section.prototype.toFragment = function() {
+                return this.nodeFactory.createFragment(this.getChildNodes());
+            };
+            Section.prototype.dispose = function() {
+                if (this._disposed) {
+                    return;
+                }
+                this._disposed = true;
+                this._removeAll();
+                this.start.parentNode.removeChild(this.start);
+                return this.end.parentNode.removeChild(this.end);
+            };
+            Section.prototype.getChildNodes = function() {
+                var children, cn, end;
+                cn = this.start;
+                end = this.end.nextSibling;
+                children = [];
+                while (cn !== end) {
+                    children.push(cn);
+                    cn = cn.nextSibling;
+                }
+                return children;
+            };
+            Section.prototype.getInnerChildNodes = function() {
+                var cn;
+                cn = this.getChildNodes();
+                cn.shift();
+                cn.pop();
+                return cn;
+            };
+            Section.prototype._insertAfter = function(newNodes, refNode) {
+                if (!newNodes.length) {
+                    return;
+                }
+                newNodes = newNodes.map(function(node) {
+                    if (node.__isLoafSection) {
+                        return node.toFragment();
+                    } else {
+                        return node;
+                    }
+                });
+                if (newNodes.length > 1) {
+                    newNodes = this.nodeFactory.createFragment(newNodes);
+                } else {
+                    newNodes = newNodes[0];
+                }
+                return refNode.parentNode.insertBefore(newNodes, refNode.nextSibling);
+            };
+            Section.prototype._loaf = function(children) {
+                var l;
+                l = new loaf;
+                l.append.apply(l, children);
+                return l;
+            };
+            return Section;
+        }();
+        module.exports = loaf = function(nodeFactory) {
             return new Section(nodeFactory);
         };
         return module.exports;
@@ -4746,133 +4874,6 @@
             return PreloadDecorator;
         }(BaseDecor);
         module.exports = PreloadDecorator;
-        return module.exports;
-    });
-    define("loaf/lib/section.js", function(require, module, exports, __dirname, __filename) {
-        var Section, nofactor, __slice = [].slice;
-        nofactor = require("nofactor/lib/index.js");
-        Section = function() {
-            Section.prototype.__isLoafSection = true;
-            function Section(nodeFactory) {
-                this.nodeFactory = nodeFactory != null ? nodeFactory : nofactor["default"];
-                this.start = this.nodeFactory.createTextNode("");
-                this.end = this.nodeFactory.createTextNode("");
-                this._addParent();
-            }
-            Section.prototype.replace = function(node) {
-                node.parentNode.insertBefore(this.toFragment(), node);
-                return node.parentNode.removeChild(node);
-            };
-            Section.prototype.show = function() {
-                var allElements, childLoad, node, _i, _len, _ref;
-                if (!this._detached) {
-                    return this;
-                }
-                this._addParent();
-                allElements = [];
-                _ref = this._detached;
-                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                    node = _ref[_i];
-                    if (node.parentNode && (childLoad = node.parentNode._loaf)) {
-                        node.parentNode._loaf = void 0;
-                        allElements.push(childLoad.toFragment());
-                    } else {
-                        allElements.push(node);
-                    }
-                }
-                this.append.apply(this, allElements);
-                this._detached = void 0;
-                return this;
-            };
-            Section.prototype.hide = function() {
-                this._detached = this.removeAll();
-                return this;
-            };
-            Section.prototype.removeAll = function() {
-                var child, children, _i, _len;
-                children = this.getChildNodes();
-                children.shift();
-                children.pop();
-                for (_i = 0, _len = children.length; _i < _len; _i++) {
-                    child = children[_i];
-                    this.start.parentNode.removeChild(child);
-                }
-                return children;
-            };
-            Section.prototype.append = function() {
-                var children;
-                children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-                return this._insertAfter(children, this.end.previousSibling);
-            };
-            Section.prototype.prepend = function() {
-                var children;
-                children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-                return this._insertAfter(children, this.start);
-            };
-            Section.prototype.replaceChildNodes = function() {
-                this.removeAll();
-                return this.append.apply(this, arguments);
-            };
-            Section.prototype.toString = function() {
-                var buffer;
-                buffer = this.getChildNodes().map(function(node) {
-                    return node.innerHTML || String(node);
-                });
-                return buffer.join("");
-            };
-            Section.prototype.toFragment = function() {
-                return this.nodeFactory.createFragment(this.getChildNodes());
-            };
-            Section.prototype.dispose = function() {
-                var child, _i, _len, _ref, _results;
-                _ref = this.getChildNodes();
-                _results = [];
-                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                    child = _ref[_i];
-                    _results.push(child.parentNode.removeChild(child));
-                }
-                return _results;
-            };
-            Section.prototype.getChildNodes = function() {
-                var children, cn, end;
-                this._addParent();
-                cn = this.start;
-                end = this.end.nextSibling;
-                children = [];
-                while (cn !== end) {
-                    children.push(cn);
-                    cn = cn.nextSibling;
-                }
-                return children;
-            };
-            Section.prototype._insertAfter = function(newNodes, refNode) {
-                newNodes = newNodes.map(function(node) {
-                    if (node.__isLoafSection) {
-                        return node.toFragment();
-                    } else {
-                        return node;
-                    }
-                });
-                if (newNodes.length > 1) {
-                    newNodes = this.nodeFactory.createFragment(newNodes);
-                } else {
-                    newNodes = newNodes[0];
-                }
-                this._addParent();
-                return refNode.parentNode.insertBefore(newNodes, refNode.nextSibling);
-            };
-            Section.prototype._addParent = function() {
-                var parent;
-                if (!this.start.parentNode) {
-                    parent = this.nodeFactory.createElement("div");
-                    parent._loaf = this;
-                    parent.appendChild(this.start);
-                    return parent.appendChild(this.end);
-                }
-            };
-            return Section;
-        }();
-        module.exports = Section;
         return module.exports;
     });
     define("factories/lib/any.js", function(require, module, exports, __dirname, __filename) {
@@ -7235,6 +7236,10 @@
                 this.emit("change", this.value = newValue);
                 return newValue;
             };
+            ClipScript.prototype._deferUpdate = function() {
+                clearTimeout(this._updateTimeout);
+                return this._updateTimeout = setTimeout(this.update, 0);
+            };
             ClipScript.prototype.watch = function() {
                 this.__watch = true;
                 return this;
@@ -7286,7 +7291,7 @@
                         if (lockUpdate) {
                             return;
                         }
-                        return _this.update();
+                        return _this._deferUpdate();
                     }).now(),
                     dispose: function() {
                         return binding.dispose();
@@ -7649,6 +7654,9 @@
             Loader.prototype.unbind = function() {
                 this.bindings.unbind();
                 return this;
+            };
+            Loader.prototype.toFragment = function() {
+                return this.section.toFragment();
             };
             Loader.prototype.toString = function() {
                 var div, frag;
