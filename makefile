@@ -5,7 +5,7 @@ web:
 	amdify -e ./lib/index.js -o ./web
 
 browser:
-	sardines ./lib/index.js -o ./build/mojo2.js -p browser
+	sardines ./lib/index.js -o ./build/mojo3.js -p browser
 
 all-watch:
 	mesh build-src --watch;
