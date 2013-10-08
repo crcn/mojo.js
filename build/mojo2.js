@@ -7236,10 +7236,6 @@
                 this.emit("change", this.value = newValue);
                 return newValue;
             };
-            ClipScript.prototype._deferUpdate = function() {
-                clearTimeout(this._updateTimeout);
-                return this._updateTimeout = setTimeout(this.update, 0);
-            };
             ClipScript.prototype.watch = function() {
                 this.__watch = true;
                 return this;
@@ -7282,7 +7278,7 @@
                 lockUpdate = true;
                 this._watching[path] = {
                     target: target,
-                    binding: binding = target.bind(path).to(function(value, oldValue) {
+                    binding: binding = target.bind(path).delay(1).to(function(value, oldValue) {
                         if (value != null ? value.__isBindable : void 0) {
                             _this._watchBindable(value, oldValue);
                         } else if (type(value) === "function") {
@@ -7291,7 +7287,7 @@
                         if (lockUpdate) {
                             return;
                         }
-                        return _this._deferUpdate();
+                        return _this._debounceUpdate();
                     }).now(),
                     dispose: function() {
                         return binding.dispose();
