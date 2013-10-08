@@ -645,6 +645,183 @@
         module.exports = StatesView;
         return module.exports;
     });
+    define("mojojs/lib/mediator/mediator.js", function(require, module, exports, __dirname, __filename) {
+        var Mediator, crema, hooks, type, _;
+        hooks = require("hooks/hooks.js");
+        type = require("type-component/index.js");
+        crema = require("crema/lib/index.js");
+        _ = require("underscore/underscore.js");
+        Mediator = function() {
+            function Mediator() {
+                this.commands = {};
+                _.extend(this.commands, hooks);
+            }
+            Mediator.prototype.on = function(name, callback) {
+                var commands;
+                if (type(name) === "object") {
+                    commands = name;
+                    for (name in commands) {
+                        this.on(name, commands[name]);
+                    }
+                    return;
+                }
+                return this._register(name, callback);
+            };
+            Mediator.prototype.execute = function() {
+                var args, name;
+                args = Array.prototype.slice.call(arguments);
+                name = args.shift();
+                if (!this.commands[name]) {
+                    return;
+                }
+                return this.commands[name].apply(this.commands, args);
+            };
+            Mediator.prototype._register = function(routes, callback) {
+                var name, route, _i, _len, _results;
+                routes = crema(routes);
+                _results = [];
+                for (_i = 0, _len = routes.length; _i < _len; _i++) {
+                    route = routes[_i];
+                    if (!this.commands[name = route.path.value.substr(1)]) {
+                        this.commands[name] = function() {};
+                    }
+                    if (!route.type) {
+                        route.type = "hook";
+                    }
+                    _results.push(hooks[route.type].call(this.commands, name, callback));
+                }
+                return _results;
+            };
+            return Mediator;
+        }();
+        module.exports = Mediator;
+        return module.exports;
+    });
+    define("hooks/hooks.js", function(require, module, exports, __dirname, __filename) {
+        module.exports = {
+            hook: function(name, fn, errorCb) {
+                if (arguments.length === 1 && typeof name === "object") {
+                    for (var k in name) {
+                        this.hook(k, name[k]);
+                    }
+                    return;
+                }
+                var proto = this.prototype || this, pres = proto._pres = proto._pres || {}, posts = proto._posts = proto._posts || {};
+                pres[name] = pres[name] || [];
+                posts[name] = posts[name] || [];
+                proto[name] = function() {
+                    var self = this, hookArgs, lastArg = arguments[arguments.length - 1], pres = this._pres[name], posts = this._posts[name], _total = pres.length, _current = -1, _asyncsLeft = proto[name].numAsyncPres, _next = function() {
+                        if (arguments[0] instanceof Error) {
+                            return handleError(arguments[0]);
+                        }
+                        var _args = Array.prototype.slice.call(arguments), currPre, preArgs;
+                        if (_args.length && !(arguments[0] == null && typeof lastArg === "function")) hookArgs = _args;
+                        if (++_current < _total) {
+                            currPre = pres[_current];
+                            if (currPre.isAsync && currPre.length < 2) throw new Error("Your pre must have next and done arguments -- e.g., function (next, done, ...)");
+                            if (currPre.length < 1) throw new Error("Your pre must have a next argument -- e.g., function (next, ...)");
+                            preArgs = (currPre.isAsync ? [ once(_next), once(_asyncsDone) ] : [ once(_next) ]).concat(hookArgs);
+                            return currPre.apply(self, preArgs);
+                        } else if (!proto[name].numAsyncPres) {
+                            return _done.apply(self, hookArgs);
+                        }
+                    }, _done = function() {
+                        var args_ = Array.prototype.slice.call(arguments), ret, total_, current_, next_, done_, postArgs;
+                        if (_current === _total) {
+                            next_ = function() {
+                                if (arguments[0] instanceof Error) {
+                                    return handleError(arguments[0]);
+                                }
+                                var args_ = Array.prototype.slice.call(arguments, 1), currPost, postArgs;
+                                if (args_.length) hookArgs = args_;
+                                if (++current_ < total_) {
+                                    currPost = posts[current_];
+                                    if (currPost.length < 1) throw new Error("Your post must have a next argument -- e.g., function (next, ...)");
+                                    postArgs = [ once(next_) ].concat(hookArgs);
+                                    return currPost.apply(self, postArgs);
+                                } else if (typeof lastArg === "function") {
+                                    return lastArg.apply(self);
+                                }
+                            };
+                            if (typeof lastArg === "function") {
+                                args_[args_.length - 1] = once(next_);
+                            }
+                            total_ = posts.length;
+                            current_ = -1;
+                            ret = fn.apply(self, args_);
+                            if (total_ && typeof lastArg !== "function") return next_();
+                            return ret;
+                        }
+                    };
+                    if (_asyncsLeft) {
+                        function _asyncsDone(err) {
+                            if (err && err instanceof Error) {
+                                return handleError(err);
+                            }
+                            --_asyncsLeft || _done.apply(self, hookArgs);
+                        }
+                    }
+                    function handleError(err) {
+                        if ("function" == typeof lastArg) return lastArg(err);
+                        if (errorCb) return errorCb.call(self, err);
+                        throw err;
+                    }
+                    return _next.apply(this, arguments);
+                };
+                proto[name].numAsyncPres = 0;
+                return this;
+            },
+            pre: function(name, isAsync, fn, errorCb) {
+                if ("boolean" !== typeof arguments[1]) {
+                    errorCb = fn;
+                    fn = isAsync;
+                    isAsync = false;
+                }
+                var proto = this.prototype || this, pres = proto._pres = proto._pres || {};
+                this._lazySetupHooks(proto, name, errorCb);
+                if (fn.isAsync = isAsync) {
+                    proto[name].numAsyncPres++;
+                }
+                (pres[name] = pres[name] || []).push(fn);
+                return this;
+            },
+            post: function(name, isAsync, fn) {
+                if (arguments.length === 2) {
+                    fn = isAsync;
+                    isAsync = false;
+                }
+                var proto = this.prototype || this, posts = proto._posts = proto._posts || {};
+                this._lazySetupHooks(proto, name);
+                (posts[name] = posts[name] || []).push(fn);
+                return this;
+            },
+            removePre: function(name, fnToRemove) {
+                var proto = this.prototype || this, pres = proto._pres || proto._pres || {};
+                if (!pres[name]) return this;
+                if (arguments.length === 1) {
+                    pres[name].length = 0;
+                } else {
+                    pres[name] = pres[name].filter(function(currFn) {
+                        return currFn !== fnToRemove;
+                    });
+                }
+                return this;
+            },
+            _lazySetupHooks: function(proto, methodName, errorCb) {
+                if ("undefined" === typeof proto[methodName].numAsyncPres) {
+                    this.hook(methodName, proto[methodName], errorCb);
+                }
+            }
+        };
+        function once(fn, scope) {
+            return function fnWrapper() {
+                if (fnWrapper.hookCalled) return;
+                fnWrapper.hookCalled = true;
+                fn.apply(scope, arguments);
+            };
+        }
+        return module.exports;
+    });
     define("bindable/lib/object/binding.js", function(require, module, exports, __dirname, __filename) {
         (function() {
             var BindableSetter, Binding, DeepPropertyWatcher, bindableSetter, options, toarray, type, utils, __bind = function(fn, me) {
@@ -1355,183 +1532,6 @@
                 computedDelay: 0
             };
         }).call(this);
-        return module.exports;
-    });
-    define("mojojs/lib/mediator/mediator.js", function(require, module, exports, __dirname, __filename) {
-        var Mediator, crema, hooks, type, _;
-        hooks = require("hooks/hooks.js");
-        type = require("type-component/index.js");
-        crema = require("crema/lib/index.js");
-        _ = require("underscore/underscore.js");
-        Mediator = function() {
-            function Mediator() {
-                this.commands = {};
-                _.extend(this.commands, hooks);
-            }
-            Mediator.prototype.on = function(name, callback) {
-                var commands;
-                if (type(name) === "object") {
-                    commands = name;
-                    for (name in commands) {
-                        this.on(name, commands[name]);
-                    }
-                    return;
-                }
-                return this._register(name, callback);
-            };
-            Mediator.prototype.execute = function() {
-                var args, name;
-                args = Array.prototype.slice.call(arguments);
-                name = args.shift();
-                if (!this.commands[name]) {
-                    return;
-                }
-                return this.commands[name].apply(this.commands, args);
-            };
-            Mediator.prototype._register = function(routes, callback) {
-                var name, route, _i, _len, _results;
-                routes = crema(routes);
-                _results = [];
-                for (_i = 0, _len = routes.length; _i < _len; _i++) {
-                    route = routes[_i];
-                    if (!this.commands[name = route.path.value.substr(1)]) {
-                        this.commands[name] = function() {};
-                    }
-                    if (!route.type) {
-                        route.type = "hook";
-                    }
-                    _results.push(hooks[route.type].call(this.commands, name, callback));
-                }
-                return _results;
-            };
-            return Mediator;
-        }();
-        module.exports = Mediator;
-        return module.exports;
-    });
-    define("hooks/hooks.js", function(require, module, exports, __dirname, __filename) {
-        module.exports = {
-            hook: function(name, fn, errorCb) {
-                if (arguments.length === 1 && typeof name === "object") {
-                    for (var k in name) {
-                        this.hook(k, name[k]);
-                    }
-                    return;
-                }
-                var proto = this.prototype || this, pres = proto._pres = proto._pres || {}, posts = proto._posts = proto._posts || {};
-                pres[name] = pres[name] || [];
-                posts[name] = posts[name] || [];
-                proto[name] = function() {
-                    var self = this, hookArgs, lastArg = arguments[arguments.length - 1], pres = this._pres[name], posts = this._posts[name], _total = pres.length, _current = -1, _asyncsLeft = proto[name].numAsyncPres, _next = function() {
-                        if (arguments[0] instanceof Error) {
-                            return handleError(arguments[0]);
-                        }
-                        var _args = Array.prototype.slice.call(arguments), currPre, preArgs;
-                        if (_args.length && !(arguments[0] == null && typeof lastArg === "function")) hookArgs = _args;
-                        if (++_current < _total) {
-                            currPre = pres[_current];
-                            if (currPre.isAsync && currPre.length < 2) throw new Error("Your pre must have next and done arguments -- e.g., function (next, done, ...)");
-                            if (currPre.length < 1) throw new Error("Your pre must have a next argument -- e.g., function (next, ...)");
-                            preArgs = (currPre.isAsync ? [ once(_next), once(_asyncsDone) ] : [ once(_next) ]).concat(hookArgs);
-                            return currPre.apply(self, preArgs);
-                        } else if (!proto[name].numAsyncPres) {
-                            return _done.apply(self, hookArgs);
-                        }
-                    }, _done = function() {
-                        var args_ = Array.prototype.slice.call(arguments), ret, total_, current_, next_, done_, postArgs;
-                        if (_current === _total) {
-                            next_ = function() {
-                                if (arguments[0] instanceof Error) {
-                                    return handleError(arguments[0]);
-                                }
-                                var args_ = Array.prototype.slice.call(arguments, 1), currPost, postArgs;
-                                if (args_.length) hookArgs = args_;
-                                if (++current_ < total_) {
-                                    currPost = posts[current_];
-                                    if (currPost.length < 1) throw new Error("Your post must have a next argument -- e.g., function (next, ...)");
-                                    postArgs = [ once(next_) ].concat(hookArgs);
-                                    return currPost.apply(self, postArgs);
-                                } else if (typeof lastArg === "function") {
-                                    return lastArg.apply(self);
-                                }
-                            };
-                            if (typeof lastArg === "function") {
-                                args_[args_.length - 1] = once(next_);
-                            }
-                            total_ = posts.length;
-                            current_ = -1;
-                            ret = fn.apply(self, args_);
-                            if (total_ && typeof lastArg !== "function") return next_();
-                            return ret;
-                        }
-                    };
-                    if (_asyncsLeft) {
-                        function _asyncsDone(err) {
-                            if (err && err instanceof Error) {
-                                return handleError(err);
-                            }
-                            --_asyncsLeft || _done.apply(self, hookArgs);
-                        }
-                    }
-                    function handleError(err) {
-                        if ("function" == typeof lastArg) return lastArg(err);
-                        if (errorCb) return errorCb.call(self, err);
-                        throw err;
-                    }
-                    return _next.apply(this, arguments);
-                };
-                proto[name].numAsyncPres = 0;
-                return this;
-            },
-            pre: function(name, isAsync, fn, errorCb) {
-                if ("boolean" !== typeof arguments[1]) {
-                    errorCb = fn;
-                    fn = isAsync;
-                    isAsync = false;
-                }
-                var proto = this.prototype || this, pres = proto._pres = proto._pres || {};
-                this._lazySetupHooks(proto, name, errorCb);
-                if (fn.isAsync = isAsync) {
-                    proto[name].numAsyncPres++;
-                }
-                (pres[name] = pres[name] || []).push(fn);
-                return this;
-            },
-            post: function(name, isAsync, fn) {
-                if (arguments.length === 2) {
-                    fn = isAsync;
-                    isAsync = false;
-                }
-                var proto = this.prototype || this, posts = proto._posts = proto._posts || {};
-                this._lazySetupHooks(proto, name);
-                (posts[name] = posts[name] || []).push(fn);
-                return this;
-            },
-            removePre: function(name, fnToRemove) {
-                var proto = this.prototype || this, pres = proto._pres || proto._pres || {};
-                if (!pres[name]) return this;
-                if (arguments.length === 1) {
-                    pres[name].length = 0;
-                } else {
-                    pres[name] = pres[name].filter(function(currFn) {
-                        return currFn !== fnToRemove;
-                    });
-                }
-                return this;
-            },
-            _lazySetupHooks: function(proto, methodName, errorCb) {
-                if ("undefined" === typeof proto[methodName].numAsyncPres) {
-                    this.hook(methodName, proto[methodName], errorCb);
-                }
-            }
-        };
-        function once(fn, scope) {
-            return function fnWrapper() {
-                if (fnWrapper.hookCalled) return;
-                fnWrapper.hookCalled = true;
-                fn.apply(scope, arguments);
-            };
-        }
         return module.exports;
     });
     define("underscore/underscore.js", function(require, module, exports, __dirname, __filename) {
@@ -3264,6 +3264,278 @@
         module.exports = Structr;
         return module.exports;
     });
+    define("factories/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            module.exports = {
+                any: require("factories/lib/any.js"),
+                "class": require("factories/lib/class.js"),
+                factory: require("factories/lib/factory.js"),
+                fn: require("factories/lib/fn.js"),
+                group: require("factories/lib/group.js")
+            };
+        }).call(this);
+        return module.exports;
+    });
+    define("hoist/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var method, transformer, _fn, _i, _len, _ref, _this = this;
+            transformer = require("hoist/lib/transformer.js");
+            module.exports = transformer;
+            _ref = [ "cast", "map", "preCast", "preMap", "postCast", "postMap" ];
+            _fn = function(method) {
+                return module.exports[method] = function() {
+                    var t;
+                    t = transformer();
+                    return t[method].apply(t, arguments);
+                };
+            };
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                method = _ref[_i];
+                _fn(method);
+            }
+        }).call(this);
+        return module.exports;
+    });
+    define("nofactor/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        module.exports = {
+            string: require("nofactor/lib/string.js"),
+            dom: require("nofactor/lib/dom.js")
+        };
+        module.exports["default"] = typeof window !== "undefined" ? module.exports.dom : module.exports.string;
+        return module.exports;
+    });
+    define("mojojs/lib/views/states/state.js", function(require, module, exports, __dirname, __filename) {
+        var State, bindable, _, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        bindable = require("bindable/lib/index.js");
+        _ = require("underscore/underscore.js");
+        State = function(_super) {
+            __extends(State, _super);
+            function State(states, options, index) {
+                var ops;
+                this.states = states;
+                ops = {};
+                if (!options["class"]) {
+                    ops["class"] = options;
+                } else {
+                    ops = options;
+                }
+                ops.index = index;
+                ops.selected = false;
+                ops._id = options.name || Math.random();
+                State.__super__.constructor.call(this, ops);
+            }
+            State.prototype.select = function() {
+                return this.states.select(this);
+            };
+            State.prototype.hide = function() {
+                this._view.section.hide();
+                return this._view.set("visible", false);
+            };
+            State.prototype.show = function() {
+                this._view.section.show();
+                return this._view.set("visible", true);
+            };
+            State.prototype.hasView = function() {
+                return !!this._view;
+            };
+            State.prototype.getView = function() {
+                var clazz;
+                if (this._view) {
+                    return this._view;
+                }
+                clazz = this.get("class");
+                return this._view = new clazz;
+            };
+            return State;
+        }(bindable.Object);
+        module.exports = State;
+        return module.exports;
+    });
+    define("crema/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        var strscanner = require("strscanner/lib/index.js");
+        function parseTokens(route) {
+            return route.replace(/\s+/g, " ").split(" ");
+        }
+        function splitOr(tokens, route, routes, start) {
+            for (var i = start, n = tokens.length; i < n; i++) {
+                var token = tokens[i];
+                if (token.toLowerCase() == "or") {
+                    var orRoute = route.concat();
+                    orRoute.pop();
+                    orRoute.push(tokens[++i]);
+                    splitOr(tokens, orRoute, routes, i + 1);
+                    while (i < n - 1 && tokens[i + 1].toLowerCase() == "or") {
+                        i += 2;
+                    }
+                } else {
+                    route.push(token);
+                }
+            }
+            routes.push(route);
+            return routes;
+        }
+        function scanGroups(scanner) {
+            var buffer = "(";
+            while (scanner.cchar() != ")") {
+                buffer += scanner.cchar();
+                scanner.nextChar();
+                if (scanner.cchar() == "(") {
+                    scanner.nextChar();
+                    buffer += scanGroups(scanner);
+                }
+            }
+            scanner.nextChar();
+            return buffer + ")";
+        }
+        function parsePath(path) {
+            var scanner = strscanner(path), segs = [];
+            while (!scanner.eof()) {
+                var cchar = scanner.cchar();
+                if (cchar != "/") {
+                    var isParam = false, name = null, test = null;
+                    if (cchar == ":") {
+                        isParam = true;
+                        cchar = scanner.nextChar();
+                    }
+                    if (cchar != "(") {
+                        name = scanner.nextUntil(/[\/(]/);
+                        cchar = scanner.cchar();
+                    }
+                    if (cchar == "(") {
+                        scanner.nextChar();
+                        test = new RegExp(scanGroups(scanner));
+                    }
+                    segs.push({
+                        value: name,
+                        param: isParam,
+                        test: test
+                    });
+                }
+                scanner.nextChar();
+            }
+            if (!segs.length) {
+                segs.push({
+                    value: "",
+                    param: false,
+                    test: null
+                });
+            }
+            return {
+                value: module.exports.stringifySegments(segs),
+                segments: segs
+            };
+        }
+        function parseRoutePaths(rootExpr, tokens, start) {
+            var n = tokens.length, currentExpression = rootExpr;
+            currentExpression.path = parsePath(tokens[n - 1]);
+            for (var i = n - 2; i >= start; i--) {
+                var token = tokens[i], buffer = [];
+                if (token == "->") continue;
+                currentExpression = currentExpression.thru = {
+                    path: parsePath(token)
+                };
+            }
+            return rootExpr;
+        }
+        function fixRoute(route, grammar) {
+            for (var expr in grammar) {
+                route = route.replace(grammar[expr], expr);
+            }
+            return route;
+        }
+        function parseRoute(route, grammar) {
+            if (grammar) {
+                route = fixRoute(route, grammar);
+            }
+            var tokens = parseTokens(route), routes = splitOr(tokens, [], [], 0), currentRoute, expressions = [];
+            for (var i = 0, n = routes.length; i < n; i++) {
+                var routeTokens = routes[i], expr = {
+                    tags: {}
+                }, start = 0;
+                if (routeTokens[0].match(/^\w+$/) && routeTokens[1] != "->" && routeTokens.length - 1) {
+                    start = 1;
+                    expr.type = routeTokens[0];
+                }
+                for (var j = start, jn = routeTokens.length; j < jn; j++) {
+                    var routeToken = routeTokens[j];
+                    if (routeToken.substr(0, 1) == "-") {
+                        var tagParts = routeToken.split("=");
+                        var tagName = tagParts[0].substr(1);
+                        expr.tags[tagName] = tagParts.length > 1 ? tagParts[1] : true;
+                        continue;
+                    }
+                    expressions.push(parseRoutePaths(expr, routeTokens, j));
+                    break;
+                }
+            }
+            return expressions;
+        }
+        module.exports = function(source, grammar) {
+            return parseRoute(source, grammar);
+        };
+        module.exports.grammar = function(grammar) {
+            return {
+                fixRoute: function(source) {
+                    return fixRoute(source, grammar);
+                },
+                parse: function(source) {
+                    return parseRoute(source, grammar);
+                }
+            };
+        };
+        module.exports.parsePath = parsePath;
+        module.exports.stringifySegments = function(segments, params, ignoreParams) {
+            var segs = segments.map(function(seg) {
+                var buffer = "";
+                if (seg.param) buffer += ":";
+                if (seg.value) buffer += seg.value;
+                if (seg.test) buffer += seg.test.source;
+                return buffer;
+            }).join("/");
+            if (segs.substr(0, 1) != ".") return "/" + segs;
+            return segs;
+        };
+        module.exports.stringifyTags = function(tags) {
+            var stringified = [];
+            for (var tagName in tags) {
+                var tagValue = tags[tagName];
+                if (tagValue === true) {
+                    stringified.push("-" + tagName);
+                } else {
+                    stringified.push("-" + tagName + "=" + tagValue);
+                }
+            }
+            return stringified.join(" ");
+        };
+        module.exports.stringifyThru = function(cthru) {
+            var thru = [];
+            while (cthru) {
+                thru.push(module.exports.stringifySegments(cthru.path.segments));
+                cthru = cthru.thru;
+            }
+            return thru.reverse().join(" -> ");
+        };
+        module.exports.stringify = function(route, includeType) {
+            var stringified = [];
+            if (route.type && includeType !== false) stringified.push(route.type);
+            var tags = module.exports.stringifyTags(route.tags), thru = module.exports.stringifyThru(route);
+            if (tags.length) stringified.push(tags);
+            stringified.push(thru);
+            return stringified.join(" ");
+        };
+        return module.exports;
+    });
     define("bindable/lib/object/setters/factory.js", function(require, module, exports, __dirname, __filename) {
         (function() {
             var BindableSetter, CollectionSetter, FnSetter;
@@ -3551,46 +3823,6 @@
         }).call(this);
         return module.exports;
     });
-    define("factories/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            module.exports = {
-                any: require("factories/lib/any.js"),
-                "class": require("factories/lib/class.js"),
-                factory: require("factories/lib/factory.js"),
-                fn: require("factories/lib/fn.js"),
-                group: require("factories/lib/group.js")
-            };
-        }).call(this);
-        return module.exports;
-    });
-    define("hoist/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var method, transformer, _fn, _i, _len, _ref, _this = this;
-            transformer = require("hoist/lib/transformer.js");
-            module.exports = transformer;
-            _ref = [ "cast", "map", "preCast", "preMap", "postCast", "postMap" ];
-            _fn = function(method) {
-                return module.exports[method] = function() {
-                    var t;
-                    t = transformer();
-                    return t[method].apply(t, arguments);
-                };
-            };
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                method = _ref[_i];
-                _fn(method);
-            }
-        }).call(this);
-        return module.exports;
-    });
-    define("nofactor/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        module.exports = {
-            string: require("nofactor/lib/string.js"),
-            dom: require("nofactor/lib/dom.js")
-        };
-        module.exports["default"] = typeof window !== "undefined" ? module.exports.dom : module.exports.string;
-        return module.exports;
-    });
     define("bindable/lib/object/dref.js", function(require, module, exports, __dirname, __filename) {
         (function() {
             exports.get = function(bindable, context, keyParts, flatten) {
@@ -3650,64 +3882,6 @@
                 }
             };
         }).call(this);
-        return module.exports;
-    });
-    define("mojojs/lib/views/states/state.js", function(require, module, exports, __dirname, __filename) {
-        var State, bindable, _, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        bindable = require("bindable/lib/index.js");
-        _ = require("underscore/underscore.js");
-        State = function(_super) {
-            __extends(State, _super);
-            function State(states, options, index) {
-                var ops;
-                this.states = states;
-                ops = {};
-                if (!options["class"]) {
-                    ops["class"] = options;
-                } else {
-                    ops = options;
-                }
-                ops.index = index;
-                ops.selected = false;
-                ops._id = options.name || Math.random();
-                State.__super__.constructor.call(this, ops);
-            }
-            State.prototype.select = function() {
-                return this.states.select(this);
-            };
-            State.prototype.hide = function() {
-                this._view.section.hide();
-                return this._view.set("visible", false);
-            };
-            State.prototype.show = function() {
-                this._view.section.show();
-                return this._view.set("visible", true);
-            };
-            State.prototype.hasView = function() {
-                return !!this._view;
-            };
-            State.prototype.getView = function() {
-                var clazz;
-                if (this._view) {
-                    return this._view;
-                }
-                clazz = this.get("class");
-                return this._view = new clazz;
-            };
-            return State;
-        }(bindable.Object);
-        module.exports = State;
         return module.exports;
     });
     define("bindable/lib/collection/binding.js", function(require, module, exports, __dirname, __filename) {
@@ -4023,180 +4197,6 @@
                 window.disposable = _disposable;
             }
         })();
-        return module.exports;
-    });
-    define("crema/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        var strscanner = require("strscanner/lib/index.js");
-        function parseTokens(route) {
-            return route.replace(/\s+/g, " ").split(" ");
-        }
-        function splitOr(tokens, route, routes, start) {
-            for (var i = start, n = tokens.length; i < n; i++) {
-                var token = tokens[i];
-                if (token.toLowerCase() == "or") {
-                    var orRoute = route.concat();
-                    orRoute.pop();
-                    orRoute.push(tokens[++i]);
-                    splitOr(tokens, orRoute, routes, i + 1);
-                    while (i < n - 1 && tokens[i + 1].toLowerCase() == "or") {
-                        i += 2;
-                    }
-                } else {
-                    route.push(token);
-                }
-            }
-            routes.push(route);
-            return routes;
-        }
-        function scanGroups(scanner) {
-            var buffer = "(";
-            while (scanner.cchar() != ")") {
-                buffer += scanner.cchar();
-                scanner.nextChar();
-                if (scanner.cchar() == "(") {
-                    scanner.nextChar();
-                    buffer += scanGroups(scanner);
-                }
-            }
-            scanner.nextChar();
-            return buffer + ")";
-        }
-        function parsePath(path) {
-            var scanner = strscanner(path), segs = [];
-            while (!scanner.eof()) {
-                var cchar = scanner.cchar();
-                if (cchar != "/") {
-                    var isParam = false, name = null, test = null;
-                    if (cchar == ":") {
-                        isParam = true;
-                        cchar = scanner.nextChar();
-                    }
-                    if (cchar != "(") {
-                        name = scanner.nextUntil(/[\/(]/);
-                        cchar = scanner.cchar();
-                    }
-                    if (cchar == "(") {
-                        scanner.nextChar();
-                        test = new RegExp(scanGroups(scanner));
-                    }
-                    segs.push({
-                        value: name,
-                        param: isParam,
-                        test: test
-                    });
-                }
-                scanner.nextChar();
-            }
-            if (!segs.length) {
-                segs.push({
-                    value: "",
-                    param: false,
-                    test: null
-                });
-            }
-            return {
-                value: module.exports.stringifySegments(segs),
-                segments: segs
-            };
-        }
-        function parseRoutePaths(rootExpr, tokens, start) {
-            var n = tokens.length, currentExpression = rootExpr;
-            currentExpression.path = parsePath(tokens[n - 1]);
-            for (var i = n - 2; i >= start; i--) {
-                var token = tokens[i], buffer = [];
-                if (token == "->") continue;
-                currentExpression = currentExpression.thru = {
-                    path: parsePath(token)
-                };
-            }
-            return rootExpr;
-        }
-        function fixRoute(route, grammar) {
-            for (var expr in grammar) {
-                route = route.replace(grammar[expr], expr);
-            }
-            return route;
-        }
-        function parseRoute(route, grammar) {
-            if (grammar) {
-                route = fixRoute(route, grammar);
-            }
-            var tokens = parseTokens(route), routes = splitOr(tokens, [], [], 0), currentRoute, expressions = [];
-            for (var i = 0, n = routes.length; i < n; i++) {
-                var routeTokens = routes[i], expr = {
-                    tags: {}
-                }, start = 0;
-                if (routeTokens[0].match(/^\w+$/) && routeTokens[1] != "->" && routeTokens.length - 1) {
-                    start = 1;
-                    expr.type = routeTokens[0];
-                }
-                for (var j = start, jn = routeTokens.length; j < jn; j++) {
-                    var routeToken = routeTokens[j];
-                    if (routeToken.substr(0, 1) == "-") {
-                        var tagParts = routeToken.split("=");
-                        var tagName = tagParts[0].substr(1);
-                        expr.tags[tagName] = tagParts.length > 1 ? tagParts[1] : true;
-                        continue;
-                    }
-                    expressions.push(parseRoutePaths(expr, routeTokens, j));
-                    break;
-                }
-            }
-            return expressions;
-        }
-        module.exports = function(source, grammar) {
-            return parseRoute(source, grammar);
-        };
-        module.exports.grammar = function(grammar) {
-            return {
-                fixRoute: function(source) {
-                    return fixRoute(source, grammar);
-                },
-                parse: function(source) {
-                    return parseRoute(source, grammar);
-                }
-            };
-        };
-        module.exports.parsePath = parsePath;
-        module.exports.stringifySegments = function(segments, params, ignoreParams) {
-            var segs = segments.map(function(seg) {
-                var buffer = "";
-                if (seg.param) buffer += ":";
-                if (seg.value) buffer += seg.value;
-                if (seg.test) buffer += seg.test.source;
-                return buffer;
-            }).join("/");
-            if (segs.substr(0, 1) != ".") return "/" + segs;
-            return segs;
-        };
-        module.exports.stringifyTags = function(tags) {
-            var stringified = [];
-            for (var tagName in tags) {
-                var tagValue = tags[tagName];
-                if (tagValue === true) {
-                    stringified.push("-" + tagName);
-                } else {
-                    stringified.push("-" + tagName + "=" + tagValue);
-                }
-            }
-            return stringified.join(" ");
-        };
-        module.exports.stringifyThru = function(cthru) {
-            var thru = [];
-            while (cthru) {
-                thru.push(module.exports.stringifySegments(cthru.path.segments));
-                cthru = cthru.thru;
-            }
-            return thru.reverse().join(" -> ");
-        };
-        module.exports.stringify = function(route, includeType) {
-            var stringified = [];
-            if (route.type && includeType !== false) stringified.push(route.type);
-            var tags = module.exports.stringifyTags(route.tags), thru = module.exports.stringifyThru(route);
-            if (tags.length) stringified.push(tags);
-            stringified.push(thru);
-            return stringified.join(" ");
-        };
         return module.exports;
     });
     define("mojojs/lib/views/base/decor/base.js", function(require, module, exports, __dirname, __filename) {
@@ -4874,138 +4874,6 @@
             return PreloadDecorator;
         }(BaseDecor);
         module.exports = PreloadDecorator;
-        return module.exports;
-    });
-    define("bindable/lib/object/setters/fn.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var Base, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-                for (var key in parent) {
-                    if (__hasProp.call(parent, key)) child[key] = parent[key];
-                }
-                function ctor() {
-                    this.constructor = child;
-                }
-                ctor.prototype = parent.prototype;
-                child.prototype = new ctor;
-                child.__super__ = parent.prototype;
-                return child;
-            };
-            Base = require("bindable/lib/object/setters/base.js");
-            module.exports = function(_super) {
-                __extends(_Class, _super);
-                function _Class(binding, callback) {
-                    this.binding = binding;
-                    this.callback = callback;
-                    _Class.__super__.constructor.call(this, this.binding);
-                }
-                _Class.prototype._change = function(newValue, oldValue) {
-                    return this.callback(newValue, oldValue);
-                };
-                _Class.prototype.dispose = function() {
-                    return this.callback = null;
-                };
-                return _Class;
-            }(Base);
-        }).call(this);
-        return module.exports;
-    });
-    define("bindable/lib/object/setters/bindable.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var Base, type, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-                for (var key in parent) {
-                    if (__hasProp.call(parent, key)) child[key] = parent[key];
-                }
-                function ctor() {
-                    this.constructor = child;
-                }
-                ctor.prototype = parent.prototype;
-                child.prototype = new ctor;
-                child.__super__ = parent.prototype;
-                return child;
-            };
-            Base = require("bindable/lib/object/setters/base.js");
-            type = require("type-component/index.js");
-            module.exports = function(_super) {
-                __extends(_Class, _super);
-                function _Class(binding, to, property) {
-                    this.binding = binding;
-                    this.to = to;
-                    this.property = property;
-                    _Class.__super__.constructor.call(this, this.binding);
-                }
-                _Class.prototype._change = function(newValue) {
-                    this._ignoreBothWays = true;
-                    this.to.set(this.property, newValue);
-                    return this._ignoreBothWays = false;
-                };
-                _Class.prototype.dispose = function() {
-                    var _ref;
-                    if ((_ref = this._bothWaysBinding) != null) {
-                        _ref.dispose();
-                    }
-                    return this._bothWaysBinding = this.binding = this.to = this.properties = null;
-                };
-                _Class.prototype.bothWays = function() {
-                    var _this = this;
-                    return this._bothWaysBinding = this.to.bind(this.property).map({
-                        to: function() {
-                            var value, _ref;
-                            value = (_ref = _this.binding._map).from.apply(_ref, arguments);
-                            if (type(value) === "array") {
-                                return value;
-                            } else {
-                                return [ value ];
-                            }
-                        }
-                    }).to(function(values) {
-                        var i, prop, value, _i, _len;
-                        if (_this._ignoreBothWays) {
-                            return;
-                        }
-                        for (i = _i = 0, _len = values.length; _i < _len; i = ++_i) {
-                            value = values[i];
-                            prop = _this.binding._properties[i];
-                            _this.binding._from.set(prop, value);
-                        }
-                    });
-                };
-                return _Class;
-            }(Base);
-        }).call(this);
-        return module.exports;
-    });
-    define("bindable/lib/object/setters/collection.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var Base, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-                for (var key in parent) {
-                    if (__hasProp.call(parent, key)) child[key] = parent[key];
-                }
-                function ctor() {
-                    this.constructor = child;
-                }
-                ctor.prototype = parent.prototype;
-                child.prototype = new ctor;
-                child.__super__ = parent.prototype;
-                return child;
-            };
-            Base = require("bindable/lib/object/setters/base.js");
-            module.exports = function(_super) {
-                __extends(_Class, _super);
-                function _Class(binding, to, property) {
-                    this.binding = binding;
-                    this.to = to;
-                    this.property = property;
-                    _Class.__super__.constructor.call(this, this.binding);
-                }
-                _Class.prototype._change = function(newValue, oldValue) {
-                    return this.to.reset(newValue, oldValue);
-                };
-                _Class.prototype.dispose = function() {
-                    return this.to.disposeSourceBinding();
-                };
-                return _Class;
-            }(Base);
-        }).call(this);
         return module.exports;
     });
     define("factories/lib/any.js", function(require, module, exports, __dirname, __filename) {
@@ -5699,32 +5567,6 @@
         module.exports = new DomFactory;
         return module.exports;
     });
-    define("bindable/lib/collection/setters/factory.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var CollectionSetter, FnSetter, ObjSetter;
-            FnSetter = require("bindable/lib/collection/setters/fn.js");
-            ObjSetter = require("bindable/lib/collection/setters/object.js");
-            CollectionSetter = require("bindable/lib/collection/setters/collection.js");
-            module.exports = function() {
-                function _Class() {}
-                _Class.prototype.createSetter = function(binding, target) {
-                    if (!target) {
-                        return null;
-                    }
-                    if (typeof target === "function") {
-                        return new FnSetter(binding, target);
-                    } else if (target.__isCollection) {
-                        return new CollectionSetter(binding, target);
-                    } else if (target.insert || target.update || target.remove || target.replace) {
-                        return new ObjSetter(binding, target);
-                    }
-                    return null;
-                };
-                return _Class;
-            }();
-        }).call(this);
-        return module.exports;
-    });
     define("strscanner/lib/index.js", function(require, module, exports, __dirname, __filename) {
         module.exports = function(source, options) {
             if (!options) {
@@ -5835,6 +5677,164 @@
             self.source(source);
             return self;
         };
+        return module.exports;
+    });
+    define("bindable/lib/object/setters/fn.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var Base, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+                for (var key in parent) {
+                    if (__hasProp.call(parent, key)) child[key] = parent[key];
+                }
+                function ctor() {
+                    this.constructor = child;
+                }
+                ctor.prototype = parent.prototype;
+                child.prototype = new ctor;
+                child.__super__ = parent.prototype;
+                return child;
+            };
+            Base = require("bindable/lib/object/setters/base.js");
+            module.exports = function(_super) {
+                __extends(_Class, _super);
+                function _Class(binding, callback) {
+                    this.binding = binding;
+                    this.callback = callback;
+                    _Class.__super__.constructor.call(this, this.binding);
+                }
+                _Class.prototype._change = function(newValue, oldValue) {
+                    return this.callback(newValue, oldValue);
+                };
+                _Class.prototype.dispose = function() {
+                    return this.callback = null;
+                };
+                return _Class;
+            }(Base);
+        }).call(this);
+        return module.exports;
+    });
+    define("bindable/lib/object/setters/bindable.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var Base, type, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+                for (var key in parent) {
+                    if (__hasProp.call(parent, key)) child[key] = parent[key];
+                }
+                function ctor() {
+                    this.constructor = child;
+                }
+                ctor.prototype = parent.prototype;
+                child.prototype = new ctor;
+                child.__super__ = parent.prototype;
+                return child;
+            };
+            Base = require("bindable/lib/object/setters/base.js");
+            type = require("type-component/index.js");
+            module.exports = function(_super) {
+                __extends(_Class, _super);
+                function _Class(binding, to, property) {
+                    this.binding = binding;
+                    this.to = to;
+                    this.property = property;
+                    _Class.__super__.constructor.call(this, this.binding);
+                }
+                _Class.prototype._change = function(newValue) {
+                    this._ignoreBothWays = true;
+                    this.to.set(this.property, newValue);
+                    return this._ignoreBothWays = false;
+                };
+                _Class.prototype.dispose = function() {
+                    var _ref;
+                    if ((_ref = this._bothWaysBinding) != null) {
+                        _ref.dispose();
+                    }
+                    return this._bothWaysBinding = this.binding = this.to = this.properties = null;
+                };
+                _Class.prototype.bothWays = function() {
+                    var _this = this;
+                    return this._bothWaysBinding = this.to.bind(this.property).map({
+                        to: function() {
+                            var value, _ref;
+                            value = (_ref = _this.binding._map).from.apply(_ref, arguments);
+                            if (type(value) === "array") {
+                                return value;
+                            } else {
+                                return [ value ];
+                            }
+                        }
+                    }).to(function(values) {
+                        var i, prop, value, _i, _len;
+                        if (_this._ignoreBothWays) {
+                            return;
+                        }
+                        for (i = _i = 0, _len = values.length; _i < _len; i = ++_i) {
+                            value = values[i];
+                            prop = _this.binding._properties[i];
+                            _this.binding._from.set(prop, value);
+                        }
+                    });
+                };
+                return _Class;
+            }(Base);
+        }).call(this);
+        return module.exports;
+    });
+    define("bindable/lib/object/setters/collection.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var Base, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+                for (var key in parent) {
+                    if (__hasProp.call(parent, key)) child[key] = parent[key];
+                }
+                function ctor() {
+                    this.constructor = child;
+                }
+                ctor.prototype = parent.prototype;
+                child.prototype = new ctor;
+                child.__super__ = parent.prototype;
+                return child;
+            };
+            Base = require("bindable/lib/object/setters/base.js");
+            module.exports = function(_super) {
+                __extends(_Class, _super);
+                function _Class(binding, to, property) {
+                    this.binding = binding;
+                    this.to = to;
+                    this.property = property;
+                    _Class.__super__.constructor.call(this, this.binding);
+                }
+                _Class.prototype._change = function(newValue, oldValue) {
+                    return this.to.reset(newValue, oldValue);
+                };
+                _Class.prototype.dispose = function() {
+                    return this.to.disposeSourceBinding();
+                };
+                return _Class;
+            }(Base);
+        }).call(this);
+        return module.exports;
+    });
+    define("bindable/lib/collection/setters/factory.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var CollectionSetter, FnSetter, ObjSetter;
+            FnSetter = require("bindable/lib/collection/setters/fn.js");
+            ObjSetter = require("bindable/lib/collection/setters/object.js");
+            CollectionSetter = require("bindable/lib/collection/setters/collection.js");
+            module.exports = function() {
+                function _Class() {}
+                _Class.prototype.createSetter = function(binding, target) {
+                    if (!target) {
+                        return null;
+                    }
+                    if (typeof target === "function") {
+                        return new FnSetter(binding, target);
+                    } else if (target.__isCollection) {
+                        return new CollectionSetter(binding, target);
+                    } else if (target.insert || target.update || target.remove || target.replace) {
+                        return new ObjSetter(binding, target);
+                    }
+                    return null;
+                };
+                return _Class;
+            }();
+        }).call(this);
         return module.exports;
     });
     define("paperclip/lib/index.js", function(require, module, exports, __dirname, __filename) {
@@ -6875,33 +6875,6 @@
         })();
         return module.exports;
     });
-    define("bindable/lib/object/setters/base.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var utils;
-            utils = require("bindable/lib/core/utils.js");
-            module.exports = function() {
-                function _Class(binding) {
-                    this.binding = binding;
-                    this._map = binding.map();
-                }
-                _Class.prototype.change = function(values) {
-                    var oldValue, value, _ref;
-                    value = (_ref = this._map).to.apply(_ref, values);
-                    if (this._value === value) {
-                        return false;
-                    }
-                    oldValue = this._value;
-                    this._value = value;
-                    this._change(value, oldValue);
-                    return true;
-                };
-                _Class.prototype.bothWays = function() {};
-                _Class.prototype._change = function(value) {};
-                return _Class;
-            }();
-        }).call(this);
-        return module.exports;
-    });
     define("factories/lib/base.js", function(require, module, exports, __dirname, __filename) {
         (function() {
             var BaseFactory;
@@ -6952,6 +6925,33 @@
             BaseFactory.prototype.parseHtml = function(content) {};
             return BaseFactory;
         }();
+        return module.exports;
+    });
+    define("bindable/lib/object/setters/base.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var utils;
+            utils = require("bindable/lib/core/utils.js");
+            module.exports = function() {
+                function _Class(binding) {
+                    this.binding = binding;
+                    this._map = binding.map();
+                }
+                _Class.prototype.change = function(values) {
+                    var oldValue, value, _ref;
+                    value = (_ref = this._map).to.apply(_ref, values);
+                    if (this._value === value) {
+                        return false;
+                    }
+                    oldValue = this._value;
+                    this._value = value;
+                    this._change(value, oldValue);
+                    return true;
+                };
+                _Class.prototype.bothWays = function() {};
+                _Class.prototype._change = function(value) {};
+                return _Class;
+            }();
+        }).call(this);
         return module.exports;
     });
     define("bindable/lib/collection/setters/fn.js", function(require, module, exports, __dirname, __filename) {
@@ -7228,7 +7228,6 @@
             };
             ClipScript.prototype.update = function() {
                 var newValue;
-                console.log("UPDATE");
                 newValue = this.script.fn.call(this);
                 if (newValue === this.value) {
                     return newValue;
@@ -8162,6 +8161,58 @@
         module.exports = Collection;
         return module.exports;
     });
+    define("paperclip/lib/paper/bindings/base/script.js", function(require, module, exports, __dirname, __filename) {
+        var ScriptBinding, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        ScriptBinding = function(_super) {
+            __extends(ScriptBinding, _super);
+            function ScriptBinding(clip, scriptName) {
+                this.clip = clip;
+                this.scriptName = scriptName;
+                this._onChange = __bind(this._onChange, this);
+                this.script = clip.script(this.scriptName);
+            }
+            ScriptBinding.prototype.bind = function(context) {
+                this.context = context;
+                if (this.watch !== false) {
+                    this.script.watch().update();
+                }
+                this._binding = this.clip.bind(this.scriptName);
+                if (this._map) {
+                    this._binding.map(this._map);
+                }
+                this._binding.to(this._onChange);
+                this._binding.now();
+                return this;
+            };
+            ScriptBinding.prototype.unbind = function() {
+                var _ref;
+                if ((_ref = this._binding) != null) {
+                    _ref.dispose();
+                }
+                this._binding = void 0;
+                return this;
+            };
+            ScriptBinding.prototype._onChange = function(value) {};
+            return ScriptBinding;
+        }(require("paperclip/lib/paper/bindings/base/index.js"));
+        module.exports = ScriptBinding;
+        return module.exports;
+    });
     define("paperclip/lib/paper/bindings/block/html.js", function(require, module, exports, __dirname, __filename) {
         var HtmlDecor, type, _ref, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
             for (var key in parent) {
@@ -8293,58 +8344,6 @@
             return ValueDecor;
         }(require("paperclip/lib/paper/bindings/block/base.js"));
         module.exports = ValueDecor;
-        return module.exports;
-    });
-    define("paperclip/lib/paper/bindings/base/script.js", function(require, module, exports, __dirname, __filename) {
-        var ScriptBinding, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        ScriptBinding = function(_super) {
-            __extends(ScriptBinding, _super);
-            function ScriptBinding(clip, scriptName) {
-                this.clip = clip;
-                this.scriptName = scriptName;
-                this._onChange = __bind(this._onChange, this);
-                this.script = clip.script(this.scriptName);
-            }
-            ScriptBinding.prototype.bind = function(context) {
-                this.context = context;
-                if (this.watch !== false) {
-                    this.script.watch().update();
-                }
-                this._binding = this.clip.bind(this.scriptName);
-                if (this._map) {
-                    this._binding.map(this._map);
-                }
-                this._binding.to(this._onChange);
-                this._binding.now();
-                return this;
-            };
-            ScriptBinding.prototype.unbind = function() {
-                var _ref;
-                if ((_ref = this._binding) != null) {
-                    _ref.dispose();
-                }
-                this._binding = void 0;
-                return this;
-            };
-            ScriptBinding.prototype._onChange = function(value) {};
-            return ScriptBinding;
-        }(require("paperclip/lib/paper/bindings/base/index.js"));
-        module.exports = ScriptBinding;
         return module.exports;
     });
     define("paperclip/lib/paper/bindings/node/attrs/text/index.js", function(require, module, exports, __dirname, __filename) {
