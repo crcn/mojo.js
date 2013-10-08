@@ -53,7 +53,8 @@
             View: View,
             mediator: mediator,
             bindable: bindable,
-            models: models
+            models: models,
+            decorator: View.addDecoratorClass
         };
         if (typeof window !== "undefined") {
             window.mojo = module.exports;
@@ -2385,7 +2386,7 @@
         var i;
         i = 0;
         module.exports = function() {
-            return i++;
+            return String(i++);
         };
         return module.exports;
     });
@@ -2488,7 +2489,7 @@
         return module.exports;
     });
     define("mojojs/lib/views/base/decor/factory.js", function(require, module, exports, __dirname, __filename) {
-        var BaseViewDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, EventsDecorator, PaperclipDecorator, PreloadDecorator, SectionsDecorator, SelectorDecorator, TransitionDecorator, availableDecorators, _decor;
+        var BaseViewDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, EventsDecorator, PaperclipDecorator, PreloadDecorator, SectionsDecorator, SelectorDecorator, TransitionDecorator, availableDecorators, idGenerator, type, _decor;
         BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
         SelectorDecorator = require("mojojs/lib/views/base/decor/selector.js");
         PaperclipDecorator = require("mojojs/lib/views/base/decor/paperclip.js");
@@ -2499,6 +2500,8 @@
         DroppableDecorator = require("mojojs/lib/views/base/decor/dragdrop/droppable.js");
         TransitionDecorator = require("mojojs/lib/views/base/decor/transition.js");
         PreloadDecorator = require("mojojs/lib/views/base/decor/preload.js");
+        idGenerator = require("mojojs/lib/utils/idGenerator.js");
+        type = require("type-component/index.js");
         _decor = function(name, clazz, inheritable) {
             if (inheritable == null) {
                 inheritable = true;
@@ -2515,7 +2518,12 @@
                 if (options == null) {
                     options = {};
                 }
-                return availableDecorators.push(_decor(options.name, options["class"] || options.clazz, options.inheritable));
+                if (type(options) === "function" || options.getOptions) {
+                    options = {
+                        factory: options
+                    };
+                }
+                return availableDecorators.push(_decor(options.name || idGenerator(), options["class"] || options.clazz || options.factory, options.inheritable));
             },
             setup: function(view, decor) {
                 var _decorators;
@@ -2652,7 +2660,8 @@
             Section.prototype.toString = function() {
                 var buffer;
                 buffer = this.getChildNodes().map(function(node) {
-                    return node.innerHTML || node.value || node.text || String(node);
+                    var _ref;
+                    return node.innerHTML || ((_ref = node.nodeValue) != null ? _ref : String(node));
                 });
                 return buffer.join("");
             };
@@ -7219,6 +7228,7 @@
             };
             ClipScript.prototype.update = function() {
                 var newValue;
+                console.log("UPDATE");
                 newValue = this.script.fn.call(this);
                 if (newValue === this.value) {
                     return newValue;
@@ -7269,7 +7279,7 @@
                 lockUpdate = true;
                 this._watching[path] = {
                     target: target,
-                    binding: binding = target.bind(path).to(function(value, oldValue) {
+                    binding: binding = target.bind(path).delay(1).to(function(value, oldValue) {
                         if (value != null ? value.__isBindable : void 0) {
                             _this._watchBindable(value, oldValue);
                         } else if (type(value) === "function") {
@@ -7278,7 +7288,7 @@
                         if (lockUpdate) {
                             return;
                         }
-                        return _this.update();
+                        return _this._debounceUpdate();
                     }).now(),
                     dispose: function() {
                         return binding.dispose();
@@ -7641,6 +7651,9 @@
             Loader.prototype.unbind = function() {
                 this.bindings.unbind();
                 return this;
+            };
+            Loader.prototype.toFragment = function() {
+                return this.section.toFragment();
             };
             Loader.prototype.toString = function() {
                 var div, frag;
