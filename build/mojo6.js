@@ -53,7 +53,8 @@
             View: View,
             mediator: mediator,
             bindable: bindable,
-            models: models
+            models: models,
+            decorator: View.addDecoratorClass
         };
         if (typeof window !== "undefined") {
             window.mojo = module.exports;
@@ -2385,7 +2386,7 @@
         var i;
         i = 0;
         module.exports = function() {
-            return i++;
+            return String(i++);
         };
         return module.exports;
     });
@@ -2488,7 +2489,7 @@
         return module.exports;
     });
     define("mojojs/lib/views/base/decor/factory.js", function(require, module, exports, __dirname, __filename) {
-        var BaseViewDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, EventsDecorator, PaperclipDecorator, PreloadDecorator, SectionsDecorator, SelectorDecorator, TransitionDecorator, availableDecorators, _decor;
+        var BaseViewDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, EventsDecorator, PaperclipDecorator, PreloadDecorator, SectionsDecorator, SelectorDecorator, TransitionDecorator, availableDecorators, idGenerator, type, _decor;
         BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
         SelectorDecorator = require("mojojs/lib/views/base/decor/selector.js");
         PaperclipDecorator = require("mojojs/lib/views/base/decor/paperclip.js");
@@ -2499,6 +2500,8 @@
         DroppableDecorator = require("mojojs/lib/views/base/decor/dragdrop/droppable.js");
         TransitionDecorator = require("mojojs/lib/views/base/decor/transition.js");
         PreloadDecorator = require("mojojs/lib/views/base/decor/preload.js");
+        idGenerator = require("mojojs/lib/utils/idGenerator.js");
+        type = require("type-component/index.js");
         _decor = function(name, clazz, inheritable) {
             if (inheritable == null) {
                 inheritable = true;
@@ -2515,7 +2518,12 @@
                 if (options == null) {
                     options = {};
                 }
-                return availableDecorators.push(_decor(options.name, options["class"] || options.clazz, options.inheritable));
+                if (type(options) === "function" || options.getOptions) {
+                    options = {
+                        factory: options
+                    };
+                }
+                return availableDecorators.push(_decor(options.name || idGenerator(), options["class"] || options.clazz || options.factory, options.inheritable));
             },
             setup: function(view, decor) {
                 var _decorators;
@@ -7279,7 +7287,7 @@
                         if (lockUpdate) {
                             return;
                         }
-                        return _this.update();
+                        return _this._debounceUpdate();
                     }).now(),
                     dispose: function() {
                         return binding.dispose();
@@ -7642,6 +7650,9 @@
             Loader.prototype.unbind = function() {
                 this.bindings.unbind();
                 return this;
+            };
+            Loader.prototype.toFragment = function() {
+                return this.section.toFragment();
             };
             Loader.prototype.toString = function() {
                 var div, frag;
@@ -8568,113 +8579,6 @@
         };
         return module.exports;
     });
-    define("paperclip/lib/clip/buffer.js", function(require, module, exports, __dirname, __filename) {
-        var Clip, ClippedBuffer, ClippedBufferPart, bindable, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        bindable = require("bindable/lib/index.js");
-        Clip = require("paperclip/lib/clip/index.js");
-        ClippedBufferPart = function() {
-            function ClippedBufferPart(clippedBuffer, script) {
-                this.clippedBuffer = clippedBuffer;
-                this.script = script;
-                this._onUpdated = __bind(this._onUpdated, this);
-                this.clip = new Clip({
-                    script: this.script
-                });
-                this.clip.bind("value").to(this._onUpdated);
-            }
-            ClippedBufferPart.prototype.dispose = function() {
-                return this.clip.dispose();
-            };
-            ClippedBufferPart.prototype.update = function() {
-                this.clip.reset(this.clippedBuffer._data);
-                this.clip.update();
-                return this.value = this.clip.get("value");
-            };
-            ClippedBufferPart.prototype._onUpdated = function(value) {
-                this.value = value;
-                if (this.clippedBuffer._updating) {
-                    return;
-                }
-                return this.clippedBuffer.update();
-            };
-            ClippedBufferPart.prototype.toString = function() {
-                var _ref;
-                return String((_ref = this.value) != null ? _ref : "");
-            };
-            return ClippedBufferPart;
-        }();
-        ClippedBuffer = function(_super) {
-            __extends(ClippedBuffer, _super);
-            function ClippedBuffer(buffer) {
-                var binding, bufferPart, _i, _len;
-                ClippedBuffer.__super__.constructor.call(this);
-                this.buffer = [];
-                this.bindings = [];
-                this._data = {};
-                for (_i = 0, _len = buffer.length; _i < _len; _i++) {
-                    bufferPart = buffer[_i];
-                    if (bufferPart.fn) {
-                        this.buffer.push(binding = new ClippedBufferPart(this, bufferPart));
-                        this.bindings.push(binding);
-                    } else {
-                        this.buffer.push(bufferPart);
-                    }
-                }
-            }
-            ClippedBuffer.prototype.reset = function(data) {
-                if (data == null) {
-                    data = {};
-                }
-                this._data = data;
-                this.update();
-                return this;
-            };
-            ClippedBuffer.prototype.dispose = function() {
-                var binding, _i, _len, _ref;
-                _ref = this.bindings;
-                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                    binding = _ref[_i];
-                    binding.dispose();
-                }
-                return this.bindings = [];
-            };
-            ClippedBuffer.prototype.update = function() {
-                var binding, _i, _len, _ref;
-                this._updating = true;
-                _ref = this.bindings;
-                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                    binding = _ref[_i];
-                    binding.update();
-                }
-                this.set("text", this.text = this.render());
-                return this._updating = false;
-            };
-            ClippedBuffer.prototype.render = function() {
-                return this.buffer.join("");
-            };
-            ClippedBuffer.prototype.toString = function() {
-                return this.text;
-            };
-            return ClippedBuffer;
-        }(bindable.Object);
-        module.exports = ClippedBuffer;
-        return module.exports;
-    });
     define("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/show.js", function(require, module, exports, __dirname, __filename) {
         var ShowAttrBinding, _ref, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
             for (var key in parent) {
@@ -9272,6 +9176,113 @@
             return ChangeAttrBinding;
         }(require("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/event.js"));
         module.exports = ChangeAttrBinding;
+        return module.exports;
+    });
+    define("paperclip/lib/clip/buffer.js", function(require, module, exports, __dirname, __filename) {
+        var Clip, ClippedBuffer, ClippedBufferPart, bindable, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        bindable = require("bindable/lib/index.js");
+        Clip = require("paperclip/lib/clip/index.js");
+        ClippedBufferPart = function() {
+            function ClippedBufferPart(clippedBuffer, script) {
+                this.clippedBuffer = clippedBuffer;
+                this.script = script;
+                this._onUpdated = __bind(this._onUpdated, this);
+                this.clip = new Clip({
+                    script: this.script
+                });
+                this.clip.bind("value").to(this._onUpdated);
+            }
+            ClippedBufferPart.prototype.dispose = function() {
+                return this.clip.dispose();
+            };
+            ClippedBufferPart.prototype.update = function() {
+                this.clip.reset(this.clippedBuffer._data);
+                this.clip.update();
+                return this.value = this.clip.get("value");
+            };
+            ClippedBufferPart.prototype._onUpdated = function(value) {
+                this.value = value;
+                if (this.clippedBuffer._updating) {
+                    return;
+                }
+                return this.clippedBuffer.update();
+            };
+            ClippedBufferPart.prototype.toString = function() {
+                var _ref;
+                return String((_ref = this.value) != null ? _ref : "");
+            };
+            return ClippedBufferPart;
+        }();
+        ClippedBuffer = function(_super) {
+            __extends(ClippedBuffer, _super);
+            function ClippedBuffer(buffer) {
+                var binding, bufferPart, _i, _len;
+                ClippedBuffer.__super__.constructor.call(this);
+                this.buffer = [];
+                this.bindings = [];
+                this._data = {};
+                for (_i = 0, _len = buffer.length; _i < _len; _i++) {
+                    bufferPart = buffer[_i];
+                    if (bufferPart.fn) {
+                        this.buffer.push(binding = new ClippedBufferPart(this, bufferPart));
+                        this.bindings.push(binding);
+                    } else {
+                        this.buffer.push(bufferPart);
+                    }
+                }
+            }
+            ClippedBuffer.prototype.reset = function(data) {
+                if (data == null) {
+                    data = {};
+                }
+                this._data = data;
+                this.update();
+                return this;
+            };
+            ClippedBuffer.prototype.dispose = function() {
+                var binding, _i, _len, _ref;
+                _ref = this.bindings;
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    binding = _ref[_i];
+                    binding.dispose();
+                }
+                return this.bindings = [];
+            };
+            ClippedBuffer.prototype.update = function() {
+                var binding, _i, _len, _ref;
+                this._updating = true;
+                _ref = this.bindings;
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    binding = _ref[_i];
+                    binding.update();
+                }
+                this.set("text", this.text = this.render());
+                return this._updating = false;
+            };
+            ClippedBuffer.prototype.render = function() {
+                return this.buffer.join("");
+            };
+            ClippedBuffer.prototype.toString = function() {
+                return this.text;
+            };
+            return ClippedBuffer;
+        }(bindable.Object);
+        module.exports = ClippedBuffer;
         return module.exports;
     });
     var entries = [ "mojojs/lib/index.js" ];
