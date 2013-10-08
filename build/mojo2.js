@@ -7228,6 +7228,7 @@
             };
             ClipScript.prototype.update = function() {
                 var newValue;
+                console.log("UPDATE");
                 newValue = this.script.fn.call(this);
                 if (newValue === this.value) {
                     return newValue;
