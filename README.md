@@ -33,7 +33,7 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 - [States Component](http://jsfiddle.net/BZA8K/28/)
 - [Custom Components](http://jsfiddle.net/BZA8K/24/)
 - [Transitions](http://jsfiddle.net/BZA8K/22/)
-- [dots benchmark](http://jsfiddle.net/BZA8K/34/)
+- [dots benchmark](http://jsfiddle.net/BZA8K/35/)
 
 ### TODO:
 
