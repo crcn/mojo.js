@@ -310,7 +310,7 @@
                 _ref = ListView.__super__.constructor.apply(this, arguments);
                 return _ref;
             }
-            ListView.prototype.define = [ "filter", "sort", "map", "modelViewFactory", "modelViewClass" ];
+            ListView.prototype.define = [ "filter", "sort", "map", "length", "modelViewFactory", "modelViewClass" ];
             ListView.prototype._init = function() {
                 ListView.__super__._init.call(this);
                 this._views = new bindable.Collection;
@@ -6888,6 +6888,19 @@
         }).call(this);
         return module.exports;
     });
+    define("nofactor/lib/base.js", function(require, module, exports, __dirname, __filename) {
+        var BaseFactory;
+        BaseFactory = function() {
+            function BaseFactory() {}
+            BaseFactory.prototype.createElement = function(element) {};
+            BaseFactory.prototype.createFragment = function() {};
+            BaseFactory.prototype.createComment = function(text) {};
+            BaseFactory.prototype.createTextNode = function(text) {};
+            BaseFactory.prototype.parseHtml = function(content) {};
+            return BaseFactory;
+        }();
+        return module.exports;
+    });
     define("nofactor/lib/ent.js", function(require, module, exports, __dirname, __filename) {
         var entities;
         entities = {
@@ -6912,19 +6925,6 @@
                 return c;
             }).join("");
         };
-        return module.exports;
-    });
-    define("nofactor/lib/base.js", function(require, module, exports, __dirname, __filename) {
-        var BaseFactory;
-        BaseFactory = function() {
-            function BaseFactory() {}
-            BaseFactory.prototype.createElement = function(element) {};
-            BaseFactory.prototype.createFragment = function() {};
-            BaseFactory.prototype.createComment = function(text) {};
-            BaseFactory.prototype.createTextNode = function(text) {};
-            BaseFactory.prototype.parseHtml = function(content) {};
-            return BaseFactory;
-        }();
         return module.exports;
     });
     define("bindable/lib/object/setters/base.js", function(require, module, exports, __dirname, __filename) {
@@ -7893,58 +7893,6 @@
         module.exports = BaseDataBindHandler;
         return module.exports;
     });
-    define("paperclip/lib/paper/bindings/base/script.js", function(require, module, exports, __dirname, __filename) {
-        var ScriptBinding, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        ScriptBinding = function(_super) {
-            __extends(ScriptBinding, _super);
-            function ScriptBinding(clip, scriptName) {
-                this.clip = clip;
-                this.scriptName = scriptName;
-                this._onChange = __bind(this._onChange, this);
-                this.script = clip.script(this.scriptName);
-            }
-            ScriptBinding.prototype.bind = function(context) {
-                this.context = context;
-                if (this.watch !== false) {
-                    this.script.watch().update();
-                }
-                this._binding = this.clip.bind(this.scriptName);
-                if (this._map) {
-                    this._binding.map(this._map);
-                }
-                this._binding.to(this._onChange);
-                this._binding.now();
-                return this;
-            };
-            ScriptBinding.prototype.unbind = function() {
-                var _ref;
-                if ((_ref = this._binding) != null) {
-                    _ref.dispose();
-                }
-                this._binding = void 0;
-                return this;
-            };
-            ScriptBinding.prototype._onChange = function(value) {};
-            return ScriptBinding;
-        }(require("paperclip/lib/paper/bindings/base/index.js"));
-        module.exports = ScriptBinding;
-        return module.exports;
-    });
     define("paperclip/lib/paper/writers/fragment.js", function(require, module, exports, __dirname, __filename) {
         var FragmentWriter, _ref, __bind = function(fn, me) {
             return function() {
@@ -8211,6 +8159,58 @@
             return Collection;
         }(BaseBinding);
         module.exports = Collection;
+        return module.exports;
+    });
+    define("paperclip/lib/paper/bindings/base/script.js", function(require, module, exports, __dirname, __filename) {
+        var ScriptBinding, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        ScriptBinding = function(_super) {
+            __extends(ScriptBinding, _super);
+            function ScriptBinding(clip, scriptName) {
+                this.clip = clip;
+                this.scriptName = scriptName;
+                this._onChange = __bind(this._onChange, this);
+                this.script = clip.script(this.scriptName);
+            }
+            ScriptBinding.prototype.bind = function(context) {
+                this.context = context;
+                if (this.watch !== false) {
+                    this.script.watch().update();
+                }
+                this._binding = this.clip.bind(this.scriptName);
+                if (this._map) {
+                    this._binding.map(this._map);
+                }
+                this._binding.to(this._onChange);
+                this._binding.now();
+                return this;
+            };
+            ScriptBinding.prototype.unbind = function() {
+                var _ref;
+                if ((_ref = this._binding) != null) {
+                    _ref.dispose();
+                }
+                this._binding = void 0;
+                return this;
+            };
+            ScriptBinding.prototype._onChange = function(value) {};
+            return ScriptBinding;
+        }(require("paperclip/lib/paper/bindings/base/index.js"));
+        module.exports = ScriptBinding;
         return module.exports;
     });
     define("paperclip/lib/paper/bindings/block/html.js", function(require, module, exports, __dirname, __filename) {

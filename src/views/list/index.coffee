@@ -10,7 +10,7 @@ class ListView extends require("../base")
   ###
   ###
 
-  define: ["filter", "sort", "map", "modelViewFactory", "modelViewClass"] 
+  define: ["filter", "sort", "map", "length", "modelViewFactory", "modelViewClass"] 
   
   ###
   ###
