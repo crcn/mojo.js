@@ -41,6 +41,7 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 - API docs
 - starter kit
 - testing docs
+- style guidlines
 
 ### Installation
 
