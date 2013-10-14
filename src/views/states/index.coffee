@@ -34,7 +34,7 @@ class StatesView extends require("../base")
     @source.reset views.map (stateOptions, i) => 
       new State @, stateOptions, i
 
-    if @_states.render
+    if @get("states.render")
       @_rebind()
 
   ###

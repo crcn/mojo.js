@@ -13,7 +13,7 @@ structr      = require "structr"
 
 
 class DecorableView extends Inheritable
-  
+
   ###
   ###
 
@@ -44,11 +44,7 @@ class DecorableView extends Inheritable
     @this = @
     @_id  = data._id ? data.model?.get?("_id") ? data.model?._id ? generateId()
 
-    @_states = {}
-
     @section   = loaf()
-    @callstack = flatstack()
-
 
     @init()
 
@@ -75,38 +71,13 @@ class DecorableView extends Inheritable
 
   render: (next) =>
     @_init()
-    @_call "render", "rendered", next
+    @call "render", "rendered", next
 
   ###
   ###
 
   remove: (next) => 
-    @_call "remove", "removed", next
-
-  ###
-   memoize call fn
-  ###
-
-  _call: (startEvent, endEvent, next) ->
-
-    # cover any case where next might not be a function. This might
-    # happen when an async function does something like - model.load @view.render
-    if type(next) isnt "function"
-      next = () ->
-      
-    return next() if @_states[endEvent]
-
-    @once endEvent, next
-
-    return if @_states[startEvent]
-    @_states[startEvent] = true
-
-    @emit startEvent
-    @_onRemove()
-
-    @callstack.push () =>
-      @_states[endEvent] = true
-      @emit endEvent
+    @call "remove", "removed", next
 
   ###
    returns a search for a particular element
@@ -136,15 +107,6 @@ class DecorableView extends Inheritable
       (element[0] or element).appendChild @section.toFragment()
       next?()
 
-
-  ###
-   dynamically added decorators
-  ###
-
-  decorate: (options) ->  
-    @__decorators = undefined
-    DecorFactory.decorate @, options
-
   ###
   ###
 
@@ -165,6 +127,13 @@ class DecorableView extends Inheritable
   ###
   ###
 
+  decorate: (options) ->
+    @__decorators = undefined
+    DecorFactory.decorate @, options
+
+  ###
+  ###
+
   dispose: () =>
 
     # call super - important to cleanup any listeners / bindings
@@ -172,7 +141,7 @@ class DecorableView extends Inheritable
 
     # if the parent is currently being removed, then don't bother cleaning up the 
     # element listeners, and section. 
-    return if @parent and @parent._states.remove
+    return if @parent and @parent.get("states.remove")
     
     @section.dispose()
 
@@ -230,7 +199,6 @@ class DecorableView extends Inheritable
   ###
 
   @decorator: DecorFactory.use
-
 
   ###
   ###

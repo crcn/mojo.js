@@ -1,4 +1,5 @@
 bindable = require "bindable"
+decor    = require "bindable-decor"
 _ = require "underscore"
 
 
