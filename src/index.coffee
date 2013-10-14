@@ -8,7 +8,7 @@ module.exports =
   mediator  : mediator
   bindable  : bindable
   models    : models
-  decorator : View.addDecoratorClass
+  decorator : View.decorator
 
 
 if typeof window isnt "undefined"

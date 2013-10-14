@@ -143,7 +143,7 @@ class DecorableView extends Inheritable
 
   decorate: (options) ->  
     @__decorators = undefined
-    DecorFactory.setup @, options
+    DecorFactory.decorate @, options
 
   ###
   ###
@@ -160,7 +160,7 @@ class DecorableView extends Inheritable
     @on "removed", @_onRemoved
     @bind("parent").to(@_onParent).now()
 
-    DecorFactory.setup @
+    DecorFactory.decorate @
 
   ###
   ###
@@ -221,9 +221,15 @@ class DecorableView extends Inheritable
 
   ###
    expose this so third-party modules can add a decorator
+   DEPRECATED
   ###
 
-  @addDecoratorClass: DecorFactory.addDecoratorClass
+  @addDecoratorClass: DecorFactory.use
+
+  ###
+  ###
+
+  @decorator: DecorFactory.use
 
 
   ###
