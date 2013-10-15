@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.6.44",
+  "version": "0.6.45",
   "description": "test",
   "main": "./lib/index.js",
   "jam": {
@@ -48,7 +48,8 @@
     "loaf": "0.0.5",
     "nofactor": "0.0.x",
     "traverse": "~0.6.5",
-    "bindable-decor": "0.0.x"
+    "bindable-decor": "0.0.x",
+    "bindable-decor-bindings": "0.0.1"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",

@@ -2,7 +2,6 @@ BaseViewDecorator   = require "./base"
 SelectorDecorator   = require "./selector"
 PaperclipDecorator  = require "./paperclip"
 EventsDecorator     = require "./events"
-BindingsDecorator   = require "./bindings"
 SectionsDecorator   = require "./sections/index"
 DraggableDecorator  = require "./dragdrop/draggable"
 DroppableDecorator  = require "./dragdrop/droppable"
@@ -16,7 +15,7 @@ decor = require("bindable-decor")()
 decor.use(
 
   # bindings = priority for explicit data-bindings
-  BindingsDecorator,
+  require("bindable-decor-bindings")("render"),
   SelectorDecorator,
 
   # additional decorators that don't have high priority - get added on .render() & .display()
