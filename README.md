@@ -7,7 +7,7 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 ### Features
 
 - Supported in all major browsers: `IE 8+`, `Firefox`, `Chrome`, `Safari`, and `Opera`.
-- Supported in node.js.
+- Supported in Node.js.
 - Flexible data-binding API. 
 - Plays nicely with other frameworks such as Backbone.js, Spine.js, and jQuery. Easily build new application code on top of old code.
 - No magic. No assumptions. Mojo.js was built around explicity.
