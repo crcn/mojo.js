@@ -10,10 +10,10 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 - Supported in Node.js.
 - Flexible data-binding API. 
 - Plays nicely with other frameworks such as Backbone.js, Spine.js, and jQuery. Easily build new application code on top of old code.
-- No magic. No assumptions. Mojo.js was built around explicity.
+- No magic. No assumptions. Mojo.js was built around explicitness and modularity.
 - 100% javascript - [paperclip.js](https://github.com/classdojo/paperclip.js) templates are also translated to javascript.
 - It's unopinionated, just like Backbone.js
-  - mojo.js is composed Muchly of `decorators`. This idea was derrived from jquery plugins - where plugins can be attached to DOM elements. `Decorators` are similar in the sense that they attach to one abstraction higher - the view controlling the DOM element. Mojo.js has a few built-in decorators: `drag & drop`, `paperclip.js` (template), `bindings` (computed properties), `transition`, and `events` (Backbone style). You can also [create your own](#custom-decorators). 
+  - Mojo.js is composed Muchly of `decorators`. This idea was derrived from jquery plugins - where plugins can be attached to DOM elements. `Decorators` are similar in the sense that they attach to one abstraction higher - the view controlling the DOM element. Mojo.js has a few built-in decorators: `drag & drop`, `paperclip.js` (template), `bindings` (computed properties), `transition`, and `events` (Backbone style). You can also [create your own](#custom-decorators). 
   - The framework itself is broken into multiple repositories - this makes it easier to encapsulate, and re-use bits of functionality. It also helps explain parts of the framework a little better.
 
 ### Core Libraries
@@ -63,20 +63,9 @@ var view = new SubView();
 console.log(view.get("name")); //craig
 ```
 
-You can also do it the other way:
-
-```javascript
-var view = new mojo.View({
-  name: "craig";
-})
-
-console.log(view.get("name"));
-```
-
-
 #### view.attach(selector)
 
-Renders, and adds the view to the DOM. [Here's an example](http://jsfiddle.net/BZA8K/12/):
+Renders, and adds the view to the specific DOM element. [Here's an example](http://jsfiddle.net/BZA8K/12/):
 
 ```javascript
 var view = new mojo.View({
