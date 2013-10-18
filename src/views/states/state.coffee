@@ -10,7 +10,7 @@ class State extends bindable.Object
 
     ops = {}
 
-    if not options.viewClass or options.class
+    if not options.viewClass and not options.class
       ops.viewClass = options
     else
       ops = options
