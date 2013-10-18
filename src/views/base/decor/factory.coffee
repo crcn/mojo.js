@@ -1,6 +1,5 @@
 BaseViewDecorator   = require "./base"
 SelectorDecorator   = require "./selector"
-PaperclipDecorator  = require "./paperclip"
 EventsDecorator     = require "./events"
 SectionsDecorator   = require "./sections/index"
 DraggableDecorator  = require "./dragdrop/draggable"
@@ -20,8 +19,6 @@ decor.use(
 
   # additional decorators that don't have high priority - get added on .render() & .display()
   PreloadDecorator,
-
-  { decorator: PaperclipDecorator, inheritable: false },
 
   TransitionDecorator,
   EventsDecorator,
