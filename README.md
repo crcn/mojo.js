@@ -45,10 +45,10 @@ Mojo.js was built to solve a problem - we needed a JavaScript framework that pla
 
 ### Installation
 
-You can get started with Mojo.js by installing the [starter kit](http://github.com/classdojo/mojo-boilerplate). In terminal run:
+You can get started with Mojo.js by installing the [starter kit](http://github.com/classdojo/mojo-starter). In terminal run:
 
 ```bash
-git clone git@github.com:classdojo/mojo-boilerplate.git; cd mojo-boilerplate; npm install;
+git clone git@github.com:classdojo/mojo-starter.git && cd mojo-starter && npm install;
 ```
 
 ## View Usage
