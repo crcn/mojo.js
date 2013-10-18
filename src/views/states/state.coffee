@@ -51,7 +51,10 @@ class State extends bindable.Object
 
   getView: () -> 
     return @_view if @_view
-    clazz = @get("class")
+
+    # class is deprecated
+    clazz = @get("class") ? @get("viewClass")
+    
     @_view = new clazz()
 
 module.exports = State
