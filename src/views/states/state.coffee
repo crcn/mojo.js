@@ -10,8 +10,8 @@ class State extends bindable.Object
 
     ops = {}
 
-    if not options.class
-      ops.class = options
+    if not options.viewClass or options.class
+      ops.viewClass = options
     else
       ops = options
 
@@ -54,7 +54,7 @@ class State extends bindable.Object
 
     # class is deprecated
     clazz = @get("class") ? @get("viewClass")
-    
+
     @_view = new clazz()
 
 module.exports = State
