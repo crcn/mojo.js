@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.6.48",
+  "version": "0.6.49",
   "description": "test",
   "main": "./lib/index.js",
   "jam": {
@@ -49,7 +49,7 @@
     "nofactor": "0.0.x",
     "traverse": "~0.6.5",
     "bindable-decor": "0.0.x",
-    "bindable-decor-bindings": "0.0.1",
+    "bindable-decor-bindings": "0.0.x",
     "underscore": "~1.4.4",
     "mojo-paperclip": "0.0.x"
   },
