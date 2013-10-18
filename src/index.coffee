@@ -9,6 +9,7 @@ module.exports =
   bindable  : bindable
   models    : models
   decorator : View.decorator
+  use       : (plugin) -> plugin module.exports
 
 
 if typeof window isnt "undefined"

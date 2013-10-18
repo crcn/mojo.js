@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.6.45",
+  "version": "0.6.46",
   "description": "test",
   "main": "./lib/index.js",
   "jam": {
@@ -32,7 +32,7 @@
     "bindable": "0.4.x",
     "disposable": "0.0.x",
     "eventemitter2": "0.4.x",
-    "structr": "~0.2.3",
+    "structr": "~0.2.4",
     "dolce": "0.0.x",
     "mannequin": "0.1.x",
     "hoist": "0.0.x",
