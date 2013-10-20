@@ -10,7 +10,7 @@ class ListView extends require("../base")
   ###
   ###
 
-  define: ["filter", "sort", "map", "length", "modelViewFactory", "modelViewClass"] 
+  define: ["filter", "sort", "map", "length", "modelViewFactory", "modelViewClass", "viewClass"] 
   
   ###
   ###
@@ -31,7 +31,7 @@ class ListView extends require("../base")
     @_filter           = @get("filter")
     @_sort             = @get("sort")
     @_modelViewFactory = @get("modelViewFactory") # TODO
-    @_modelViewClass   = @get("modelViewClass")
+    @_modelViewClass   = @get("modelViewClass") ? @get("viewClass")
     @_map              = @get("map")
 
     if @_modelViewFactory
