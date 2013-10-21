@@ -20,10 +20,13 @@ decor.use(
   # additional decorators that don't have high priority - get added on .render() & .display()
   PreloadDecorator,
 
+  require("mojo-paperclip").decorator,
+
   TransitionDecorator,
   EventsDecorator,
   DraggableDecorator,
   DroppableDecorator,
+
   # section / child decorators. These have (almost) highest
   # priority since they should be added before the template is loaded
   SectionsDecorator

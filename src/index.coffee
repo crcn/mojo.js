@@ -11,7 +11,5 @@ module.exports =
   decorator : View.decorator
   use       : (plugin) -> plugin module.exports
 
-module.exports.use require("mojo-paperclip")
-
 if typeof window isnt "undefined"
   window.mojo = module.exports

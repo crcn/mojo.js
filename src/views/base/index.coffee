@@ -22,7 +22,7 @@ class DecorableView extends Inheritable
   ###
   ###
   
-  define: ["sections"]
+  define: ["sections", "states"]
 
   ###
   ###
