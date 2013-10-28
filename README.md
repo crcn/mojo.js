@@ -1,5 +1,4 @@
-
-![Alt logo](https://s3.amazonaws.com/uploads.hipchat.com/12139/74559/TgjXBU1QpgjVwc0/mojo-js.png)
+->![Alt logo](https://s3.amazonaws.com/uploads.hipchat.com/12139/74559/TgjXBU1QpgjVwc0/mojo-js.png)<-
 
 Mojo.js is a JavaScript framework for building Single Page Applications, or static websites in [Node.js](http://nodejs.org/). It's inspired by [Angular.js](http://angularjs.org/), [Derby.js](http://derbyjs.com/), [Knockout.js](http://knockoutjs.com/), [Meteor.js](http://www.meteor.com/), [Ember.js](http://emberjs.com/), [jQuery](http://jquery.com/), and [Backbone.js](http://backbonejs.org/). Much of the design was taken after Backbone.js - we wanted to build something that was unopinionated.
 
