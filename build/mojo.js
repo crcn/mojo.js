@@ -54,7 +54,10 @@
             mediator: mediator,
             bindable: bindable,
             models: models,
-            decorator: View.addDecoratorClass
+            decorator: View.decorator,
+            use: function(plugin) {
+                return plugin(module.exports);
+            }
         };
         if (typeof window !== "undefined") {
             window.mojo = module.exports;
@@ -92,6 +95,9 @@
             exports.computed = require("bindable/lib/utils/computed.js");
             exports.options = require("bindable/lib/utils/options.js");
             Binding.Collection = exports.Collection;
+            if (typeof window !== "undefined") {
+                window.bindable = exports;
+            }
         }).call(this);
         return module.exports;
     });
@@ -132,7 +138,7 @@
         DecorableView = function(_super) {
             __extends(DecorableView, _super);
             DecorableView.prototype.__isView = true;
-            DecorableView.prototype.define = [ "sections" ];
+            DecorableView.prototype.define = [ "sections", "states" ];
             DecorableView.prototype.models = models;
             function DecorableView(data) {
                 var _ref, _ref1, _ref2, _ref3, _ref4;
@@ -155,9 +161,7 @@
                 this.set(data);
                 this["this"] = this;
                 this._id = (_ref = (_ref1 = (_ref2 = data._id) != null ? _ref2 : (_ref3 = data.model) != null ? typeof _ref3.get === "function" ? _ref3.get("_id") : void 0 : void 0) != null ? _ref1 : (_ref4 = data.model) != null ? _ref4._id : void 0) != null ? _ref : generateId();
-                this._states = {};
                 this.section = loaf();
-                this.callstack = flatstack();
                 this.init();
             }
             DecorableView.prototype.init = function() {};
@@ -173,30 +177,10 @@
             };
             DecorableView.prototype.render = function(next) {
                 this._init();
-                return this._call("render", "rendered", next);
+                return this.call("render", "rendered", next);
             };
             DecorableView.prototype.remove = function(next) {
-                return this._call("remove", "removed", next);
-            };
-            DecorableView.prototype._call = function(startEvent, endEvent, next) {
-                var _this = this;
-                if (type(next) !== "function") {
-                    next = function() {};
-                }
-                if (this._states[endEvent]) {
-                    return next();
-                }
-                this.once(endEvent, next);
-                if (this._states[startEvent]) {
-                    return;
-                }
-                this._states[startEvent] = true;
-                this.emit(startEvent);
-                this._onRemove();
-                return this.callstack.push(function() {
-                    _this._states[endEvent] = true;
-                    return _this.emit(endEvent);
-                });
+                return this.call("remove", "removed", next);
             };
             DecorableView.prototype.$ = function(search) {
                 var el;
@@ -213,10 +197,6 @@
                     return typeof next === "function" ? next() : void 0;
                 });
             };
-            DecorableView.prototype.decorate = function(options) {
-                this.__decorators = void 0;
-                return DecorFactory.setup(this, options);
-            };
             DecorableView.prototype._init = function(event) {
                 if (this._initialized) {
                     return;
@@ -228,11 +208,15 @@
                 this.on("remove", this._onRemove);
                 this.on("removed", this._onRemoved);
                 this.bind("parent").to(this._onParent).now();
-                return DecorFactory.setup(this);
+                return DecorFactory.decorate(this);
+            };
+            DecorableView.prototype.decorate = function(options) {
+                this.__decorators = void 0;
+                return DecorFactory.decorate(this, options);
             };
             DecorableView.prototype.dispose = function() {
                 DecorableView.__super__.dispose.call(this);
-                if (this.parent && this.parent._states.remove) {
+                if (this.parent && this.parent.get("states.remove")) {
                     return;
                 }
                 return this.section.dispose();
@@ -265,7 +249,8 @@
                 }
                 return this._parentDisposeListener = parent.on("dispose", this.remove);
             };
-            DecorableView.addDecoratorClass = DecorFactory.addDecoratorClass;
+            DecorableView.addDecoratorClass = DecorFactory.use;
+            DecorableView.decorator = DecorFactory.use;
             DecorableView.extend = function(proto) {
                 var clazz;
                 clazz = structr(this, proto);
@@ -310,7 +295,7 @@
                 _ref = ListView.__super__.constructor.apply(this, arguments);
                 return _ref;
             }
-            ListView.prototype.define = [ "filter", "sort", "map", "modelViewFactory", "modelViewClass" ];
+            ListView.prototype.define = [ "filter", "sort", "map", "length", "modelViewFactory", "modelViewClass", "viewClass" ];
             ListView.prototype._init = function() {
                 ListView.__super__._init.call(this);
                 this._views = new bindable.Collection;
@@ -320,10 +305,11 @@
                 return this._rmCount = 0;
             };
             ListView.prototype._initOptions = function() {
+                var _ref1;
                 this._filter = this.get("filter");
                 this._sort = this.get("sort");
                 this._modelViewFactory = this.get("modelViewFactory");
-                this._modelViewClass = this.get("modelViewClass");
+                this._modelViewClass = (_ref1 = this.get("modelViewClass")) != null ? _ref1 : this.get("viewClass");
                 this._map = this.get("map");
                 if (this._modelViewFactory) {
                     return this._modelViewFactory = factories.factory(this._modelViewFactory);
@@ -537,7 +523,7 @@
                 this.source.reset(views.map(function(stateOptions, i) {
                     return new State(_this, stateOptions, i);
                 }));
-                if (this._states.render) {
+                if (this.get("states.render")) {
                     return this._rebind();
                 }
             };
@@ -710,7 +696,7 @@
                 pres[name] = pres[name] || [];
                 posts[name] = posts[name] || [];
                 proto[name] = function() {
-                    var self = this, hookArgs, lastArg = arguments[arguments.length - 1], pres = this._pres[name], posts = this._posts[name], _total = pres.length, _current = -1, _asyncsLeft = proto[name].numAsyncPres, _next = function() {
+                    var self = this, hookArgs = [], lastArg = arguments[arguments.length - 1], pres = this._pres[name], posts = this._posts[name], _total = pres.length, _current = -1, _asyncsLeft = proto[name].numAsyncPres, _next = function() {
                         if (arguments[0] instanceof Error) {
                             return handleError(arguments[0]);
                         }
@@ -845,7 +831,6 @@
                     this._limit = -1;
                     this._delay = this._properties.length === 1 ? options.delay : options.computedDelay;
                     this._setters = [];
-                    this._cvalues = [];
                     this._listeners = [];
                     this._triggerCount = 0;
                     this.map(function(value) {
@@ -881,17 +866,11 @@
                     this.now();
                     return this._collectionBinding = this._collection.bind().copyId(true);
                 };
-                Binding.prototype.to = function(target, property, now) {
+                Binding.prototype.to = function(target, property) {
                     var setter;
-                    if (now == null) {
-                        now = false;
-                    }
                     setter = bindableSetter.createSetter(this, target, property);
                     if (setter) {
                         this._setters.push(setter);
-                        if (now === true) {
-                            setter.now();
-                        }
                     }
                     return this;
                 };
@@ -1077,7 +1056,9 @@
                     }
                     return this.__context = data;
                 };
-                Bindable.prototype._watching = function(property) {};
+                Bindable.prototype._watching = function(property) {
+                    return this.emit("watching", property);
+                };
                 Bindable.prototype.get = function(key, flatten) {
                     if (flatten == null) {
                         flatten = false;
@@ -1091,7 +1072,7 @@
                     return Object.keys(this.toObject());
                 };
                 Bindable.prototype.has = function(key) {
-                    return !!this.get(key);
+                    return this.get(key) != null;
                 };
                 Bindable.prototype.set = function(key, value) {
                     var k, _i, _len, _ref;
@@ -1183,12 +1164,10 @@
             module.exports = function(_super) {
                 __extends(_Class, _super);
                 _Class.prototype.__isCollection = true;
+                _Class.prototype.uniqueKey = "_id";
                 function _Class(source, _id) {
                     if (source == null) {
                         source = [];
-                    }
-                    if (_id == null) {
-                        _id = "_id";
                     }
                     this._enforceItemId = __bind(this._enforceItemId, this);
                     this.reset = __bind(this.reset, this);
@@ -1200,7 +1179,9 @@
                         source = [];
                     }
                     this._length = 0;
-                    this._id(_id);
+                    if (_id) {
+                        this.setUniqueKey(_id);
+                    }
                     this.__enforceId = false;
                     this.transform().postMap(this._enforceItemId);
                     this.reset(source);
@@ -1264,7 +1245,6 @@
                 _Class.prototype.last = function() {
                     return this._source[this._length - 1];
                 };
-                _Class.prototype.update = function(item) {};
                 _Class.prototype.remove = function(item) {
                     var index;
                     index = this.indexOf(item);
@@ -1304,11 +1284,15 @@
                     return this._source.slice(start, end);
                 };
                 _Class.prototype.indexOf = function(searchItem) {
+                    return this.searchIndex(searchItem);
+                };
+                _Class.prototype.update = function(item) {};
+                _Class.prototype.searchIndex = function(searchItem) {
                     var i, item, _i, _len, _ref;
                     _ref = this._source;
                     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
                         item = _ref[i];
-                        if (this._get(item, this.__id) === this._get(searchItem, this.__id)) {
+                        if (this._get(item, this.uniqueKey) === this._get(searchItem, this.uniqueKey)) {
                             return i;
                         }
                     }
@@ -1322,16 +1306,13 @@
                     return (_ref = typeof item.get === "function" ? item.get(id) : void 0) != null ? _ref : item[id];
                 };
                 _Class.prototype._id = function(key) {
+                    return this.setUniqueKey.apply(this, arguments);
+                };
+                _Class.prototype.setUniqueKey = function(key) {
                     if (!arguments.length) {
-                        return this.__id;
+                        return this.uniqueKey;
                     }
-                    if (this.__id === key) {
-                        return this;
-                    }
-                    this.__id = key;
-                    if (this._source) {
-                        this._enforceId();
-                    }
+                    this.uniqueKey = this.__id = key;
                     return this;
                 };
                 _Class.prototype.push = function() {
@@ -1357,9 +1338,15 @@
                     return source;
                 };
                 _Class.prototype.pop = function() {
+                    if (!this._source.length) {
+                        return;
+                    }
                     return this._remove([ this._source.pop() ], this._length)[0];
                 };
                 _Class.prototype.shift = function() {
+                    if (!this._source.length) {
+                        return;
+                    }
                     return this._remove([ this._source.shift() ], 0)[0];
                 };
                 _Class.prototype.enforceId = function(value) {
@@ -1383,9 +1370,9 @@
                     if (!this.__enforceId) {
                         return item;
                     }
-                    _id = this._get(item, this.__id);
+                    _id = this._get(item, this.uniqueKey);
                     if (_id === void 0 || _id === null) {
-                        throw new Error("item '" + item + "' must have a '" + this.__id + "'");
+                        throw new Error("item '" + item + "' must have a '" + this.uniqueKey + "'");
                     }
                     return item;
                 };
@@ -1423,6 +1410,8 @@
                 };
                 _Class.prototype._resetInfo = function() {
                     this.set("length", this._length);
+                    this.set("first", this.at(0));
+                    this.set("last", this.at(this.length - 1));
                     return this.set("empty", !this._length);
                 };
                 _Class.prototype._transform = function(item, index, start) {
@@ -1532,6 +1521,144 @@
                 computedDelay: 0
             };
         }).call(this);
+        return module.exports;
+    });
+    define("type-component/index.js", function(require, module, exports, __dirname, __filename) {
+        var toString = Object.prototype.toString;
+        module.exports = function(val) {
+            switch (toString.call(val)) {
+              case "[object Function]":
+                return "function";
+              case "[object Date]":
+                return "date";
+              case "[object RegExp]":
+                return "regexp";
+              case "[object Arguments]":
+                return "arguments";
+              case "[object Array]":
+                return "array";
+            }
+            if (val === null) return "null";
+            if (val === undefined) return "undefined";
+            if (val === Object(val)) return "object";
+            return typeof val;
+        };
+        return module.exports;
+    });
+    define("factories/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            module.exports = {
+                any: require("factories/lib/any.js"),
+                "class": require("factories/lib/class.js"),
+                factory: require("factories/lib/factory.js"),
+                fn: require("factories/lib/fn.js"),
+                group: require("factories/lib/group.js")
+            };
+        }).call(this);
+        return module.exports;
+    });
+    define("hoist/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var method, transformer, _fn, _i, _len, _ref, _this = this;
+            transformer = require("hoist/lib/transformer.js");
+            module.exports = transformer;
+            _ref = [ "cast", "map", "preCast", "preMap", "postCast", "postMap" ];
+            _fn = function(method) {
+                return module.exports[method] = function() {
+                    var t;
+                    t = transformer();
+                    return t[method].apply(t, arguments);
+                };
+            };
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                method = _ref[_i];
+                _fn(method);
+            }
+        }).call(this);
+        return module.exports;
+    });
+    define("dref/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        var _gss = global._gss = global._gss || [], type = require("type-component/index.js");
+        var _gs = function(context) {
+            for (var i = _gss.length; i--; ) {
+                var gs = _gss[i];
+                if (gs.test(context)) {
+                    return gs;
+                }
+            }
+        };
+        var _length = function(context) {
+            var gs = _gs(context);
+            return gs ? gs.length(context) : context.length;
+        };
+        var _get = function(context, key) {
+            var gs = _gs(context);
+            return gs ? gs.get(context, key) : context[key];
+        };
+        var _set = function(context, key, value) {
+            var gs = _gs(context);
+            return gs ? gs.set(context, key, value) : context[key] = value;
+        };
+        var _findValues = function(keyParts, target, create, index, values) {
+            if (!values) {
+                keyParts = (type(keyParts) === "array" ? keyParts : keyParts.split(".")).filter(function(part) {
+                    return !!part.length;
+                });
+                values = [];
+                index = 0;
+            }
+            var ct, j, kp, i = index, n = keyParts.length, pt = target;
+            for (; i < n; i++) {
+                kp = keyParts[i];
+                ct = _get(pt, kp);
+                if (kp == "$") {
+                    for (j = _length(pt); j--; ) {
+                        _findValues(keyParts, _get(pt, j), create, i + 1, values);
+                    }
+                    return values;
+                } else if (ct == undefined || ct == null) {
+                    if (!create) return values;
+                    _set(pt, kp, {});
+                    ct = _get(pt, kp);
+                }
+                pt = ct;
+            }
+            if (ct) {
+                values.push(ct);
+            } else {
+                values.push(pt);
+            }
+            return values;
+        };
+        var getValue = function(target, key) {
+            key = String(key);
+            var values = _findValues(key, target);
+            return key.indexOf(".$.") == -1 ? values[0] : values;
+        };
+        var setValue = function(target, key, newValue) {
+            key = String(key);
+            var keyParts = key.split("."), keySet = keyParts.pop();
+            if (keySet == "$") {
+                keySet = keyParts.pop();
+            }
+            var values = _findValues(keyParts, target, true);
+            for (var i = values.length; i--; ) {
+                _set(values[i], keySet, newValue);
+            }
+        };
+        exports.get = getValue;
+        exports.set = setValue;
+        exports.use = function(gs) {
+            _gss.push(gs);
+        };
+        return module.exports;
+    });
+    define("nofactor/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        module.exports = {
+            string: require("nofactor/lib/string.js"),
+            dom: require("nofactor/lib/dom.js")
+        };
+        module.exports["default"] = typeof window !== "undefined" ? module.exports.dom : module.exports.string;
         return module.exports;
     });
     define("underscore/underscore.js", function(require, module, exports, __dirname, __filename) {
@@ -2390,338 +2517,25 @@
         };
         return module.exports;
     });
-    define("dref/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        var _gss = global._gss = global._gss || [], type = require("type-component/index.js");
-        var _gs = function(context) {
-            for (var i = _gss.length; i--; ) {
-                var gs = _gss[i];
-                if (gs.test(context)) {
-                    return gs;
-                }
-            }
-        };
-        var _length = function(context) {
-            var gs = _gs(context);
-            return gs ? gs.length(context) : context.length;
-        };
-        var _get = function(context, key) {
-            var gs = _gs(context);
-            return gs ? gs.get(context, key) : context[key];
-        };
-        var _set = function(context, key, value) {
-            var gs = _gs(context);
-            return gs ? gs.set(context, key, value) : context[key] = value;
-        };
-        var _findValues = function(keyParts, target, create, index, values) {
-            if (!values) {
-                keyParts = (type(keyParts) === "array" ? keyParts : keyParts.split(".")).filter(function(part) {
-                    return !!part.length;
-                });
-                values = [];
-                index = 0;
-            }
-            var ct, j, kp, i = index, n = keyParts.length, pt = target;
-            for (; i < n; i++) {
-                kp = keyParts[i];
-                ct = _get(pt, kp);
-                if (kp == "$") {
-                    for (j = _length(pt); j--; ) {
-                        _findValues(keyParts, _get(pt, j), create, i + 1, values);
-                    }
-                    return values;
-                } else if (ct == undefined || ct == null) {
-                    if (!create) return values;
-                    _set(pt, kp, {});
-                    ct = _get(pt, kp);
-                }
-                pt = ct;
-            }
-            if (ct) {
-                values.push(ct);
-            } else {
-                values.push(pt);
-            }
-            return values;
-        };
-        var getValue = function(target, key) {
-            key = String(key);
-            var values = _findValues(key, target);
-            return key.indexOf(".$.") == -1 ? values[0] : values;
-        };
-        var setValue = function(target, key, newValue) {
-            key = String(key);
-            var keyParts = key.split("."), keySet = keyParts.pop();
-            if (keySet == "$") {
-                keySet = keyParts.pop();
-            }
-            var values = _findValues(keyParts, target, true);
-            for (var i = values.length; i--; ) {
-                _set(values[i], keySet, newValue);
-            }
-        };
-        exports.get = getValue;
-        exports.set = setValue;
-        exports.use = function(gs) {
-            _gss.push(gs);
-        };
-        return module.exports;
-    });
-    define("type-component/index.js", function(require, module, exports, __dirname, __filename) {
-        var toString = Object.prototype.toString;
-        module.exports = function(val) {
-            switch (toString.call(val)) {
-              case "[object Function]":
-                return "function";
-              case "[object Date]":
-                return "date";
-              case "[object RegExp]":
-                return "regexp";
-              case "[object Arguments]":
-                return "arguments";
-              case "[object Array]":
-                return "array";
-            }
-            if (val === null) return "null";
-            if (val === undefined) return "undefined";
-            if (val === Object(val)) return "object";
-            return typeof val;
-        };
-        return module.exports;
-    });
     define("mojojs/lib/views/base/decor/factory.js", function(require, module, exports, __dirname, __filename) {
-        var BaseViewDecorator, BindingsDecorator, DraggableDecorator, DroppableDecorator, EventsDecorator, PaperclipDecorator, PreloadDecorator, SectionsDecorator, SelectorDecorator, TransitionDecorator, availableDecorators, idGenerator, type, _decor;
+        var BaseViewDecorator, DraggableDecorator, DroppableDecorator, EventsDecorator, PreloadDecorator, SectionsDecorator, SelectorDecorator, TransitionDecorator, decor;
         BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
         SelectorDecorator = require("mojojs/lib/views/base/decor/selector.js");
-        PaperclipDecorator = require("mojojs/lib/views/base/decor/paperclip.js");
         EventsDecorator = require("mojojs/lib/views/base/decor/events.js");
-        BindingsDecorator = require("mojojs/lib/views/base/decor/bindings.js");
         SectionsDecorator = require("mojojs/lib/views/base/decor/sections/index.js");
         DraggableDecorator = require("mojojs/lib/views/base/decor/dragdrop/draggable.js");
         DroppableDecorator = require("mojojs/lib/views/base/decor/dragdrop/droppable.js");
         TransitionDecorator = require("mojojs/lib/views/base/decor/transition.js");
         PreloadDecorator = require("mojojs/lib/views/base/decor/preload.js");
-        idGenerator = require("mojojs/lib/utils/idGenerator.js");
-        type = require("type-component/index.js");
-        _decor = function(name, clazz, inheritable) {
-            if (inheritable == null) {
-                inheritable = true;
-            }
-            return {
-                name: name,
-                clazz: clazz,
-                inheritable: inheritable
-            };
-        };
-        availableDecorators = [ _decor("bindings", BindingsDecorator), _decor("selector", SelectorDecorator), _decor("preload", PreloadDecorator), _decor("paperclip", PaperclipDecorator, false), _decor("transition", TransitionDecorator), _decor("events", EventsDecorator), _decor("draggable", DraggableDecorator), _decor("droppable", DroppableDecorator), _decor("sections", SectionsDecorator) ];
-        module.exports = {
-            addDecoratorClass: function(options) {
-                if (options == null) {
-                    options = {};
-                }
-                if (type(options) === "function" || options.getOptions) {
-                    options = {
-                        factory: options
-                    };
-                }
-                return availableDecorators.push(_decor(options.name || idGenerator(), options["class"] || options.clazz || options.factory, options.inheritable));
-            },
-            setup: function(view, decor) {
-                var _decorators;
-                if (decor) {
-                    _decorators = this._findDecorators(decor);
-                } else {
-                    _decorators = view.__decorators;
-                }
-                if (_decorators) {
-                    return this.setDecorators(view, _decorators);
-                } else {
-                    decor = this.findDecorators(view);
-                    view.constructor.prototype.__decorators = view.__decorators = decor;
-                    return this.setup(view);
-                }
-            },
-            findDecorators: function(view) {
-                var cv, decorators, pv, used;
-                decorators = [];
-                cv = view;
-                pv = void 0;
-                while (cv && cv.__isView) {
-                    decorators = decorators.concat(this._findDecorators(cv, pv).concat(this._findDecorators(cv.constructor, pv != null ? pv.constructor : void 0)));
-                    pv = cv;
-                    cv = cv.__super__;
-                }
-                used = {};
-                return decorators.sort(function(a, b) {
-                    if (a.priority > b.priority) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                }).filter(function(a) {
-                    if (!used[a.name]) {
-                        used[a.name] = true;
-                        return true;
-                    }
-                    return used[a.name] && a.inheritable;
-                });
-            },
-            _findDecorators: function(proto, child) {
-                var clazz, d, decorators, options, priority, _i, _len;
-                decorators = [];
-                for (priority = _i = 0, _len = availableDecorators.length; _i < _len; priority = ++_i) {
-                    d = availableDecorators[priority];
-                    clazz = d.clazz;
-                    if (options = clazz.getOptions(proto)) {
-                        if (child && options === clazz.getOptions(child)) {
-                            continue;
-                        }
-                        decorators.push({
-                            clazz: clazz,
-                            name: d.name,
-                            inheritable: d.inheritable,
-                            options: options,
-                            priority: priority
-                        });
-                    }
-                }
-                return decorators;
-            },
-            setDecorators: function(view, decorators) {
-                var d, decor, _i, _len, _results;
-                _results = [];
-                for (_i = 0, _len = decorators.length; _i < _len; _i++) {
-                    decor = decorators[_i];
-                    _results.push(d = decor.clazz.decorate(view, decor.options));
-                }
-                return _results;
-            }
-        };
+        decor = require("bindable-decor/lib/index.js")();
+        decor.use(require("bindable-decor-bindings/lib/index.js")("render"), SelectorDecorator, PreloadDecorator, require("mojo-paperclip/lib/index.js").decorator, TransitionDecorator, EventsDecorator, DraggableDecorator, DroppableDecorator, SectionsDecorator);
+        module.exports = decor;
         return module.exports;
     });
     define("loaf/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        var Section, loaf, nofactor, __slice = [].slice;
-        nofactor = require("nofactor/lib/index.js");
-        Section = function() {
-            Section.prototype.__isLoafSection = true;
-            function Section(nodeFactory) {
-                var parent;
-                this.nodeFactory = nodeFactory != null ? nodeFactory : nofactor["default"];
-                this.start = this.nodeFactory.createTextNode("");
-                this.end = this.nodeFactory.createTextNode("");
-                parent = this.nodeFactory.createElement("div");
-                parent.appendChild(this.start);
-                parent.appendChild(this.end);
-            }
-            Section.prototype.replace = function(node) {
-                node.parentNode.insertBefore(this.toFragment(), node);
-                return node.parentNode.removeChild(node);
-            };
-            Section.prototype.show = function() {
-                if (!this._detached) {
-                    return this;
-                }
-                this.append.apply(this, this._detached.getInnerChildNodes());
-                this._detached = void 0;
-                return this;
-            };
-            Section.prototype.hide = function() {
-                this._detached = this.removeAll();
-                return this;
-            };
-            Section.prototype.removeAll = function() {
-                return this._loaf(this._removeAll());
-            };
-            Section.prototype._removeAll = function() {
-                var children, current, start;
-                start = this.start;
-                current = start.nextSibling;
-                children = [];
-                while (current !== this.end) {
-                    current.parentNode.removeChild(current);
-                    children.push(current);
-                    current = this.start.nextSibling;
-                }
-                return children;
-            };
-            Section.prototype.append = function() {
-                var children;
-                children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-                return this._insertAfter(children, this.end.previousSibling);
-            };
-            Section.prototype.prepend = function() {
-                var children;
-                children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-                return this._insertAfter(children, this.start);
-            };
-            Section.prototype.replaceChildNodes = function() {
-                this.removeAll();
-                return this.append.apply(this, arguments);
-            };
-            Section.prototype.toString = function() {
-                var buffer;
-                buffer = this.getChildNodes().map(function(node) {
-                    var _ref;
-                    return node.innerHTML || ((_ref = node.nodeValue) != null ? _ref : String(node));
-                });
-                return buffer.join("");
-            };
-            Section.prototype.toFragment = function() {
-                return this.nodeFactory.createFragment(this.getChildNodes());
-            };
-            Section.prototype.dispose = function() {
-                if (this._disposed) {
-                    return;
-                }
-                this._disposed = true;
-                this._removeAll();
-                this.start.parentNode.removeChild(this.start);
-                return this.end.parentNode.removeChild(this.end);
-            };
-            Section.prototype.getChildNodes = function() {
-                var children, cn, end;
-                cn = this.start;
-                end = this.end.nextSibling;
-                children = [];
-                while (cn !== end) {
-                    children.push(cn);
-                    cn = cn.nextSibling;
-                }
-                return children;
-            };
-            Section.prototype.getInnerChildNodes = function() {
-                var cn;
-                cn = this.getChildNodes();
-                cn.shift();
-                cn.pop();
-                return cn;
-            };
-            Section.prototype._insertAfter = function(newNodes, refNode) {
-                if (!newNodes.length) {
-                    return;
-                }
-                newNodes = newNodes.map(function(node) {
-                    if (node.__isLoafSection) {
-                        return node.toFragment();
-                    } else {
-                        return node;
-                    }
-                });
-                if (newNodes.length > 1) {
-                    newNodes = this.nodeFactory.createFragment(newNodes);
-                } else {
-                    newNodes = newNodes[0];
-                }
-                return refNode.parentNode.insertBefore(newNodes, refNode.nextSibling);
-            };
-            Section.prototype._loaf = function(children) {
-                var l;
-                l = new loaf;
-                l.append.apply(l, children);
-                return l;
-            };
-            return Section;
-        }();
-        module.exports = loaf = function(nodeFactory) {
+        var Section;
+        Section = require("loaf/lib/section.js");
+        module.exports = function(nodeFactory) {
             return new Section(nodeFactory);
         };
         return module.exports;
@@ -2827,7 +2641,7 @@
         return module.exports;
     });
     define("mojojs/lib/bindable/inheritable.js", function(require, module, exports, __dirname, __filename) {
-        var InheritableObject, bindable, _, _combineSuperProps, _getBindingKey, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+        var InheritableObject, bindable, decor, _, _combineSuperProps, _getBindingKey, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
             for (var key in parent) {
                 if (__hasProp.call(parent, key)) child[key] = parent[key];
             }
@@ -2840,6 +2654,7 @@
             return child;
         };
         bindable = require("bindable/lib/index.js");
+        decor = require("bindable-decor/lib/index.js");
         _ = require("underscore/underscore.js");
         _getBindingKey = function(key) {
             return key.split(".").shift();
@@ -3227,7 +3042,8 @@
             var propertyName;
             for (propertyName in that) {
                 var value = that[propertyName];
-                if (value && value["static"]) {
+                if (value == undefined) continue;
+                if (value["static"]) {
                     that.__construct[propertyName] = value;
                     delete that[propertyName];
                 }
@@ -3264,46 +3080,6 @@
         module.exports = Structr;
         return module.exports;
     });
-    define("factories/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            module.exports = {
-                any: require("factories/lib/any.js"),
-                "class": require("factories/lib/class.js"),
-                factory: require("factories/lib/factory.js"),
-                fn: require("factories/lib/fn.js"),
-                group: require("factories/lib/group.js")
-            };
-        }).call(this);
-        return module.exports;
-    });
-    define("hoist/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var method, transformer, _fn, _i, _len, _ref, _this = this;
-            transformer = require("hoist/lib/transformer.js");
-            module.exports = transformer;
-            _ref = [ "cast", "map", "preCast", "preMap", "postCast", "postMap" ];
-            _fn = function(method) {
-                return module.exports[method] = function() {
-                    var t;
-                    t = transformer();
-                    return t[method].apply(t, arguments);
-                };
-            };
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                method = _ref[_i];
-                _fn(method);
-            }
-        }).call(this);
-        return module.exports;
-    });
-    define("nofactor/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        module.exports = {
-            string: require("nofactor/lib/string.js"),
-            dom: require("nofactor/lib/dom.js")
-        };
-        module.exports["default"] = typeof window !== "undefined" ? module.exports.dom : module.exports.string;
-        return module.exports;
-    });
     define("mojojs/lib/views/states/state.js", function(require, module, exports, __dirname, __filename) {
         var State, bindable, _, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
             for (var key in parent) {
@@ -3325,8 +3101,8 @@
                 var ops;
                 this.states = states;
                 ops = {};
-                if (!options["class"]) {
-                    ops["class"] = options;
+                if (!options.viewClass && !options["class"]) {
+                    ops.viewClass = options;
                 } else {
                     ops = options;
                 }
@@ -3350,11 +3126,11 @@
                 return !!this._view;
             };
             State.prototype.getView = function() {
-                var clazz;
+                var clazz, _ref;
                 if (this._view) {
                     return this._view;
                 }
-                clazz = this.get("class");
+                clazz = (_ref = this.get("class")) != null ? _ref : this.get("viewClass");
                 return this._view = new clazz;
             };
             return State;
@@ -3538,8 +3314,9 @@
     });
     define("bindable/lib/object/setters/factory.js", function(require, module, exports, __dirname, __filename) {
         (function() {
-            var BindableSetter, CollectionSetter, FnSetter;
+            var BindableSetter, CollectionSetter, FnSetter, PropertySetter;
             FnSetter = require("bindable/lib/object/setters/fn.js");
+            PropertySetter = require("bindable/lib/object/setters/property.js");
             BindableSetter = require("bindable/lib/object/setters/bindable.js");
             CollectionSetter = require("bindable/lib/object/setters/collection.js");
             module.exports = function() {
@@ -3563,6 +3340,8 @@
                     } else if (typeof target === "object" && target) {
                         if (target.__isBinding) {
                             throw new Error("Cannot bind to a binding.");
+                        } else if (target.__isBindable) {
+                            return new BindableSetter(binding, target);
                         } else if (target.__isCollection) {
                             return new CollectionSetter(binding, target);
                         }
@@ -3570,7 +3349,7 @@
                     if (callback) {
                         return new FnSetter(binding, callback);
                     } else if (to && toProperty) {
-                        return new BindableSetter(binding, to, toProperty);
+                        return new PropertySetter(binding, to, toProperty);
                     }
                     return null;
                 };
@@ -3823,6 +3602,67 @@
         }).call(this);
         return module.exports;
     });
+    define("bindable/lib/object/dref.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            exports.get = function(bindable, context, keyParts, flatten) {
+                var ct, i, k, _i, _len;
+                if (flatten == null) {
+                    flatten = true;
+                }
+                if (!context) {
+                    return context;
+                }
+                if (!keyParts) {
+                    keyParts = [];
+                }
+                if (typeof keyParts === "string") {
+                    keyParts = keyParts.split(".");
+                }
+                ct = context;
+                for (i = _i = 0, _len = keyParts.length; _i < _len; i = ++_i) {
+                    k = keyParts[i];
+                    if (!ct) {
+                        return;
+                    }
+                    if (ct.__isBindable && ct !== bindable) {
+                        return ct.get(keyParts.slice(i).join("."));
+                    }
+                    ct = ct[k];
+                }
+                if (flatten && ct && ct.__isBindable) {
+                    return ct.get();
+                }
+                return ct;
+            };
+            exports.set = function(bindable, key, value) {
+                var ct, i, k, keyParts, n, nv, _i, _len;
+                keyParts = key.split(".");
+                n = keyParts.length;
+                ct = bindable.__context;
+                for (i = _i = 0, _len = keyParts.length; _i < _len; i = ++_i) {
+                    k = keyParts[i];
+                    if (ct.__isBindable && ct !== bindable) {
+                        return ct.set(keyParts.slice(i).join("."), value);
+                    } else {
+                        if (i === n - 1) {
+                            if (ct[k] === value) {
+                                return false;
+                            }
+                            ct[k] = value;
+                            return true;
+                        } else {
+                            nv = ct[k];
+                            if (!nv || typeof nv !== "object") {
+                                nv = ct[k] = {};
+                            }
+                            ct = nv;
+                        }
+                    }
+                }
+            };
+        }).call(this);
+        return module.exports;
+    });
     define("bindable/lib/collection/binding.js", function(require, module, exports, __dirname, __filename) {
         (function() {
             var SettersFactory, settersFactory, utils;
@@ -3935,67 +3775,6 @@
                 };
                 return _Class;
             }();
-        }).call(this);
-        return module.exports;
-    });
-    define("bindable/lib/object/dref.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            exports.get = function(bindable, context, keyParts, flatten) {
-                var ct, i, k, _i, _len;
-                if (flatten == null) {
-                    flatten = true;
-                }
-                if (!context) {
-                    return context;
-                }
-                if (!keyParts) {
-                    keyParts = [];
-                }
-                if (typeof keyParts === "string") {
-                    keyParts = keyParts.split(".");
-                }
-                ct = context;
-                for (i = _i = 0, _len = keyParts.length; _i < _len; i = ++_i) {
-                    k = keyParts[i];
-                    if (!ct) {
-                        return;
-                    }
-                    if (ct.__isBindable && ct !== bindable) {
-                        return ct.get(keyParts.slice(i));
-                    }
-                    ct = ct[k];
-                }
-                if (flatten && ct && ct.__isBindable) {
-                    return ct.get();
-                }
-                return ct;
-            };
-            exports.set = function(bindable, key, value) {
-                var ct, i, k, keyParts, n, nv, _i, _len;
-                keyParts = key.split(".");
-                n = keyParts.length;
-                ct = bindable.__context;
-                for (i = _i = 0, _len = keyParts.length; _i < _len; i = ++_i) {
-                    k = keyParts[i];
-                    if (ct.__isBindable && ct !== bindable) {
-                        return ct.set(keyParts.slice(i).join("."), value);
-                    } else {
-                        if (i === n - 1) {
-                            if (ct[k] === value) {
-                                return false;
-                            }
-                            ct[k] = value;
-                            return true;
-                        } else {
-                            nv = ct[k];
-                            if (!nv || typeof nv !== "object") {
-                                nv = ct[k] = {};
-                            }
-                            ct = nv;
-                        }
-                    }
-                }
-            };
         }).call(this);
         return module.exports;
     });
@@ -4199,683 +3978,6 @@
         })();
         return module.exports;
     });
-    define("mojojs/lib/views/base/decor/base.js", function(require, module, exports, __dirname, __filename) {
-        var ViewDecorator;
-        ViewDecorator = function() {
-            function ViewDecorator(view, options) {
-                this.view = view;
-                this.options = options;
-                this.init();
-            }
-            ViewDecorator.prototype.init = function() {};
-            return ViewDecorator;
-        }();
-        module.exports = ViewDecorator;
-        return module.exports;
-    });
-    define("mojojs/lib/views/base/decor/selector.js", function(require, module, exports, __dirname, __filename) {
-        var SelectorDecorator;
-        SelectorDecorator = function() {
-            function SelectorDecorator() {}
-            SelectorDecorator.getOptions = function(view) {
-                return !!view.prototype;
-            };
-            SelectorDecorator.decorate = function(view) {
-                return view.$ = function(search) {
-                    var el;
-                    el = $(this.section.getChildNodes());
-                    if (arguments.length) {
-                        return el.find(search);
-                    }
-                    return el;
-                };
-            };
-            return SelectorDecorator;
-        }();
-        module.exports = SelectorDecorator;
-        return module.exports;
-    });
-    define("mojojs/lib/views/base/decor/paperclip.js", function(require, module, exports, __dirname, __filename) {
-        var PaperclipViewDecorator, paperclip, type, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        };
-        paperclip = require("paperclip/lib/index.js");
-        type = require("type-component/index.js");
-        PaperclipViewDecorator = function() {
-            function PaperclipViewDecorator(view) {
-                this.view = view;
-                this.cleanup = __bind(this.cleanup, this);
-                this.remove = __bind(this.remove, this);
-                this.render = __bind(this.render, this);
-                this._onTemplateChange = __bind(this._onTemplateChange, this);
-                this.view.once("render", this.render);
-                this.view.once("remove", this.remove);
-                this.view._define("paper");
-                this.view.bind("paper").to(this._onTemplateChange).now();
-            }
-            PaperclipViewDecorator.prototype._onTemplateChange = function(template) {
-                if (type(template) !== "function") {
-                    throw new Error('paper template must be a function for view "' + this.view.constructor.name + '"');
-                }
-                this.template = paperclip.template(template);
-                if (this._rendered) {
-                    this.cleanup(true);
-                    return this.render();
-                }
-            };
-            PaperclipViewDecorator.prototype.render = function() {
-                this._rendered = true;
-                this.content = void 0;
-                if (!this.template) {
-                    return;
-                }
-                this.content = this.template.bind(this.view);
-                this.content.section.show();
-                return this.view.section.append(this.content.section.toFragment());
-            };
-            PaperclipViewDecorator.prototype.remove = function() {
-                return this.cleanup();
-            };
-            PaperclipViewDecorator.prototype.cleanup = function(hide) {
-                var _ref, _ref1;
-                if ((_ref = this.content) != null) {
-                    _ref.unbind();
-                }
-                if (hide) {
-                    return (_ref1 = this.content) != null ? _ref1.section.hide() : void 0;
-                }
-            };
-            PaperclipViewDecorator.getOptions = function(view) {
-                return view.__isView;
-            };
-            PaperclipViewDecorator.decorate = function(view, options) {
-                return new PaperclipViewDecorator(view, options);
-            };
-            return PaperclipViewDecorator;
-        }();
-        module.exports = PaperclipViewDecorator;
-        return module.exports;
-    });
-    define("mojojs/lib/views/base/decor/events.js", function(require, module, exports, __dirname, __filename) {
-        var BaseDecorator, EventsDecorator, disposable, _ref, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        disposable = require("disposable/lib/index.js");
-        BaseDecorator = require("mojojs/lib/views/base/decor/base.js");
-        EventsDecorator = function(_super) {
-            __extends(EventsDecorator, _super);
-            function EventsDecorator() {
-                this.remove = __bind(this.remove, this);
-                this.render = __bind(this.render, this);
-                _ref = EventsDecorator.__super__.constructor.apply(this, arguments);
-                return _ref;
-            }
-            EventsDecorator.prototype.init = function() {
-                EventsDecorator.__super__.init.call(this);
-                this.events = this.options;
-                this.view.once("render", this.render);
-                return this.view.once("remove", this.remove);
-            };
-            EventsDecorator.prototype.render = function() {
-                var e, selector, _results;
-                e = this._events();
-                this._disposeBindings();
-                this._disposable = disposable.create();
-                _results = [];
-                for (selector in e) {
-                    _results.push(this._addBinding(selector, e[selector]));
-                }
-                return _results;
-            };
-            EventsDecorator.prototype.remove = function() {
-                return this._disposeBindings();
-            };
-            EventsDecorator.prototype._addBinding = function(selector, viewMethod) {
-                var action, actions, cb, elements, lowerActions, selectorParts, selectors, _fn, _i, _len, _ref1, _this = this;
-                selectorParts = selector.split(" ");
-                actions = selectorParts.shift().split(/\|/g).join(" ");
-                selectors = selectorParts.join(",");
-                cb = function() {
-                    var ref;
-                    if (typeof viewMethod === "function") {
-                        ref = viewMethod;
-                    } else {
-                        ref = _this.view[viewMethod] || _this.view.get(viewMethod);
-                    }
-                    return ref.apply(_this.view, arguments);
-                };
-                if (!selectors.length) {
-                    elements = this.view.$();
-                } else {
-                    elements = this.view.$(selectors);
-                }
-                elements.bind(lowerActions = actions.toLowerCase(), cb);
-                _ref1 = actions.split(" ");
-                _fn = function(action) {
-                    return _this._disposable.add(_this.view.on(action, function() {
-                        return cb.apply(this, [ $.Event(action) ].concat(Array.prototype.slice.call(arguments)));
-                    }));
-                };
-                for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-                    action = _ref1[_i];
-                    _fn(action);
-                }
-                return this._disposable.add(function() {
-                    return elements.unbind(lowerActions, cb);
-                });
-            };
-            EventsDecorator.prototype._disposeBindings = function() {
-                if (!this._disposable) {
-                    return;
-                }
-                this._disposable.dispose();
-                return this._disposable = void 0;
-            };
-            EventsDecorator.prototype._events = function() {
-                return this.events;
-            };
-            EventsDecorator.getOptions = function(view) {
-                return view.events;
-            };
-            EventsDecorator.decorate = function(view, options) {
-                return new EventsDecorator(view, options);
-            };
-            return EventsDecorator;
-        }(BaseDecorator);
-        module.exports = EventsDecorator;
-        return module.exports;
-    });
-    define("mojojs/lib/views/base/decor/bindings.js", function(require, module, exports, __dirname, __filename) {
-        var BaseViewDecorator, BindingsDecorator, dref, _ref, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
-        dref = require("dref/lib/index.js");
-        BindingsDecorator = function(_super) {
-            __extends(BindingsDecorator, _super);
-            function BindingsDecorator() {
-                this.render = __bind(this.render, this);
-                this.init = __bind(this.init, this);
-                _ref = BindingsDecorator.__super__.constructor.apply(this, arguments);
-                return _ref;
-            }
-            BindingsDecorator.prototype.init = function() {
-                BindingsDecorator.__super__.init.call(this);
-                this.bindings = typeof this.options === "object" ? this.options : void 0;
-                return this.view.once("render", this.render);
-            };
-            BindingsDecorator.prototype.render = function() {
-                if (this.bindings) {
-                    return this._setupExplicitBindings();
-                }
-            };
-            BindingsDecorator.prototype._setupExplicitBindings = function() {
-                var bindings, key, _results;
-                bindings = this.bindings;
-                _results = [];
-                for (key in bindings) {
-                    _results.push(this._setupBinding(key, bindings[key]));
-                }
-                return _results;
-            };
-            BindingsDecorator.prototype._setupBinding = function(property, to) {
-                var oldTo, options, _this = this;
-                options = {};
-                if (typeof to === "function") {
-                    oldTo = to;
-                    to = function() {
-                        return oldTo.apply(_this.view, arguments);
-                    };
-                }
-                if (to.to) {
-                    options = to;
-                } else {
-                    options = {
-                        to: to
-                    };
-                }
-                options.property = property;
-                return this.view.bind(options).now();
-            };
-            BindingsDecorator.getOptions = function(view) {
-                return view.bindings;
-            };
-            BindingsDecorator.decorate = function(view, options) {
-                return new BindingsDecorator(view, options);
-            };
-            return BindingsDecorator;
-        }(BaseViewDecorator);
-        module.exports = BindingsDecorator;
-        return module.exports;
-    });
-    define("mojojs/lib/views/base/decor/sections/index.js", function(require, module, exports, __dirname, __filename) {
-        var SectionsDecorator, type;
-        type = require("type-component/index.js");
-        SectionsDecorator = function() {
-            function SectionsDecorator(view, sectionOptions) {
-                this.view = view;
-                this.sectionOptions = sectionOptions;
-                this.view.set("sections", {});
-                this.init();
-            }
-            SectionsDecorator.prototype.init = function() {
-                var sectionName, _results;
-                _results = [];
-                for (sectionName in this.sectionOptions) {
-                    _results.push(this._addSection(sectionName, this._fixOptions(this.sectionOptions[sectionName])));
-                }
-                return _results;
-            };
-            SectionsDecorator.prototype._addSection = function(name, options) {
-                var view, _this = this;
-                view = this._createSectionView(options);
-                view.once("initialize", function() {
-                    return view.decorate(options);
-                });
-                view.createFragment = function() {
-                    if (view._createdFragment) {
-                        return view.section.toFragment();
-                    }
-                    view._createdFragment = true;
-                    _this.view.callstack.unshift(view.render);
-                    return view.section.toFragment();
-                };
-                return this.view.setChild(name, view);
-            };
-            SectionsDecorator.prototype._fixOptions = function(options) {
-                if (!options) {
-                    throw new Error("'sections' is invalid for view " + this.view.path());
-                }
-                if (!options.type) {
-                    options = {
-                        type: options
-                    };
-                }
-                return options;
-            };
-            SectionsDecorator.prototype._createSectionView = function(options) {
-                var clazz;
-                if (type(options.type) === "object") {
-                    return options.type;
-                } else {
-                    clazz = this._getSectionClass(options);
-                    return new clazz(options);
-                }
-            };
-            SectionsDecorator.prototype._getSectionClass = function(options) {
-                var t;
-                if ((t = type(options.type)) === "function") {
-                    return options.type;
-                } else if (t === "string") {
-                    return this.view.get("models.components." + options.type);
-                } else {
-                    throw new Error("cannot get section class for type " + t);
-                }
-            };
-            SectionsDecorator.getOptions = function(view) {
-                return view.sections;
-            };
-            SectionsDecorator.decorate = function(view, options) {
-                return new SectionsDecorator(view, options);
-            };
-            return SectionsDecorator;
-        }();
-        module.exports = SectionsDecorator;
-        return module.exports;
-    });
-    define("mojojs/lib/views/base/decor/dragdrop/draggable.js", function(require, module, exports, __dirname, __filename) {
-        var BaseViewDecorator, DraggableDecorator, droppables, _, _ref, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
-        droppables = require("mojojs/lib/views/base/decor/dragdrop/collection.js");
-        _ = require("underscore/underscore.js");
-        DraggableDecorator = function(_super) {
-            __extends(DraggableDecorator, _super);
-            function DraggableDecorator() {
-                this._followMouse = __bind(this._followMouse, this);
-                this._coords = __bind(this._coords, this);
-                this._event = __bind(this._event, this);
-                this._drag = __bind(this._drag, this);
-                this._stopDrag = __bind(this._stopDrag, this);
-                this._startDrag = __bind(this._startDrag, this);
-                this._initListeners = __bind(this._initListeners, this);
-                this.render = __bind(this.render, this);
-                _ref = DraggableDecorator.__super__.constructor.apply(this, arguments);
-                return _ref;
-            }
-            DraggableDecorator.prototype.init = function() {
-                DraggableDecorator.__super__.init.call(this);
-                this.name = this.view.draggable;
-                return this.view.once("render", this.render);
-            };
-            DraggableDecorator.prototype.render = function() {
-                return this._initListeners();
-            };
-            DraggableDecorator.prototype._initListeners = function() {
-                var el;
-                el = this.view.$();
-                this.document = $(document);
-                el.bind("selectstart", function() {
-                    return false;
-                });
-                el.bind("dragstart", function() {
-                    return false;
-                });
-                return el.bind("mousedown", this._startDrag);
-            };
-            DraggableDecorator.prototype._startDrag = function(e) {
-                var el;
-                el = $(this.view.section.getChildNodes().filter(function(el) {
-                    return el.nodeType === 1;
-                }));
-                this.document.bind("mousemove", this._drag);
-                this.document.one("mouseup", this._stopDrag);
-                this._offset = {
-                    x: e.offsetX || el.width() / 2,
-                    y: e.offsetY || el.height() / 2
-                };
-                this.draggedItem = this.document.find("body").append("<div>" + el.html() + "</div>").children().last();
-                this.draggedItem.css({
-                    "z-index": 99999999,
-                    position: "absolute",
-                    opacity: .8
-                });
-                this.draggedItem.transit({
-                    scale: 1.5
-                });
-                this._followMouse(e);
-                e.stopPropagation();
-                return false;
-            };
-            DraggableDecorator.prototype._stopDrag = function(e) {
-                droppables.drop(this.name, this._event(e));
-                this.document.unbind("mousemove", this._mouseMoveListener);
-                return this.draggedItem.remove();
-            };
-            DraggableDecorator.prototype._drag = function(e) {
-                droppables.drag(this.name, this._event(e));
-                return this._followMouse(e);
-            };
-            DraggableDecorator.prototype._event = function(e) {
-                return {
-                    view: this.view,
-                    draggedItem: this.draggedItem,
-                    mouse: {
-                        x: e.pageX,
-                        y: e.pageY
-                    }
-                };
-            };
-            DraggableDecorator.prototype._coords = function(e) {
-                return {
-                    left: e.pageX - this._offset.x,
-                    top: e.pageY - this._offset.y
-                };
-            };
-            DraggableDecorator.prototype._followMouse = function(e) {
-                return this.draggedItem.css(this._coords(e));
-            };
-            DraggableDecorator.getOptions = function(view) {
-                return view.draggable;
-            };
-            DraggableDecorator.decorate = function(view, options) {
-                return new DraggableDecorator(view, options);
-            };
-            return DraggableDecorator;
-        }(BaseViewDecorator);
-        module.exports = DraggableDecorator;
-        return module.exports;
-    });
-    define("mojojs/lib/views/base/decor/dragdrop/droppable.js", function(require, module, exports, __dirname, __filename) {
-        var BaseViewDecorator, DroppableDecorator, droppables, _ref, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
-        droppables = require("mojojs/lib/views/base/decor/dragdrop/collection.js");
-        DroppableDecorator = function(_super) {
-            __extends(DroppableDecorator, _super);
-            function DroppableDecorator() {
-                this.remove = __bind(this.remove, this);
-                this.render = __bind(this.render, this);
-                _ref = DroppableDecorator.__super__.constructor.apply(this, arguments);
-                return _ref;
-            }
-            DroppableDecorator.prototype.init = function() {
-                DroppableDecorator.__super__.init.call(this);
-                this.name = this.view.droppable;
-                this.view.once("render", this.render);
-                return this.view.once("remove", this.remove);
-            };
-            DroppableDecorator.prototype.render = function() {
-                return droppables.add(this.name, this);
-            };
-            DroppableDecorator.prototype.remove = function() {
-                return droppables.remove(this.name, this);
-            };
-            DroppableDecorator.getOptions = function(view) {
-                return view.droppable;
-            };
-            DroppableDecorator.decorate = function(view, options) {
-                return new DroppableDecorator(view, options);
-            };
-            return DroppableDecorator;
-        }(BaseViewDecorator);
-        module.exports = DroppableDecorator;
-        return module.exports;
-    });
-    define("mojojs/lib/views/base/decor/transition.js", function(require, module, exports, __dirname, __filename) {
-        var BaseViewDecorator, TransitionDecorator, async, comerr, _, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        comerr = require("comerr/lib/index.js");
-        BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
-        _ = require("underscore/underscore.js");
-        async = require("mojojs/lib/utils/async.js");
-        TransitionDecorator = function(_super) {
-            __extends(TransitionDecorator, _super);
-            function TransitionDecorator(view, transition) {
-                this.view = view;
-                this.transition = transition;
-                this._onRemove = __bind(this._onRemove, this);
-                this._onRender = __bind(this._onRender, this);
-                this.view.once("render", this._onRender);
-                this.view.once("remove", this._onRemove);
-            }
-            TransitionDecorator.prototype._onRender = function() {
-                return this._transitionAll("enter", function() {});
-            };
-            TransitionDecorator.prototype._onRemove = function() {
-                var _this = this;
-                this.view.$().css({
-                    opacity: 1
-                });
-                return this.view.callstack.push(function(next) {
-                    return _this._transitionAll("exit", next);
-                });
-            };
-            TransitionDecorator.prototype._transitionAll = function(type, next) {
-                var _this = this;
-                return async.forEach(this._filterTransitions(type), function(transition, next) {
-                    return _this._transition(_this._element(transition), transition[type], next);
-                }, next);
-            };
-            TransitionDecorator.prototype._transition = function(element, transition, next) {
-                var _this = this;
-                if (!element.length) {
-                    return next(new comerr.NotFound("element does not exist"));
-                }
-                if (transition.from) {
-                    element.css(transition.from);
-                }
-                return setTimeout(function() {
-                    return element.transit(transition.to || transition, next);
-                }, 0);
-            };
-            TransitionDecorator.prototype._transitions = function() {
-                var selector, trans, transition, transitions;
-                transition = this.transition;
-                if (transition.enter || transition.exit) {
-                    return [ transition ];
-                }
-                transitions = [];
-                for (selector in transition) {
-                    trans = transition[selector];
-                    trans.selector = selector;
-                    transitions.push(trans);
-                }
-                console.log(transitions);
-                return transitions;
-            };
-            TransitionDecorator.prototype._filterTransitions = function(type) {
-                return this._transitions().filter(function(trans) {
-                    return !!trans[type];
-                });
-            };
-            TransitionDecorator.prototype._element = function(transition) {
-                var element, selector;
-                selector = transition.selector || transition.el;
-                element = selector ? this.view.$(selector) : this.view.$();
-                return element.filter(function(index, element) {
-                    return element.nodeType === 1;
-                });
-            };
-            TransitionDecorator.getOptions = function(view) {
-                return view.transition;
-            };
-            TransitionDecorator.decorate = function(view, options) {
-                return new TransitionDecorator(view, options);
-            };
-            return TransitionDecorator;
-        }(BaseViewDecorator);
-        module.exports = TransitionDecorator;
-        return module.exports;
-    });
-    define("mojojs/lib/views/base/decor/preload.js", function(require, module, exports, __dirname, __filename) {
-        var BaseDecor, PreloadDecorator, async, toarray, __bind = function(fn, me) {
-            return function() {
-                return fn.apply(me, arguments);
-            };
-        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
-            for (var key in parent) {
-                if (__hasProp.call(parent, key)) child[key] = parent[key];
-            }
-            function ctor() {
-                this.constructor = child;
-            }
-            ctor.prototype = parent.prototype;
-            child.prototype = new ctor;
-            child.__super__ = parent.prototype;
-            return child;
-        };
-        BaseDecor = require("mojojs/lib/views/base/decor/base.js");
-        async = require("async/lib/async.js");
-        toarray = require("toarray/index.js");
-        PreloadDecorator = function(_super) {
-            __extends(PreloadDecorator, _super);
-            function PreloadDecorator(view, preload) {
-                var pl;
-                this.view = view;
-                this._onRender = __bind(this._onRender, this);
-                if (preload === true) {
-                    pl = [ "model" ];
-                } else {
-                    pl = preload;
-                }
-                this.preload = toarray(pl);
-                this.view.once("render", this._onRender);
-            }
-            PreloadDecorator.prototype._onRender = function() {
-                var _this = this;
-                return this.view.callstack.push(function(next) {
-                    return async.forEach(_this.preload, function(property, next) {
-                        return _this.view.bind(property).to(function(model) {
-                            if (!model || !(model != null ? model.fetch : void 0)) {
-                                return next();
-                            }
-                            return model.fetch(next);
-                        }).once().now();
-                    }, next);
-                });
-            };
-            PreloadDecorator.getOptions = function(view) {
-                return view.preload;
-            };
-            PreloadDecorator.decorate = function(view, options) {
-                return new PreloadDecorator(view, options);
-            };
-            return PreloadDecorator;
-        }(BaseDecor);
-        module.exports = PreloadDecorator;
-        return module.exports;
-    });
     define("factories/lib/any.js", function(require, module, exports, __dirname, __filename) {
         (function() {
             var AnyFactory, factoryFactory, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
@@ -4901,6 +4003,9 @@
                 }
                 AnyFactory.prototype.test = function(data) {
                     return !!this._getFactory(data);
+                };
+                AnyFactory.prototype.push = function(factory) {
+                    return this.factories.push(factoryFactory.create(factory));
                 };
                 AnyFactory.prototype.create = function(data) {
                     var _ref;
@@ -4979,24 +4084,21 @@
                 function FactoryFactory() {}
                 FactoryFactory.prototype.create = function(data) {
                     var t;
-                    if ((t = type(data)) === "function") {
+                    if (data.create && data.test) {
+                        return data;
+                    } else if ((t = type(data)) === "function") {
                         if (data.prototype.constructor) {
-                            if (data.create && data.test) {
-                                return data;
-                            } else {
-                                return new ClassFactory(data);
-                            }
+                            return new ClassFactory(data);
+                        } else {
+                            return new FnFactory(data);
                         }
-                        return new FnFactory(data);
                     }
                     return data;
                 };
                 return FactoryFactory;
             }(require("factories/lib/base.js"));
             factory = new FactoryFactory;
-            module.exports = function(data) {
-                return factory.create(data);
-            };
+            module.exports = factory;
         }).call(this);
         return module.exports;
     });
@@ -5447,8 +4549,11 @@
         Text = function(_super) {
             __extends(Text, _super);
             Text.prototype.nodeType = 3;
-            function Text(value) {
-                this.value = ent(value);
+            function Text(value, encode) {
+                if (encode) {
+                    value = ent(value);
+                }
+                this.value = value;
             }
             Text.prototype.toString = function() {
                 return this.value;
@@ -5489,8 +4594,8 @@
             StringNodeFactory.prototype.createElement = function(name) {
                 return new Element(name);
             };
-            StringNodeFactory.prototype.createTextNode = function(text) {
-                return new Text(text);
+            StringNodeFactory.prototype.createTextNode = function(text, encode) {
+                return new Text(text, encode);
             };
             StringNodeFactory.prototype.createComment = function(text) {
                 return new Comment(text);
@@ -5565,6 +4670,933 @@
             return DomFactory;
         }(require("nofactor/lib/base.js"));
         module.exports = new DomFactory;
+        return module.exports;
+    });
+    define("mojojs/lib/views/base/decor/base.js", function(require, module, exports, __dirname, __filename) {
+        var ViewDecorator;
+        ViewDecorator = function() {
+            function ViewDecorator(view, options) {
+                this.view = view;
+                this.options = options;
+                this.init();
+            }
+            ViewDecorator.prototype.init = function() {};
+            return ViewDecorator;
+        }();
+        module.exports = ViewDecorator;
+        return module.exports;
+    });
+    define("mojojs/lib/views/base/decor/selector.js", function(require, module, exports, __dirname, __filename) {
+        var SelectorDecorator;
+        SelectorDecorator = function() {
+            function SelectorDecorator() {}
+            SelectorDecorator.getOptions = function(view) {
+                return !!view.prototype;
+            };
+            SelectorDecorator.decorate = function(view) {
+                return view.$ = function(search) {
+                    var el;
+                    el = $(this.section.getChildNodes());
+                    if (arguments.length) {
+                        return el.find(search);
+                    }
+                    return el;
+                };
+            };
+            return SelectorDecorator;
+        }();
+        module.exports = SelectorDecorator;
+        return module.exports;
+    });
+    define("mojojs/lib/views/base/decor/events.js", function(require, module, exports, __dirname, __filename) {
+        var BaseDecorator, EventsDecorator, disposable, _ref, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        disposable = require("disposable/lib/index.js");
+        BaseDecorator = require("mojojs/lib/views/base/decor/base.js");
+        EventsDecorator = function(_super) {
+            __extends(EventsDecorator, _super);
+            function EventsDecorator() {
+                this.remove = __bind(this.remove, this);
+                this.render = __bind(this.render, this);
+                _ref = EventsDecorator.__super__.constructor.apply(this, arguments);
+                return _ref;
+            }
+            EventsDecorator.prototype.init = function() {
+                EventsDecorator.__super__.init.call(this);
+                this.events = this.options;
+                this.view.once("render", this.render);
+                return this.view.once("remove", this.remove);
+            };
+            EventsDecorator.prototype.render = function() {
+                var e, selector, _results;
+                e = this._events();
+                this._disposeBindings();
+                this._disposable = disposable.create();
+                _results = [];
+                for (selector in e) {
+                    _results.push(this._addBinding(selector, e[selector]));
+                }
+                return _results;
+            };
+            EventsDecorator.prototype.remove = function() {
+                return this._disposeBindings();
+            };
+            EventsDecorator.prototype._addBinding = function(selector, viewMethod) {
+                var action, actions, cb, elements, lowerActions, selectorParts, selectors, _fn, _i, _len, _ref1, _this = this;
+                selectorParts = selector.split(" ");
+                actions = selectorParts.shift().split(/\|/g).join(" ");
+                selectors = selectorParts.join(",");
+                cb = function() {
+                    var ref;
+                    if (typeof viewMethod === "function") {
+                        ref = viewMethod;
+                    } else {
+                        ref = _this.view[viewMethod] || _this.view.get(viewMethod);
+                    }
+                    return ref.apply(_this.view, arguments);
+                };
+                if (!selectors.length) {
+                    elements = this.view.$();
+                } else {
+                    elements = this.view.$(selectors);
+                }
+                elements.bind(lowerActions = actions.toLowerCase(), cb);
+                _ref1 = actions.split(" ");
+                _fn = function(action) {
+                    return _this._disposable.add(_this.view.on(action, function() {
+                        return cb.apply(this, [ $.Event(action) ].concat(Array.prototype.slice.call(arguments)));
+                    }));
+                };
+                for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+                    action = _ref1[_i];
+                    _fn(action);
+                }
+                return this._disposable.add(function() {
+                    return elements.unbind(lowerActions, cb);
+                });
+            };
+            EventsDecorator.prototype._disposeBindings = function() {
+                if (!this._disposable) {
+                    return;
+                }
+                this._disposable.dispose();
+                return this._disposable = void 0;
+            };
+            EventsDecorator.prototype._events = function() {
+                return this.events;
+            };
+            EventsDecorator.getOptions = function(view) {
+                return view.events;
+            };
+            EventsDecorator.decorate = function(view, options) {
+                return new EventsDecorator(view, options);
+            };
+            return EventsDecorator;
+        }(BaseDecorator);
+        module.exports = EventsDecorator;
+        return module.exports;
+    });
+    define("mojojs/lib/views/base/decor/sections/index.js", function(require, module, exports, __dirname, __filename) {
+        var SectionsDecorator, type;
+        type = require("type-component/index.js");
+        SectionsDecorator = function() {
+            function SectionsDecorator(view, sectionOptions) {
+                this.view = view;
+                this.sectionOptions = sectionOptions;
+                this.view.set("sections", {});
+                this.init();
+            }
+            SectionsDecorator.prototype.init = function() {
+                var sectionName, _results;
+                _results = [];
+                for (sectionName in this.sectionOptions) {
+                    _results.push(this._addSection(sectionName, this._fixOptions(this.sectionOptions[sectionName])));
+                }
+                return _results;
+            };
+            SectionsDecorator.prototype._addSection = function(name, options) {
+                var view, _this = this;
+                view = this._createSectionView(options);
+                view.once("initialize", function() {
+                    return view.decorate(options);
+                });
+                view.createFragment = function() {
+                    if (view._createdFragment) {
+                        return view.section.toFragment();
+                    }
+                    view._createdFragment = true;
+                    _this.view.callstack.unshift(view.render);
+                    return view.section.toFragment();
+                };
+                return this.view.setChild(name, view);
+            };
+            SectionsDecorator.prototype._fixOptions = function(options) {
+                if (!options) {
+                    throw new Error("'sections' is invalid for view " + this.view.path());
+                }
+                if (!options.type) {
+                    options = {
+                        type: options
+                    };
+                }
+                return options;
+            };
+            SectionsDecorator.prototype._createSectionView = function(options) {
+                var clazz;
+                if (type(options.type) === "object") {
+                    return options.type;
+                } else {
+                    clazz = this._getSectionClass(options);
+                    return new clazz(options);
+                }
+            };
+            SectionsDecorator.prototype._getSectionClass = function(options) {
+                var t;
+                if ((t = type(options.type)) === "function") {
+                    return options.type;
+                } else if (t === "string") {
+                    return this.view.get("models.components." + options.type);
+                } else {
+                    throw new Error("cannot get section class for type " + t);
+                }
+            };
+            SectionsDecorator.getOptions = function(view) {
+                return view.sections;
+            };
+            SectionsDecorator.decorate = function(view, options) {
+                return new SectionsDecorator(view, options);
+            };
+            return SectionsDecorator;
+        }();
+        module.exports = SectionsDecorator;
+        return module.exports;
+    });
+    define("mojojs/lib/views/base/decor/dragdrop/draggable.js", function(require, module, exports, __dirname, __filename) {
+        var BaseViewDecorator, DraggableDecorator, droppables, _, _ref, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
+        droppables = require("mojojs/lib/views/base/decor/dragdrop/collection.js");
+        _ = require("underscore/underscore.js");
+        DraggableDecorator = function(_super) {
+            __extends(DraggableDecorator, _super);
+            function DraggableDecorator() {
+                this._followMouse = __bind(this._followMouse, this);
+                this._coords = __bind(this._coords, this);
+                this._event = __bind(this._event, this);
+                this._drag = __bind(this._drag, this);
+                this._stopDrag = __bind(this._stopDrag, this);
+                this._startDrag = __bind(this._startDrag, this);
+                this._initListeners = __bind(this._initListeners, this);
+                this.render = __bind(this.render, this);
+                _ref = DraggableDecorator.__super__.constructor.apply(this, arguments);
+                return _ref;
+            }
+            DraggableDecorator.prototype.init = function() {
+                DraggableDecorator.__super__.init.call(this);
+                this.name = this.view.draggable;
+                return this.view.once("render", this.render);
+            };
+            DraggableDecorator.prototype.render = function() {
+                return this._initListeners();
+            };
+            DraggableDecorator.prototype._initListeners = function() {
+                var el;
+                el = this.view.$();
+                this.document = $(document);
+                el.bind("selectstart", function() {
+                    return false;
+                });
+                el.bind("dragstart", function() {
+                    return false;
+                });
+                return el.bind("mousedown", this._startDrag);
+            };
+            DraggableDecorator.prototype._startDrag = function(e) {
+                var el;
+                el = $(this.view.section.getChildNodes().filter(function(el) {
+                    return el.nodeType === 1;
+                }));
+                this.document.bind("mousemove", this._drag);
+                this.document.one("mouseup", this._stopDrag);
+                this._offset = {
+                    x: e.offsetX || el.width() / 2,
+                    y: e.offsetY || el.height() / 2
+                };
+                this.draggedItem = this.document.find("body").append("<div>" + el.html() + "</div>").children().last();
+                this.draggedItem.css({
+                    "z-index": 99999999,
+                    position: "absolute",
+                    opacity: .8
+                });
+                this.draggedItem.transit({
+                    scale: 1.5
+                });
+                this._followMouse(e);
+                e.stopPropagation();
+                return false;
+            };
+            DraggableDecorator.prototype._stopDrag = function(e) {
+                droppables.drop(this.name, this._event(e));
+                this.document.unbind("mousemove", this._mouseMoveListener);
+                return this.draggedItem.remove();
+            };
+            DraggableDecorator.prototype._drag = function(e) {
+                droppables.drag(this.name, this._event(e));
+                return this._followMouse(e);
+            };
+            DraggableDecorator.prototype._event = function(e) {
+                return {
+                    view: this.view,
+                    draggedItem: this.draggedItem,
+                    mouse: {
+                        x: e.pageX,
+                        y: e.pageY
+                    }
+                };
+            };
+            DraggableDecorator.prototype._coords = function(e) {
+                return {
+                    left: e.pageX - this._offset.x,
+                    top: e.pageY - this._offset.y
+                };
+            };
+            DraggableDecorator.prototype._followMouse = function(e) {
+                return this.draggedItem.css(this._coords(e));
+            };
+            DraggableDecorator.getOptions = function(view) {
+                return view.draggable;
+            };
+            DraggableDecorator.decorate = function(view, options) {
+                return new DraggableDecorator(view, options);
+            };
+            return DraggableDecorator;
+        }(BaseViewDecorator);
+        module.exports = DraggableDecorator;
+        return module.exports;
+    });
+    define("mojojs/lib/views/base/decor/dragdrop/droppable.js", function(require, module, exports, __dirname, __filename) {
+        var BaseViewDecorator, DroppableDecorator, droppables, _ref, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
+        droppables = require("mojojs/lib/views/base/decor/dragdrop/collection.js");
+        DroppableDecorator = function(_super) {
+            __extends(DroppableDecorator, _super);
+            function DroppableDecorator() {
+                this.remove = __bind(this.remove, this);
+                this.render = __bind(this.render, this);
+                _ref = DroppableDecorator.__super__.constructor.apply(this, arguments);
+                return _ref;
+            }
+            DroppableDecorator.prototype.init = function() {
+                DroppableDecorator.__super__.init.call(this);
+                this.name = this.view.droppable;
+                this.view.once("render", this.render);
+                return this.view.once("remove", this.remove);
+            };
+            DroppableDecorator.prototype.render = function() {
+                return droppables.add(this.name, this);
+            };
+            DroppableDecorator.prototype.remove = function() {
+                return droppables.remove(this.name, this);
+            };
+            DroppableDecorator.getOptions = function(view) {
+                return view.droppable;
+            };
+            DroppableDecorator.decorate = function(view, options) {
+                return new DroppableDecorator(view, options);
+            };
+            return DroppableDecorator;
+        }(BaseViewDecorator);
+        module.exports = DroppableDecorator;
+        return module.exports;
+    });
+    define("mojojs/lib/views/base/decor/transition.js", function(require, module, exports, __dirname, __filename) {
+        var BaseViewDecorator, TransitionDecorator, async, comerr, _, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        comerr = require("comerr/lib/index.js");
+        BaseViewDecorator = require("mojojs/lib/views/base/decor/base.js");
+        _ = require("underscore/underscore.js");
+        async = require("mojojs/lib/utils/async.js");
+        TransitionDecorator = function(_super) {
+            __extends(TransitionDecorator, _super);
+            function TransitionDecorator(view, transition) {
+                this.view = view;
+                this.transition = transition;
+                this._onRemove = __bind(this._onRemove, this);
+                this._onRender = __bind(this._onRender, this);
+                this.view.once("render", this._onRender);
+                this.view.once("remove", this._onRemove);
+            }
+            TransitionDecorator.prototype._onRender = function() {
+                return this._transitionAll("enter", function() {});
+            };
+            TransitionDecorator.prototype._onRemove = function() {
+                var _this = this;
+                this.view.$().css({
+                    opacity: 1
+                });
+                return this.view.callstack.push(function(next) {
+                    return _this._transitionAll("exit", next);
+                });
+            };
+            TransitionDecorator.prototype._transitionAll = function(type, next) {
+                var _this = this;
+                return async.forEach(this._filterTransitions(type), function(transition, next) {
+                    return _this._transition(_this._element(transition), transition[type], next);
+                }, next);
+            };
+            TransitionDecorator.prototype._transition = function(element, transition, next) {
+                var _this = this;
+                if (!element.length) {
+                    return next(new comerr.NotFound("element does not exist"));
+                }
+                if (transition.from) {
+                    element.css(transition.from);
+                }
+                return setTimeout(function() {
+                    return element.transit(transition.to || transition, next);
+                }, 0);
+            };
+            TransitionDecorator.prototype._transitions = function() {
+                var selector, trans, transition, transitions;
+                transition = this.transition;
+                if (transition.enter || transition.exit) {
+                    return [ transition ];
+                }
+                transitions = [];
+                for (selector in transition) {
+                    trans = transition[selector];
+                    trans.selector = selector;
+                    transitions.push(trans);
+                }
+                console.log(transitions);
+                return transitions;
+            };
+            TransitionDecorator.prototype._filterTransitions = function(type) {
+                return this._transitions().filter(function(trans) {
+                    return !!trans[type];
+                });
+            };
+            TransitionDecorator.prototype._element = function(transition) {
+                var element, selector;
+                selector = transition.selector || transition.el;
+                element = selector ? this.view.$(selector) : this.view.$();
+                return element.filter(function(index, element) {
+                    return element.nodeType === 1;
+                });
+            };
+            TransitionDecorator.getOptions = function(view) {
+                return view.transition;
+            };
+            TransitionDecorator.decorate = function(view, options) {
+                return new TransitionDecorator(view, options);
+            };
+            return TransitionDecorator;
+        }(BaseViewDecorator);
+        module.exports = TransitionDecorator;
+        return module.exports;
+    });
+    define("mojojs/lib/views/base/decor/preload.js", function(require, module, exports, __dirname, __filename) {
+        var BaseDecor, PreloadDecorator, async, toarray, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        }, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        BaseDecor = require("mojojs/lib/views/base/decor/base.js");
+        async = require("async/lib/async.js");
+        toarray = require("toarray/index.js");
+        PreloadDecorator = function(_super) {
+            __extends(PreloadDecorator, _super);
+            function PreloadDecorator(view, preload) {
+                var pl;
+                this.view = view;
+                this._onRender = __bind(this._onRender, this);
+                if (preload === true) {
+                    pl = [ "model" ];
+                } else {
+                    pl = preload;
+                }
+                this.preload = toarray(pl);
+                this.view.once("render", this._onRender);
+            }
+            PreloadDecorator.prototype._onRender = function() {
+                var _this = this;
+                return this.view.callstack.push(function(next) {
+                    return async.forEach(_this.preload, function(property, next) {
+                        return _this.view.bind(property).to(function(model) {
+                            if (!model || !(model != null ? model.fetch : void 0)) {
+                                return next();
+                            }
+                            return model.fetch(next);
+                        }).once().now();
+                    }, next);
+                });
+            };
+            PreloadDecorator.getOptions = function(view) {
+                return view.preload;
+            };
+            PreloadDecorator.decorate = function(view, options) {
+                return new PreloadDecorator(view, options);
+            };
+            return PreloadDecorator;
+        }(BaseDecor);
+        module.exports = PreloadDecorator;
+        return module.exports;
+    });
+    define("bindable-decor/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var BindableDecor, decorable, type, __bind = function(fn, me) {
+                return function() {
+                    return fn.apply(me, arguments);
+                };
+            }, __slice = [].slice;
+            type = require("type-component/index.js");
+            decorable = require("bindable-decor/lib/decor/decorable.js");
+            BindableDecor = function() {
+                function BindableDecor() {
+                    this.use = __bind(this.use, this);
+                    this._available = [];
+                    this._id = 0;
+                    this.use(decorable);
+                }
+                BindableDecor.prototype.use = function() {
+                    var decorator, decorators, options, _i, _len, _results;
+                    decorators = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+                    _results = [];
+                    for (_i = 0, _len = decorators.length; _i < _len; _i++) {
+                        options = decorators[_i];
+                        if (type(options) === "function" || options.options || options.getOptions) {
+                            options = {
+                                factory: options
+                            };
+                        }
+                        decorator = options.clazz || options["class"] || options.factory || options.decorator || options;
+                        if (!decorator.options) {
+                            decorator.options = decorator.getOptions;
+                        }
+                        _results.push(this._available.push({
+                            name: options.name || this._id++,
+                            decorator: decorator,
+                            inheritable: !!options.inheritable
+                        }));
+                    }
+                    return _results;
+                };
+                BindableDecor.prototype.decorate = function(target, decor) {
+                    var decorators;
+                    if (decor) {
+                        decorators = this._findDecorators(decor);
+                    } else {
+                        decorators = target.__decorators;
+                    }
+                    if (decorators) {
+                        return this._setDecorators(target, decorators);
+                    } else {
+                        decor = this._findDecorators(target);
+                        target.constructor.prototype.__decorators = target.__decorators = decor;
+                        return this.decorate(target);
+                    }
+                };
+                BindableDecor.prototype._findDecorators = function(target) {
+                    var ct, decorators, pt, used;
+                    decorators = [];
+                    ct = target;
+                    pt = void 0;
+                    while (ct) {
+                        decorators = decorators.concat(this._findDecorators2(ct, pt).concat(this._findDecorators2(ct.constructor, pt != null ? pt.constructor : void 0)));
+                        pt = ct;
+                        ct = ct.__super__;
+                    }
+                    used = {};
+                    decorators.sort(function(a, b) {
+                        if (a.priority > b.priority) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    }).filter(function(a) {
+                        if (!used[a.name]) {
+                            used[a.name] = true;
+                            return true;
+                        }
+                        return used[a.name] && a.inheritable;
+                    });
+                    return decorators;
+                };
+                BindableDecor.prototype._findDecorators2 = function(proto, child) {
+                    var d, decorator, decorators, options, priority, _i, _len, _ref;
+                    decorators = [];
+                    _ref = this._available;
+                    for (priority = _i = 0, _len = _ref.length; _i < _len; priority = ++_i) {
+                        d = _ref[priority];
+                        decorator = d.decorator;
+                        if (options = decorator.options(proto)) {
+                            if (child && options === decorator.options(child)) {
+                                continue;
+                            }
+                            decorators.push({
+                                decorator: decorator,
+                                name: decorator.name,
+                                inheritable: decorator.inheritable,
+                                options: options,
+                                priority: priority
+                            });
+                        }
+                    }
+                    return decorators;
+                };
+                BindableDecor.prototype._setDecorators = function(target, decorators) {
+                    var d, decor, _i, _len;
+                    for (_i = 0, _len = decorators.length; _i < _len; _i++) {
+                        decor = decorators[_i];
+                        d = decor.decorator.decorate(target, decor.options);
+                    }
+                    return void 0;
+                };
+                return BindableDecor;
+            }();
+            module.exports = function() {
+                return new BindableDecor;
+            };
+        }).call(this);
+        return module.exports;
+    });
+    define("bindable-decor-bindings/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var BindingsDecorator, disposable, __bind = function(fn, me) {
+                return function() {
+                    return fn.apply(me, arguments);
+                };
+            };
+            disposable = require("disposable/lib/index.js");
+            BindingsDecorator = function() {
+                function BindingsDecorator(target, options) {
+                    this.target = target;
+                    this.dispose = __bind(this.dispose, this);
+                    this.bind = __bind(this.bind, this);
+                    this.bindings = typeof options === "object" ? options : void 0;
+                    this._disposable = disposable.create();
+                    this.target.once("dispose", this.dispose);
+                }
+                BindingsDecorator.prototype.bind = function() {
+                    if (this.bindings) {
+                        return this._setupExplicitBindings();
+                    }
+                };
+                BindingsDecorator.prototype.dispose = function() {
+                    this._disposable.dispose();
+                    return this._disposable = void 0;
+                };
+                BindingsDecorator.prototype._setupExplicitBindings = function() {
+                    var bindings, key, _results;
+                    bindings = this.bindings;
+                    _results = [];
+                    for (key in bindings) {
+                        _results.push(this._setupBinding(key, bindings[key]));
+                    }
+                    return _results;
+                };
+                BindingsDecorator.prototype._setupBinding = function(property, to) {
+                    var oldTo, options, _this = this;
+                    options = {};
+                    if (typeof to === "function") {
+                        oldTo = to;
+                        to = function() {
+                            return oldTo.apply(_this.target, arguments);
+                        };
+                    }
+                    if (to.to) {
+                        options = to;
+                    } else {
+                        options = {
+                            to: to
+                        };
+                    }
+                    options.property = property;
+                    return this._disposable.add(this.target.bind(options).now());
+                };
+                return BindingsDecorator;
+            }();
+            module.exports = function(event) {
+                return {
+                    options: function(target) {
+                        return target.bindings;
+                    },
+                    decorate: function(target, options) {
+                        var decor;
+                        decor = new BindingsDecorator(target, options);
+                        if (event) {
+                            return target.once(event, decor.bind);
+                        } else {
+                            return decor.bind();
+                        }
+                    }
+                };
+            };
+        }).call(this);
+        return module.exports;
+    });
+    define("mojo-paperclip/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        var PaperclipViewDecorator, paperclip, type, __bind = function(fn, me) {
+            return function() {
+                return fn.apply(me, arguments);
+            };
+        };
+        paperclip = require("paperclip/lib/index.js");
+        type = require("type-component/index.js");
+        PaperclipViewDecorator = function() {
+            function PaperclipViewDecorator(view) {
+                this.view = view;
+                this.cleanup = __bind(this.cleanup, this);
+                this.remove = __bind(this.remove, this);
+                this.render = __bind(this.render, this);
+                this._onTemplateChange = __bind(this._onTemplateChange, this);
+                this.view.once("render", this.render);
+                this.view.once("remove", this.remove);
+                this.view._define("paper");
+                this.view.bind("paper").to(this._onTemplateChange).now();
+            }
+            PaperclipViewDecorator.prototype._onTemplateChange = function(template) {
+                if (type(template) !== "function") {
+                    throw new Error('paper template must be a function for view "' + this.view.constructor.name + '"');
+                }
+                this.template = paperclip.template(template);
+                if (this._rendered) {
+                    this.cleanup(true);
+                    return this.render();
+                }
+            };
+            PaperclipViewDecorator.prototype.render = function() {
+                this._rendered = true;
+                this.content = void 0;
+                if (!this.template) {
+                    return;
+                }
+                this.content = this.template.bind(this.view);
+                this.content.section.show();
+                return this.view.section.append(this.content.section.toFragment());
+            };
+            PaperclipViewDecorator.prototype.remove = function() {
+                return this.cleanup();
+            };
+            PaperclipViewDecorator.prototype.cleanup = function(hide) {
+                var _ref, _ref1;
+                if ((_ref = this.content) != null) {
+                    _ref.unbind();
+                }
+                if (hide) {
+                    return (_ref1 = this.content) != null ? _ref1.section.hide() : void 0;
+                }
+            };
+            PaperclipViewDecorator.getOptions = function(view) {
+                return view.__isView;
+            };
+            PaperclipViewDecorator.decorate = function(view, options) {
+                return new PaperclipViewDecorator(view, options);
+            };
+            return PaperclipViewDecorator;
+        }();
+        module.exports = function(mojo) {
+            return mojo.decorator(module.exports.decorator);
+        };
+        module.exports.decorator = {
+            decorator: PaperclipViewDecorator,
+            inheritable: false
+        };
+        return module.exports;
+    });
+    define("loaf/lib/section.js", function(require, module, exports, __dirname, __filename) {
+        var Section, nofactor, __slice = [].slice;
+        nofactor = require("nofactor/lib/index.js");
+        Section = function() {
+            Section.prototype.__isLoafSection = true;
+            function Section(nodeFactory) {
+                this.nodeFactory = nodeFactory != null ? nodeFactory : nofactor["default"];
+                this.start = this.nodeFactory.createTextNode("");
+                this.end = this.nodeFactory.createTextNode("");
+                this._addParent();
+            }
+            Section.prototype.replace = function(node) {
+                node.parentNode.insertBefore(this.toFragment(), node);
+                return node.parentNode.removeChild(node);
+            };
+            Section.prototype.show = function() {
+                var allElements, childLoad, node, _i, _len, _ref;
+                if (!this._detached) {
+                    return this;
+                }
+                this._addParent();
+                allElements = [];
+                _ref = this._detached;
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    node = _ref[_i];
+                    if (node.parentNode && (childLoad = node.parentNode._loaf)) {
+                        node.parentNode._loaf = void 0;
+                        allElements.push(childLoad.toFragment());
+                    } else {
+                        allElements.push(node);
+                    }
+                }
+                this.append.apply(this, allElements);
+                this._detached = void 0;
+                return this;
+            };
+            Section.prototype.hide = function() {
+                this._detached = this.removeAll();
+                return this;
+            };
+            Section.prototype.removeAll = function() {
+                var child, children, _i, _len;
+                children = this.getChildNodes();
+                children.shift();
+                children.pop();
+                for (_i = 0, _len = children.length; _i < _len; _i++) {
+                    child = children[_i];
+                    this.start.parentNode.removeChild(child);
+                }
+                return children;
+            };
+            Section.prototype.append = function() {
+                var children;
+                children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+                return this._insertAfter(children, this.end.previousSibling);
+            };
+            Section.prototype.prepend = function() {
+                var children;
+                children = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+                return this._insertAfter(children, this.start);
+            };
+            Section.prototype.replaceChildNodes = function() {
+                this.removeAll();
+                return this.append.apply(this, arguments);
+            };
+            Section.prototype.toString = function() {
+                var buffer;
+                buffer = this.getChildNodes().map(function(node) {
+                    return node.innerHTML || String(node);
+                });
+                return buffer.join("");
+            };
+            Section.prototype.toFragment = function() {
+                return this.nodeFactory.createFragment(this.getChildNodes());
+            };
+            Section.prototype.dispose = function() {
+                var child, _i, _len, _ref, _results;
+                _ref = this.getChildNodes();
+                _results = [];
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    child = _ref[_i];
+                    _results.push(child.parentNode.removeChild(child));
+                }
+                return _results;
+            };
+            Section.prototype.getChildNodes = function() {
+                var children, cn, end;
+                this._addParent();
+                cn = this.start;
+                end = this.end.nextSibling;
+                children = [];
+                while (cn !== end) {
+                    children.push(cn);
+                    cn = cn.nextSibling;
+                }
+                return children;
+            };
+            Section.prototype._insertAfter = function(newNodes, refNode) {
+                newNodes = newNodes.map(function(node) {
+                    if (node.__isLoafSection) {
+                        return node.toFragment();
+                    } else {
+                        return node;
+                    }
+                });
+                if (newNodes.length > 1) {
+                    newNodes = this.nodeFactory.createFragment(newNodes);
+                } else {
+                    newNodes = newNodes[0];
+                }
+                this._addParent();
+                return refNode.parentNode.insertBefore(newNodes, refNode.nextSibling);
+            };
+            Section.prototype._addParent = function() {
+                var parent;
+                if (!this.start.parentNode) {
+                    parent = this.nodeFactory.createElement("div");
+                    parent._loaf = this;
+                    parent.appendChild(this.start);
+                    return parent.appendChild(this.end);
+                }
+            };
+            return Section;
+        }();
+        module.exports = Section;
         return module.exports;
     });
     define("strscanner/lib/index.js", function(require, module, exports, __dirname, __filename) {
@@ -5712,7 +5744,7 @@
         }).call(this);
         return module.exports;
     });
-    define("bindable/lib/object/setters/bindable.js", function(require, module, exports, __dirname, __filename) {
+    define("bindable/lib/object/setters/property.js", function(require, module, exports, __dirname, __filename) {
         (function() {
             var Base, type, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
                 for (var key in parent) {
@@ -5771,6 +5803,46 @@
                             _this.binding._from.set(prop, value);
                         }
                     });
+                };
+                return _Class;
+            }(Base);
+        }).call(this);
+        return module.exports;
+    });
+    define("bindable/lib/object/setters/bindable.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var Base, type, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+                for (var key in parent) {
+                    if (__hasProp.call(parent, key)) child[key] = parent[key];
+                }
+                function ctor() {
+                    this.constructor = child;
+                }
+                ctor.prototype = parent.prototype;
+                child.prototype = new ctor;
+                child.__super__ = parent.prototype;
+                return child;
+            };
+            Base = require("bindable/lib/object/setters/base.js");
+            type = require("type-component/index.js");
+            module.exports = function(_super) {
+                __extends(_Class, _super);
+                function _Class(binding, to) {
+                    this.binding = binding;
+                    this.to = to;
+                    _Class.__super__.constructor.call(this, this.binding);
+                }
+                _Class.prototype._change = function(newValue) {
+                    this._ignoreBothWays = true;
+                    this.to.set(newValue);
+                    return this._ignoreBothWays = false;
+                };
+                _Class.prototype.dispose = function() {
+                    var _ref;
+                    if ((_ref = this._bothWaysBinding) != null) {
+                        _ref.dispose();
+                    }
+                    return this._bothWaysBinding = this.binding = this.to = this.properties = null;
                 };
                 return _Class;
             }(Base);
@@ -5837,191 +5909,17 @@
         }).call(this);
         return module.exports;
     });
-    define("paperclip/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        var Clip, paper;
-        Clip = require("paperclip/lib/clip/index.js");
-        paper = require("paperclip/lib/paper/index.js");
-        module.exports = paper;
-        if (typeof window !== "undefined") {
-            window.paperclip = module.exports;
-        }
-        return module.exports;
-    });
-    define("mojojs/lib/views/base/decor/dragdrop/collection.js", function(require, module, exports, __dirname, __filename) {
-        var Collection, events;
-        events = require("events/index.js");
-        Collection = function() {
-            function Collection() {
-                this._droppables = {};
-                this._current = {};
-            }
-            Collection.prototype.add = function(name, droppable) {
-                if (!this._droppables[name]) {
-                    this._droppables[name] = [];
-                }
-                return this._droppables[name].push(droppable);
-            };
-            Collection.prototype.remove = function(name, droppable) {
-                var droppables, i;
-                if (!this._droppables[name]) {
-                    return;
-                }
-                droppables = this._droppables[name];
-                i = droppables.indexOf(droppable);
-                if (!~i) {
-                    return;
-                }
-                droppables.splice(i, 1);
-                if (!droppables.length) {
-                    return delete this._droppables[name];
-                }
-            };
-            Collection.prototype.drop = function(name, event) {
-                this.drag(name, event);
-                if (this._current[name]) {
-                    this._current[name].emit("dragdrop", event.view);
-                    return delete this._current[name];
-                }
-            };
-            Collection.prototype.drag = function(name, event) {
-                var del, delh, delw, delx, dely, droppable, droppables, i, mx, my, offset, _i, _len, _results;
-                if (!(droppables = this._droppables[name])) {
-                    return;
-                }
-                mx = event.mouse.x;
-                my = event.mouse.y;
-                _results = [];
-                for (i = _i = 0, _len = droppables.length; _i < _len; i = ++_i) {
-                    droppable = droppables[i];
-                    del = $(droppable.view.section.getChildNodes().filter(function(el) {
-                        return el.nodeType === 1;
-                    }));
-                    offset = del.offset();
-                    if (!offset) {
-                        continue;
-                    }
-                    delx = offset.left;
-                    dely = offset.top;
-                    delw = del.width();
-                    delh = del.height();
-                    if (mx > delx && mx < delx + delw && my > dely && my < dely + delh) {
-                        if (this._current[name] !== droppable.view) {
-                            this._current[name] = droppable.view;
-                            droppable.view.emit("dragenter", event.view);
-                        }
-                        break;
-                    } else if (this._current[name] === droppable.view) {
-                        this._current[name].emit("dragexit", event.view);
-                        _results.push(delete this._current[name]);
-                    } else {
-                        _results.push(void 0);
-                    }
-                }
-                return _results;
-            };
-            return Collection;
-        }();
-        module.exports = new Collection;
-        return module.exports;
-    });
-    define("comerr/lib/index.js", function(require, module, exports, __dirname, __filename) {
-        var DEFAULT_CODES = {
-            401: "Unauthorized",
-            402: "Payment Required",
-            404: "Not Found",
-            403: "Forbidden",
-            408: "Timeout",
-            423: "Locked",
-            429: "Too Many Requests",
-            500: "Unknown",
-            501: "Not Implemented",
-            601: "Incorrect Input",
-            602: "Invalid",
-            604: "Already Exists",
-            605: "Expired",
-            606: "Unable To Connect",
-            607: "Already Called",
-            608: "Not Enough Info",
-            609: "Incorrect Type"
-        };
-        exports.codes = {};
-        exports.byCode = {};
-        exports.register = function(codes) {
-            Object.keys(codes).forEach(function(code) {
-                var name = codes[code], message = name, className = name.replace(/\s+/g, "");
-                if (exports[className]) {
-                    throw new Error("Error code '" + code + "' already exists.");
-                }
-                function addInfo(err, tags) {
-                    err.code = code;
-                    if (tags) err.tags = tags;
-                    return err;
-                }
-                var Err = exports[className] = function(message, tags) {
-                    Error.call(this, message);
-                    this.message = message || name;
-                    this.stack = (new Error(this.message)).stack;
-                    addInfo(this);
-                };
-                Err.prototype = new Error;
-                Err.prototype.constructor = Err;
-                Err.prototype.name = name;
-                exports.byCode[code] = Err;
-                exports.codes[className] = code;
-                exports[className.substr(0, 1).toLowerCase() + className.substr(1)] = Err.fn = function(message, tags) {
-                    return addInfo(new Error(message || name), tags);
-                };
-            });
-        };
-        exports.fromCode = function(code, message) {
-            var clazz = exports.byCode[Number(code)] || exports.Unknown;
-            return clazz.fn(message);
-        };
-        exports.register(DEFAULT_CODES);
-        return module.exports;
-    });
-    define("mojojs/lib/utils/async.js", function(require, module, exports, __dirname, __filename) {
-        var async;
-        async = {
-            forEach: function(items, each, next) {
-                return async.eachLimit(items, -1, each, next);
-            },
-            eachSeries: function(items, each, next) {
-                return async.eachLimit(items, 1, each, next);
-            },
-            eachLimit: function(items, limit, each, next) {
-                var called, currentIndex, err, finish, finished, nextItem, numRunning;
-                numRunning = 0;
-                currentIndex = 0;
-                called = false;
-                err = null;
-                finished = false;
-                finish = function() {
-                    if (finished || numRunning && !err) {
-                        return;
-                    }
-                    finished = true;
-                    return next();
-                };
-                nextItem = function() {
-                    var item;
-                    if (currentIndex >= items.length || err) {
-                        return finish(err);
-                    }
-                    numRunning++;
-                    item = items[currentIndex++];
-                    each(item, function(e) {
-                        numRunning--;
-                        return nextItem();
-                    });
-                    if (!~limit || numRunning < limit) {
-                        return nextItem();
-                    }
-                };
-                return nextItem();
-            }
-        };
-        module.exports = async;
+    define("factories/lib/base.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var BaseFactory;
+            BaseFactory = function() {
+                function BaseFactory() {}
+                BaseFactory.prototype.create = function(data) {};
+                BaseFactory.prototype.test = function(data) {};
+                return BaseFactory;
+            }();
+            module.exports = BaseFactory;
+        }).call(this);
         return module.exports;
     });
     define("async/lib/async.js", function(require, module, exports, __dirname, __filename) {
@@ -6875,19 +6773,6 @@
         })();
         return module.exports;
     });
-    define("factories/lib/base.js", function(require, module, exports, __dirname, __filename) {
-        (function() {
-            var BaseFactory;
-            BaseFactory = function() {
-                function BaseFactory() {}
-                BaseFactory.prototype.create = function(data) {};
-                BaseFactory.prototype.test = function(data) {};
-                return BaseFactory;
-            }();
-            module.exports = BaseFactory;
-        }).call(this);
-        return module.exports;
-    });
     define("nofactor/lib/ent.js", function(require, module, exports, __dirname, __filename) {
         var entities;
         entities = {
@@ -6925,6 +6810,226 @@
             BaseFactory.prototype.parseHtml = function(content) {};
             return BaseFactory;
         }();
+        return module.exports;
+    });
+    define("mojojs/lib/views/base/decor/dragdrop/collection.js", function(require, module, exports, __dirname, __filename) {
+        var Collection, events;
+        events = require("events/index.js");
+        Collection = function() {
+            function Collection() {
+                this._droppables = {};
+                this._current = {};
+            }
+            Collection.prototype.add = function(name, droppable) {
+                if (!this._droppables[name]) {
+                    this._droppables[name] = [];
+                }
+                return this._droppables[name].push(droppable);
+            };
+            Collection.prototype.remove = function(name, droppable) {
+                var droppables, i;
+                if (!this._droppables[name]) {
+                    return;
+                }
+                droppables = this._droppables[name];
+                i = droppables.indexOf(droppable);
+                if (!~i) {
+                    return;
+                }
+                droppables.splice(i, 1);
+                if (!droppables.length) {
+                    return delete this._droppables[name];
+                }
+            };
+            Collection.prototype.drop = function(name, event) {
+                this.drag(name, event);
+                if (this._current[name]) {
+                    this._current[name].emit("dragdrop", event.view);
+                    return delete this._current[name];
+                }
+            };
+            Collection.prototype.drag = function(name, event) {
+                var del, delh, delw, delx, dely, droppable, droppables, i, mx, my, offset, _i, _len, _results;
+                if (!(droppables = this._droppables[name])) {
+                    return;
+                }
+                mx = event.mouse.x;
+                my = event.mouse.y;
+                _results = [];
+                for (i = _i = 0, _len = droppables.length; _i < _len; i = ++_i) {
+                    droppable = droppables[i];
+                    del = $(droppable.view.section.getChildNodes().filter(function(el) {
+                        return el.nodeType === 1;
+                    }));
+                    offset = del.offset();
+                    if (!offset) {
+                        continue;
+                    }
+                    delx = offset.left;
+                    dely = offset.top;
+                    delw = del.width();
+                    delh = del.height();
+                    if (mx > delx && mx < delx + delw && my > dely && my < dely + delh) {
+                        if (this._current[name] !== droppable.view) {
+                            this._current[name] = droppable.view;
+                            droppable.view.emit("dragenter", event.view);
+                        }
+                        break;
+                    } else if (this._current[name] === droppable.view) {
+                        this._current[name].emit("dragexit", event.view);
+                        _results.push(delete this._current[name]);
+                    } else {
+                        _results.push(void 0);
+                    }
+                }
+                return _results;
+            };
+            return Collection;
+        }();
+        module.exports = new Collection;
+        return module.exports;
+    });
+    define("comerr/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        var DEFAULT_CODES = {
+            401: "Unauthorized",
+            402: "Payment Required",
+            404: "Not Found",
+            403: "Forbidden",
+            408: "Timeout",
+            423: "Locked",
+            429: "Too Many Requests",
+            500: "Unknown",
+            501: "Not Implemented",
+            601: "Incorrect Input",
+            602: "Invalid",
+            604: "Already Exists",
+            605: "Expired",
+            606: "Unable To Connect",
+            607: "Already Called",
+            608: "Not Enough Info",
+            609: "Incorrect Type"
+        };
+        exports.codes = {};
+        exports.byCode = {};
+        exports.register = function(codes) {
+            Object.keys(codes).forEach(function(code) {
+                var name = codes[code], message = name, className = name.replace(/\s+/g, "");
+                if (exports[className]) {
+                    throw new Error("Error code '" + code + "' already exists.");
+                }
+                function addInfo(err, tags) {
+                    err.code = code;
+                    if (tags) err.tags = tags;
+                    return err;
+                }
+                var Err = exports[className] = function(message, tags) {
+                    Error.call(this, message);
+                    this.message = message || name;
+                    this.stack = (new Error(this.message)).stack;
+                    addInfo(this);
+                };
+                Err.prototype = new Error;
+                Err.prototype.constructor = Err;
+                Err.prototype.name = name;
+                exports.byCode[code] = Err;
+                exports.codes[className] = code;
+                exports[className.substr(0, 1).toLowerCase() + className.substr(1)] = Err.fn = function(message, tags) {
+                    return addInfo(new Error(message || name), tags);
+                };
+            });
+        };
+        exports.fromCode = function(code, message) {
+            var clazz = exports.byCode[Number(code)] || exports.Unknown;
+            return clazz.fn(message);
+        };
+        exports.register(DEFAULT_CODES);
+        return module.exports;
+    });
+    define("mojojs/lib/utils/async.js", function(require, module, exports, __dirname, __filename) {
+        var async;
+        async = {
+            forEach: function(items, each, next) {
+                return async.eachLimit(items, -1, each, next);
+            },
+            eachSeries: function(items, each, next) {
+                return async.eachLimit(items, 1, each, next);
+            },
+            eachLimit: function(items, limit, each, next) {
+                var called, currentIndex, err, finish, finished, nextItem, numRunning;
+                numRunning = 0;
+                currentIndex = 0;
+                called = false;
+                err = null;
+                finished = false;
+                finish = function() {
+                    if (finished || numRunning && !err) {
+                        return;
+                    }
+                    finished = true;
+                    return next();
+                };
+                nextItem = function() {
+                    var item;
+                    if (currentIndex >= items.length || err) {
+                        return finish(err);
+                    }
+                    numRunning++;
+                    item = items[currentIndex++];
+                    each(item, function(e) {
+                        numRunning--;
+                        return nextItem();
+                    });
+                    if (!~limit || numRunning < limit) {
+                        return nextItem();
+                    }
+                };
+                return nextItem();
+            }
+        };
+        module.exports = async;
+        return module.exports;
+    });
+    define("bindable-decor/lib/decor/decorable.js", function(require, module, exports, __dirname, __filename) {
+        (function() {
+            var flatstack, type;
+            flatstack = require("flatstack/lib/index.js");
+            type = require("type-component/index.js");
+            module.exports = {
+                options: function() {
+                    return true;
+                },
+                decorate: function(target) {
+                    target.callstack = flatstack();
+                    return target.call = function(startEvent, endEvent, next) {
+                        var endState, startState, _this = this;
+                        if (type(next) !== "function") {
+                            next = function() {};
+                        }
+                        startState = "states." + startEvent;
+                        endState = "states." + endEvent;
+                        return this.callstack.push(function() {
+                            _this.emit(startEvent);
+                            _this.set(startState, true);
+                            return _this.callstack.push(function() {
+                                _this.emit(endEvent);
+                                _this.set(endState, true);
+                                return next();
+                            });
+                        });
+                    };
+                }
+            };
+        }).call(this);
+        return module.exports;
+    });
+    define("paperclip/lib/index.js", function(require, module, exports, __dirname, __filename) {
+        var Clip, paper;
+        Clip = require("paperclip/lib/clip/index.js");
+        paper = require("paperclip/lib/paper/index.js");
+        module.exports = paper;
+        if (typeof window !== "undefined") {
+            window.paperclip = module.exports;
+        }
         return module.exports;
     });
     define("bindable/lib/object/setters/base.js", function(require, module, exports, __dirname, __filename) {
@@ -8339,7 +8444,7 @@
                 if (value == null) {
                     value = "";
                 }
-                return this.section.replaceChildNodes(this.nodeFactory.createTextNode(String(value)));
+                return this.section.replaceChildNodes(this.nodeFactory.createTextNode(String(value), true));
             };
             return ValueDecor;
         }(require("paperclip/lib/paper/bindings/block/base.js"));
@@ -8431,6 +8536,7 @@
             css: require("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/css.js"),
             style: require("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/style.js"),
             disable: require("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/disable.js"),
+            enable: require("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/enable.js"),
             value: require("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/value.js"),
             model: require("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/model.js"),
             click: require("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/event.js"),
@@ -8840,6 +8946,37 @@
             return DisableAttrBinding;
         }(require("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/base.js"));
         module.exports = DisableAttrBinding;
+        return module.exports;
+    });
+    define("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/enable.js", function(require, module, exports, __dirname, __filename) {
+        var EnableAttrBinding, _ref, __hasProp = {}.hasOwnProperty, __extends = function(child, parent) {
+            for (var key in parent) {
+                if (__hasProp.call(parent, key)) child[key] = parent[key];
+            }
+            function ctor() {
+                this.constructor = child;
+            }
+            ctor.prototype = parent.prototype;
+            child.prototype = new ctor;
+            child.__super__ = parent.prototype;
+            return child;
+        };
+        EnableAttrBinding = function(_super) {
+            __extends(EnableAttrBinding, _super);
+            function EnableAttrBinding() {
+                _ref = EnableAttrBinding.__super__.constructor.apply(this, arguments);
+                return _ref;
+            }
+            EnableAttrBinding.prototype._onChange = function(value) {
+                if (value) {
+                    return this.node.removeAttribute("disabled");
+                } else {
+                    return this.node.setAttribute("disabled", "disabled");
+                }
+            };
+            return EnableAttrBinding;
+        }(require("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/base.js"));
+        module.exports = EnableAttrBinding;
         return module.exports;
     });
     define("paperclip/lib/paper/bindings/node/attrs/dataBind/handlers/value.js", function(require, module, exports, __dirname, __filename) {
