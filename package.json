@@ -38,7 +38,7 @@
     "hoist": "0.0.x",
     "pilot-block": "0.0.x",
     "crema": "0.1.x",
-    "hooks": "git+ssh://git@github.com:crcn/hooks-js.git",
+    "hooks": "git+https://github.com/crcn/hooks-js.git",
     "flatstack": "0.0.x",
     "asyngleton": "0.1.x",
     "rivets": "0.3.x",
