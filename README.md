@@ -10,7 +10,7 @@ Mojo was built initially to phase out old code, and itself - hence the modularit
 ### Features
 
 - Supported in all major browsers: `IE 8+`, `Firefox`, `Chrome`, `Safari`, and `Opera`.
-- Supported in Node.js. Run the same code on the front-end & backend without sacrificing any design principles. 
+- Supported in Node.js. Run the same code on the front-end & backend. See the [mojo site source code](https://github.com/classdojo/mojojs.com) as an example. 
 - Built to sup
 - Flexible data-binding API. 
 - Plays nicely with other frameworks such as Backbone.js, Spine.js, and jQuery. Easily build new application code on top of old code.
