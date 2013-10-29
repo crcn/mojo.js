@@ -4,7 +4,7 @@
   </a>
 </p>
 
-Mojo.js is a JavaScript framework for building Single Page Applications, or static websites in [Node.js](http://nodejs.org/). It's inspired by [Angular.js](http://angularjs.org/), [Derby.js](http://derbyjs.com/), [Knockout.js](http://knockoutjs.com/), [Meteor.js](http://www.meteor.com/), [Ember.js](http://emberjs.com/), [jQuery](http://jquery.com/), [Backbone.js](http://backbonejs.org/), and many other JavaScript, and non-javascript frameworks. Much of the design was inspired by Backbone.js, and Node.js. The core is small, while third-party modules allow you to customize Mojo depending on your requirements. 
+Mojo.js is a JavaScript framework for building Single Page Applications, or static websites in [Node.js](http://nodejs.org/). It's inspired by [Angular.js](http://angularjs.org/), [Derby.js](http://derbyjs.com/), [Knockout.js](http://knockoutjs.com/), [Meteor.js](http://www.meteor.com/), [Ember.js](http://emberjs.com/), [jQuery](http://jquery.com/), [Backbone.js](http://backbonejs.org/), and many other JavaScript, and non-JavaScript frameworks. Much of the design was inspired by Backbone.js, and Node.js. The core is small, while third-party modules allow you to customize Mojo depending on your requirements. 
 Mojo was built initially to phase out old code, and itself - hence the modularity. The philosophy behind allow you to build on top of your old code base, and slowly strangle out your old application until you have a new one. 
 
 ### Features
@@ -14,7 +14,7 @@ Mojo was built initially to phase out old code, and itself - hence the modularit
 - Flexible data-binding API. 
 - Plays nicely with other frameworks such as Backbone.js, Spine.js, and jQuery. Easily build new application code on top of old code.
 - No magic. No assumptions. Mojo.js was built around explicitness and modularity.
-- 100% javascript - [paperclip.js](https://github.com/classdojo/paperclip.js) templates are also translated to javascript.
+- 100% JavaScript - [paperclip.js](https://github.com/classdojo/paperclip.js) templates are also translated to JavaScript.
 - It's unopinionated, just like Backbone.js
   - Mojo.js is composed Muchly of `decorators`. This idea was derrived from jquery plugins - where plugins can be attached to DOM elements. `Decorators` are similar in the sense that they attach to one abstraction higher - the view controlling the DOM element. Mojo.js has a few built-in decorators: `drag & drop`, `paperclip.js` (template), `bindings` (computed properties), `transition`, and `events` (Backbone style). You can also [create your own](#custom-decorators). 
   - The framework itself is broken into multiple repositories - this makes it easier to encapsulate, and re-use bits of functionality. It also helps explain parts of the framework a little better.
