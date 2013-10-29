@@ -5,7 +5,7 @@
 </p>
 
 Mojo.js is a JavaScript framework for building Single Page Applications, or static websites in [Node.js](http://nodejs.org/). It's inspired by [Angular.js](http://angularjs.org/), [Derby.js](http://derbyjs.com/), [Knockout.js](http://knockoutjs.com/), [Meteor.js](http://www.meteor.com/), [Ember.js](http://emberjs.com/), [jQuery](http://jquery.com/), [Backbone.js](http://backbonejs.org/), and many other JavaScript, and non-JavaScript frameworks. Much of the design was inspired by Backbone.js, and Node.js. The core is small, while third-party modules allow you to customize Mojo depending on your requirements. 
-Mojo was built initially to phase out old code, and itself - hence the modularity. The philosophy behind allow you to build on top of your old code base, and slowly strangle out your old application until you have a new one. 
+Mojo was built initially to phase out old code, and itself - hence the modularity. The philosophy behind Mojo is to allow you to build on top of your old code base, and slowly strangle out your old application until you have a new, highly maintainable application. 
 
 ### Features
 
