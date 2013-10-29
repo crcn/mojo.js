@@ -15,9 +15,9 @@ Mojo was built initially to phase out old code, and itself - hence the modularit
 - Plays nicely with other frameworks such as Backbone.js, Spine.js, and jQuery. Easily build new application code on top of old code.
 - No magic. No assumptions. Mojo.js was built around explicitness and modularity.
 - 100% JavaScript - [paperclip.js](https://github.com/classdojo/paperclip.js) templates are also translated to JavaScript.
-- Small core. Modules make up the rest - even the core. 
-  - Mojo.js is composed Muchly of `decorators`. This idea was derrived from jquery plugins - where plugins can be attached to DOM elements. `Decorators` are similar in the sense that they attach to one abstraction higher - the view controlling the DOM element. Mojo.js has a few built-in decorators: `drag & drop`, `paperclip.js` (template), `bindings` (computed properties), `transition`, and `events` (Backbone style). You can also [create your own](#custom-decorators), but none of them are required for mojo to function properly. 
-  - The framework itself is broken into multiple repositories - this makes it easier to encapsulate, and re-use bits of functionality. It also helps explain parts of the framework a little better.
+- Small core. Modules make up the rest. 
+  - Decorators are core - they control everything from computed properties, creating children of a view, and even setting up templates. There are a few built-in decorators (for now - we'll take them out later): `drag & drop`, `paperclip.js` (template), `bindings` (computed properties), `transition`, and `events` (Backbone style). You can also [create your own](#custom-decorators) if you want to extend the core, but there isn't a single decorator that's required for Mojo.js to function properly. 
+  - The framework itself is broken into multiple repositories - this makes it easier to encapsulate, and re-use bits of functionality. It also helps explain parts of the framework a little better if you want to dive into the source code.
 
 ### Core Libraries
 
