@@ -7,6 +7,8 @@
   - highlight dev tools
     - cortado
     - inspector
+  - should highlight small core
+    - should show 
 
 - plugins page
   - similar to http://plugins.jquery.com/
