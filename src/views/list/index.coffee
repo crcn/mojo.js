@@ -4,6 +4,7 @@ factories = require "factories"
 hoist     = require "hoist"
 dref      = require "dref"
 nofactor  = require "nofactor"
+Janitor   = require "../../cleanup/janitor"
 
 class ListView extends require("../base") 
 
@@ -104,16 +105,18 @@ class ListView extends require("../base")
 
     @_views.source []
     @_deferredSections = []
-    @_sourceBinding?.dispose()
+    @_sourceJanitor?.dispose()
 
     return unless _source
 
-    @_sourceBinding = binding = _source.bind()
+    @_sourceJanitor = new Janitor()
+
+    @_sourceJanitor.add @_sourceBinding = binding = _source.bind()
 
     # filter provided?
     if @_filter
       @_sourceBinding.filter (model) =>
-        @_watchModelChanges model
+        @_sourceJanitor.add @_watchModelChanges model
         @_filter model, @
 
 
@@ -124,10 +127,6 @@ class ListView extends require("../base")
   ###
 
   _watchModelChanges: (model) ->
-
-    removeListener = () -> 
-      model.removeListener "change", _onSourceChange
-
     model.on "change", onChange = () => @_refilter [model]
 
 
@@ -199,6 +198,14 @@ class ListView extends require("../base")
 
   _removeModelView: (modelView) =>
     modelView.dispose()
+
+  ###
+  ###
+
+  dispose: () ->
+    super()
+    @_sourceOptionBinding?.dispose()
+    @_sourceJanitor?.dispose()
 
 
   ###

@@ -9,6 +9,7 @@ models       = require "../../models"
 bindable     = require "bindable"
 Inheritable  = require "../../bindable/inheritable"
 structr      = require "structr"    
+Janitor      = require "../../cleanup/janitor"
 
 
 
@@ -45,7 +46,6 @@ class DecorableView extends Inheritable
     @_id  = data._id ? data.model?.get?("_id") ? data.model?._id ? generateId()
 
     @section   = loaf()
-
     @init()
 
   ###
@@ -142,7 +142,7 @@ class DecorableView extends Inheritable
     # if the parent is currently being removed, then don't bother cleaning up the 
     # element listeners, and section. 
     return if @parent and @parent.get("states.remove")
-    
+      
     @section.dispose()
 
   ###
@@ -176,8 +176,7 @@ class DecorableView extends Inheritable
   ###
   
   _onRemove    : () =>
-  _onRemoved   : () => 
-    @dispose()
+  _onRemoved   : () =>  @dispose()
 
   ###
    listen when the parent is removed
