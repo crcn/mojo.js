@@ -16,6 +16,7 @@ Mojo was built initially to phase out old code, and itself - hence the modularit
 - bower.io integration
 - plugin catalogue 
 - yuidocs
+- node.js support
 
 ### Features
 
