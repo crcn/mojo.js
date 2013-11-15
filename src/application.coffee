@@ -8,9 +8,6 @@ type     = require "type-component"
 
  app = new Application()
 
-
-
-
  app.
   registerObject("mainView", MainView).
   createObject("mainView").
