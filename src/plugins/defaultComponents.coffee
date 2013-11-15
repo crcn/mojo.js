@@ -1,7 +1,7 @@
 views = require "../views"
 
-module.exports = (mojo) ->
-  mojo.registerClass {
+module.exports = (app) ->
+  app.registerClass {
     "views.list"   : views.ListView
     "views.states" : views.StatesView
   }

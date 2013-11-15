@@ -3,6 +3,7 @@ _        = require "underscore"
 type     = require "type-component"
 
 defaultComponents = require "./plugins/defaultComponents"
+decorators        = require "./plugins/decorators"
 
 
 ###
@@ -33,6 +34,7 @@ class Application extends bindable.Object
     @models = new bindable.Object()
 
     @use defaultComponents
+    @use decorators
 
   ###
   ###

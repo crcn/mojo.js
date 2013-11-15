@@ -2,7 +2,6 @@ _            = require "underscore"
 generateId   = require "../../utils/idGenerator"
 dref         = require "dref"
 type         = require "type-component"
-DecorFactory = require "./decor/factory"
 loaf         = require "loaf"
 flatstack    = require "flatstack"
 models       = require "../../models"
@@ -122,14 +121,14 @@ class DecorableView extends Inheritable
     @on "removed", @_onRemoved
     @bind("parent").to(@_onParent).now()
 
-    DecorFactory.decorate @
+    @application.decorators.decorate @
 
   ###
   ###
 
   decorate: (options) ->
     @__decorators = undefined
-    DecorFactory.decorate @, options
+    @application.decorators.decorate @, options
 
   ###
   ###
@@ -186,18 +185,6 @@ class DecorableView extends Inheritable
     @_parentDisposeListener?.dispose()
     return unless parent
     @_parentDisposeListener = parent.on "dispose", @remove
-
-  ###
-   expose this so third-party modules can add a decorator
-   DEPRECATED
-  ###
-
-  @addDecoratorClass: DecorFactory.use
-
-  ###
-  ###
-
-  @decorator: DecorFactory.use
 
   ###
   ###
