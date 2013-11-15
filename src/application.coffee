@@ -54,7 +54,6 @@ class Application extends bindable.Object
 
   createObject: (name, options = {}) ->
 
-
     if type(name) is "function" 
       clazz = name
     else
@@ -62,7 +61,6 @@ class Application extends bindable.Object
 
       unless clazz
         throw new Error "class '#{name}' doesn't exist"
-
 
     return new clazz _.extend(options, { application: @ })
 
