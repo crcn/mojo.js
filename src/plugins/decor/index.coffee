@@ -6,22 +6,25 @@ DraggableDecorator  = require "./dragdrop/draggable"
 DroppableDecorator  = require "./dragdrop/droppable"
 TransitionDecorator = require "./transition"
 PreloadDecorator    = require "./preload"
+bindableDecor       = require "bindable-decor"
+bindableDecorbindings = require "bindable-decor-bindings"
+paperclip             = require "mojo-paperclip"
 
 
 module.exports = (app) ->
 
-  decor = require("bindable-decor")()
+  decor = bindableDecor()
 
   decor.use(
 
     # bindings = priority for explicit data-bindings
-    require("bindable-decor-bindings")("render"),
+    bindableDecorbindings("render"),
     SelectorDecorator,
 
     # additional decorators that don't have high priority - get added on .render() & .display()
     PreloadDecorator,
 
-    require("mojo-paperclip").decorator,
+    paperclip.decorator,
 
     TransitionDecorator,
     EventsDecorator,

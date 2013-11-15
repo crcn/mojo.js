@@ -3,7 +3,7 @@ _        = require "underscore"
 type     = require "type-component"
 
 defaultComponents = require "./plugins/defaultComponents"
-decorators        = require "./plugins/decorators"
+decorators        = require "./plugins/decor"
 
 
 ###
