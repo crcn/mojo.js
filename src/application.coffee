@@ -8,6 +8,9 @@ type     = require "type-component"
 
  app = new Application()
 
+ app.use(router)
+ app.use(mediator)
+
  app.
   registerClass("mainView", MainView).
   createObject("mainView").
