@@ -43,7 +43,7 @@ class Application extends bindable.Object
     if type(name) is "object" and arguments.length is 1
       components = name
       for name of components
-        @registerComponent name, components[name]
+        @registerClass name, components[name]
       return
 
     @set "models.classes.#{name}", clazz
