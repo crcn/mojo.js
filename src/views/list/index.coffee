@@ -63,6 +63,7 @@ class ListView extends require("../base")
       ops
     ).map((options) =>
       view = modelViewFactory.create options
+      view.application = @applicaton
 
 
       # set the view incase the factory is manual - in which 

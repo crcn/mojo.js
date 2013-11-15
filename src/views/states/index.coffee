@@ -116,7 +116,6 @@ class StatesView extends require("../base")
   _setIndex: (index) =>
     return if not @source.length
 
-
     @currentState?.set "selected", false
     oldState = @currentState
 
