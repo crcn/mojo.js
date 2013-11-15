@@ -71,7 +71,7 @@ class SectionsDecorator
     if (t = type(options.type)) is "function"
       return options.type
     else if t is "string"
-      return @view.get("models.components.#{options.type}")
+      return @view.application.createObject("views.#{options.type}")
     else
       throw new Error "cannot get section class for type #{t}"
 
