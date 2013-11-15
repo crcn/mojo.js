@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.6.53",
+  "version": "0.7.0",
   "description": "test",
   "main": "./lib/index.js",
   "jam": {
@@ -63,6 +63,8 @@
     "optimist": "~0.6.0",
     "request": "~2.21.0",
     "less": "~1.4.0",
-    "node-osx-notifier": "~0.1.0"
+    "node-osx-notifier": "~0.1.0",
+    "mocha": "*",
+    "expect.js": "0.2.x"
   }
 }

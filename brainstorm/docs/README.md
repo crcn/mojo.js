@@ -22,3 +22,6 @@
 
 - http://api.jquery.com/
 - http://knockoutjs.com/documentation/introduction.html
+- http://ember-doc.com/
+  - filterable
+  

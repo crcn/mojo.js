@@ -1,15 +1,13 @@
-View     = require "./views"
-mediator = require "./mediator"
-bindable = require "bindable"
-models   = require "./models"
+View        = require "./views"
+Application = require "./application"
 
 module.exports = 
-  View      : View
-  mediator  : mediator
-  bindable  : bindable
-  models    : models
-  decorator : View.decorator
-  use       : (plugin) -> plugin module.exports
+  
+  # to extend onto
+  View        : View
+
+  # to create
+  Application : Application
 
 if typeof window isnt "undefined"
   window.mojo = module.exports
