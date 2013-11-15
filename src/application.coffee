@@ -23,7 +23,6 @@ class Application extends bindable.Object
   constructor: () ->
     super @
 
-
     # connection between models & views
     @models = new bindable.Object()
 
@@ -52,10 +51,15 @@ class Application extends bindable.Object
 
   createObject: (name, options = {}) ->
 
-    clazz = @get "models.classes.#{name}"
 
-    unless clazz
-      throw new Error "class '#{name}' doesn't exist"
+    if type(name) is "function" 
+      clazz = name
+    else
+      clazz = @get "models.classes.#{name}"
+
+      unless clazz
+        throw new Error "class '#{name}' doesn't exist"
+
 
     return new clazz _.extend(options, { application: @ })
 
