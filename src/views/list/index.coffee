@@ -65,7 +65,6 @@ class ListView extends require("../base")
       view = modelViewFactory.create options
       view.application = @applicaton
 
-
       # set the view incase the factory is manual - in which 
       # case the _id might never exist in the view. We won't be able to
       # find a reference to it!
