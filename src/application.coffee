@@ -9,7 +9,7 @@ type     = require "type-component"
  app = new Application()
 
  app.
-  registerObject("mainView", MainView).
+  registerClass("mainView", MainView).
   createObject("mainView").
   attach($("#application"))
 
@@ -34,7 +34,7 @@ class Application extends bindable.Object
   ###
   ###
 
-  registerObject: (name, clazz) ->
+  registerClass: (name, clazz) ->
 
     # can be many components
     if type(name) is "object" and arguments.length is 1
