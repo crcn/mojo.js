@@ -1,10 +1,10 @@
-View        = require "./views"
+views       = require "./views"
 Application = require "./application"
 
 module.exports = 
   
   # to extend onto
-  View        : View
+  View        : views.BaseView
 
   # to create
   Application : Application

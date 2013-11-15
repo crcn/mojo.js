@@ -2,6 +2,9 @@ bindable = require "bindable"
 _        = require "underscore"
 type     = require "type-component"
 
+defaultComponents = require "./plugins/defaultComponents"
+
+
 ###
  Main entry point for mojo applications
 
@@ -28,6 +31,8 @@ class Application extends bindable.Object
 
     # connection between models & views
     @models = new bindable.Object()
+
+    @use defaultComponents
 
   ###
   ###
