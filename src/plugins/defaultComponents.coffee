@@ -1,8 +1,6 @@
 views = require "../views"
 
 module.exports = (app) ->
-  app.registerClass {
-    "views.list"   : views.ListView
-    "views.states" : views.StatesView
-  }
+  app.registerViewClass "list", views.ListView
+  app.registerViewClass "states", views.StatesView
 

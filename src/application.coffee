@@ -47,14 +47,6 @@ class Application extends bindable.Object
   ###
 
   registerClass: (name, clazz) ->
-
-    # can be many components
-    if type(name) is "object" and arguments.length is 1
-      components = name
-      for name of components
-        @registerClass name, components[name]
-      return
-
     @set "models.classes.#{name}", clazz
     @
 
@@ -63,6 +55,9 @@ class Application extends bindable.Object
 
   registerViewClass: (name, clazz) -> @registerClass "views.#{name}", clazz
   registerModelClass: (name, clazz) -> @registerClass "models.#{name}", clazz
+  getViewClass: (name) -> @getClass "views.#{name}"
+  getModelClass: (name) -> @getClass "models.#{name}"
+  getClass: (name) -> @get "models.classes.#{name}"
 
   ###
   ###
