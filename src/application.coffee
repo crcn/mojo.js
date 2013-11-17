@@ -59,6 +59,12 @@ class Application extends bindable.Object
   ###
   ###
 
+  registerViewClass: (name, clazz) -> @registerClass "views.#{name}", clazz
+  registerModelClass: (name, clazz) -> @registerClass "views.#{name}", clazz
+
+  ###
+  ###
+
   createObject: (name, options = {}) ->
 
     if type(name) is "function" 

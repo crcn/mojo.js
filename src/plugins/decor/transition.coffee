@@ -1,7 +1,7 @@
 comerr = require "comerr"
 BaseViewDecorator = require "./base"
 _ = require "underscore"
-async = require "../../../utils/async"
+async = require "../../utils/async"
 
 
 class TransitionDecorator extends BaseViewDecorator

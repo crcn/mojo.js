@@ -4,7 +4,6 @@ dref         = require "dref"
 type         = require "type-component"
 loaf         = require "loaf"
 flatstack    = require "flatstack"
-models       = require "../../models"
 bindable     = require "bindable"
 Inheritable  = require "../../bindable/inheritable"
 structr      = require "structr"    
@@ -23,11 +22,6 @@ class DecorableView extends Inheritable
   ###
   
   define: ["sections", "states"]
-
-  ###
-  ###
-
-  models: models
 
   ###
   ###
