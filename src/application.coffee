@@ -39,7 +39,9 @@ class Application extends bindable.Object
   ###
   ###
 
-  use: (module) -> module @
+  use: (modules...) -> 
+    module(@) for module in modules
+    @
 
   ###
   ###
@@ -80,8 +82,8 @@ class Application extends bindable.Object
   ###
   ###
 
-  createView: (name, options) -> createObject "views.#{name}", options
-  createModel: (name, options) -> createObject "models.#{name}", options
+  createView: (name, options) -> @createObject "views.#{name}", options
+  createModel: (name, options) -> @createObject "models.#{name}", options
 
 
 module.exports = Application
