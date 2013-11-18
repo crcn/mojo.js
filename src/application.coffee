@@ -79,9 +79,7 @@ class Application extends bindable.Object
       unless clazz
         throw new Error "class '#{name}' doesn't exist"
 
-    obj = new  clazz options
-    obj.set "application", @
-    obj.set "models", @models
+    obj = new  clazz options, @
 
     obj
     

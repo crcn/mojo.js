@@ -24,7 +24,7 @@ class DecorableView extends Inheritable
   ###
   ###
 
-  constructor: (data = {}) ->
+  constructor: (data = {}, @application) ->
 
     if type(data) isnt "object"
       throw new Error "data passed in view must be an object"
@@ -32,6 +32,8 @@ class DecorableView extends Inheritable
     super()
     
     @set data
+
+    @models = @application?.models
 
     @this = @
     @_id  = data._id ? data.model?.get?("_id") ? data.model?._id ? generateId()
