@@ -1,4 +1,5 @@
-var mojo = require("..");
+var mojo = require(".."),
+expect   = require("expect.js");
 
 describe("basic#", function () {
 
@@ -27,6 +28,17 @@ describe("basic#", function () {
   /**
    */
 
+  it("application & models are not undefined", function (next) {
+    var view = app.createView("base");
+    expect(view.application).not.to.be(undefined);
+    expect(view.models).not.to.be(undefined);
+  });
 
-  it("can inherit the application ")
+  /**
+   */
+
+
+  it("can inherit the application", function() {
+    
+  });
 });
