@@ -15,7 +15,11 @@ module.exports = (app) ->
 
   decor = bindableDecor()
 
-  decor.use(
+
+  decor.priority("load", 0).
+  priority("render", 1).
+  priority("display", 2).
+  use(
 
     # bindings = priority for explicit data-bindings
     bindableDecorbindings("render"),

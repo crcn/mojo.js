@@ -34,7 +34,7 @@
     "factories": "0.0.x",
     "loaf": "0.0.5",
     "nofactor": "0.0.x",
-    "bindable-decor": "0.0.x",
+    "bindable-decor": "0.1.x",
     "bindable-decor-bindings": "0.0.x",
     "underscore": "~1.4.4",
     "mojo-paperclip": "0.0.x"
