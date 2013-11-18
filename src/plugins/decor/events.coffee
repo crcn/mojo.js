@@ -1,4 +1,4 @@
-disposable = require "disposable"
+janitor       = require "janitorjs"
 BaseDecorator = require "./base"
 
 
@@ -20,8 +20,8 @@ class EventsDecorator extends BaseDecorator
   render: () =>
     e = @_events()
     @_disposeBindings()
-    @_disposable = disposable.create()
-
+    @_janitor = janitor()
+    
     for selector of e 
       @_addBinding selector, e[selector]
 
@@ -58,26 +58,28 @@ class EventsDecorator extends BaseDecorator
 
     elements.bind(lowerActions = actions.toLowerCase(), cb)
     for action in actions.split " " then do (action) =>
-      @_disposable.add @view.on action, () ->
+      @_janitor.add @view.on action, () ->
         cb.apply @, [$.Event(action)].concat Array.prototype.slice.call arguments
 
 
-    @_disposable.add () ->
+    @_janitor.add () ->
       elements.unbind lowerActions, cb
     
   ###
   ###
 
   _disposeBindings: () ->
-    return if not @_disposable
-    @_disposable.dispose()
-    @_disposable = undefined
+    return if not @_janitor
+    @_janitor.dispose()
+    @_janitor = undefined
 
   ###
   ###
 
   _events: () -> @events
 
+  ###
+  ###
 
   @getOptions : (view) -> view.events
   @decorate   : (view, options) -> new EventsDecorator view, options

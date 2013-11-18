@@ -1,13 +1,11 @@
 _            = require "underscore"
 generateId   = require "../../utils/idGenerator"
-dref         = require "dref"
 type         = require "type-component"
 loaf         = require "loaf"
 flatstack    = require "flatstack"
 bindable     = require "bindable"
 Inheritable  = require "../../bindable/inheritable"
 structr      = require "structr"    
-Janitor      = require "../../cleanup/janitor"
 
 
 

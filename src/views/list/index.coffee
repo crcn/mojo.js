@@ -4,7 +4,7 @@ factories = require "factories"
 hoist     = require "hoist"
 dref      = require "dref"
 nofactor  = require "nofactor"
-Janitor   = require "../../cleanup/janitor"
+janitor   = require "janitorjs"
 
 class ListView extends require("../base") 
 
@@ -108,7 +108,7 @@ class ListView extends require("../base")
 
     return unless _source
 
-    @_sourceJanitor = new Janitor()
+    @_sourceJanitor = janitor()
 
     @_sourceJanitor.add @_sourceBinding = binding = _source.bind()
 
