@@ -87,6 +87,7 @@ class TransitionDecorator extends BaseViewDecorator
   ###
   ###
 
+  @priority   : "display"
   @getOptions : (view) -> view.transition
   @decorate   : (view, options) -> new TransitionDecorator view, options
 

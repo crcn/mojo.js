@@ -142,8 +142,13 @@ class DecorableView extends Inheritable
   setChild: (name, child) ->
     child.name = name
 
-    # deprecated
+    child.set "application", @application
+    child.set "models", @application.models
+    
+    # should be protected since _parent shouldn't really *ever* be accessed.
     child.set "_parent", @
+
+    # deprecated
     child.set "parent", @
     @set "sections.#{name}", child
     @emit "child", child
@@ -156,6 +161,20 @@ class DecorableView extends Inheritable
   bubble: () ->
     @emit arguments...
     @parent?.bubble arguments...
+
+  ###
+  ###
+  
+  $: (search) -> 
+
+    # a little overhead, but we need to re-scan the elements
+    # each time $() is called
+    el = $ @section.getChildNodes()
+
+    if arguments.length
+      return el.find search
+
+    return el
 
   ###
   ###

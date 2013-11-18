@@ -81,6 +81,7 @@ class EventsDecorator extends BaseDecorator
   ###
   ###
 
+  @priority   : "display"
   @getOptions : (view) -> view.events
   @decorate   : (view, options) -> new EventsDecorator view, options
 

@@ -93,6 +93,7 @@ class DraggableDecorator extends BaseViewDecorator
   ###
   ###
 
+  @priority   : "display"
   @getOptions : (view) -> view.draggable
   @decorate   : (view, options) -> new DraggableDecorator view, options
 

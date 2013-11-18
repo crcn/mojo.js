@@ -27,6 +27,7 @@ class DroppableDecorator extends BaseViewDecorator
   ###
   ###
 
+  @priority   : "display"
   @getOptions : (view) -> view.droppable
   @decorate   : (view, options) -> new DroppableDecorator view, options
 

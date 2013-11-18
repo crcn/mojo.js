@@ -40,6 +40,7 @@ class PreloadDecorator extends BaseDecor
   ###
   ###
 
+  @priority   : "load"
   @getOptions : (view) -> view.preload
   @decorate   : (view, options) -> new PreloadDecorator view, options
 

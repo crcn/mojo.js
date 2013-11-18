@@ -1,6 +1,8 @@
-bindable = require "bindable"
-_        = require "underscore"
-type     = require "type-component"
+bindable  = require "bindable"
+_         = require "underscore"
+type      = require "type-component"
+paperclip = require "mojo-paperclip"
+BaseView  = require "./views/base"
 
 defaultComponents = require "./plugins/defaultComponents"
 decorators        = require "./plugins/decor"
@@ -35,6 +37,11 @@ class Application extends bindable.Object
 
     @use defaultComponents
     @use decorators
+
+    # TODO - remove this - should be in another repo
+    @use paperclip
+
+    @registerViewClass "base", BaseView
 
   ###
   ###

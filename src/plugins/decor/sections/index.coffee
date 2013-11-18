@@ -24,7 +24,6 @@ class SectionsDecorator
   _addSection: (name, options) ->
 
     view  = @_createSectionView(options)
-    view.application = @view.application
 
     view.once "initialize", () -> view.decorate options
     
@@ -77,7 +76,8 @@ class SectionsDecorator
 
   ###
   ###
-
+  
+  @priority   : "display"
   @getOptions : (view) -> view.sections
   @decorate   : (view, options) -> new SectionsDecorator view, options
 
