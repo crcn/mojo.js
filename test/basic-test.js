@@ -43,9 +43,13 @@ describe("basic#", function () {
   it("can pass an application into a child view", function() {
     var view = app.createView("base"), bv;
     view.setChild("someChild", bv = new mojo.View());
-
-
     expect(bv.application).not.to.be(undefined);
+
+    var view = app.createView("base"), bv = new mojo.View();
+    bv.set("parent", view);
+    expect(bv.application).not.to.be(undefined);
+
+
   });
 
   
