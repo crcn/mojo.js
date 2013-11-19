@@ -45,6 +45,7 @@ class DecorableView extends Inheritable
   ###
 
   init: () ->
+    @bind("parent").to(@_onParent).now()
 
   ###
    returns path to this view. Useful for debugging.
@@ -114,7 +115,6 @@ class DecorableView extends Inheritable
     @on "rendered", @_onRendered
     @on "remove", @_onRemove
     @on "removed", @_onRemoved
-    @bind("parent").to(@_onParent).now()
 
     @application.decorators.decorate @
 
@@ -122,7 +122,7 @@ class DecorableView extends Inheritable
   ###
 
   setChild: (name, child) ->
-    child.set "parent", parent
+    child.set "parent", @
     @set "sections.#{name}", child
 
   ###
