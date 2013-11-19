@@ -34,6 +34,7 @@ describe("login test#", function () {
 
   it("navigates to the login page without a session", function () {
     var main = views.main = app.createView("main"), authView;
+    expect(app.router.location).to.be("/login");
     main.render();
     expect(views.loginView = main.findSection("main.auth.login")).not.to.be(undefined);
   });
@@ -44,10 +45,30 @@ describe("login test#", function () {
   it("sends a 404", function (next) {
     views.loginView.set({ username: "u", password: "p" });
     views.loginView.login();
-    views.loginView.bind("error").once().to(function(err) {
+    expect(views.loginView.get("loading")).to.be(true);
+    views.loginView.bind("error").once().to(function (err) {
       expect(err.message).to.contain("incorrect username");
       next();
     }).now();
   });
 
+  /**
+   */
+
+  it("properly logs in", function (next) {
+    views.loginView.set({ username: "user", password: "pass" });
+    views.loginView.login();
+    views.loginView.bind("success").once().to(function (err) {
+      expect(app.router.location).to.be("/");
+      next();
+    }).now();
+  });
+
+  /**
+   */
+
+  it("can properly logout", function (next) {
+    views.main.findSection("main.app").logout();
+    expect(app.router.location).to.be("/login");
+  });
 });
