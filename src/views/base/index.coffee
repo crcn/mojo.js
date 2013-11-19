@@ -118,14 +118,12 @@ class DecorableView extends Inheritable
 
     @application.decorators.decorate @
 
-
   ###
   ###
 
   setChild: (name, child) ->
     child.set "parent", parent
     @set "sections.#{name}", child
-
 
   ###
   ###
