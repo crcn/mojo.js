@@ -123,8 +123,8 @@ class StatesView extends require("../base")
     state          = @currentState = @source.at index or 0
     isNew          = !state.hasView()
     newStateView   = state.getView()
-    @setChild "currentChild", newStateView
 
+    @setChild "currentChild", newStateView
     @currentState.set "selected", true
 
     @_displayListener?.dispose()
@@ -132,14 +132,11 @@ class StatesView extends require("../base")
     if oldState and oldState isnt @currentState 
         oldState.hide()
     
-    
     if isNew
       newStateView.render()
       @section.append newStateView.section
     else
       @currentState.show()
-
-
 
     @set "currentView", newStateView
 

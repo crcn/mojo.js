@@ -114,9 +114,17 @@ class DecorableView extends Inheritable
     @on "rendered", @_onRendered
     @on "remove", @_onRemove
     @on "removed", @_onRemoved
-    @bind("_parent").to(@_onParent).now()
+    @bind("parent").to(@_onParent).now()
 
     @application.decorators.decorate @
+
+
+  ###
+  ###
+
+  setChild: (name, child) ->
+    child.set "parent", parent
+    @set "sections.#{name}", child
 
 
   ###
@@ -139,30 +147,6 @@ class DecorableView extends Inheritable
     return if @parent and @parent.get("states.remove")
       
     @section.dispose()
-
-
-  ###
-  ###
-
-  _onSectionChange: (key, value) ->
-    console.log "SECT"
-
-  ###
-  ###
-
-  setChild: (name, child) ->
-    child.name = name
-
-    child.set "application", @application
-    child.set "models", @application.models
-    
-    # should be protected since _parent shouldn't really *ever* be accessed.
-    child.set "_parent", @
-
-    # deprecated
-    child.set "parent", @
-    @set "sections.#{name}", child
-    @emit "child", child
 
     
   ###
@@ -206,6 +190,10 @@ class DecorableView extends Inheritable
   _onParent: (parent) =>
     @_parentDisposeListener?.dispose()
     return unless parent
+
+    @set "application", parent.application
+    @set "models", @application.models
+
     @_parentDisposeListener = parent.on "dispose", @remove
 
   ###
