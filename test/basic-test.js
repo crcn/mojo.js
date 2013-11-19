@@ -3,6 +3,9 @@ expect   = require("expect.js");
 
 describe("basic#", function () {
 
+  /**
+   */
+
   var app = new mojo.Application();
 
   /**
@@ -19,7 +22,7 @@ describe("basic#", function () {
     var view = app.createView("base");
 
     view.on("render", function () {
-      next()
+      next();
     });
 
     view.render();
@@ -28,17 +31,20 @@ describe("basic#", function () {
   /**
    */
 
-  it("application & models are not undefined", function (next) {
+  it("application & models are not undefined", function () {
     var view = app.createView("base");
     expect(view.application).not.to.be(undefined);
     expect(view.models).not.to.be(undefined);
   });
 
   /**
-   */
+   */ 
 
-
-  it("can inherit the application", function() {
-    
+  it("can pass an application into a child view", function() {
+    var view = app.createView("base"), bv;
+    view.set("sections.someChild", bv = new mojo.View());
+    expect(bv.application).not.to.be(undefined);
   });
+
+  
 });

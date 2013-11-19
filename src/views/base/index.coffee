@@ -103,6 +103,7 @@ class DecorableView extends Inheritable
   ###
   ###
 
+
   _init: (event) =>
     return if @_initialized
     @_initialized = true
@@ -113,9 +114,10 @@ class DecorableView extends Inheritable
     @on "rendered", @_onRendered
     @on "remove", @_onRemove
     @on "removed", @_onRemoved
-    @bind("parent").to(@_onParent).now()
+    @bind("_parent").to(@_onParent).now()
 
     @application.decorators.decorate @
+
 
   ###
   ###
@@ -137,6 +139,13 @@ class DecorableView extends Inheritable
     return if @parent and @parent.get("states.remove")
       
     @section.dispose()
+
+
+  ###
+  ###
+
+  _onSectionChange: (key, value) ->
+    console.log "SECT"
 
   ###
   ###
@@ -205,9 +214,6 @@ class DecorableView extends Inheritable
   @extend: (proto) ->
     clazz = structr @, proto
     clazz
-
-
-
 
 
 module.exports = DecorableView

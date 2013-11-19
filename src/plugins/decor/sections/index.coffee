@@ -1,4 +1,5 @@
 type     = require "type-component"
+bindable = require "bindable"
 
 
 class SectionsDecorator
@@ -8,7 +9,7 @@ class SectionsDecorator
   ###
 
   constructor: (@view, @sectionOptions) ->
-    @view.set "sections", {}
+    @view._resetSections()
     @init()
 
   ###
