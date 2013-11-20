@@ -55,7 +55,8 @@ class State extends bindable.Object
     # class is deprecated
     clazz = @get("class") ? @get("viewClass")
 
-    @_view = new clazz()
+    @set "view", @_view = view = new clazz()
+    view
 
 module.exports = State
 

@@ -121,9 +121,10 @@ class StatesView extends require("../base")
     oldState = @currentState
 
     self           = @
-    state          = @currentState = @source.at index or 0
+    state          = @source.at index or 0
     isNew          = !state.hasView()
     newStateView   = state.getView()
+    @set "currentState", state
     @setChild "currentChild", newStateView
 
     @currentState.set "selected", true
