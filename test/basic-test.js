@@ -48,8 +48,6 @@ describe("basic#", function () {
     var view = app.createView("base"), bv = new mojo.View();
     bv.set("parent", view);
     expect(bv.application).not.to.be(undefined);
-
-
   });
 
   
