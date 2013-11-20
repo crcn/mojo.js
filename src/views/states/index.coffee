@@ -132,7 +132,11 @@ class StatesView extends require("../base")
     @_displayListener?.dispose()
 
     if oldState and oldState isnt @currentState 
+        oldState.set("view.visible", false)
         oldState.hide()
+
+
+    newState.set("view.visible", true)
     
     
     if isNew
