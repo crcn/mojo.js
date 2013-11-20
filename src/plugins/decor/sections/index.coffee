@@ -9,7 +9,6 @@ class SectionsDecorator
   ###
 
   constructor: (@view, @sectionOptions) ->
-    @view._resetSections()
     @init()
 
   ###
