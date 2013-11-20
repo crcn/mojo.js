@@ -136,7 +136,7 @@ class StatesView extends require("../base")
         oldState.hide()
 
 
-    newState.set("view.visible", true)
+    newStateView.set("visible", true)
     
     
     if isNew
