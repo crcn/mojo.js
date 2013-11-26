@@ -70,6 +70,17 @@ class InheritableObject extends bindable.Object
     # return the value inherited
     super key
 
+
+  ###
+  ###
+
+  _set: (key, value) ->
+
+    if type(key) is "string"
+      @get key
+
+    super arguments...
+
   ###
   ###
 
