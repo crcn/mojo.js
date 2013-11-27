@@ -1,6 +1,7 @@
 bindable = require "bindable"
 decor    = require "bindable-decor"
 _ = require "underscore"
+type = require "type-component"
 
 
 _getBindingKey = (key) -> key.split(".").shift()
