@@ -1,7 +1,7 @@
 {
   "name": "mojojs",
   "version": "0.7.12",
-  "description": "test",
+  "description": "modular mv+ JavaScript framework for node, and the web",
   "main": "./lib/index.js",
   "jam": {
     "baseUrl": "public",
@@ -20,7 +20,10 @@
       }
     }
   },
-  "repository": "http://npm.classdojo.com:5984/jam",
+  "keywords": ["mojo-plugin"],
+  "repository": {
+    "url": "git://github.com/classdojo/mojo.js.git"
+  },
   "dependencies": {
     "dref": "0.0.x",
     "comerr": "0.0.x",
