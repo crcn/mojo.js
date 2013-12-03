@@ -146,7 +146,7 @@ describe("core/basic-view#", function () {
   /**
    */
 
-  it("can add to the render callstack asynchronously", function () {
+  it("can add to the render callstack asynchronously", function (next) {
     var view = app.createView("basic"), rendered;
     view.on("render", function () {
       view.callstack.push(function (next) {
@@ -182,7 +182,7 @@ describe("core/basic-view#", function () {
   /**
    */
 
-  it("can add to the remove callstack asynchronously", function () {
+  it("can add to the remove callstack asynchronously", function (next) {
     var view = app.createView("basic"), removed;
     view.on("remove", function () {
       view.callstack.push(function (next) {
