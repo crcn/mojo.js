@@ -20,6 +20,9 @@
       }
     }
   },
+  "scripts": {
+    "test": "mocha --recursive"
+  },
   "keywords": [
     "mojo-plugin"
   ],

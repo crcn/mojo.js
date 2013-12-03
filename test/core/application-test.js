@@ -1,9 +1,9 @@
 var expect = require("expect.js"),
-mojo       = require(".."),
+mojo       = require("../.."),
 bindable   = require("bindable");
 
 
-describe("application#", function () {
+describe("core/application#", function () {
 
   /**
    */

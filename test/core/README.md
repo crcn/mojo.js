@@ -9,6 +9,9 @@ to test:
   - inherit on set
 
 
+- paperclip
+  - inherit
+
 - sections
   - custom type
   - list

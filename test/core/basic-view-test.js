@@ -1,8 +1,8 @@
 var expect = require("expect.js"),
-mojo       = require("..");
+mojo       = require("../..");
 
 
-describe("basic/view#", function () {
+describe("core/basic-view#", function () {
 
   var app = new mojo.Application();
   app.registerViewClass("basic", mojo.View);

@@ -1,5 +1,5 @@
 var expect = require("expect.js"),
-mojo       = require("..");
+mojo       = require("../..");
 
 
 describe("parent/child#", function () {
