@@ -118,5 +118,76 @@ describe("basic/view#", function () {
     expect(removed).to.be(true);
   });
 
+  /**
+   */
+
+  it("can add to the render callstack synchronously", function () {
+    var view = app.createView("basic"), rendered;
+    view.on("render", function () {
+      view.callstack.push(function() {
+        rendered = true;
+      });
+    });
+    view.render();
+    expect(rendered).to.be(true);
+  });
+
+  /**
+   */
+
+  it("can add to the render callstack asynchronously", function () {
+    var view = app.createView("basic"), rendered;
+    view.on("render", function () {
+      view.callstack.push(function (next) {
+        setTimeout(next, 0);
+      });
+      view.callstack.push(function () {
+        rendered = true;
+      })
+    });
+    view.render(function () {
+      expect(rendered).to.be(true);
+      next();
+    });
+    expect(rendered).to.be(undefined);
+  });
+
+  /**
+   */
+
+  it("can add to the remove callstack synchronously", function () {
+    var view = app.createView("basic"), removed;
+    view.render();
+    view.on("remove", function () {
+      view.callstack.push(function() {
+        removed = true;
+      });
+    });
+    view.remove();
+    expect(removed).to.be(true);
+  });
+
+
+  /**
+   */
+
+  it("can add to the remove callstack asynchronously", function () {
+    var view = app.createView("basic"), removed;
+    view.on("remove", function () {
+      view.callstack.push(function (next) {
+        setTimeout(next, 0);
+      });
+      view.callstack.push(function () {
+        removed = true;
+      })
+    });
+    view.render();
+    view.remove(function () {
+      expect(removed).to.be(true);
+      next();
+    });
+    expect(removed).to.be(undefined);
+  });
+
 
 }); 
