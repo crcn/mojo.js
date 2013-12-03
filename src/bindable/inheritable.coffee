@@ -77,7 +77,7 @@ class InheritableObject extends bindable.Object
 
   _set: (key, value) ->
 
-    if type(key) is "string"
+    if type(key) is "string" and ~key.indexOf(".")
       @get key
 
     super arguments...
