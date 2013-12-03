@@ -71,6 +71,7 @@ class DecorableView extends Inheritable
   ###
 
   remove: (next) => 
+    @_init()
     @call "remove", "removed", next
 
   ###
