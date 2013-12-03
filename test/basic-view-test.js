@@ -9,16 +9,7 @@ describe("basic/view#", function () {
 
   // - render multiple
   // - remove before render
-  // - setChild test
-  // - bubble test
-  // - onRemove event
-  // - onRender event
-  // - callstack onRender event
-  // - callstack onRemove event
-  // - bind parent event
-  // - path test
-  // - _id test
-  // - view obj error test
+
 
   /**
    */
@@ -27,6 +18,8 @@ describe("basic/view#", function () {
     var view = app.createView("basic");
     expect(view.models).to.be(app.models);
     expect(view.application).to.be(app);
+    expect(view.section).not.to.be(undefined);
+    expect(view._id).not.to.be(undefined);
    });
 
    /**
@@ -35,7 +28,25 @@ describe("basic/view#", function () {
   it("the context of view is itself", function () {
     var view = app.createView("basic");
     expect(view.context()).to.be(view);
+  });
+
+  /**
+   */
+
+  it("throws an error if the first param isn't an object", function () {
+    try {
+      app.createView("basic", "bad arg");
+    } catch (e) {
+      expect(e.message).to.contain("must be an object");
+    }
   })
+
+  /**
+   */
+
+  it("has the right path", function () {
+    expect(app.createView("basic").path()).to.be("DecorableView");
+  });
 
    /**
     */
