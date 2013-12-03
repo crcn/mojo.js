@@ -20,7 +20,9 @@
       }
     }
   },
-  "keywords": ["mojo-plugin"],
+  "keywords": [
+    "mojo-plugin"
+  ],
   "repository": {
     "url": "git://github.com/classdojo/mojo.js.git"
   },
@@ -40,7 +42,8 @@
     "bindable-decor": "0.1.x",
     "bindable-decor-bindings": "0.0.x",
     "underscore": "~1.4.4",
-    "mojo-paperclip": "0.0.x"
+    "mojo-paperclip": "0.0.x",
+    "protoclass": "0.0.5"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",

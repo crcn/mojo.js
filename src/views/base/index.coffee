@@ -5,7 +5,7 @@ loaf         = require "loaf"
 flatstack    = require "flatstack"
 bindable     = require "bindable"
 Inheritable  = require "../../bindable/inheritable"
-structr      = require "structr"    
+protoclass   = require "protoclass"
 
 
 
@@ -70,8 +70,11 @@ class DecorableView extends Inheritable
   ###
   ###
 
-  remove: (next) => 
-    @_init()
+  remove: (next = () ->) => 
+    
+    unless @_initialized
+      return next new Error "cannot remove a view that has not been rendered"
+
     @call "remove", "removed", next
 
   ###
@@ -158,20 +161,6 @@ class DecorableView extends Inheritable
 
   ###
   ###
-  
-  $: (search) -> 
-
-    # a little overhead, but we need to re-scan the elements
-    # each time $() is called
-    el = $ @section.getChildNodes()
-
-    if arguments.length
-      return el.find search
-
-    return el
-
-  ###
-  ###
 
   _onRender    : () => 
   _onRendered  : () =>
@@ -195,12 +184,5 @@ class DecorableView extends Inheritable
 
     @_parentDisposeListener = parent.on "dispose", @remove
 
-  ###
-  ###
 
-  @extend: (proto) ->
-    clazz = structr @, proto
-    clazz
-
-
-module.exports = DecorableView
+module.exports = protoclass.setup DecorableView
