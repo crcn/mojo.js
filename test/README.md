@@ -1,16 +1,7 @@
 to test:
 
-
-- basic
-  - creating a view
-  - removing a view
-  - removing before rendering
-
-
-- recycle test
-  - render, remove, render
-  - re
-
+- decorators
+  - custom (no need to dive into it)
 
 - inheriting
   - application
