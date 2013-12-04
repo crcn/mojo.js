@@ -239,10 +239,4 @@ describe("core/basic-view#", function () {
     });
     expect(removed).to.be(undefined);
   });
-
-  /**
-   */
-
-
-
 }); 

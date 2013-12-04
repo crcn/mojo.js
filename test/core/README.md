@@ -3,11 +3,6 @@ to test:
 - decorators
   - custom (no need to dive into it)
 
-- inheriting
-  - application
-  - define
-  - inherit on set
-
 
 - paperclip
   - inherit
