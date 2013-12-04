@@ -7,15 +7,8 @@ describe("core/inherit#", function () {
   var app = new mojo.Application();
   app.registerViewClass("basic", mojo.View);
 
-  // define
-  // block define
-  // inherit parent change
-  // inherit property on set() if . is present
-  // inherit property on get
-  // inherit define 
-  // break inheritance on set
-  // change child props on inherited change
-
+  /**
+   */
 
   it("can inherit a property from a parent", function () {
     var p = app.createView("basic", { message: "hello!" }),
