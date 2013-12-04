@@ -1,16 +1,9 @@
 to test:
 
-- decorators
-  - custom (no need to dive into it)
-
 
 - paperclip
   - inherit
 
-- sections
-  - custom type
-  - list
-  - states
 - bindings
 - events
 - lists
