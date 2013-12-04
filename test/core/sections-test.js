@@ -81,7 +81,10 @@ describe("core/sections#", function () {
     var ParentView = mojo.View.extend({
       sections: {
         child: {
-          type: mojo.View
+          type: mojo.View,
+          sections: {
+            subb: mojo.View
+          }
         }
       }
     });
@@ -92,9 +95,11 @@ describe("core/sections#", function () {
 
     p.render(function () {
       var c = p.get("sections.child");
+      expect(c.get("sections.subb")).to.be(mojo.View);
       expect(c.get("states.render")).to.be(undefined);
       c.createFragment();
       expect(c.get("states.render")).to.be(true);
+      expect(c.get("sections.subb").constructor).to.be(mojo.View);
       next();
     });
   });

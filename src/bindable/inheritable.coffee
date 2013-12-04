@@ -123,7 +123,7 @@ class InheritableObject extends bindable.Object
 
     # if the value doesn't exist, then log a warning - property is not defined
     # in the view controller!
-    unless @[key]?
+    if not @[key]? and typeof process is "undefined"
       console.warn "inherted property %s doesn't exist in %s", key, @path()
 
     undefined
