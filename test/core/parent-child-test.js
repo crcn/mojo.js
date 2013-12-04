@@ -68,14 +68,27 @@ describe("parent/child#", function () {
     expect(subChild.models).to.be(app.models);
     expect(subSubChild.application).to.be(app);
     expect(subSubChild.models).to.be(app.models);
-
-    
-
-
   });
 
   /**
    */
+
+  it("can bubble an event", function () {
+    var parent = app.createView("basic"),
+    child      = app.createView("basic"),
+    subChild   = app.createView("basic"),
+    bubbled;
+
+    child.setChild("child", subChild);
+    parent.setChild("child", child);
+
+    parent.once("bubble", function (arg) {
+      bubbled = arg;
+    });
+
+    subChild.bubble("bubble", "blah!");
+    expect(bubbled).to.be("blah!");
+  })
 
 
 }); 
