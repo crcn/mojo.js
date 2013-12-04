@@ -2,7 +2,6 @@ bindable  = require "bindable"
 _         = require "underscore"
 type      = require "type-component"
 paperclip = require "mojo-paperclip"
-BaseView  = require "./views/base"
 
 defaultComponents = require "./plugins/defaultComponents"
 decorators        = require "./plugins/decor"
@@ -35,13 +34,14 @@ class Application extends bindable.Object
     # connection between models & views
     @models = new bindable.Object()
 
+    # default view components
     @use defaultComponents
+
+    # default decorators
     @use decorators
 
     # TODO - remove this - should be in another repo
     @use paperclip
-
-    @registerViewClass "base", BaseView
 
   ###
   ###
@@ -53,23 +53,27 @@ class Application extends bindable.Object
   ###
   ###
 
-  registerClass: (name, clazz) ->
+  getViewClass       : (name) -> @getClass "views.#{name}"
+  registerViewClass  : (name, clazz) -> @registerClass "views.#{name}", clazz
+  createView         : (name, options) -> @createObject "views.#{name}", options
+
+  ###
+  ###
+
+  getModelClass      : (name) -> @getClass "models.#{name}"
+  registerModelClass : (name, clazz) -> @registerClass "models.#{name}", clazz
+  createModel        : (name, options) -> @createObject "models.#{name}", options
+
+  ###
+  ###
+
+
+  getClass      : (name) -> @get "models.classes.#{name}"
+  registerClass : (name, clazz) ->
     @set "models.classes.#{name}", clazz
     @
-
-  ###
-  ###
-
-  registerViewClass: (name, clazz) -> @registerClass "views.#{name}", clazz
-  registerModelClass: (name, clazz) -> @registerClass "models.#{name}", clazz
-  getViewClass: (name) -> @getClass "views.#{name}"
-  getModelClass: (name) -> @getClass "models.#{name}"
-  getClass: (name) -> @get "models.classes.#{name}"
-
-  ###
-  ###
-
-  createObject: (name, options = {}) ->
+    
+  createObject  : (name, options = {}) ->
 
     if type(name) is "function" 
       clazz = name
@@ -82,12 +86,9 @@ class Application extends bindable.Object
     obj = new  clazz options, @
 
     obj
-    
-  ###
-  ###
 
-  createView: (name, options) -> @createObject "views.#{name}", options
-  createModel: (name, options) -> @createObject "models.#{name}", options
+
+    
 
 
 module.exports = Application
