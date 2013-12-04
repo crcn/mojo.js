@@ -43,6 +43,14 @@ describe("core/basic-view#", function () {
     expect(v.name).to.be("blah!");
   });
 
+
+  /**
+   */
+
+  it("returns a section on render", function () {
+    expect(new mojo.View({}, app).render().__isLoafSection).to.be(true);
+  })
+
   /**
    */
 
@@ -242,4 +250,5 @@ describe("core/basic-view#", function () {
     });
     expect(removed).to.be(undefined);
   });
+
 }); 
