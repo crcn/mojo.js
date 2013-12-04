@@ -52,6 +52,27 @@ describe("deorators/events#", function () {
   /**
    */
 
+  it("lowercases events", function () {
+    var emits = 0;
+    var view = new mojo.View({
+      events: {
+        "camelEvent": function () {
+          emits++;
+        }
+      }
+    }, app);
+
+    view.__decorators = undefined;
+
+    view.render();
+    view.emit("camelEvent");
+    view.emit("camelevent");
+    expect(emits).to.be(1);
+  })
+
+  /**
+   */
+
   it("can listen on a DOM element", function (next) {
     var view = new mojo.View({
       events: {
