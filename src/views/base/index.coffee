@@ -27,14 +27,12 @@ class DecorableView extends Inheritable
 
   constructor: (data = {}, @application) ->
 
+    # data must be an object - setting to this view
     if type(data) isnt "object"
       throw new Error "data passed in view must be an object"
 
-    super()
-    
-    @set data
 
-    @models = @application?.models
+    super data
 
     @this = @
     @_id  = data._id ? data.model?.get?("_id") ? data.model?._id ? generateId()
@@ -181,7 +179,6 @@ class DecorableView extends Inheritable
     return unless parent
 
     @_inherit "application"
-    @_inherit "models"
 
     @_parentDisposeListener = parent.on "dispose", @remove
 
@@ -190,6 +187,7 @@ class DecorableView extends Inheritable
 
   _onApplication: (application) =>
     @section   = loaf application.nodeFactory
+    @models    = application.models
 
 
 module.exports = protoclass.setup DecorableView

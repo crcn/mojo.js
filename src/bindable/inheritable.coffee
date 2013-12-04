@@ -36,9 +36,12 @@ class InheritableObject extends bindable.Object
   ###
   ###
 
-  constructor: () ->
+  constructor: (data) ->
     super @
     @_defined = {}
+
+    if data 
+      @set data
 
     _combineSuperProps(@, "define")
     @_define @define...
