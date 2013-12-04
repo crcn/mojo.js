@@ -9,10 +9,8 @@ describe("parent/child#", function () {
   app.registerViewClass("basic", mojo.View);
   app2.registerViewClass("basic", mojo.View);
 
-
-  // - dispose child if parent disposed
-  // - correct path
-  // - can set child
+  /**
+   */
 
   it("can set a child", function () {
     var parent = app.createView("basic"), 
@@ -71,6 +69,7 @@ describe("parent/child#", function () {
    */
 
   it("can bubble an event", function () {
+    
     var parent = app.createView("basic"),
     child      = app.createView("basic"),
     subChild   = app.createView("basic"),
