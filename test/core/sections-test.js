@@ -9,14 +9,6 @@ describe("core/sections#", function () {
   app.registerViewClass("basic", mojo.View);
   app2.registerViewClass("basic", mojo.View);
 
-  /*
-  - registered component
-  - class reference
-  - custom component
-  - createFragment set on view
-  - decorate on initialize
-  */
-
 
   it("can define a section with a class", function (next) {
 
@@ -28,10 +20,9 @@ describe("core/sections#", function () {
 
     ParentView.prototype.__decorators = undefined;
 
-    var p = new ParentView({}, app);
-
+    var p = new ParentView({}, app), c;
     p.render(function () {
-      expect(p.get("sections.child").constructor).to.be(mojo.View);
+      expect((c = p.get("sections.child")).constructor).to.be(mojo.View);
       next();
     });
   });
@@ -79,6 +70,31 @@ describe("core/sections#", function () {
 
     p.render(function () {
       expect(p.get("sections.child").constructor).to.be(mojo.View);
+      next();
+    });
+  });
+
+  /**
+   */
+
+  it("initializes the child only when createFragment() is called", function (next) {
+    var ParentView = mojo.View.extend({
+      sections: {
+        child: {
+          type: mojo.View
+        }
+      }
+    });
+
+    ParentView.prototype.__decorators = undefined;
+
+    var p = new ParentView({}, app);
+
+    p.render(function () {
+      var c = p.get("sections.child");
+      expect(c.get("states.render")).to.be(undefined);
+      c.createFragment();
+      expect(c.get("states.render")).to.be(true);
       next();
     });
   });
