@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.7.17",
+  "version": "0.7.19",
   "description": "modular mv+ JavaScript framework for node, and the web",
   "main": "./lib/index.js",
   "jam": {
@@ -21,7 +21,7 @@
     }
   },
   "scripts": {
-    "test": "mocha --recursive"
+    "test": "mocha ./test/**/*-test.js"
   },
   "keywords": [
     "mojo-plugin"
@@ -60,6 +60,7 @@
     "less": "~1.4.0",
     "node-osx-notifier": "~0.1.0",
     "mocha": "~1.14.0",
-    "expect.js": "~0.2.0"
+    "expect.js": "~0.2.0",
+    "jsdom": "~0.8.9"
   }
 }

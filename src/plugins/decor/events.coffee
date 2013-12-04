@@ -6,7 +6,6 @@ class EventsDecorator
   ###
 
   constructor: (@view, @options) ->
-    super()
     @events = @options
     @view.once "render", @render
     @view.once "remove", @remove
@@ -54,6 +53,7 @@ class EventsDecorator
 
 
     elements.bind(lowerActions = actions.toLowerCase(), cb)
+    
     for action in actions.split " " then do (action) =>
       @_janitor.add @view.on action, () ->
         cb.apply @, [$.Event(action)].concat Array.prototype.slice.call arguments

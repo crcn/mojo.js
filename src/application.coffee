@@ -28,7 +28,7 @@ class Application extends bindable.Object
   ###
   ###
 
-  constructor: () ->
+  constructor: (options = {}) ->
     super @
 
     # connection between models & views
@@ -66,7 +66,6 @@ class Application extends bindable.Object
 
   ###
   ###
-
 
   getClass      : (name) -> @get "models.classes.#{name}"
   registerClass : (name, clazz) ->
