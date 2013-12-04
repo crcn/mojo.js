@@ -71,7 +71,6 @@ class DecorableView extends Inheritable
   ###
 
   remove: (next = () ->) => 
-    
     unless @_initialized
       return next new Error "cannot remove a view that has not been rendered"
 
@@ -100,7 +99,6 @@ class DecorableView extends Inheritable
   ###
 
   attach: (element, next) ->
-
     @render () =>
       (element[0] or element).appendChild @section.toFragment()
       next?()

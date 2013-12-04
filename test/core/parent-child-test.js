@@ -98,7 +98,7 @@ describe("parent/child#", function () {
     child      = app.createView("basic");
     parent.setChild("child", child);
     expect(child.path()).to.be("DecorableView.DecorableView");
-  })
+  });
 
-
+  
 }); 
