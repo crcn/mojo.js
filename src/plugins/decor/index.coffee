@@ -1,6 +1,6 @@
 BaseViewDecorator   = require "./base"
 EventsDecorator     = require "./events"
-SectionsDecorator   = require "./sections/index"
+SectionsDecorator   = require "./sections"
 bindableDecor       = require "bindable-decor"
 bindableDecorbindings = require "bindable-decor-bindings"
 
