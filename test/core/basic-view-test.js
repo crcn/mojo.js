@@ -7,8 +7,11 @@ describe("core/basic-view#", function () {
   var app = new mojo.Application();
   app.registerViewClass("basic", mojo.View);
 
-  // - render multiple
-  // - remove before render
+  // - cannot remove before render
+  // - cannot render if rendered
+  // - return doc fragment
+  // - can re-render after remove
+
 
 
   /**
