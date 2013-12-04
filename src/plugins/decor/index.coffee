@@ -4,7 +4,6 @@ SectionsDecorator   = require "./sections/index"
 DraggableDecorator  = require "./dragdrop/draggable"
 DroppableDecorator  = require "./dragdrop/droppable"
 TransitionDecorator = require "./transition"
-PreloadDecorator    = require "./preload"
 bindableDecor       = require "bindable-decor"
 bindableDecorbindings = require "bindable-decor-bindings"
 
@@ -21,9 +20,6 @@ module.exports = (app) ->
 
     # bindings = priority for explicit data-bindings
     bindableDecorbindings("render"),
-
-    # additional decorators that don't have high priority - get added on .render() & .display()
-    PreloadDecorator,
 
     TransitionDecorator,
     EventsDecorator,
