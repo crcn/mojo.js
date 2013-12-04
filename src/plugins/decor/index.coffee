@@ -1,9 +1,6 @@
 BaseViewDecorator   = require "./base"
 EventsDecorator     = require "./events"
 SectionsDecorator   = require "./sections/index"
-DraggableDecorator  = require "./dragdrop/draggable"
-DroppableDecorator  = require "./dragdrop/droppable"
-TransitionDecorator = require "./transition"
 bindableDecor       = require "bindable-decor"
 bindableDecorbindings = require "bindable-decor-bindings"
 
@@ -21,10 +18,7 @@ module.exports = (app) ->
     # bindings = priority for explicit data-bindings
     bindableDecorbindings("render"),
 
-    TransitionDecorator,
     EventsDecorator,
-    DraggableDecorator,
-    DroppableDecorator,
 
     # section / child decorators. These have (almost) highest
     # priority since they should be added before the template is loaded
