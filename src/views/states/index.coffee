@@ -1,6 +1,10 @@
-bindable = require "bindable"
-State = require "./state"
+bindable  = require "bindable"
+State     = require "./state"
 flatstack = require "flatstack"
+
+
+###
+###
 
 class StatesView extends require("../base")
 

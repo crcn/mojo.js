@@ -7,7 +7,8 @@ bindable     = require "bindable"
 Inheritable  = require "../../bindable/inheritable"
 protoclass   = require "protoclass"
 
-
+###
+###
 
 class DecorableView extends Inheritable
 
