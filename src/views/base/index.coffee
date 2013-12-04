@@ -39,7 +39,7 @@ class DecorableView extends Inheritable
     @this = @
     @_id  = data._id ? data.model?.get?("_id") ? data.model?._id ? generateId()
 
-    @section   = loaf()
+    @section   = loaf @application?.nodeFactory
     @init()
 
   ###
@@ -47,6 +47,7 @@ class DecorableView extends Inheritable
 
   init: () ->
     @bind("parent").to(@_onParent).now()
+    @bind("applicaiton").to(@_onApplication).now()
 
   ###
    returns path to this view. Useful for debugging.
@@ -183,6 +184,12 @@ class DecorableView extends Inheritable
     @_inherit "models"
 
     @_parentDisposeListener = parent.on "dispose", @remove
+
+  ###
+  ###
+
+  _onApplication: (application) =>
+    @section.nodeFactory = application.nodeFactory
 
 
 module.exports = protoclass.setup DecorableView

@@ -8,7 +8,7 @@ describe("deorators/events#", function () {
   var app;
 
   before(function () {
-    app = new mojo.Application({ nodeFactory: nofactor.dom, $: nofactor.$ })
+    app = new mojo.Application({ nodeFactory: nofactor.dom })
   })
 
   /**

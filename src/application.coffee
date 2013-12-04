@@ -34,6 +34,7 @@ class Application extends bindable.Object
 
     # give control over how the DOM is created
     @nodeFactory = options.nodeFactory or nofactor.default
+    @$           = options.$ ? $?
 
     # connection between models & views
     @models = new bindable.Object()
