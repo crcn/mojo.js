@@ -32,6 +32,16 @@ describe("core/basic-view#", function () {
   /**
    */
 
+  it("can extend a view", function () {
+    var SubView = mojo.View.extend({ name: "blah!" }),
+    v = new SubView();
+    expect(v.constructor).to.be(SubView);
+    expect(v.name).to.be("blah!");
+  });
+
+  /**
+   */
+
    it("has the right info from app", function () {
     var view = app.createView("basic");
     expect(view.models).to.be(app.models);
@@ -217,6 +227,7 @@ describe("core/basic-view#", function () {
     });
     expect(removed).to.be(undefined);
   });
+
 
 
 }); 

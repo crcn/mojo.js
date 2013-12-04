@@ -179,8 +179,8 @@ class DecorableView extends Inheritable
     @_parentDisposeListener?.dispose()
     return unless parent
 
-    @set "application", parent.application
-    @set "models", @application.models
+    @_inherit "application"
+    @_inherit "models"
 
     @_parentDisposeListener = parent.on "dispose", @remove
 

@@ -11,6 +11,11 @@ describe("core/application#", function () {
   it("can create a new application", function () {
     var app = new mojo.Application();
     expect(app.models).not.to.be(undefined);
+    expect(app.models.constructor).to.be(bindable.Object);
+    expect(app.decorators).not.to.be(undefined);
+    expect(app.decorator).not.to.be(undefined);
+    expect(app.getViewClass("list")).not.to.be(undefined);
+    expect(app.getViewClass("states")).not.to.be(undefined);
   });
 
   /**
@@ -43,4 +48,17 @@ describe("core/application#", function () {
     app.registerModelClass("main", bindable.Object);
     expect((v = app.createModel("main")).constructor).to.be(bindable.Object);
   });
+
+  /**
+   */
+
+  it("throws an error if a view doesn't exist", function () {
+    var app = new mojo.Application();
+
+    try { 
+      app.createView("doesNotExist");
+    } catch (e) {
+      expect(e.message).to.contain("doesn't exist");
+    }
+  })
 });
