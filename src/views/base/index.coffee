@@ -31,12 +31,17 @@ class DecorableView extends Inheritable
     if type(data) isnt "object"
       throw new Error "data passed in view must be an object"
 
-
+    # pass data to super - will get set to this view controller
     super data
 
+    # have reference back to this view controller - useful for templates
     @this = @
+
+    # must have an ID
+    # TODO - should not be familiar with models
     @_id  = data._id ? data.model?.get?("_id") ? data.model?._id ? generateId()
 
+    # initialize
     @init()
 
   ###
