@@ -105,7 +105,17 @@ class InheritableObject extends bindable.Object
 
       # bind the parent property to this property. Note that
       # properties will be recursively bound
-      parentPropertyBinding = parent.bind(key).to(@, key).now()
+      parentPropertyBinding = parent.bind(key).to((v) =>
+
+        # if a function, then properly bind the the context, but don't rebind
+        # if inherited mutiple times
+        if type(v) is "function" and not v.__bound
+          v = _.bind(v, parent)
+          v.__bound = true
+
+        @_set key, v
+
+      ).now()
     ).now()
 
     # if the property is defined on the view controller explicitly, then

@@ -128,4 +128,22 @@ describe("core/inherit#", function () {
 
   });
 
+  /**
+   */
+
+  it("binds inherited functions to the proper context", function () {
+    var p = app.createView("basic", { 
+      name: "blah", 
+      testFn: function() { 
+        expect(this.name).to.be("blah"); 
+      }
+    }),
+    c      = app.createView("basic", { name: "hah" });
+
+    p.setChild("child", c);
+
+    c.get("testFn").call(c);
+    c.get("testFn")();
+  });
+
 }); 
