@@ -14,6 +14,24 @@ describe("core/basic-view#", function () {
   /**
    */
 
+  it("can create a view apart from the application", function () {
+    var view = new mojo.View();
+    expect(view.application).to.be(undefined);
+    expect(view.models).to.be(undefined);
+  });
+
+  /**
+   */
+
+  it("can pass appliation to the second param", function () {
+    var view = new mojo.View({}, app);
+    expect(view.application).to.be(app);
+    expect(view.models).to.be(app.models);
+  });
+
+  /**
+   */
+
    it("has the right info from app", function () {
     var view = app.createView("basic");
     expect(view.models).to.be(app.models);
