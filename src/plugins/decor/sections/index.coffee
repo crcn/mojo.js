@@ -1,6 +1,4 @@
 type     = require "type-component"
-bindable = require "bindable"
-
 
 class SectionsDecorator
 
