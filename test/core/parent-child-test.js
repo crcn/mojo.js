@@ -10,8 +10,6 @@ describe("parent/child#", function () {
   app2.registerViewClass("basic", mojo.View);
 
 
-  // - parent defined
-  // - inherit application, and models, parent, and _parent
   // - dispose child if parent disposed
   // - correct path
   // - can set child
@@ -100,5 +98,38 @@ describe("parent/child#", function () {
     expect(child.path()).to.be("DecorableView.DecorableView");
   });
 
-  
+  /**
+   */
+
+  it("removes the child if the parent is removed", function () {
+    var parent = app.createView("basic"),
+    child      = app.createView("basic");
+
+    child.render();
+    parent.setChild("child", child);
+    parent.render();
+
+    parent.remove();
+    expect(child.states.removed).to.be(true);
+    expect(child.states.remove).to.be(true);
+  });
+
+  /**
+   */
+
+  it("disposes the child if the parent is disposed", function () {
+    var parent = app.createView("basic"),
+    child      = app.createView("basic");
+
+    child.render();
+    parent.setChild("child", child);
+    parent.render();
+
+    // still triggers .remove()
+    parent.dispose();
+
+    expect(child.states.removed).to.be(true);
+    expect(child.states.remove).to.be(true);
+  })
+
 }); 
