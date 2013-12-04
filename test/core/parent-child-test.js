@@ -69,7 +69,7 @@ describe("parent/child#", function () {
    */
 
   it("can bubble an event", function () {
-    
+
     var parent = app.createView("basic"),
     child      = app.createView("basic"),
     subChild   = app.createView("basic"),
@@ -128,6 +128,26 @@ describe("parent/child#", function () {
     parent.dispose();
 
     expect(child.states.removed).to.be(true);
+    expect(child.states.remove).to.be(true);
+  });
+
+  /**
+   */
+
+  it("properly disposes the child if the parent is switched", function () {
+    var p1 = app.createView("basic"),
+    p2     = app.createView("basic"),
+    child  = app.createView("basic");
+
+    p1.render(); p2.render(); child.render();
+
+    p1.setChild("child", child);
+    p2.setChild("child", child);
+
+    p1.dispose();
+
+    expect(child.states.remove).to.be(undefined);
+    p2.dispose();
     expect(child.states.remove).to.be(true);
   })
 

@@ -16,6 +16,7 @@ describe("core/basic-view#", function () {
 
   it("can create a view apart from the application", function () {
     var view = new mojo.View();
+    expect(view.__isView).to.be(true);
     expect(view.application).to.be(undefined);
     expect(view.models).to.be(undefined);
   });
@@ -218,7 +219,6 @@ describe("core/basic-view#", function () {
     expect(removed).to.be(true);
   });
 
-
   /**
    */
 
@@ -239,6 +239,9 @@ describe("core/basic-view#", function () {
     });
     expect(removed).to.be(undefined);
   });
+
+  /**
+   */
 
 
 
