@@ -134,6 +134,7 @@ class DecorableView extends Inheritable
   decorate: (options) ->
     @__decorators = undefined
     @application.decorators.decorate @, options
+    @
 
   ###
   ###
