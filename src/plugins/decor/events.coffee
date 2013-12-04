@@ -8,7 +8,7 @@ class EventsDecorator
   constructor: (@view, @options) ->
     @events = @options
     @view.once "render", @render
-    @view.once "remove", @remove
+    @view.once "dispose", @remove
 
   ###
   ###
@@ -54,7 +54,7 @@ class EventsDecorator
 
     elements.bind(lowerActions = actions.toLowerCase(), cb)
     
-    for action in actions.split " " then do (action) =>
+    for action in lowerActions.split " " then do (action) =>
       @_janitor.add @view.on action, () ->
         cb.apply @, [$.Event(action)].concat Array.prototype.slice.call arguments
 

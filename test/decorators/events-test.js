@@ -81,6 +81,9 @@ describe("deorators/events#", function () {
       events: {
         "click .button .button2": function() {
           clicks++;
+        },
+        "camelEvent": function () {
+          clicks++;
         }
       },
       _onRender: function() {
@@ -90,12 +93,13 @@ describe("deorators/events#", function () {
       click: function() {  
         this.$(".button").click();
         this.$(".button2").click();
+        this.emit("camelevent")
       }
     }, app);
     view.__decorators = undefined;
     view.render();
     view.click();
-    expect(clicks).to.be(2);
+    expect(clicks).to.be(3);
   })
 
   /**
@@ -107,6 +111,9 @@ describe("deorators/events#", function () {
       events: {
         "click .button": function() {
           emitted = true;
+        },
+        "camelEvent": function () {
+          emitted = true;
         }
       },
       _onRender: function() {
@@ -115,6 +122,7 @@ describe("deorators/events#", function () {
       },
       click: function() {  
         this.$(".button").click();
+        this.emit("camelevent");
       }
     }, app);
     view.__decorators = undefined;
@@ -122,5 +130,5 @@ describe("deorators/events#", function () {
     view.dispose();
     view.click();
     expect(emitted).to.be(false);
-  })
+  });
 });
