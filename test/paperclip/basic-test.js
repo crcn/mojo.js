@@ -7,4 +7,5 @@ describe("paperclip/basic#", function () {
 
   var app = new mojo.Application();
 
+
 });
