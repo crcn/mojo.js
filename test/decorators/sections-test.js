@@ -2,7 +2,7 @@ var expect = require("expect.js"),
 mojo       = require("../..");
 
 
-describe("core/sections#", function () {
+describe("decorators/sections#", function () {
 
   var app = new mojo.Application(), 
   app2 = new mojo.Application();
