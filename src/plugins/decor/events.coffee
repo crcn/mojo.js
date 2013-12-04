@@ -1,14 +1,11 @@
 janitor       = require "janitorjs"
-BaseDecorator = require "./base"
 
-
-
-class EventsDecorator extends BaseDecorator
+class EventsDecorator
 
   ###
   ###
 
-  init: () ->
+  constructor: (@view, @options) ->
     super()
     @events = @options
     @view.once "render", @render
