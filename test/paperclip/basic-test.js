@@ -92,6 +92,25 @@ describe("paperclip/basic#", function () {
       expect(e.message).to.contain("template must be a ")
       next();
     }
+  });
+
+  /**
+   */
+
+  it("cleans up the template after the view has been disposed", function () {
+    var view = new mojo.View({
+      name: "Craig",
+      paper: paperclip.compile("Hello {{name}}")
+    }, app);
+
+    view.render();
+    view.remove();
+
+    // might trigger paperclip template change - shouldn't happen
+    view.set("name", "John");
+
+    // disposed - should contain nothing
+    expect(view.section.toString()).to.be("");
   })
 
 });
