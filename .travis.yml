@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - 0.10
+
+
+notifications:
+  email: 
+    - craig.j.condon@gmail.com
+
+branches:
+  only:
+    - 0.7.x
