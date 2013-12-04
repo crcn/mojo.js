@@ -108,4 +108,31 @@ describe("core/inherit#", function () {
 
     expect(c.get("message")).to.be(undefined);
   });
+
+  /**
+   */
+
+  it("can change inheritance if the parent changes", function () {
+    var p = app.createView("basic", { message: "hello!" }),
+    p2    = app.createView("basic", { message: "yellow!" }),
+    c     = app.createView("basic");
+
+    p.setChild("child", c);
+    expect(c.get("message")).to.be("hello!");
+
+    p2.setChild("child", c);
+
+    // should be automatic
+    expect(c.message).to.be("yellow!");
+    p.set("message", "ahh!");
+    expect(c.message).to.be("yellow!");
+    expect(c.get("message")).to.be("yellow!");
+
+
+    c.set("message", "blahh");
+    p2.set("message", "nahh!");
+    expect(c.message).to.be("blahh");
+
+  });
+
 }); 
