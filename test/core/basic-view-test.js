@@ -126,6 +126,18 @@ describe("core/basic-view#", function () {
   /**
    */
 
+  it("can listen for an initialize event", function (next) {
+    var view = app.createView("basic");
+    view.once("initialize", function () { 
+      expect(view._initialized).to.be(true);
+      next(); 
+    });
+    view.render();
+  })
+
+  /**
+   */
+
   it("can listen for a render & rendered event", function () {
     var render, rendered;
     var view = app.createView("basic");

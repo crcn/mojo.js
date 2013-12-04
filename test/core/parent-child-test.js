@@ -10,7 +10,6 @@ describe("parent/child#", function () {
   app2.registerViewClass("basic", mojo.View);
 
 
-  // - bubble
   // - parent defined
   // - inherit application, and models, parent, and _parent
   // - dispose child if parent disposed
@@ -79,6 +78,7 @@ describe("parent/child#", function () {
     subChild   = app.createView("basic"),
     bubbled;
 
+
     child.setChild("child", subChild);
     parent.setChild("child", child);
 
@@ -88,6 +88,16 @@ describe("parent/child#", function () {
 
     subChild.bubble("bubble", "blah!");
     expect(bubbled).to.be("blah!");
+  });
+
+  /**
+   */
+
+  it("has the correct path", function () {
+    var parent = app.createView("basic"),
+    child      = app.createView("basic");
+    parent.setChild("child", child);
+    expect(child.path()).to.be("DecorableView.DecorableView");
   })
 
 
