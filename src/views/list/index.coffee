@@ -3,7 +3,6 @@ type      = require "type-component"
 factories = require "factories"
 hoist     = require "hoist"
 dref      = require "dref"
-nofactor  = require "nofactor"
 janitor   = require "janitorjs"
 
 ###
@@ -190,7 +189,7 @@ class ListView extends require("../base")
   ###
 
   _insertDeferredSections: () =>
-    @section.append nofactor.default.createFragment @_deferredSections
+    @section.append @application.nodeFactory.createFragment @_deferredSections
     @_resort()
     @_deferredSections = []
 
@@ -220,7 +219,7 @@ class ListView extends require("../base")
     for view in sorted
       frag.push view.section.toFragment()
 
-    @section.append nofactor.default.createFragment frag
+    @section.append @application.nodeFactory.createFragment frag
 
 
 

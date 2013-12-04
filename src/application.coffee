@@ -2,6 +2,7 @@ bindable  = require "bindable"
 _         = require "underscore"
 type      = require "type-component"
 paperclip = require "mojo-paperclip"
+nofactor  = require "nofactor"
 
 defaultComponents = require "./plugins/defaultComponents"
 decorators        = require "./plugins/decor"
@@ -30,6 +31,9 @@ class Application extends bindable.Object
 
   constructor: (options = {}) ->
     super @
+
+    # give control over how the DOM is created
+    @nodeFactory = options.nodeFactory or nofactor.default
 
     # connection between models & views
     @models = new bindable.Object()

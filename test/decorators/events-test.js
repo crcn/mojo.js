@@ -1,11 +1,15 @@
 var expect = require("expect.js"),
 mojo       = require("../.."),
-bindable   = require("bindable");
+bindable   = require("bindable"),
+nofactor   = require("nofactor");
 
 describe("deorators/events#", function () {
 
+  var app;
 
-  var app = new mojo.Application();
+  before(function () {
+    app = new mojo.Application({ nodeFactory: nofactor.dom, $: nofactor.$ })
+  })
 
   /**
    */
