@@ -16,6 +16,7 @@ describe("core/application#", function () {
     expect(app.decorator).not.to.be(undefined);
     expect(app.getViewClass("list")).not.to.be(undefined);
     expect(app.getViewClass("states")).not.to.be(undefined);
+    expect(app.getViewClass("base")).not.to.be(undefined);
   });
 
   /**
