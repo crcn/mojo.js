@@ -101,6 +101,8 @@ class DecorableView extends Inheritable
 
     @section = loaf @application.nodeFactory
 
+    @_render @section
+
     # incase dispose() has been called
     if @_fresh
       @reset()
@@ -114,6 +116,13 @@ class DecorableView extends Inheritable
     @emit "render"
 
     @section
+
+  ###
+  ###
+
+  _render: (section) ->
+    # OVERRIDE ME
+    
 
   ###
    removes the section

@@ -85,9 +85,8 @@ describe("deorators/events#", function () {
           next();
         }
       },
-      _onRender: function() {
-        mojo.View.prototype._onRender.call(this);
-        this.section.append($("<div><a href='#' class='button'>button</a></div>")[0]);
+      _render: function(section) {
+        section.append($("<div><a href='#' class='button'>button</a></div>")[0]);
       },
       click: function() {  
         this.$(".button").click();
@@ -112,9 +111,8 @@ describe("deorators/events#", function () {
           clicks++;
         }
       },
-      _onRender: function() {
-        mojo.View.prototype._onRender.call(this);
-        this.section.append($("<div><a href='#' class='button button2'>button</a></div>")[0]);
+      _render: function(section) {
+        section.append($("<div><a href='#' class='button button2'>button</a></div>")[0]);
       },
       click: function() {  
         this.$(".button").click();
@@ -144,8 +142,7 @@ describe("deorators/events#", function () {
       },
       _render: function (section) {
         section.append($("<div><a href='#' class='button'>button</a></div>")[0]);
-        return section;
-      }
+      },
       click: function() {  
         this.$(".button").click();
         this.emit("camelevent");
