@@ -1,4 +1,3 @@
-
 var expect = require("expect.js"),
 mojo       = require("../.."),
 bindable   = require("bindable"),

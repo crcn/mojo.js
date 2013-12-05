@@ -107,6 +107,7 @@ class DecorableView extends Inheritable
     if @_fresh
       @reset()
 
+
     unless @_decorated
       # add additional functionality to this view
       @application.decorators.decorate @
@@ -122,7 +123,7 @@ class DecorableView extends Inheritable
 
   _render: (section) ->
     # OVERRIDE ME
-    
+
 
   ###
    removes the section

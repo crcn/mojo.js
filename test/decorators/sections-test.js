@@ -1,4 +1,3 @@
-return;
 var expect = require("expect.js"),
 mojo       = require("../..");
 
@@ -65,6 +64,7 @@ describe("decorators/sections#", function () {
     ParentView.prototype.__decorators = undefined;
 
     var p = new ParentView({}, app);
+    p.render();
     expect(p.get("sections.child").constructor).to.be(mojo.View);
   });
 
