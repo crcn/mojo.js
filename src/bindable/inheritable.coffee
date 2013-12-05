@@ -40,9 +40,6 @@ class InheritableObject extends bindable.Object
     super @
     @_defined = {}
 
-    if data 
-      @set data
-
     _combineSuperProps(@, "define")
     @_define @define...
 

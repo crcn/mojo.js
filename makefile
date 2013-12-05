@@ -7,7 +7,7 @@ all-watch:
 clean:
 	rm -rf lib;
 
-test:
+testt:
 	./node_modules/.bin/_mocha ./test/**/*-test.js --ignore-leaks --timeout 100
 
 test-cov:

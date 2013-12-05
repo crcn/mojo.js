@@ -21,7 +21,7 @@
     }
   },
   "scripts": {
-    "test": "mocha ./test/**/*-test.js"
+    "test": "make testt"
   },
   "keywords": [
     "mojo-plugin"
