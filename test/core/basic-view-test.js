@@ -163,6 +163,17 @@ describe("core/basic-view#", function () {
     expect(emitted).to.be(undefined);
   });
 
+  /**
+   */
+
+  it("throws an error if reset() is called if not disposed", function () {
+    var view = app.createView("basic");
+    try {
+      view.reset();
+    } catch (e) {
+      expect(e.message).to.contain("can only reset a view that")
+    }
+  });
 
   /**
    */
@@ -191,4 +202,39 @@ describe("core/basic-view#", function () {
     view.emit("blah");
     expect(emitted).to.be(undefined);
   });
+
+
+  /**
+   */
+
+  it("can attach to a an element", function () {
+    var view = new mojo.View({}, app), 
+    appended = 0;
+
+    view.attach({
+      appendChild: function (frag) {
+        expect(frag.nodeType).to.be(11);
+        appended++;
+      }
+    });
+    view.attach([{
+      appendChild: function (frag) {
+        expect(frag.nodeType).to.be(11);
+        appended++;
+      }
+    }]);
+
+    expect(appended).to.be(2);
+  });
+
+  /**
+   */
+
+  it("can render() a view after it's been dispose()d", function () {
+    var view = new mojo.View({}, app);
+    view.__decorators = undefined;
+    view.render();
+    view.dispose();
+
+  })
 }); 

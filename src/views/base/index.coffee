@@ -169,7 +169,7 @@ class DecorableView extends Inheritable
 
     child.once "dispose", () =>
       child.set "parent", undefined
-      @set "child.#{name}", undefined
+      @set "sections.#{name}", undefined
 
   ###
   ###

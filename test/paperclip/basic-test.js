@@ -111,6 +111,7 @@ describe("paperclip/basic#", function () {
 
     // disposed - should contain nothing
     expect(view.section).to.be(undefined);
-  })
+  });
+
 
 });

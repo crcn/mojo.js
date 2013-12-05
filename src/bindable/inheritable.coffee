@@ -101,9 +101,12 @@ class InheritableObject extends bindable.Object
     parentBinding = @bind("parent").to((parent) =>
       parentPropertyBinding?.dispose()
 
+      return unless parent
+
       # bind the parent property to this property. Note that
       # properties will be recursively bound
       parentPropertyBinding = parent.bind(key).to((v) =>
+
 
         # if a function, then properly bind the the context, but don't rebind
         # if inherited mutiple times

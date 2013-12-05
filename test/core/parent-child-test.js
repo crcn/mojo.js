@@ -152,6 +152,47 @@ describe("parent/child#", function () {
     expect(child.section).not.to.be(undefined);
     p2.dispose();
     expect(child.section).to.be(undefined);
+  });
+
+  /**
+   */
+
+  it("can re-use a view after it's been disposed, and maintains children", function () {
+    var p = new mojo.View({
+      sections: {
+        child: mojo.View
+      }
+    }, app), c, cs, c2, cs2;
+
+    p.__decorators = undefined;
+    p.render();
+    cs = (c = p.get("sections.child")).render();
+    p.dispose();
+    p.render();
+    cs2 = (c2 = p.get("sections.child")).render();
+
+    expect(c2).not.to.be(c);
+    expect(cs2).not.to.be(c2);
+  });
+
+  /**
+   */
+
+
+  it("can remove() a child from the parent", function () {
+    var p = new mojo.View({
+
+    }, app), 
+    c = new mojo.View({ name: "testt" }, app);
+
+    p.render();
+    c.render();
+    p.setChild("child", c);
+    expect(p.get("sections.child")).to.be(c);
+    expect(c.get("parent")).to.be(p);
+    c.dispose();
+    expect(p.get("sections.child")).to.be(undefined);
+    expect(c.get("parent")).to.be(undefined);
   })
 
 }); 
