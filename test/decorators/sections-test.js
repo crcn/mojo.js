@@ -1,3 +1,4 @@
+return;
 var expect = require("expect.js"),
 mojo       = require("../..");
 
@@ -10,7 +11,7 @@ describe("decorators/sections#", function () {
   app2.registerViewClass("basic", mojo.View);
 
 
-  it("can define a section with a class", function (next) {
+  it("can define a section with a class", function () {
 
     var ParentView = mojo.View.extend({
       sections: {
@@ -21,16 +22,15 @@ describe("decorators/sections#", function () {
     ParentView.prototype.__decorators = undefined;
 
     var p = new ParentView({}, app), c;
-    p.render(function () {
-      expect((c = p.get("sections.child")).constructor).to.be(mojo.View);
-      next();
-    });
+    p.render();
+    expect((c = p.get("sections.child")).constructor).to.be(mojo.View);
+    
   });
 
   /**
    */
 
-  it("can define a section when the type is a class", function (next) {
+  it("can define a section when the type is a class", function () {
 
     var ParentView = mojo.View.extend({
       sections: {
@@ -45,17 +45,15 @@ describe("decorators/sections#", function () {
 
     var p = new ParentView({}, app);
 
-    p.render(function () {
-      expect(p.get("sections.child").constructor).to.be(mojo.View);
-      expect(p.get("sections.child").message).to.be("blah");
-      next();
-    });
+    p.render();
+    expect(p.get("sections.child").constructor).to.be(mojo.View);
+    expect(p.get("sections.child").message).to.be("blah");
   });
 
   /**
    */
 
-  it("can define a section when the type is a registered component", function (next) {
+  it("can define a section when the type is a registered component", function () {
     var ParentView = mojo.View.extend({
       sections: {
         child: {
@@ -67,41 +65,8 @@ describe("decorators/sections#", function () {
     ParentView.prototype.__decorators = undefined;
 
     var p = new ParentView({}, app);
-
-    p.render(function () {
-      expect(p.get("sections.child").constructor).to.be(mojo.View);
-      next();
-    });
+    expect(p.get("sections.child").constructor).to.be(mojo.View);
   });
 
-  /**
-   */
-
-  it("initializes the child only when createFragment() is called", function (next) {
-    var ParentView = mojo.View.extend({
-      sections: {
-        child: {
-          type: mojo.View,
-          sections: {
-            subb: mojo.View
-          }
-        }
-      }
-    });
-
-    ParentView.prototype.__decorators = undefined;
-
-    var p = new ParentView({}, app);
-
-    p.render(function () {
-      var c = p.get("sections.child");
-      expect(c.get("sections.subb")).to.be(mojo.View);
-      expect(c.get("states.render")).to.be(undefined);
-      c.createFragment();
-      expect(c.get("states.render")).to.be(true);
-      expect(c.get("sections.subb").constructor).to.be(mojo.View);
-      next();
-    });
-  });
 
 }); 

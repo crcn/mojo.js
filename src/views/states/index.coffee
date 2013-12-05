@@ -21,15 +21,18 @@ class StatesView extends require("../base")
   ###
   ###
 
-  _init: () ->
-    super()
-
-    # the view states
+  initialize: () ->
     source = new bindable.Collection()
-    source.enforceId false
-
     @set "source", source
+
+  ###
+  ###
+
+  reset: (data) ->
+    super data
     @bind("views", @_setViews).now()
+
+
 
   ###
   ###
@@ -38,7 +41,7 @@ class StatesView extends require("../base")
     @source.reset views.map (stateOptions, i) => 
       new State @, stateOptions, i
 
-    if @get("states.render")
+    if @_rendered
       @_rebind()
 
   ###

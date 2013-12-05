@@ -45,7 +45,7 @@
     "bindable-decor": "0.1.x",
     "bindable-decor-bindings": "0.0.x",
     "underscore": "~1.4.4",
-    "mojo-paperclip": "0.0.x",
+    "mojo-paperclip": "0.1.x",
     "protoclass": "0.0.5"
   },
   "devDependencies": {
@@ -53,14 +53,15 @@
     "amdify": "0.0.21",
     "mesh": "~0.2.4",
     "colors": "~0.6.0-1",
+    "paperclip": "0.3.x",
     "async": "~0.2.9",
     "mkdirp": "~0.3.5",
     "optimist": "~0.6.0",
     "request": "~2.21.0",
     "less": "~1.4.0",
     "node-osx-notifier": "~0.1.0",
-    "mocha": "~1.14.0",
     "expect.js": "~0.2.0",
-    "jsdom": "~0.8.9"
+    "jsdom": "~0.8.9",
+    "mocha": "~1.15.1"
   }
 }

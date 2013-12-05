@@ -58,7 +58,7 @@ describe("core/basic-view#", function () {
     var view = app.createView("basic");
     expect(view.models).to.be(app.models);
     expect(view.application).to.be(app);
-    expect(view.section).not.to.be(undefined);
+    expect(view.section).to.be(undefined);
     expect(view._id).not.to.be(undefined);
    });
 
@@ -88,167 +88,106 @@ describe("core/basic-view#", function () {
     expect(app.createView("basic").path()).to.be("DecorableView");
   });
 
-   /**
-    */
-
-  it("can render a view asynchronously", function(next) {
-    var view = app.createView("basic");
-    view.render(function () {
-      expect(view.get("states.rendered")).to.be(true);
-      expect(view.get("states.render")).to.be(true);
-      next();
-    });
-  });
-
   /**
    */
 
-  it("can render a view synchronously", function () {
+  it("can render a view", function () {
     var view = app.createView("basic");
+    expect(view.section).to.be(undefined);
     view.render();
-    expect(view.get("states.rendered")).to.be(true);
-    expect(view.get("states.render")).to.be(true);
+    expect(view.section).not.to.be(undefined);
+    expect(view._fresh).to.be(false);
   })
 
   /**
    */
 
-  it("can remove a view", function (next) {
+  it("can remove a view", function () {
     var view = app.createView("basic");
-    view.render(function () {
-      view.remove(function () {
-          expect(view.get("states.remove")).to.be(true);
-          expect(view.get("states.removed")).to.be(true);
-        next();
-      });
-    });
-  });
-
-  /**
-   */
-
-  it("cannot remove a view before it's rendered", function (next) {
-    var view = app.createView("basic");
-    view.remove(function(err) {
-      expect(err).not.to.be(undefined);
-      next();
-    });
-  });
-
-  /**
-   */
-
-  it("can listen for an initialize event", function (next) {
-    var view = app.createView("basic");
-    view.once("initialize", function () { 
-      expect(view._initialized).to.be(true);
-      next(); 
-    });
     view.render();
-  })
+    view.remove()
+    expect(view.section).to.be(undefined);
+    expect(view._fresh).to.be(false);
+  });
 
   /**
    */
 
-  it("can listen for a render & rendered event", function () {
+  it("can listen for a render event", function () {
     var render, rendered;
     var view = app.createView("basic");
     view.on("render", function () {
       render = true;
     });
-    view.on("rendered", function () {
-      rendered = true;
-    });
     view.render();
     expect(render).to.be(true);
-    expect(rendered).to.be(true);
   });
 
   /**
    */
 
-  it("can listen for a remove & removed event", function () {
+  it("can listen for a remove event", function () {
     var view = app.createView("basic"), remove, removed;
     view.render();
     view.on("remove", function () {
       remove = true;
     });
-    view.on("removed", function () {
-      removed = true;
-    });
     view.remove();
     expect(remove).to.be(true);
-    expect(removed).to.be(true);
   });
 
   /**
    */
 
-  it("can add to the render callstack synchronously", function () {
-    var view = app.createView("basic"), rendered;
+  it("cannot re-render a view", function () {
+    var view = app.createView("basic"), emitted = 0;
     view.on("render", function () {
-      view.callstack.push(function() {
-        rendered = true;
-      });
+      emitted++;
     });
     view.render();
-    expect(rendered).to.be(true);
+    expect(view.render()).to.be(view.section);
+    expect(emitted).to.be(1);
   });
 
   /**
    */
 
-  it("can add to the render callstack asynchronously", function (next) {
-    var view = app.createView("basic"), rendered;
-    view.on("render", function () {
-      view.callstack.push(function (next) {
-        setTimeout(next, 0);
-      });
-      view.callstack.push(function () {
-        rendered = true;
-      })
-    });
-    view.render(function () {
-      expect(rendered).to.be(true);
-      next();
-    });
-    expect(rendered).to.be(undefined);
-  });
 
-  /**
-   */
-
-  it("can add to the remove callstack synchronously", function () {
-    var view = app.createView("basic"), removed;
-    view.render();
-    view.on("remove", function () {
-      view.callstack.push(function() {
-        removed = true;
-      });
-    });
+  it("cannot remove a view before it's rendered", function () {
+    var view = app.createView("basic"), emitted;
+    view.once("remove", function () {
+      emitted = false;
+    })
     view.remove();
-    expect(removed).to.be(true);
+    expect(emitted).to.be(undefined);
+  });
+
+
+  /**
+   */
+
+  it("maintains listeners on remove()", function () {
+    var view = app.createView("basic"), emitted;
+    view.on("blah", function () {
+      emitted = true;
+    });
+    view.render();
+    view.remove();
+    view.emit("blah");
+    expect(emitted).to.be(true);
   });
 
   /**
    */
 
-  it("can add to the remove callstack asynchronously", function (next) {
-    var view = app.createView("basic"), removed;
-    view.on("remove", function () {
-      view.callstack.push(function (next) {
-        setTimeout(next, 0);
-      });
-      view.callstack.push(function () {
-        removed = true;
-      })
+  it("removes listeners on dispose()", function () {
+    var view = app.createView("basic"), emitted;
+    view.on("blah", function () {
+      emitted = true;
     });
     view.render();
-    view.remove(function () {
-      expect(removed).to.be(true);
-      next();
-    });
-    expect(removed).to.be(undefined);
+    view.dispose();
+    view.emit("blah");
+    expect(emitted).to.be(undefined);
   });
-
 }); 

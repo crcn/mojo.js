@@ -1,3 +1,4 @@
+
 var expect = require("expect.js"),
 mojo       = require("../..");
 
@@ -120,7 +121,6 @@ describe("core/inherit#", function () {
     p.set("message", "ahh!");
     expect(c.message).to.be("yellow!");
     expect(c.get("message")).to.be("yellow!");
-
 
     c.set("message", "blahh");
     p2.set("message", "nahh!");

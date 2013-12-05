@@ -1,3 +1,4 @@
+
 var expect = require("expect.js"),
 mojo       = require("../..");
 
@@ -109,8 +110,7 @@ describe("parent/child#", function () {
     parent.render();
 
     parent.remove();
-    expect(child.states.removed).to.be(true);
-    expect(child.states.remove).to.be(true);
+    expect(child.section).to.be(undefined);
   });
 
   /**
@@ -127,8 +127,9 @@ describe("parent/child#", function () {
     // still triggers .remove()
     parent.dispose();
 
-    expect(child.states.removed).to.be(true);
-    expect(child.states.remove).to.be(true);
+    expect(child._fresh).to.be(true);
+    expect(child.section).to.be(undefined);
+
   });
 
   /**
@@ -145,10 +146,11 @@ describe("parent/child#", function () {
     p2.setChild("child", child);
 
     p1.dispose();
+    p2.dspo
 
-    expect(child.states.remove).to.be(undefined);
+    expect(child.section).not.to.be(undefined);
     p2.dispose();
-    expect(child.states.remove).to.be(true);
+    expect(child.section).to.be(undefined);
   })
 
 }); 

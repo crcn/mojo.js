@@ -97,15 +97,13 @@ class DecorableView extends Inheritable
   render: () =>
 
     # cannot re-render
-    return @section if @section
+    return @section if @_rendered
+    @_rendered = true
 
-    @section = loaf @application.nodeFactory
-
-    # incase dispose() has been called
+    # incase remove() has been called
     if @_fresh
       @reset()
 
-    unless @_decorated
       # add additional functionality to this view
       @application.decorators.decorate @
 
@@ -116,16 +114,15 @@ class DecorableView extends Inheritable
     @section
 
   ###
-   removes the section
   ###
 
   remove: () => 
 
     # only emit remove if rendered
-    if @section
+    if @_rendered
+      @_rendered = false
       @emit "remove"
-      @section.dispose()
-      @section = undefined
+      @section = 
 
   ###
    returns a search for a particular element
@@ -156,10 +153,6 @@ class DecorableView extends Inheritable
     child.set "parent", @
     @set "sections.#{name}", child
 
-    child.once "dispose", () =>
-      child.set "parent", undefined
-      @set "child.#{name}", undefined
-
   ###
   ###
 
@@ -169,24 +162,20 @@ class DecorableView extends Inheritable
     @
 
   ###
-   destroys this view completely - does cleanup
-   of all listeners
   ###
 
   dispose: () =>
 
-    @remove()
-
     @_fresh = true
 
-    # listeners are getting disposed - 
-    @_decorated = false
-
+    # call super - important to cleanup any listeners / bindings
     super()
 
-
-
-
+    # return if the parent has NOT been rendered, or has been 
+    # removed - it's redundant to dispose the section 
+    return unless @parent?._rendered 
+      
+    @section.dispose()
 
   ###
    bubbles up an event to the root object
@@ -201,21 +190,28 @@ class DecorableView extends Inheritable
   ###
 
   _onParent: (parent) =>
-    @_parentRemoveListener?.dispose()
     @_parentDisposeListener?.dispose()
     return unless parent
 
     @_inherit "application"
 
     # dispose THIS child if the parent has been disposed of
-    @_parentRemoveListener  = parent.on "remove", @remove
-    @_parentDisposeListener = parent.on "dispose", @dispose
+    @_parentDisposeListener = parent.on "dispose", @remove
 
   ###
   ###
 
   _onApplication: (application) =>
-    @set "models", application.models
+    @_resetSection()
+    @models    = application.models
+
+
+  ###
+  ###
+
+  _resetSection: () ->
+    @section?.dispose()
+    @section = loaf @application.nodeFactory
 
 
 module.exports = protoclass.setup DecorableView

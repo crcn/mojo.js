@@ -7,6 +7,7 @@ nofactor   = require("nofactor");
 describe("paperclip/basic#", function () {
 
   var app;
+  return;
 
   before(function () {
     app = new mojo.Application({ nodeFactory: nofactor.dom, $: $ });

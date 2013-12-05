@@ -23,15 +23,8 @@ class SectionsDecorator
 
     view  = @_createSectionView(options)
 
-    view.once "initialize", () -> view.decorate options
-      
-    # TODO - this should be deprecated - .render() should be called 
-    # by paperclip
-    view.createFragment = () =>
-      return view.section.toFragment() if view._createdFragment
-      view._createdFragment = true
-      @view.callstack.unshift view.render
-      view.section.toFragment()
+    view.once "render", () -> 
+      view.decorate options
 
     @view.setChild name, view
 
