@@ -7,7 +7,6 @@ nofactor   = require("nofactor");
 describe("paperclip/basic#", function () {
 
   var app;
-  return;
 
   before(function () {
     app = new mojo.Application({ nodeFactory: nofactor.dom, $: $ });
@@ -22,7 +21,7 @@ describe("paperclip/basic#", function () {
       paper: paperclip.compile("Hello World")
     }, app);
 
-    expect(view.section.toString()).to.be("");
+    expect(view.section).to.be(undefined);
     view.render();
     expect(view.section.toString()).to.be("Hello World");
     expect(view.section.toFragment().childNodes[2].nodeValue).to.be("Hello World");
@@ -111,7 +110,7 @@ describe("paperclip/basic#", function () {
     view.set("name", "John");
 
     // disposed - should contain nothing
-    expect(view.section.toString()).to.be("");
+    expect(view.section).to.be(undefined);
   })
 
 });
