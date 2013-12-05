@@ -135,7 +135,8 @@ class DecorableView extends Inheritable
 
     # a little overhead, but we need to re-scan the elements
     # each time $() is called
-    el = $ @section.getChildNodes()
+    # might not be rendered, so check for section
+    el = $ @section?.getChildNodes()
 
     if arguments.length
       return el.find search

@@ -1,4 +1,4 @@
-return;
+
 var expect = require("expect.js"),
 mojo       = require("../.."),
 bindable   = require("bindable"),
@@ -142,10 +142,10 @@ describe("deorators/events#", function () {
           emitted = true;
         }
       },
-      _onRender: function() {
-        mojo.View.prototype._onRender.call(this);
-        this.section.append($("<div><a href='#' class='button'>button</a></div>")[0]);
-      },
+      _render: function (section) {
+        section.append($("<div><a href='#' class='button'>button</a></div>")[0]);
+        return section;
+      }
       click: function() {  
         this.$(".button").click();
         this.emit("camelevent");
