@@ -45,6 +45,7 @@ describe("decorators/sections#", function () {
     var p = new ParentView({}, app);
 
     p.render();
+    p.get("sections.child").render();
     expect(p.get("sections.child").constructor).to.be(mojo.View);
     expect(p.get("sections.child").message).to.be("blah");
   });
@@ -66,6 +67,79 @@ describe("decorators/sections#", function () {
     var p = new ParentView({}, app);
     p.render();
     expect(p.get("sections.child").constructor).to.be(mojo.View);
+  });
+
+
+  /**
+   */
+
+  it("throws an error if the type is not found", function (next) {
+    
+    try {
+      var p = new mojo.View({}, app).decorate({
+        sections: {
+          child: "doesn't exist"
+        }
+      });
+
+      p.render();
+    } catch(e) {
+      expect(e.message).to.contain("doesn't exist");
+      next();
+    }
+  });
+
+  /**
+   */
+
+  it("throws an error if the options is an incorrect type", function (next) {
+    
+    try {
+      var p = new mojo.View({}, app).decorate({
+        sections: {
+          child: 654645
+        }
+      });
+
+      p.render();
+    } catch(e) {
+      expect(e.message).to.contain("cannot create section");
+      next();
+    }
+  });
+
+
+
+  /**
+   */
+
+  it("allows for a section to be a view object", function () {
+    var p = new mojo.View({}, app).decorate({
+      sections: {
+        child: new mojo.View()
+      }
+    });
+    p.render();
+    expect(p.get("sections.child").constructor).to.be(mojo.View);
+  })
+
+
+  /**
+   */
+
+  it("throws an error if the options is invalid", function (next) {
+    try {
+      var p = new mojo.View({}, app).decorate({
+        sections: {
+          child: undefined
+        }
+      });
+
+      p.render();
+    } catch(e) {
+      expect(e.message).to.contain("is invalid for view");
+      next();
+    }
   });
 
 

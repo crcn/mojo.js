@@ -41,7 +41,7 @@ class EventsDecorator
       if typeof viewMethod is "function"
         ref = viewMethod
       else 
-        ref = @view[viewMethod] or @view.get viewMethod
+        ref = @view.get(viewMethod)
 
       ref.apply(@view, arguments)
 

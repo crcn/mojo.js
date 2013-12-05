@@ -49,23 +49,15 @@ class SectionsDecorator
   ###
 
   _createSectionView: (options) ->
-    if type(options.type) is "object"
+    if (t = type(options.type)) is "object"
       return options.type
-    else
-      clazz = @_getSectionClass(options)
-      return new clazz options
-
-  ###
-  ###
-
-  _getSectionClass: (options) ->
-
-    if (t = type(options.type)) is "function"
-      return options.type
+    if t is "function"
+      return new options.type(options)
     else if t is "string"
-      return @view.application.getViewClass(options.type)
+      return @view.application.createView(options.type, options)
     else
-      throw new Error "cannot get section class for type #{t}"
+      throw new Error "cannot create section for type #{t}"
+
 
   ###
   ###

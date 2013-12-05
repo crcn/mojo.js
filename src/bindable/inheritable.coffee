@@ -4,8 +4,6 @@ _ = require "underscore"
 type = require "type-component"
 
 
-_getBindingKey = (key) -> key.split(".").shift()
-
 _combineSuperProps = (target, property) ->
   constructor = target.constructor
   unless constructor.__combined
