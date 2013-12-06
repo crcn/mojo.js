@@ -23,8 +23,9 @@ class ListView extends require("../base")
   ###
   ###
 
-  initialize: () ->
-    super()
+  initialize: (data) ->
+    super data
+    
     @_views = new bindable.Collection()
     @_initOptions()
     @_initModelMapper()

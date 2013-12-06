@@ -25,6 +25,7 @@ class DecorableView extends Inheritable
   ###
   ###
 
+
   constructor: (data = {}, @application) ->
 
     # data must be an object - setting to this view
@@ -45,18 +46,14 @@ class DecorableView extends Inheritable
     # make sure this view is resettable so that reset() doesn't throw an error
     @_fresh = true
 
-    # another initialization method - used
-    # particularly for object recycling
-    @reset data
-
     # initialize - keeps sub-classes from calling constructor
-    @initialize()
+    @initialize data
 
   ###
   ###
 
-  initialize: () ->
-    # OVERRIDE ME
+  initialize: (data) ->
+    @reset data
 
   ###
    resets the view - this should be called only after disposing

@@ -21,9 +21,10 @@ class StatesView extends require("../base")
   ###
   ###
 
-  initialize: () ->
+  initialize: (data) ->
     source = new bindable.Collection()
     @set "source", source
+    super data
 
   ###
   ###
@@ -36,6 +37,7 @@ class StatesView extends require("../base")
   ###
 
   _setViews: (views) =>
+
     @source.reset views.map (stateOptions, i) => 
       new State @, stateOptions, i
 
@@ -45,7 +47,7 @@ class StatesView extends require("../base")
   ###
   ###
 
-  _onRender: () ->
+  _render: () ->
     super()
     @_rebind()
 
