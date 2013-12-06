@@ -145,6 +145,28 @@ describe("decorators/sections#", function () {
     expect(view.render().toString()).to.be("hi mojo");
     (child = view.get("sections.child")).remove();
     child.render();
+  });
+
+
+  // tests to make sure that sections is overwritten entirely when
+  // decorated
+
+  it("maintains sections when view is instantiated multiple times", function () {
+    var SubView = mojo.View.extend({
+      paper: paperclip.compile("sub: {{ html: sections.child }}"),
+      sections: {
+        child: mojo.View.extend({
+          paper: paperclip.compile("Hello subview")
+        })
+      }
+    });
+
+    var v = new SubView({}, app);
+    expect(v.render().toString()).to.be("sub: Hello subview");
+    v.set("sections.child", undefined);
+    var v = new SubView({}, app);
+    expect(v.render().toString()).to.be("sub: Hello subview");
+
   })
 
 

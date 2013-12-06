@@ -7,6 +7,7 @@ class SectionsDecorator
   ###
 
   constructor: (@view, @sectionOptions) ->
+    @view.sections = {}
     @init()
     @view.sections.__decorated = true
 
