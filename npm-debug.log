@@ -1,0 +1,336 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'publish' ]
+2 info using npm@1.3.14
+3 info using node@v0.10.22
+4 verbose publish [ '.' ]
+5 verbose cache add [ '.', null ]
+6 verbose cache add name=undefined spec="." args=[".",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: '.',
+7 verbose parsed url   path: '.',
+7 verbose parsed url   href: '.' }
+8 silly lockFile 3a52ce78- .
+9 verbose lock . /Users/craig/.npm/3a52ce78-.lock
+10 verbose tar pack [ '/var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/tmp.tgz',
+10 verbose tar pack   '.' ]
+11 verbose tarball /var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/tmp.tgz
+12 verbose folder .
+13 info prepublish mojojs@0.7.19
+14 silly lockFile 1f1177db-tar tar://.
+15 verbose lock tar://. /Users/craig/.npm/1f1177db-tar.lock
+16 silly lockFile 1e00e9e8-8595-0-31075831735506654-tmp-tgz tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/tmp.tgz
+17 verbose lock tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/tmp.tgz /Users/craig/.npm/1e00e9e8-8595-0-31075831735506654-tmp-tgz.lock
+18 silly lockFile 1f1177db-tar tar://.
+19 silly lockFile 1f1177db-tar tar://.
+20 silly lockFile 1e00e9e8-8595-0-31075831735506654-tmp-tgz tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/tmp.tgz
+21 silly lockFile 1e00e9e8-8595-0-31075831735506654-tmp-tgz tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/tmp.tgz
+22 verbose tar unpack /var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/tmp.tgz
+23 silly lockFile b62c5ee7-8595-0-31075831735506654-package tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/package
+24 verbose lock tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/package /Users/craig/.npm/b62c5ee7-8595-0-31075831735506654-package.lock
+25 silly lockFile 1e00e9e8-8595-0-31075831735506654-tmp-tgz tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/tmp.tgz
+26 verbose lock tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/tmp.tgz /Users/craig/.npm/1e00e9e8-8595-0-31075831735506654-tmp-tgz.lock
+27 silly gunzTarPerm modes [ '755', '644' ]
+28 silly gunzTarPerm extractEntry package.json
+29 silly gunzTarPerm extractEntry .npmignore
+30 silly gunzTarPerm extractEntry README.md
+31 silly gunzTarPerm extractEntry LICENSE
+32 silly gunzTarPerm extractEntry mesh.js
+33 silly gunzTarPerm extractEntry build/mojo.js
+34 silly gunzTarPerm extractEntry build/mojo1.js
+35 silly gunzTarPerm extractEntry build/mojo2.js
+36 silly gunzTarPerm extractEntry build/mojo3.js
+37 silly gunzTarPerm extractEntry build/mojo4.js
+38 silly gunzTarPerm extractEntry build/mojo5.js
+39 silly gunzTarPerm extractEntry build/mojo6.js
+40 silly gunzTarPerm extractEntry build/mojo7.js
+41 silly gunzTarPerm extractEntry coverage/coverage.json
+42 silly gunzTarPerm extractEntry coverage/lcov-report/prettify.js
+43 silly gunzTarPerm extractEntry coverage/lcov-report/index.html
+44 silly gunzTarPerm extractEntry coverage/lcov-report/lib/application.js.html
+45 silly gunzTarPerm extractEntry coverage/lcov-report/lib/bindable/index.html
+46 silly gunzTarPerm extractEntry coverage/lcov-report/lib/bindable/inheritable.js.html
+47 silly gunzTarPerm extractEntry coverage/lcov-report/lib/index.html
+48 silly gunzTarPerm extractEntry coverage/lcov-report/lib/index.js.html
+49 silly gunzTarPerm extractEntry coverage/lcov-report/lib/plugins/decor/events.js.html
+50 silly gunzTarPerm extractEntry coverage/lcov-report/lib/plugins/decor/index.html
+51 silly gunzTarPerm extractEntry coverage/lcov-report/lib/plugins/decor/index.js.html
+52 silly gunzTarPerm extractEntry coverage/lcov-report/lib/plugins/decor/sections.js.html
+53 silly gunzTarPerm extractEntry coverage/lcov-report/lib/plugins/defaultComponents.js.html
+54 silly gunzTarPerm extractEntry coverage/lcov-report/lib/plugins/index.html
+55 silly gunzTarPerm extractEntry coverage/lcov-report/lib/utils/idGenerator.js.html
+56 silly gunzTarPerm extractEntry coverage/lcov-report/lib/utils/index.html
+57 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/base/index.html
+58 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/base/index.js.html
+59 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/index.html
+60 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/index.js.html
+61 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/list/index.html
+62 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/list/index.js.html
+63 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/states/index.html
+64 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/states/index.js.html
+65 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/states/state.js.html
+66 silly gunzTarPerm extractEntry coverage/lcov-report/prettify.css
+67 silly gunzTarPerm extractEntry coverage/lcov.info
+68 silly gunzTarPerm extractEntry .travis.yml
+69 silly gunzTarPerm extractEntry lib/application.js
+70 silly gunzTarPerm extractEntry lib/index.js
+71 silly gunzTarPerm extractEntry lib/bindable/inheritable.js
+72 silly gunzTarPerm extractEntry lib/plugins/defaultComponents.js
+73 silly gunzTarPerm extractEntry lib/plugins/decor/events.js
+74 silly gunzTarPerm extractEntry lib/plugins/decor/index.js
+75 silly gunzTarPerm extractEntry lib/plugins/decor/sections.js
+76 silly gunzTarPerm extractEntry lib/utils/idGenerator.js
+77 silly gunzTarPerm extractEntry lib/views/index.js
+78 silly gunzTarPerm extractEntry lib/views/base/index.js
+79 silly gunzTarPerm extractEntry lib/views/list/index.js
+80 silly gunzTarPerm extractEntry lib/views/states/index.js
+81 silly gunzTarPerm extractEntry lib/views/states/state.js
+82 silly gunzTarPerm extractEntry makefile
+83 silly gunzTarPerm extractEntry test/components/list-test.js
+84 silly gunzTarPerm extractEntry test/components/states-test.js
+85 silly gunzTarPerm extractEntry test/core/README.md
+86 silly gunzTarPerm extractEntry test/core/application-test.js
+87 silly gunzTarPerm extractEntry test/core/basic-view-test.js
+88 silly gunzTarPerm extractEntry test/core/inherit-test.js
+89 silly gunzTarPerm extractEntry test/core/parent-child-test.js
+90 silly gunzTarPerm extractEntry test/decorators/events-test.js
+91 silly gunzTarPerm extractEntry test/decorators/sections-test.js
+92 silly gunzTarPerm extractEntry test/helpers/init-test.js
+93 silly gunzTarPerm extractEntry test/helpers/jquery.js
+94 silly gunzTarPerm extractEntry test/helpers/doc.html
+95 silly gunzTarPerm extractEntry test/paperclip/README.md
+96 silly gunzTarPerm extractEntry test/paperclip/basic-test.js
+97 silly gunzTarPerm extractEntry test/paperclip/conditional-sections-test.js
+98 silly gunzTarPerm extractEntry src/application.coffee
+99 silly gunzTarPerm extractEntry src/bindable/inheritable.coffee
+100 silly gunzTarPerm extractEntry src/index.coffee
+101 silly gunzTarPerm extractEntry src/plugins/decor/events.coffee
+102 silly gunzTarPerm extractEntry src/plugins/decor/index.coffee
+103 silly gunzTarPerm extractEntry src/plugins/decor/sections.coffee
+104 silly gunzTarPerm extractEntry src/plugins/defaultComponents.coffee
+105 silly gunzTarPerm extractEntry src/utils/idGenerator.coffee
+106 silly gunzTarPerm extractEntry src/views/base/index.coffee
+107 silly gunzTarPerm extractEntry src/views/index.coffee
+108 silly gunzTarPerm extractEntry src/views/list/index.coffee
+109 silly gunzTarPerm extractEntry src/views/states/index.coffee
+110 silly gunzTarPerm extractEntry src/views/states/state.coffee
+111 silly gunzTarPerm extractEntry brainstorm/docs/README.md
+112 silly gunzTarPerm extractEntry brainstorm/testing/pseudo.js
+113 silly gunzTarPerm extractEntry docs/best-practices.md
+114 silly gunzTarPerm extractEntry docs/site-brainstorm.md
+115 silly lockFile b62c5ee7-8595-0-31075831735506654-package tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/package
+116 silly lockFile b62c5ee7-8595-0-31075831735506654-package tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/package
+117 silly lockFile 1e00e9e8-8595-0-31075831735506654-tmp-tgz tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/tmp.tgz
+118 silly lockFile 1e00e9e8-8595-0-31075831735506654-tmp-tgz tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/tmp.tgz
+119 verbose tar pack [ '/Users/craig/.npm/mojojs/0.7.19/package.tgz',
+119 verbose tar pack   '/var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/package' ]
+120 verbose tarball /Users/craig/.npm/mojojs/0.7.19/package.tgz
+121 verbose folder /var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/package
+122 silly lockFile b62c5ee7-8595-0-31075831735506654-package tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/package
+123 verbose lock tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/package /Users/craig/.npm/b62c5ee7-8595-0-31075831735506654-package.lock
+124 silly lockFile f06c6f11-ig-npm-mojojs-0-7-19-package-tgz tar:///Users/craig/.npm/mojojs/0.7.19/package.tgz
+125 verbose lock tar:///Users/craig/.npm/mojojs/0.7.19/package.tgz /Users/craig/.npm/f06c6f11-ig-npm-mojojs-0-7-19-package-tgz.lock
+126 silly lockFile b62c5ee7-8595-0-31075831735506654-package tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/package
+127 silly lockFile b62c5ee7-8595-0-31075831735506654-package tar:///var/folders/33/qyt5ls6j7bs37v5c49lfx6km0000gq/T/npm-3099-_5Zv6n-e/1386288908595-0.31075831735506654/package
+128 silly lockFile f06c6f11-ig-npm-mojojs-0-7-19-package-tgz tar:///Users/craig/.npm/mojojs/0.7.19/package.tgz
+129 silly lockFile f06c6f11-ig-npm-mojojs-0-7-19-package-tgz tar:///Users/craig/.npm/mojojs/0.7.19/package.tgz
+130 silly lockFile 25f013f1--craig-npm-mojojs-0-7-19-package /Users/craig/.npm/mojojs/0.7.19/package
+131 verbose lock /Users/craig/.npm/mojojs/0.7.19/package /Users/craig/.npm/25f013f1--craig-npm-mojojs-0-7-19-package.lock
+132 silly lockFile 25f013f1--craig-npm-mojojs-0-7-19-package /Users/craig/.npm/mojojs/0.7.19/package
+133 silly lockFile 25f013f1--craig-npm-mojojs-0-7-19-package /Users/craig/.npm/mojojs/0.7.19/package
+134 verbose tar unpack /Users/craig/.npm/mojojs/0.7.19/package.tgz
+135 silly lockFile 2fc3ff52--craig-npm-mojojs-0-7-19-package tar:///Users/craig/.npm/mojojs/0.7.19/package
+136 verbose lock tar:///Users/craig/.npm/mojojs/0.7.19/package /Users/craig/.npm/2fc3ff52--craig-npm-mojojs-0-7-19-package.lock
+137 silly lockFile f06c6f11-ig-npm-mojojs-0-7-19-package-tgz tar:///Users/craig/.npm/mojojs/0.7.19/package.tgz
+138 verbose lock tar:///Users/craig/.npm/mojojs/0.7.19/package.tgz /Users/craig/.npm/f06c6f11-ig-npm-mojojs-0-7-19-package-tgz.lock
+139 silly gunzTarPerm modes [ '755', '644' ]
+140 silly gunzTarPerm extractEntry package.json
+141 silly gunzTarPerm extractEntry .npmignore
+142 silly gunzTarPerm extractEntry README.md
+143 silly gunzTarPerm extractEntry LICENSE
+144 silly gunzTarPerm extractEntry mesh.js
+145 silly gunzTarPerm extractEntry build/mojo.js
+146 silly gunzTarPerm extractEntry build/mojo1.js
+147 silly gunzTarPerm extractEntry build/mojo2.js
+148 silly gunzTarPerm extractEntry build/mojo3.js
+149 silly gunzTarPerm extractEntry build/mojo4.js
+150 silly gunzTarPerm extractEntry build/mojo5.js
+151 silly gunzTarPerm extractEntry build/mojo6.js
+152 silly gunzTarPerm extractEntry build/mojo7.js
+153 silly gunzTarPerm extractEntry coverage/coverage.json
+154 silly gunzTarPerm extractEntry coverage/lcov-report/prettify.js
+155 silly gunzTarPerm extractEntry coverage/lcov-report/index.html
+156 silly gunzTarPerm extractEntry coverage/lcov-report/lib/application.js.html
+157 silly gunzTarPerm extractEntry coverage/lcov-report/lib/bindable/index.html
+158 silly gunzTarPerm extractEntry coverage/lcov-report/lib/bindable/inheritable.js.html
+159 silly gunzTarPerm extractEntry coverage/lcov-report/lib/index.html
+160 silly gunzTarPerm extractEntry coverage/lcov-report/lib/index.js.html
+161 silly gunzTarPerm extractEntry coverage/lcov-report/lib/plugins/decor/events.js.html
+162 silly gunzTarPerm extractEntry coverage/lcov-report/lib/plugins/decor/index.html
+163 silly gunzTarPerm extractEntry coverage/lcov-report/lib/plugins/decor/index.js.html
+164 silly gunzTarPerm extractEntry coverage/lcov-report/lib/plugins/decor/sections.js.html
+165 silly gunzTarPerm extractEntry coverage/lcov-report/lib/plugins/defaultComponents.js.html
+166 silly gunzTarPerm extractEntry coverage/lcov-report/lib/plugins/index.html
+167 silly gunzTarPerm extractEntry coverage/lcov-report/lib/utils/idGenerator.js.html
+168 silly gunzTarPerm extractEntry coverage/lcov-report/lib/utils/index.html
+169 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/base/index.html
+170 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/base/index.js.html
+171 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/index.html
+172 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/index.js.html
+173 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/list/index.html
+174 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/list/index.js.html
+175 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/states/index.html
+176 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/states/index.js.html
+177 silly gunzTarPerm extractEntry coverage/lcov-report/lib/views/states/state.js.html
+178 silly gunzTarPerm extractEntry coverage/lcov-report/prettify.css
+179 silly gunzTarPerm extractEntry coverage/lcov.info
+180 silly gunzTarPerm extractEntry .travis.yml
+181 silly gunzTarPerm extractEntry lib/application.js
+182 silly gunzTarPerm extractEntry lib/index.js
+183 silly gunzTarPerm extractEntry lib/bindable/inheritable.js
+184 silly gunzTarPerm extractEntry lib/plugins/defaultComponents.js
+185 silly gunzTarPerm extractEntry lib/plugins/decor/events.js
+186 silly gunzTarPerm extractEntry lib/plugins/decor/index.js
+187 silly gunzTarPerm extractEntry lib/plugins/decor/sections.js
+188 silly gunzTarPerm extractEntry lib/utils/idGenerator.js
+189 silly gunzTarPerm extractEntry lib/views/index.js
+190 silly gunzTarPerm extractEntry lib/views/base/index.js
+191 silly gunzTarPerm extractEntry lib/views/list/index.js
+192 silly gunzTarPerm extractEntry lib/views/states/index.js
+193 silly gunzTarPerm extractEntry lib/views/states/state.js
+194 silly gunzTarPerm extractEntry makefile
+195 silly gunzTarPerm extractEntry test/components/list-test.js
+196 silly gunzTarPerm extractEntry test/components/states-test.js
+197 silly gunzTarPerm extractEntry test/core/README.md
+198 silly gunzTarPerm extractEntry test/core/application-test.js
+199 silly gunzTarPerm extractEntry test/core/basic-view-test.js
+200 silly gunzTarPerm extractEntry test/core/inherit-test.js
+201 silly gunzTarPerm extractEntry test/core/parent-child-test.js
+202 silly gunzTarPerm extractEntry test/decorators/events-test.js
+203 silly gunzTarPerm extractEntry test/decorators/sections-test.js
+204 silly gunzTarPerm extractEntry test/helpers/init-test.js
+205 silly gunzTarPerm extractEntry test/helpers/jquery.js
+206 silly gunzTarPerm extractEntry test/helpers/doc.html
+207 silly gunzTarPerm extractEntry test/paperclip/README.md
+208 silly gunzTarPerm extractEntry test/paperclip/basic-test.js
+209 silly gunzTarPerm extractEntry test/paperclip/conditional-sections-test.js
+210 silly gunzTarPerm extractEntry brainstorm/docs/README.md
+211 silly gunzTarPerm extractEntry brainstorm/testing/pseudo.js
+212 silly gunzTarPerm extractEntry src/application.coffee
+213 silly gunzTarPerm extractEntry src/bindable/inheritable.coffee
+214 silly gunzTarPerm extractEntry src/index.coffee
+215 silly gunzTarPerm extractEntry src/plugins/decor/events.coffee
+216 silly gunzTarPerm extractEntry src/plugins/decor/index.coffee
+217 silly gunzTarPerm extractEntry src/plugins/decor/sections.coffee
+218 silly gunzTarPerm extractEntry src/plugins/defaultComponents.coffee
+219 silly gunzTarPerm extractEntry src/utils/idGenerator.coffee
+220 silly gunzTarPerm extractEntry src/views/base/index.coffee
+221 silly gunzTarPerm extractEntry src/views/index.coffee
+222 silly gunzTarPerm extractEntry src/views/list/index.coffee
+223 silly gunzTarPerm extractEntry src/views/states/index.coffee
+224 silly gunzTarPerm extractEntry src/views/states/state.coffee
+225 silly gunzTarPerm extractEntry docs/best-practices.md
+226 silly gunzTarPerm extractEntry docs/site-brainstorm.md
+227 silly lockFile 2fc3ff52--craig-npm-mojojs-0-7-19-package tar:///Users/craig/.npm/mojojs/0.7.19/package
+228 silly lockFile 2fc3ff52--craig-npm-mojojs-0-7-19-package tar:///Users/craig/.npm/mojojs/0.7.19/package
+229 silly lockFile f06c6f11-ig-npm-mojojs-0-7-19-package-tgz tar:///Users/craig/.npm/mojojs/0.7.19/package.tgz
+230 silly lockFile f06c6f11-ig-npm-mojojs-0-7-19-package-tgz tar:///Users/craig/.npm/mojojs/0.7.19/package.tgz
+231 verbose chmod /Users/craig/.npm/mojojs/0.7.19/package.tgz 644
+232 verbose chown /Users/craig/.npm/mojojs/0.7.19/package.tgz [ 503, 20 ]
+233 silly lockFile 3a52ce78- .
+234 silly lockFile 3a52ce78- .
+235 silly publish { name: 'mojojs',
+235 silly publish   version: '0.7.19',
+235 silly publish   description: 'modular mv+ JavaScript framework for node, and the web',
+235 silly publish   main: './lib/index.js',
+235 silly publish   jam:
+235 silly publish    { baseUrl: 'public',
+235 silly publish      packageDir: 'public/vendor',
+235 silly publish      dependencies:
+235 silly publish       { jquery: '1.7.x',
+235 silly publish         'jquery-transit': '*',
+235 silly publish         underscore: '*',
+235 silly publish         events: '0.0.x',
+235 silly publish         async: '0.2.x' },
+235 silly publish      config:
+235 silly publish       { repository: 'http://npm.classdojo.com:5984/jam',
+235 silly publish         paths: [Object] } },
+235 silly publish   scripts: { test: 'make testt' },
+235 silly publish   keywords: [ 'mojo-plugin' ],
+235 silly publish   repository: { url: 'git://github.com/classdojo/mojo.js.git' },
+235 silly publish   dependencies:
+235 silly publish    { dref: '0.0.x',
+235 silly publish      comerr: '0.0.x',
+235 silly publish      'type-component': '0.0.x',
+235 silly publish      bindable: '0.4.x',
+235 silly publish      janitorjs: '0.0.x',
+235 silly publish      structr: '0.2.x',
+235 silly publish      hoist: '0.0.x',
+235 silly publish      flatstack: '0.0.x',
+235 silly publish      toarray: '0.0.1',
+235 silly publish      factories: '0.0.x',
+235 silly publish      loaf: '0.0.5',
+235 silly publish      nofactor: '0.0.x',
+235 silly publish      'bindable-decor': '0.1.x',
+235 silly publish      'bindable-decor-bindings': '0.0.x',
+235 silly publish      underscore: '~1.4.4',
+235 silly publish      'mojo-paperclip': '0.1.x',
+235 silly publish      protoclass: '0.0.5' },
+235 silly publish   devDependencies:
+235 silly publish    { 'coffee-script': '~1.6.3',
+235 silly publish      amdify: '0.0.21',
+235 silly publish      mesh: '~0.2.4',
+235 silly publish      colors: '~0.6.0-1',
+235 silly publish      paperclip: '0.3.x',
+235 silly publish      async: '~0.2.9',
+235 silly publish      mkdirp: '~0.3.5',
+235 silly publish      optimist: '~0.6.0',
+235 silly publish      request: '~2.21.0',
+235 silly publish      less: '~1.4.0',
+235 silly publish      'node-osx-notifier': '~0.1.0',
+235 silly publish      'expect.js': '~0.2.0',
+235 silly publish      jsdom: '~0.8.9',
+235 silly publish      mocha: '~1.15.1',
+235 silly publish      istanbul: '~0.1.46',
+235 silly publish      coveralls: '~2.5.0' },
+235 silly publish   readme: '<p align="center">\n  <a href="http://mojojs.com">\n    <img src="https://s3.amazonaws.com/uploads.hipchat.com/12139/74559/TgjXBU1QpgjVwc0/mojo-js.png">\n  </a>\n</p>\n\n[![Alt ci](https://travis-ci.org/classdojo/mojo.js.png)](https://travis-ci.org/classdojo/mojo.js)\n\nMojo.js is a JavaScript framework for building Single Page Applications, or static websites in [Node.js](http://nodejs.org/). It\'s inspired by [Angular.js](http://angularjs.org/), [Derby.js](http://derbyjs.com/), [Knockout.js](http://knockoutjs.com/), [Meteor.js](http://www.meteor.com/), [Ember.js](http://emberjs.com/), [jQuery](http://jquery.com/), [Backbone.js](http://backbonejs.org/), and many other JavaScript, and non-JavaScript frameworks. Much of the design was inspired by Backbone.js, and Node.js. The core is small, while third-party modules allow you to customize Mojo depending on your requirements. \nMojo was built initially to phase out old code, and itself - hence the modularity. The philosophy behind Mojo is to allow you to build on top of your old code base, and slowly strangle out your old application until you have a new, highly maintainable application. \n\n### Features\n\n- Supported in all major browsers: `IE 8+`, `Firefox`, `Chrome`, `Safari`, and `Opera`.\n- Supported in Node.js. Run the same code on the front-end & backend. See the [mojo site source code](https://github.com/classdojo/mojojs.com) for an example. \n- Flexible bi-directional data-bindings. \n- Plays nicely with other frameworks such as Backbone.js, Spine.js, and jQuery. Easily build new application code on top of old code.\n- No magic. No assumptions. Mojo.js was built around explicitness and modularity.\n- 100% JavaScript - [paperclip.js](https://github.com/classdojo/paperclip.js) templates are also translated to JavaScript.\n- Small core. Modules make up the rest. \n  - Decorators are core - they control everything from computed properties, creating children of a view, and even setting up templates. There are a few built-in decorators (for now - we\'ll take them out later): `drag & drop`, `paperclip.js` (template), `bindings` (computed properties), `transition`, and `events` (Backbone style). You can also [create your own](#custom-decorators) if you want to extend the core, but there isn\'t a single decorator that\'s required for Mojo.js to function properly. \n  - The framework itself is broken into multiple repositories - this makes it easier to encapsulate, re-use bits of functionality.\n\n### Core Libraries\n\n- [bindable.js](https://github.com/classdojo/bindable.js) - data-binding layer.\n- [paperclip.js](https://github.com/classdojo/paperclip.js) - template engine.\n- [loaf.js](https://github.com/classdojo/loaf.js) - controls sections, or virtual document fragments.\n- [flatstack](https://github.com/classdojo/flatstack.js) - queue for rendering / removing views.\n\n\n### Examples:\n\n- [Hello World](http://jsfiddle.net/BZA8K/16/)\n- [Hello Input](http://jsfiddle.net/BZA8K/17/)\n- [Todo List](http://jsfiddle.net/BZA8K/18/)\n- [Dynamic Templates](http://jsfiddle.net/BZA8K/20/)\n- [States Component](http://jsfiddle.net/BZA8K/28/)\n- [Custom Components](http://jsfiddle.net/BZA8K/24/)\n- [Transitions](http://jsfiddle.net/BZA8K/22/)\n- [dots benchmark](http://jsfiddle.net/BZA8K/35/)\n\n### TODO:\n\n- route docs\n- API docs\n- starter kit\n- testing docs\n- style guidlines\n\n### Installation\n\nYou can get started with Mojo.js by installing the [starter kit](http://github.com/classdojo/mojo-starter). In terminal run:\n\n```bash\ngit clone git@github.com:classdojo/mojo-starter.git && cd mojo-starter && npm install;\n```\n\n## View Usage\n\nViews extend [bindable](http://github.com/classdojo/bindable.js) objects. The best way to create a view is to first create a sub-class, then instantiate it. For example:\n\n```javascript\nvar SubView = mojo.View.extend({\n  name: "craig"\n});\nvar view = new SubView();\nconsole.log(view.get("name")); //craig\n```\n\n#### view.attach(selector)\n\nRenders, and adds the view to the specific DOM element. [Here\'s an example](http://jsfiddle.net/BZA8K/12/):\n\n```javascript\nvar view = new mojo.View({\n  paper: paperclip.compile("hello!")\n});\nview.attach($("#application"));\n```\n\n#### view.render(callback)\n\nRenders the view. [For example](http://jsfiddle.net/BZA8K/14/):\n\n```javascript\nvar view = new mojo.View({\n  paper: paperclip.compile("hello!")\n});\nview.render(function() {\n  alert(view.section.toString());\n});\n```\n\n#### view.section\n\nThe [loaf section](https://github.com/classdojo/loaf.js). This is where everything is rendered to.\n\n#### view.remove(callback)\n\nRemoves the view from the DOM.\n\n#### view.callstack\n\nthe queue for rendering / removing views. This is particularly useful if you need to perform an action before a view is completely rendered, or removed. [Transitions](https://github.com/classdojo/mojo.js/blob/master/src/views/base/decor/transition.coffee) are a good example.\n\n#### view.emit(event [, data...])\n\nemits an event\n\n#### view.on(event, listener)\n\nlistener for an event. For example:\n\n```javascript\nvar view = new mojo.View();\nview.on("hello", function() {\n  \n});\nview.emit("hello"); //trigger listener\n```\n\n#### view.bubble(event [, data...])\n\nbubbles an event up to the root view.\n\n#### view.parent\n\nreference to the parent view\n\n#### events\n\n- `render` - emitted when `view.render()` is called.\n- `rendered` - emitted after the view has been rendered.\n- `remove` - emitted when `view.remove()` is called.\n- `removed` - emitted after the view has been removed.\n- `dispose` - emitted when the view is being disposed.\n\n\n#### protected methods\n\nMojo.js has a few methods you can override if you need to something durring render / remove. \n\n```javascript\nvar view = new mojo.View({\n  _onRender: function() {\n    //called on render\n  },\n  _onRendered: function() {\n    //called on rendered\n  },\n  _onRemove: function() {\n    //called on remove\n  },\n  _onRemoved: function() {\n    //called on removed\n  }\n});\n```\n\n\n## View Decorators\n\nDecorators are extensions to the Mojo.js framework - they help you describe how your view should function, but aren\'t necessary for Mojo.js to work. Therefore, you can easily mix decorators, or even [create your own](#custom-decorators). This design was picked to allow you, the coder to pick whatever style suites you best. There are however a few built-in decorators that might help you get started. \n\n\n### Templates\n\nBy default, Mojo.js uses [paperclip.js](https://github.com/classdojo/paperclip.js) for the template engine. [Here\'s a basic example](http://jsfiddle.net/BZA8K/5/):\n\n```javascript\nvar view = new mojo.View({\n  paper: paperclip.compile("hello world!")\n});\nview.attach($("#application"));\n```\n\nYou can also dynamically change the template. Say for instance you want to change the template depending on a model type, [here\'s what you can do](http://jsfiddle.net/BZA8K/20/):\n\n```javascript\n\nvar templates = {\n    notice  : paperclip.compile("notice"),\n    default : paperclip.compile("notice"),\n    warning : paperclip.compile("warning"),\n    error   : paperclip.compile("error")\n};\n\nvar NotificationView = mojo.View.extend({\n    "bindings": {\n        "model.type": {\n            "paper": {\n                "map": function(type) {\n                    return templates[type] || templates.default;\n                 }\n             }\n         }\n     }                                  \n});\n\nvar alertView = new NotificationView({ model: new bindable.Object({ type: "alert" }) });\nvar photoView = new NotificationView({ model: new bindable.Object({ type: "photo" }) });\n```\n\nYou can add your own template - just create a [custom decorator](#custom-decorators).\n\n### Bindings\n\nThe bindings decorator is similar to Ember\'s computed properties feature. [For example](http://jsfiddle.net/BZA8K/21/):\n\n```javascript\nvar TestView = mojo.View.extend({\n  paper: paperclip.compile("hello-world"),\n  bindings: {\n      \n      //join first & last name\n      "firstName, lastName": {\n          "fullName": {\n              "map": function(firstName, lastName) {\n                  return [firstName, lastName].join(" ");\n              }\n          }\n      },\n      \n      //uppercase & lowercase fullName\n      "fullName": {\n          "fullNameUpper": {\n              "map": function(fullName) {\n                  return String(fullName).toUpperCase();\n              }\n          },\n          "fullNameLower": {\n              "map": function(fullName) {\n                  return String(fullName).toLowerCase();\n              }\n          }\n      },\n      \n      //wait for fullNameUpper to change\n      "fullNameUpper": function(fullNameUpper) {\n          console.log("CHANGE!");\n      }\n  }\n});\n\n//init view somewhere\n```\n\n### Transitions\n\nPretty self explainatory - transitions allow you to ease a view into a particular state, whether entering, or exiting. Note that transitions require [jquery.transit](http://ricostacruz.com/jquery.transit/). [Here\'s an example](http://jsfiddle.net/BZA8K/22/): \n\n```javascript\nvar HelloView = mojo.View.extend({\n\n    paper: paperclip.compile("notice"),\n\n    transition: {\n\n        enter: {\n            from: { opacity: 0, top: "-10px", position: "relative" },\n            to: { opacity: 1, top: "0px" }\n        },\n\n        exit: {\n            to: { opacity: 0, top: "10px" }\n        }\n    }\n});\n\nvar view = new HelloView();\nview.attach($("#application"));\n```\n\n\n### Sections\n\n\nSections are what make up your application - they allow you to break down your app into smaller, more modular pieces. [Here\'s a basic example](http://jsfiddle.net/BZA8K/23/): \n\n```javascript\n//views/main/header/logo.js\nvar LogoView = mojo.View.extend({\n    paper: paperclip.compile("header-logo")\n});\n\n//views/main/header/index.js\nvar HeaderView = mojo.View.extend({\n    paper: paperclip.compile("header"),\n    sections: {\n        logo: LogoView\n    }\n});\n\n//views/main/content/index.js\nvar ContentView = mojo.View.extend({\n    paper: paperclip.compile("content")\n});\n\n//views/main/index.js\nvar MainView = mojo.View.extend({\n    paper: paperclip.compile("main"),\n    sections: {\n        header: HeaderView,\n        content: ContentView\n    }\n});\n\nvar mainView = new MainView();\nmainView.attach($("#application"));\n```\n\nMojo comes with a few built-in components: [lists](#list-component), and [states](#states-component).\n\n### List Component\n\nList of views. [Here\'s an example](http://jsfiddle.net/BZA8K/18/):\n\n```javascript\nvar TodosView = mojo.View.extend({\n  todos: todoCollection,\n  sections: {\n    items: {\n      type: "list",\n      source: "todos",\n      modelViewClass: TodoView\n    }\n  }\n})\n```\n\nNote that each model item in the source collection is assigned as `model` for each list item.\n\n#### list.filter(fn)\n\nFilters the list. For example:\n\n```javascript\nvar TodosView = mojo.View.extend({\n  todos: todoCollection,\n  sections: {\n    items: {\n      type: "list",\n      source: "todos",\n      modelViewClass: TodoView,\n\n      //filter items that are NOT done.\n      filter: function(model) {\n        return !model.get("done");\n      }\n    }\n  }\n});\n```\n\n#### list.sort(fn)\n\nSorts the list. For example:\n\n```javascript\nvar TodosView = mojo.View.extend({\n  todos: todoCollection,\n  sections: {\n    items: {\n      type: "list",\n      source: "todos",\n      modelViewClass: TodoView,\n      sort: function(a, b) {\n        return a.get("priority") > b.get("priority") ? -1 : 1;\n      }\n    }\n  }\n});\n```\n\n### States Component\n\nThe states component allow you to toggle between multiple views. This is useful if you want to introduce something like routes into your application. [Here\'s an example](http://jsfiddle.net/BZA8K/27/):\n\n```javascript\nvar MainView = mojo.View.extend({\n  sections: {\n    pages: {\n      type: "states", \n      index: 0,\n      views: [\n        { class: ContactView , name: "contact" },\n        { class: HomeView    , name: "home"    }\n      ]\n    }\n  }\n})\n```\n\n### states.index\n\nthe current index of the state. [For example](http://jsfiddle.net/BZA8K/29/): \n\n```javascript\nvar MainView = mojo.View.extend({\n  sections: {\n    pages: {\n      type: "states", \n      index: 0,\n      views: [\n        { class: ContactView , name: "contact" },\n        { class: HomeView    , name: "home"    }\n      ]\n    }\n  }\n});\n\nvar view = new MainView();\nconsole.log(view.get("sections.pages.index")); //0\n```\n\n### Custom Components\n\nMojo.js allows you to register your own components. [Here\'s a basic example](http://jsfiddle.net/BZA8K/24/):\n\n```javascript\n//views/main/header/logo.js\nvar HelloView = mojo.View.extend({\n    paper: paperclip.compile("hello")\n});\n\nmojo.models.set("components.hello", HelloView);\n\nvar MainView = mojo.View.extend({\n    paper: paperclip.compile("main"),\n    sections: {\n        hello1: {\n            type: "hello",\n            message: "craig"\n        },\n        hello2: {\n            type: "hello",\n            message: "john"\n        }\n    }\n});\n\nvar mainView = new MainView();\nmainView.attach($("#application"));\n```\n\nNote that options provided for each section are automatically set to the component being created. The above equivalent might be:\n\n```javascript\nvar view = new HelloView({\n  message: "john"\n});\n```\n\n### Custom Decorators\n\nThere are some cases you might want to add your own decorator. Say for instance you want to add your own custom template engine. [No problem](http://jsfiddle.net/BZA8K/30/):\n\ndecorator:\n\n```javascript\nvar handlebarsDecorator = {\n\n    //returns the handlebar options. This decorator is ignore if the options are \n    //undefined\n    getOptions: function(view) {\n        return view.handlebars;\n    },\n\n    //decorates the view with the given options\n    decorate: function(view, sourceName) {\n\n        //compile the template\n        var template = Handlebars.compile($("script[data-template-name=\'" + sourceName + "\']").html());\n\n        //wait for the view to render, then add the elements\n        view.on("render", function() {\n\n            //temporary placeholder for the elements - use innerHTML to compile the template.\n            var div       = document.createElement("div");\n            div.innerHTML = template(view.context());\n\n            //append JUST the child nodes to the view section\n            view.section.append.apply(view.section, div.childNodes);\n        });\n    }\n}\n\nmojo.decorator(handlebarsDecorator);\n```\n\nusage: \n\n```javascript\nvar MainView = mojo.View.extend({\n    name       : "craig",\n    handlebars : "main"\n});\n```\n\n## models singleton\n\nAllows for models to be referenced anywhere in the application. [See the variable scope example]().\n\n## Property Scope\n\nChild views inherit properties from the parent view, just like variable scope in JavaScript. Therefore, you should always `define` properties you want to use within your views. [For example](http://jsfiddle.net/BZA8K/31/):\n\n```javascript\nvar user = new mojo.bindable.Object({\n    name: "john"\n});\n\nmojo.models.set("user", user);\n\nvar HeaderView = mojo.View.extend({\n    paper: paperclip.compile("header")\n});\n\nvar MainView = mojo.View.extend({\n    define: ["user"],\n    paper: paperclip.compile("main"),\n    bindings: {\n        "models.user": "user"\n    },\n    sections: {\n        header: HeaderView\n    }\n});\n\n\nvar view = new MainView();\nview.attach($("#application"));\n```\n\n[Checkout what happens](http://jsfiddle.net/BZA8K/32/) when we define `user` in HeaderView. Notice that `user` isn\'t inherited anymore, and remains `undefined`. \n\n\n\n\n\n\n\n\n\n\n',
+235 silly publish   readmeFilename: 'README.md',
+235 silly publish   bugs: { url: 'https://github.com/classdojo/mojo.js/issues' },
+235 silly publish   homepage: 'https://github.com/classdojo/mojo.js',
+235 silly publish   _id: 'mojojs@0.7.19',
+235 silly publish   dist: { shasum: '951461d9eb297df6fda4c6d4039a661f443590f9' },
+235 silly publish   _from: '.' }
+236 verbose url raw mojojs
+237 verbose url resolving [ 'https://registry.npmjs.org/', './mojojs' ]
+238 verbose url resolved https://registry.npmjs.org/mojojs
+239 info trying registry request attempt 1 at 16:15:10
+240 http PUT https://registry.npmjs.org/mojojs
+241 http 409 https://registry.npmjs.org/mojojs
+242 verbose url raw mojojs
+243 verbose url resolving [ 'https://registry.npmjs.org/', './mojojs' ]
+244 verbose url resolved https://registry.npmjs.org/mojojs
+245 info trying registry request attempt 1 at 16:15:11
+246 http GET https://registry.npmjs.org/mojojs
+247 http 200 https://registry.npmjs.org/mojojs
+248 error publish fail Cannot publish over existing version.
+248 error publish fail Update the 'version' field in package.json and try again.
+248 error publish fail
+248 error publish fail If the previous version was published in error, see:
+248 error publish fail     npm help unpublish
+248 error publish fail
+248 error publish fail To automatically increment version numbers, see:
+248 error publish fail     npm help version
+249 error System Darwin 13.0.0
+250 error command "node" "/usr/local/bin/npm" "publish"
+251 error cwd /Users/craig/Developer/jobs/classdojo/mojo.js
+252 error node -v v0.10.22
+253 error npm -v 1.3.14
+254 error code EPUBLISHCONFLICT
+255 verbose exit [ 1, true ]
