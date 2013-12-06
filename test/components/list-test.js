@@ -106,6 +106,8 @@ describe("components/list#", function () {
     expect(view.render().toString()).to.be("hello john hello craig ")
   });
 
+  // can resort a list if models change
+
 
   // it("can dynamically change the sort function on a list component", function () {
   //   // TODO
