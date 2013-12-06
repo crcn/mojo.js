@@ -1,5 +1,6 @@
 var expect = require("expect.js"),
-mojo       = require("../..");
+mojo       = require("../.."),
+paperclip  = require("paperclip");
 
 
 describe("decorators/sections#", function () {
@@ -9,7 +10,7 @@ describe("decorators/sections#", function () {
   app.registerViewClass("basic", mojo.View);
   app2.registerViewClass("basic", mojo.View);
 
-
+  
   it("can define a section with a class", function () {
 
     var ParentView = mojo.View.extend({
@@ -25,9 +26,6 @@ describe("decorators/sections#", function () {
     expect((c = p.get("sections.child")).constructor).to.be(mojo.View);
     
   });
-
-  /**
-   */
 
   it("can define a section when the type is a class", function () {
 
@@ -50,8 +48,6 @@ describe("decorators/sections#", function () {
     expect(p.get("sections.child").message).to.be("blah");
   });
 
-  /**
-   */
 
   it("can define a section when the type is a registered component", function () {
     var ParentView = mojo.View.extend({
@@ -70,8 +66,6 @@ describe("decorators/sections#", function () {
   });
 
 
-  /**
-   */
 
   it("throws an error if the type is not found", function (next) {
     
@@ -89,8 +83,6 @@ describe("decorators/sections#", function () {
     }
   });
 
-  /**
-   */
 
   it("throws an error if the options is an incorrect type", function (next) {
     
@@ -108,11 +100,6 @@ describe("decorators/sections#", function () {
     }
   });
 
-
-
-  /**
-   */
-
   it("allows for a section to be a view object", function () {
     var p = new mojo.View({}, app).decorate({
       sections: {
@@ -123,9 +110,6 @@ describe("decorators/sections#", function () {
     expect(p.get("sections.child").constructor).to.be(mojo.View);
   })
 
-
-  /**
-   */
 
   it("throws an error if the options is invalid", function (next) {
     try {
@@ -141,6 +125,27 @@ describe("decorators/sections#", function () {
       next();
     }
   });
+
+
+  it("can re-render a section", function () {
+    var view = new mojo.View({
+      paper: paperclip.compile(
+        "{{ html: sections.child }}"
+      )
+    }, app).decorate({
+      sections: {
+        child: {
+          type: mojo.View.extend({
+            paper: paperclip.compile("hi mojo")
+          })
+        }
+      }
+    }), child;
+
+    expect(view.render().toString()).to.be("hi mojo");
+    (child = view.get("sections.child")).remove();
+    child.render();
+  })
 
 
 }); 

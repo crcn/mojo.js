@@ -13,43 +13,50 @@ class ListView extends require("../base")
   ###
   ###
 
+  __isList: true
+
+  ###
+  ###
+
   define: ["filter", "sort", "map", "length", "modelViewFactory", "modelViewClass", "viewClass"] 
   
   ###
   ###
 
-  _init: () ->
+  initialize: () ->
     super()
     @_views = new bindable.Collection()
     @_initOptions()
     @_initModelMapper()
     @_initSourceBindings()
 
-    @_rmCount = 0
+  ###
+  ###
+
+  _render: () ->
+    super()
+    @_viewBinding?.dispose()
+    @_sourceBinding?.dispose()
+    @_viewBinding = @_views.bind({ insert: @_insertModelView, remove: @_removeModelView }).now()
+    @_sourceBinding = @bind("source").to(@_onSourceOptionChange).now()
 
   ###
   ###
 
   _initOptions: () ->
-    @_filter           = @get("filter")
-    @_sort             = @get("sort")
-    @_modelViewFactory = @get("modelViewFactory") # TODO
-    @_modelViewClass   = @get("modelViewClass") ? @get("viewClass")
-    @_map              = @get("map")
-
-    if @_modelViewFactory
-      @_modelViewFactory = factories.factory(@_modelViewFactory)
+    if @modelViewFactory
+      @_modelViewFactory = factories.factory.create(@modelViewFactory)
 
   ###
   ###
 
   _initModelMapper: () ->
-    modelViewFactory = @_modelViewFactory ? factories.class(@_modelViewClass)
+    modelViewFactory = @_modelViewFactory ? factories.class(@modelViewClass ? @viewClass)
 
     hoister = @_mapModel = hoist()
 
-    if @_map
-      hoister.map (model) => @_map model, @
+    if @map
+      hoister.map (model) => @map model, @
 
 
     hoister.
@@ -78,14 +85,11 @@ class ListView extends require("../base")
 
   _initSourceBindings: () ->
     @_views.bind("length").to(@, "length").now()
-    @_views.bind({ insert: @_insertModelView, remove: @_removeModelView }).now()
-    @bind("source").to(@_onSourceOptionChange).now()
 
   ###
   ###
 
   _onSourceOptionChange: (source) =>
-
 
     @_strSource = source
 
@@ -101,7 +105,15 @@ class ListView extends require("../base")
   ###
   ###
 
-  _onSourceChange: (@_source) =>
+  _onSourceChange: (_source) =>
+
+
+    if type(_source) is "array"
+      _source = new bindable.Collection _source
+
+
+    @_source = _source
+
 
     @_views.source []
     @_deferredSections = []
@@ -114,31 +126,19 @@ class ListView extends require("../base")
     @_sourceJanitor.add @_sourceBinding = binding = _source.bind()
 
     # filter provided?
-    if @_filter
+    if @filter
       @_sourceBinding.filter (model) =>
         @_sourceJanitor.add @_watchModelChanges model
-        @_filter model, @
+        @filter model, @
 
 
     binding.map(@_mapModel).to(@_views).now()
-    @_watchViewChanges()
 
   ###
   ###
 
   _watchModelChanges: (model) ->
     model.on "change", onChange = () => @_refilter [model]
-
-
-
-  _watchViewChanges: () ->
-    return if @_watchingViewChanges
-    return if not @_bind or not @_filter
-
-    @_watchingViewChanges = true
-
-    for property in @_bind then do (property) =>
-      @bind(property).to () => @_refilter @_source.source()
 
   ###
   ###
@@ -147,7 +147,7 @@ class ListView extends require("../base")
 
     for model in models
 
-      useModel      = !!@_filter(model, @)
+      useModel      = !!@filter(model, @)
       modelIndex    = @_views.indexOf({ _id: model.get("_id") })
       containsModel = !!~modelIndex
 
@@ -171,27 +171,8 @@ class ListView extends require("../base")
     @setChild index, modelView
     modelView.render()
 
-    if @_rendered
-      @_deferInsert modelView.section.toFragment()
-    else
-      @section.append modelView.section.toFragment()
-      @_resort()
-
-  ###
-  ###
-
-  _deferInsert: (section) ->  
-    @_deferredSections.push(section)
-    clearTimeout @_deferInsertTimeout
-    @_deferInsertTimeout = setTimeout @_insertDeferredSections, 0
-
-  ###
-  ###
-
-  _insertDeferredSections: () =>
-    @section.append @application.nodeFactory.createFragment @_deferredSections
+    @section.append modelView.section.toFragment()
     @_resort()
-    @_deferredSections = []
 
   ###
   ###
@@ -212,10 +193,10 @@ class ListView extends require("../base")
   ###
 
   _resort: () ->
-    return unless @_sort
+    return unless @sort
     frag = []
 
-    sorted = @_views.source().sort @_sort
+    sorted = @_views.source().sort @sort
     for view in sorted
       frag.push view.section.toFragment()
 

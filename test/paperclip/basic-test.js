@@ -21,7 +21,6 @@ describe("paperclip/basic#", function () {
       paper: paperclip.compile("Hello World")
     }, app);
 
-    expect(view.section).to.be(undefined);
     view.render();
     expect(view.section.toString()).to.be("Hello World");
     expect(view.section.toFragment().childNodes[2].nodeValue).to.be("Hello World");
@@ -108,9 +107,6 @@ describe("paperclip/basic#", function () {
 
     // might trigger paperclip template change - shouldn't happen
     view.set("name", "John");
-
-    // disposed - should contain nothing
-    expect(view.section).to.be(undefined);
   });
 
 

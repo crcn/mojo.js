@@ -59,7 +59,6 @@ describe("core/basic-view#", function () {
     var view = app.createView("basic");
     expect(view.models).to.be(app.models);
     expect(view.application).to.be(app);
-    expect(view.section).to.be(undefined);
     expect(view._id).not.to.be(undefined);
    });
 
@@ -70,6 +69,14 @@ describe("core/basic-view#", function () {
     var view = app.createView("basic");
     expect(view.context()).to.be(view);
   });
+
+  /**
+   */
+
+  it("can create a view with options", function () {
+    var view = app.createView("basic", { name: "blah" });
+    expect(view.get("name")).to.be("blah");
+  })
 
   /**
    */
@@ -94,9 +101,7 @@ describe("core/basic-view#", function () {
 
   it("can render a view", function () {
     var view = app.createView("basic");
-    expect(view.section).to.be(undefined);
     view.render();
-    expect(view.section).not.to.be(undefined);
     expect(view._fresh).to.be(false);
   })
 
@@ -107,7 +112,6 @@ describe("core/basic-view#", function () {
     var view = app.createView("basic");
     view.render();
     view.remove()
-    expect(view.section).to.be(undefined);
     expect(view._fresh).to.be(false);
   });
 
@@ -203,13 +207,13 @@ describe("core/basic-view#", function () {
     expect(emitted).to.be(undefined);
   });
 
-
   /**
    */
 
   it("can attach to a an element", function () {
     var view = new mojo.View({}, app), 
     appended = 0;
+    view.__decorators = undefined;
 
     view.attach({
       appendChild: function (frag) {
@@ -235,6 +239,5 @@ describe("core/basic-view#", function () {
     view.__decorators = undefined;
     view.render();
     view.dispose();
-
   })
 }); 

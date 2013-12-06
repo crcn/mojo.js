@@ -6,6 +6,7 @@ protoclass   = require "protoclass"
 Janitor      = require "janitorjs"
 
 
+
 ###
 ###
 
@@ -35,6 +36,7 @@ class DecorableView extends Inheritable
 
     # have reference back to this view controller - useful for templates
     @this = @
+    @__decorators = undefined
 
     # must have an ID
     # TODO - should not be familiar with models
@@ -43,12 +45,12 @@ class DecorableView extends Inheritable
     # make sure this view is resettable so that reset() doesn't throw an error
     @_fresh = true
 
-    # initialize - keeps sub-classes from calling constructor
-    @initialize()
-
     # another initialization method - used
     # particularly for object recycling
     @reset data
+
+    # initialize - keeps sub-classes from calling constructor
+    @initialize()
 
   ###
   ###
@@ -97,9 +99,9 @@ class DecorableView extends Inheritable
   render: () =>
 
     # cannot re-render
-    return @section if @section
+    return @section if @_rendered
+    @_rendered = true
 
-    @section = loaf @application.nodeFactory
 
     @_render @section
 
@@ -109,6 +111,7 @@ class DecorableView extends Inheritable
 
 
     unless @_decorated
+      @_decorated = true
       # add additional functionality to this view
       @application.decorators.decorate @
 
@@ -124,7 +127,6 @@ class DecorableView extends Inheritable
   _render: (section) ->
     # OVERRIDE ME
 
-
   ###
    removes the section
   ###
@@ -132,10 +134,10 @@ class DecorableView extends Inheritable
   remove: () => 
 
     # only emit remove if rendered
-    if @section
+    if @_rendered
+      @_rendered = false
       @emit "remove"
-      @section.dispose()
-      @section = undefined
+      @section.removeAll()
 
   ###
    returns a search for a particular element
@@ -176,6 +178,7 @@ class DecorableView extends Inheritable
 
   decorate: (options) ->
     @__decorators = undefined
+
     @application.decorators.decorate @, options
     @
 
@@ -194,9 +197,6 @@ class DecorableView extends Inheritable
     @_decorated = false
 
     super()
-
-
-
 
 
   ###
@@ -226,6 +226,7 @@ class DecorableView extends Inheritable
   ###
 
   _onApplication: (application) =>
+    @section = loaf application.nodeFactory
     @set "models", application.models
 
 

@@ -21,6 +21,7 @@ describe("core/inherit#", function () {
     expect(c.message).to.be("hello!");
   });
 
+
   /** 
    */
 
@@ -144,6 +145,26 @@ describe("core/inherit#", function () {
 
     c.get("testFn").call(c);
     c.get("testFn")();
+  });
+
+
+  /**
+   */
+
+  it("sub classes inherit defined props", function () {
+    var ParentView = mojo.View.extend({
+      define: ["abba"]
+    }),
+    SubView = ParentView.extend({
+      define: ["bbaa"]
+    });
+
+    var v = new SubView();
+    expect(v.define).to.contain("parent");
+    expect(v.define).to.contain("abba");
+    expect(v.define).to.contain("bbaa");
+    expect(v.define).to.contain("sections");
+    expect(v._defined).to.have.keys("parent", "abba", "bbaa", "sections");
   });
 
 }); 

@@ -8,13 +8,14 @@ class SectionsDecorator
 
   constructor: (@view, @sectionOptions) ->
     @init()
+    @view.sections.__decorated = true
 
   ###
   ###
 
   init: () ->
     for sectionName of @sectionOptions
-      @_addSection sectionName, @_fixOptions @sectionOptions[sectionName]
+      @_addSection sectionName, @_fixOptions @sectionOptions[sectionName], sectionName
 
   ###
   ###
@@ -31,7 +32,7 @@ class SectionsDecorator
   ###
   ###
 
-  _fixOptions: (options) -> 
+  _fixOptions: (options, sectionName) -> 
 
     # validate
     unless options
@@ -63,7 +64,11 @@ class SectionsDecorator
   ###
   
   @priority   : "display"
-  @getOptions : (view) -> view.sections
+  @getOptions : (view) -> 
+    if view.sections and not view.sections.__decorated 
+      return view.sections
+    else
+      return undefined
   @decorate   : (view, options) -> new SectionsDecorator view, options
 
 module.exports = SectionsDecorator
