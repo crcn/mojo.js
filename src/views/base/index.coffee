@@ -35,6 +35,8 @@ class DecorableView extends Inheritable
     # pass data to super - will get set to this view controller
     super()
 
+    @janitor = new Janitor()
+
     # have reference back to this view controller - useful for templates
     @this = @
     @__decorators = undefined
@@ -187,6 +189,8 @@ class DecorableView extends Inheritable
   dispose: () =>
 
     @remove()
+
+    @janitor.dispose()
 
     @_fresh = true
 
