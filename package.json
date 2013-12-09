@@ -46,7 +46,8 @@
     "bindable-decor-bindings": "0.0.x",
     "underscore": "~1.4.4",
     "mojo-paperclip": "0.1.x",
-    "protoclass": "0.0.5"
+    "protoclass": "0.0.x",
+    "subindable": "0.0.x"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",
