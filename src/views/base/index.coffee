@@ -1,16 +1,14 @@
 generateId   = require "../../utils/idGenerator"
 type         = require "type-component"
 loaf         = require "loaf"
-Inheritable  = require "../../bindable/inheritable"
+subindable   = require "subindable"
 protoclass   = require "protoclass"
 Janitor      = require "janitorjs"
 
-
-
 ###
 ###
 
-class DecorableView extends Inheritable
+class DecorableView extends subindable.Object
 
   ###
   ###
@@ -33,7 +31,7 @@ class DecorableView extends Inheritable
       throw new Error "data passed in view must be an object"
 
     # pass data to super - will get set to this view controller
-    super()
+    super @
 
     @janitor = new Janitor()
 
