@@ -5,7 +5,7 @@ all-watch:
 	coffee -o lib -cw src;
 
 clean:
-	rm -rf lib;
+	rm -rf coverage;
 
 testt:
 	./node_modules/.bin/_mocha ./test/**/*-test.js --ignore-leaks --timeout 100
