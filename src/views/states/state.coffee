@@ -24,7 +24,7 @@ class State extends bindable.Object
   ###
   ###
 
-  select: () ->
+  select: () =>
     @states.select @
 
   ###
