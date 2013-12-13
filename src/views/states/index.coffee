@@ -43,7 +43,6 @@ class StatesView extends require("../base")
 
     if @_rendered
       @_rebind()
-
   ###
   ###
 

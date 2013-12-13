@@ -62,6 +62,7 @@ class ListView extends require("../base")
 
     hoister.
     map((model) =>
+
       ops       = {}
       ops.model = model
 
@@ -131,6 +132,7 @@ class ListView extends require("../base")
       @_sourceBinding.filter (model) =>
         @_sourceJanitor.add @_watchModelChanges model
         @filter model, @
+
 
 
     binding.map(@_mapModel).to(@_views).now()
