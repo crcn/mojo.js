@@ -31,16 +31,17 @@ class State extends bindable.Object
   ###
   ###
 
-  hide: () ->
-    @_view.section.hide()
+  remove: () ->
     @_view.set "visible", false
+    @_view.dispose()
+    @_view = undefined
 
   ###
   ###
 
-  show: () ->
-    @_view.section.show()
+  render: () ->
     @_view.set "visible", true
+    @_view.render()
 
   ###
   ###

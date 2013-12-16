@@ -174,7 +174,6 @@ describe("components/states#", function () {
     expect(view.section.toString()).to.be("page: hello page 2");
   });
 
-    
 
 
 });

@@ -46,9 +46,10 @@ class StatesView extends require("../base")
   ###
   ###
 
-  _render: () ->
-    super()
+  render: () ->
+    sect = super()
     @_rebind()
+    sect
 
   ###
   ###
@@ -136,13 +137,13 @@ class StatesView extends require("../base")
     @_displayListener?.dispose()
 
     if oldState and oldState isnt @currentState 
-        oldState.hide()
+        oldState.remove()
+
+    state.render()
     
     if isNew
-      newStateView.render()
       @section.append newStateView.section
-    else
-      @currentState.show()
+
 
     @set "currentView", newStateView
 

@@ -23,6 +23,8 @@ class SectionsDecorator
 
   _addSection: (name, options) ->
 
+    return unless options
+
     view  = @_createSectionView(options)
 
     view.once "render", () -> 
