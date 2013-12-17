@@ -27,7 +27,7 @@ class DecorableView extends subindable.Object
   constructor: (data = {}, @application) ->
 
     # data must be an object - setting to this view
-    if type(data) isnt "object"
+    if typeof data isnt "object"
       throw new Error "data passed in view must be an object"
 
     # pass data to super - will get set to this view controller
