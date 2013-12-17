@@ -38,8 +38,10 @@ class ListView extends require("../base")
     super()
     @_viewBinding?.dispose()
     @_sourceBinding?.dispose()
+    @_sortBinding?.dispose()
     @_viewBinding = @_views.bind({ insert: @_insertModelView, remove: @_removeModelView }).now()
     @_sourceBinding = @bind("source").to(@_onSourceOptionChange).now()
+    @_sortBinding  = @bind("sort").to(@_onSortOptionChange).now()
 
   ###
   ###
@@ -103,7 +105,6 @@ class ListView extends require("../base")
     else
       @_onSourceChange source
 
-
   ###
   ###
 
@@ -136,6 +137,24 @@ class ListView extends require("../base")
 
 
     binding.map(@_mapModel).to(@_views).now()
+
+
+  ###
+  ###
+
+  _onSortOptionChange: (sort) =>
+    @_sortOptionBinding?.dispose()
+    if type(sort) is "string"
+      @_sortOptionBinding = @bind(sort).to(@_onSortChange).now()
+    else
+      @_onSortChange sort
+
+  ###
+  ###
+
+  _onSortChange: (sort) =>
+    @_sort = sort
+    @_resort()
 
   ###
   ###
@@ -196,10 +215,10 @@ class ListView extends require("../base")
   ###
 
   _resort: () ->
-    return unless @sort
+    return unless @_sort
     frag = []
 
-    sorted = @_views.source().sort @sort
+    sorted = @_views.source().sort @_sort
     for view in sorted
       frag.push view.section.toFragment()
 
