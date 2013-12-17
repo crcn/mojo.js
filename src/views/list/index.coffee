@@ -39,7 +39,9 @@ class ListView extends require("../base")
     @_viewBinding?.dispose()
     @_sourceBinding?.dispose()
     @_sortBinding?.dispose()
+    @_filterBinding?.dispose()
     @_viewBinding = @_views.bind({ insert: @_insertModelView, remove: @_removeModelView }).now()
+    @_filterBinding  = @bind("filter").to(@_onFilterOptionChange).now()
     @_sourceBinding = @bind("source").to(@_onSourceOptionChange).now()
     @_sortBinding  = @bind("sort").to(@_onSortOptionChange).now()
 
@@ -129,10 +131,10 @@ class ListView extends require("../base")
     @_sourceJanitor.add @_sourceBinding = binding = _source.bind()
 
     # filter provided?
-    if @filter
+    if @_filter
       @_sourceBinding.filter (model) =>
         @_sourceJanitor.add @_watchModelChanges model
-        @filter model, @
+        @_filter model, @
 
 
 
@@ -159,6 +161,26 @@ class ListView extends require("../base")
   ###
   ###
 
+  _onFilterOptionChange: (filter) =>
+    @_filterOptionBinding?.dispose()
+    if type(filter) is "string"
+      @_filterOptionBinding = @bind(filter).to(@_onFilterChange).now()
+    else
+      @_onFilterChange filter
+
+  ###
+  ###
+
+  _onFilterChange: (filter) =>
+    @_filter = filter
+
+    return unless @_source
+    @_refilter @_source.source()
+
+
+  ###
+  ###
+
   _watchModelChanges: (model) ->
     model.on "change", onChange = () => @_refilter [model]
 
@@ -169,7 +191,7 @@ class ListView extends require("../base")
 
     for model in models
 
-      useModel      = !!@filter(model, @)
+      useModel      = !!@_filter(model, @)
       modelIndex    = @_views.indexOf({ _id: model.get("_id") })
       containsModel = !!~modelIndex
 
@@ -183,7 +205,6 @@ class ListView extends require("../base")
         # fetch the object, and remove it manually
         @_views.splice(modelIndex, 1)
 
-    @_resort()
 
   ###
   ###
