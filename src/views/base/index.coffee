@@ -17,6 +17,11 @@ class DecorableView extends subindable.Object
 
   ###
   ###
+
+  _fresh: true
+
+  ###
+  ###
   
   define: ["sections", "states"]
 
@@ -24,16 +29,10 @@ class DecorableView extends subindable.Object
   ###
 
 
-  constructor: (data = {}, @application) ->
-
-    # data must be an object - setting to this view
-    if typeof data isnt "object"
-      throw new Error "data passed in view must be an object"
+  constructor: (data, @application) ->
 
     # pass data to super - will get set to this view controller
     super @
-
-    @janitor = new Janitor()
 
     # have reference back to this view controller - useful for templates
     @this = @
@@ -41,13 +40,24 @@ class DecorableView extends subindable.Object
 
     # must have an ID
     # TODO - should not be familiar with models
-    @_id  = data._id ? data.model?.get?("_id") ? data.model?._id ? generateId()
+    if data
+      @_id  = data._id ? data.model?.get?("_id") ? data.model?._id ? generateId()
+    else
+      @_id = generateId()
+    
 
-    # make sure this view is resettable so that reset() doesn't throw an error
-    @_fresh = true
 
     # initialize - keeps sub-classes from calling constructor
     @initialize data
+
+  ###
+  ###
+
+  disposable: (disposable) ->
+    unless @_janitor
+      @_janitor = new Janitor()
+    @_janitor.add(disposable)
+
 
   ###
   ###
@@ -134,7 +144,8 @@ class DecorableView extends subindable.Object
     if @_rendered
       @_rendered = false
       @emit "remove"
-      @section.removeAll()
+      if not @parent or @parent._rendered
+        @section.removeAll()
 
   ###
    returns a search for a particular element
@@ -188,7 +199,7 @@ class DecorableView extends subindable.Object
 
     @remove()
 
-    @janitor.dispose()
+    @_janitor?.dispose()
 
     @_fresh = true
 
