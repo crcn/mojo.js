@@ -25,12 +25,6 @@ class StatesView extends require("../base")
     source = new bindable.Collection()
     @set "source", source
     super data
-
-  ###
-  ###
-
-  reset: (data) ->
-    super data
     @bind("views", @_setViews).now()
 
   ###

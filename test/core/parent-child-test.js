@@ -128,7 +128,6 @@ describe("parent/child#", function () {
     // still triggers .remove()
     parent.dispose();
 
-    expect(child._fresh).to.be(true);
     expect(child._rendered).to.be(false);
 
   });

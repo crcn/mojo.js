@@ -4,14 +4,26 @@ mojo = require("..");
 
 var app = new mojo.Application();
 
-suite.add("new mojo.View()", function () {
+
+
+var v = new mojo.View(null, app);
+
+
+suite.add("view.render()", function () {
+  v.remove();
+  v._decorated = false;
+  v._events = {};
+  v.render()
+});
+
+suite.add("new mojo.View() without app", function () {
+  new mojo.View(null);
+});
+
+suite.add("new mojo.View() with app", function () {
   new mojo.View(null, app);
 });
 
-suite.add("view.render()", function () {
-  var v = new mojo.View(null, app);
-  v.render()
-});
 
 
 suite.on("cycle", function (event) {

@@ -17,11 +17,6 @@ class DecorableView extends subindable.Object
 
   ###
   ###
-
-  _fresh: true
-
-  ###
-  ###
   
   define: ["sections", "states"]
 
@@ -36,16 +31,13 @@ class DecorableView extends subindable.Object
 
     # have reference back to this view controller - useful for templates
     @this = @
-    @__decorators = undefined
-
+    
     # must have an ID
     # TODO - should not be familiar with models
     if data
       @_id  = data._id ? data.model?.get?("_id") ? data.model?._id ? generateId()
     else
       @_id = generateId()
-    
-
 
     # initialize - keeps sub-classes from calling constructor
     @initialize data
@@ -63,29 +55,15 @@ class DecorableView extends subindable.Object
   ###
 
   initialize: (data) ->
-    @reset data
-
-  ###
-   resets the view - this should be called only after disposing
-  ###
-
-  reset: (data = {}) ->
-
-    # make sure that reset() is only called after the view
-    # is resettable - this is a bit of a helper incase reset() is called more than
-    # it should
-    unless @_fresh
-      throw new Error "can only reset a view that has has been disposed"
-
-
-    @_fresh = false
 
     # set the data passed by the constructor, or recycler
-    @set data
+    if data
+      @set data
 
     # at this point, bindings have been disposed of, so re-add then
     @bind("application").to(@_onApplication).now()
     @bind("parent").to(@_onParent).now()
+
 
   ###
    returns path to this view. Useful for debugging.
@@ -112,15 +90,11 @@ class DecorableView extends subindable.Object
 
     @_render @section
 
-    # incase dispose() has been called
-    if @_fresh
-      @reset()
-
 
     unless @_decorated
       @_decorated = true
       # add additional functionality to this view
-      @application.decorators.decorate @
+      @application.decorators.decorate @, @constructor.prototype
 
     # emit render - this triggers any 
     # decorator
@@ -178,15 +152,12 @@ class DecorableView extends subindable.Object
     @set "sections.#{name}", child
 
     child.once "dispose", () =>
-      child.set "parent", undefined
       @set "sections.#{name}", undefined
 
   ###
   ###
 
   decorate: (options) ->
-    @__decorators = undefined
-
     @application.decorators.decorate @, options
     @
 
@@ -201,10 +172,10 @@ class DecorableView extends subindable.Object
 
     @_janitor?.dispose()
 
-    @_fresh = true
-
     # listeners are getting disposed - 
     @_decorated = false
+
+    @set "parent", undefined
 
     super()
 
@@ -226,7 +197,7 @@ class DecorableView extends subindable.Object
     @_parentDisposeListener?.dispose()
     return unless parent
 
-    @_inherit "application"
+    @inherit "application"
 
     # dispose THIS child if the parent has been disposed of
     @_parentRemoveListener  = parent.on "remove", @remove

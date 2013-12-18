@@ -102,7 +102,6 @@ describe("core/basic-view#", function () {
   it("can render a view", function () {
     var view = app.createView("basic");
     view.render();
-    expect(view._fresh).to.be(false);
   })
 
   /**
@@ -112,7 +111,6 @@ describe("core/basic-view#", function () {
     var view = app.createView("basic");
     view.render();
     view.remove()
-    expect(view._fresh).to.be(false);
   });
 
   /**
@@ -167,17 +165,6 @@ describe("core/basic-view#", function () {
     expect(emitted).to.be(undefined);
   });
 
-  /**
-   */
-
-  it("throws an error if reset() is called if not disposed", function () {
-    var view = app.createView("basic");
-    try {
-      view.reset();
-    } catch (e) {
-      expect(e.message).to.contain("can only reset a view that")
-    }
-  });
 
   /**
    */

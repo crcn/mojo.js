@@ -45,7 +45,7 @@
     "bindable-decor": "0.1.x",
     "bindable-decor-bindings": "0.0.x",
     "underscore": "~1.4.4",
-    "mojo-paperclip": "0.1.x",
+    "mojo-paperclip": "0.2.x",
     "protoclass": "0.0.5",
     "subindable": "0.0.x"
   },

@@ -211,7 +211,7 @@ class ListView extends require("../base")
 
   _insertModelView: (modelView, index) =>
 
-    @setChild index, modelView
+    modelView.set "parent", @
     modelView.render()
 
     @section.append modelView.section.toFragment()

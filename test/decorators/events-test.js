@@ -18,13 +18,14 @@ describe("deorators/events#", function () {
   it("capture a bubbled event", function (next) {
 
     var view = new mojo.View({
+    }, app).decorate({
       events: {
         "test": function (event, v) {
           expect(v).to.be("v");
           next();
         }
       }
-    }, app);
+    })
 
     view.__decorators = undefined;
 
@@ -38,14 +39,15 @@ describe("deorators/events#", function () {
   it("can call a ref to a view method", function (next) {
 
     var view = new mojo.View({
-      events: {
-        "test": "onTest"
-      },
       onTest: function (event, v) {
         expect(v).to.be("v");
         next();
       }
-    }, app);
+    }, app).decorate({
+      events: {
+        "test": "onTest"
+      }
+    })
 
     view.__decorators = undefined;
 
@@ -59,12 +61,13 @@ describe("deorators/events#", function () {
   it("lowercases events", function () {
     var emits = 0;
     var view = new mojo.View({
+    }, app).decorate({
       events: {
         "camelEvent": function () {
           emits++;
         }
       }
-    }, app);
+    })
 
     view.__decorators = undefined;
 
@@ -79,19 +82,20 @@ describe("deorators/events#", function () {
 
   it("can listen on a DOM element", function (next) {
     var view = new mojo.View({
-      events: {
-        "click .button": function() {
-          next();
-        }
-      },
       _render: function(section) {
         section.append($("<div><a href='#' class='button'>button</a></div>")[0]);
       },
       click: function() {  
         this.$(".button").click();
       }
-    }, app);
-    view.__decorators = undefined;
+    }, app).decorate({
+      events: {
+        "click .button": function() {
+          next();
+        }
+      }
+    })
+
     view.render();
     view.click();
   });
@@ -102,14 +106,6 @@ describe("deorators/events#", function () {
   it("can listen to multiple elements", function () {
     var clicks = 0;
     var view = new mojo.View({
-      events: {
-        "click .button .button2": function() {
-          clicks++;
-        },
-        "camelEvent": function () {
-          clicks++;
-        }
-      },
       _render: function(section) {
         section.append($("<div><a href='#' class='button button2'>button</a></div>")[0]);
       },
@@ -118,8 +114,17 @@ describe("deorators/events#", function () {
         this.$(".button2").click();
         this.emit("camelevent")
       }
-    }, app);
-    view.__decorators = undefined;
+    }, app).decorate({
+      events: {
+        "click .button .button2": function() {
+          clicks++;
+        },
+        "camelEvent": function () {
+          clicks++;
+        }
+      }
+    });
+    
     view.render();
     view.click();
     expect(clicks).to.be(3);

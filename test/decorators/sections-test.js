@@ -161,6 +161,7 @@ describe("decorators/sections#", function () {
       }
     });
 
+
     var v = new SubView({}, app);
     expect(v.render().toString()).to.be("sub: Hello subview");
     v.set("sections.child", undefined);
