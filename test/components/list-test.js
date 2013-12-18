@@ -20,7 +20,8 @@ describe("components/list#", function () {
     var view = new mojo.View({}, app).decorate({
       sections: {
         items: {
-          type: "list"
+          type: "list",
+          modelViewFactory: function(){}
         }
       }
     });
@@ -38,7 +39,9 @@ describe("components/list#", function () {
       sections: {
         items: {
           type: "list",
-          source: src = new bindable.Collection([{ _id: "craig" }, { _id: "john" }]),
+          source: src = new bindable.Collection([{ _id: "craig" }, { _id: "john" }].map(function(obj) {
+            return new bindable.Object(obj);
+          })),
           modelViewClass: mojo.View
         }
       }
@@ -58,6 +61,7 @@ describe("components/list#", function () {
   });
 
 
+
   it("can dynamically create a view from modelViewFactory", function () {
 
     var view = new mojo.View({
@@ -68,7 +72,9 @@ describe("components/list#", function () {
       sections: {
         items: {
           type: "list",
-          source: new bindable.Collection([{ _id: "craig", priority: 0 }, { _id: "john", priority: 1 }]),
+          source: new bindable.Collection([{ _id: "craig", priority: 0 }, { _id: "john", priority: 1 }].map(function(obj) {
+            return new bindable.Object(obj);
+          })),
           modelViewFactory: function (options) {
             options.paper = paperclip.compile("hello {{model._id}} ")
             return new mojo.View(options);
@@ -92,7 +98,9 @@ describe("components/list#", function () {
       sections: {
         items: {
           type: "list",
-          source: new bindable.Collection([{ _id: "craig", priority: 0 }, { _id: "john", priority: 1 }]),
+          source: new bindable.Collection([{ _id: "craig", priority: 0 }, { _id: "john", priority: 1 }].map(function (obj) {
+            return new bindable.Object(obj);
+          })),
           modelViewClass: mojo.View.extend({
             paper: paperclip.compile("hello {{ model._id }} ")
           }),
@@ -105,6 +113,7 @@ describe("components/list#", function () {
 
     expect(view.render().toString()).to.be("hello john hello craig ")
   });
+
 
   // can resort a list if models change
 
@@ -139,6 +148,8 @@ describe("components/list#", function () {
 
     expect(view.render().toString()).to.be("hello craig hello frank ");
   });
+  
+
 
   it("re-filters a list if the models change", function () {
     var src = new bindable.Collection([{ _id: "craig", priority: 1 }, { _id: "john", priority: 2 }, { _id: "frank", priority: 3 }].map(function (obj) {
@@ -217,11 +228,16 @@ describe("components/list#", function () {
     view.render();
 
 
-    view.set("sections.items.source", [{ _id: "craig"}, { _id: "john"} ]);
+    view.set("sections.items.source", [{ _id: "craig"}, { _id: "john"} ].map(function (v) {
+      return new bindable.Object(v)
+    }))
     expect(view.section.toString()).to.be("hello craig hello john !");
-    view.set("sections.items.source", [{ _id: "jeff"}, { _id: "jake"}, { _id: "sam"} ]);
+    view.set("sections.items.source", [{ _id: "jeff"}, { _id: "jake"}, { _id: "sam"} ].map(function (v) {
+      return new bindable.Object(v)
+    }));
     expect(view.section.toString()).to.be("hello jeff hello jake hello sam !");
   });
+
 
 
   it("can re-render a list", function () {
@@ -232,7 +248,8 @@ describe("components/list#", function () {
     }, app).decorate({
       sections: {
         items: {
-          type: "list"
+          type: "list",
+          modelViewClass: function(){}
         }
       }
     }), list;
@@ -252,7 +269,9 @@ describe("components/list#", function () {
       sections: {
         items: {
           type: "list",
-          source: [{ _id: "craig"}, { _id: "john"} ],
+          source: [{ _id: "craig"}, { _id: "john"} ].map(function(v) { 
+            return new bindable.Object(v);
+          }),
           modelViewClass: mojo.View.extend({
             paper: paperclip.compile("hello {{ model._id }} ")
           })
@@ -285,10 +304,10 @@ describe("components/list#", function () {
             paper: paperclip.compile("hello {{ model.name }} ")
           }),
           map: function (item) {
-            return {
+            return new bindable.Object({
               _id: item._id,
               name: item._id.toUpperCase()
-            }
+            })
           }
         }
       }
@@ -299,7 +318,9 @@ describe("components/list#", function () {
 
   it("can bind to a source string", function () {
     var view = new mojo.View({
-      src: [{ _id: "craig"}, { _id: "john"} ],
+      src: [{ _id: "craig"}, { _id: "john"} ].map(function(v) {
+        return new bindable.Object(v);
+      }),
       paper: paperclip.compile(
         "{{ html: sections.items }}"
       )
@@ -320,7 +341,9 @@ describe("components/list#", function () {
 
 
   it("can dispose a list", function () {var view = new mojo.View({
-      src: [{ _id: "craig"}, { _id: "john"} ],
+      src: [{ _id: "craig"}, { _id: "john"} ].map(function(v) {
+        return new bindable.Object(v)
+      }),
       paper: paperclip.compile(
         "v {{ html: sections.items }}"
       )

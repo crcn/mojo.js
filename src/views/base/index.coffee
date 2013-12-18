@@ -3,7 +3,7 @@ type         = require "type-component"
 loaf         = require "loaf"
 subindable   = require "subindable"
 protoclass   = require "protoclass"
-Janitor      = require "janitorjs"
+janitor      = require "janitorjs"
 
 ###
 ###
@@ -47,7 +47,7 @@ class DecorableView extends subindable.Object
 
   disposable: (disposable) ->
     unless @_janitor
-      @_janitor = new Janitor()
+      @_janitor = janitor()
     @_janitor.add(disposable)
 
 
