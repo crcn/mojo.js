@@ -13,6 +13,11 @@ class ListView extends require("../base")
   ###
   ###
 
+  _decorated: true
+
+  ###
+  ###
+
   __isList: true
 
   ###
@@ -130,6 +135,7 @@ class ListView extends require("../base")
 
     @_sourceJanitor.add @_sourceBinding = binding = _source.bind()
 
+
     # filter provided?
     if @_filter
       @_sourceBinding.filter (model) =>
@@ -210,12 +216,12 @@ class ListView extends require("../base")
   ###
 
   _insertModelView: (modelView, index) =>
-
     modelView.set "parent", @
     modelView.render()
 
     @section.append modelView.section.toFragment()
     @_resort()
+
 
   ###
   ###
