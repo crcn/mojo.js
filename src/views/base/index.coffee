@@ -4,6 +4,7 @@ loaf         = require "loaf"
 subindable   = require "subindable"
 protoclass   = require "protoclass"
 janitor      = require "janitorjs"
+runlater     = require("runlater").global
 
 ###
 ###
@@ -200,8 +201,18 @@ class DecorableView extends subindable.Object
     @inherit "application"
 
     # dispose THIS child if the parent has been disposed of
-    @_parentRemoveListener  = parent.on "remove", @remove
-    @_parentDisposeListener = parent.on "dispose", @dispose
+    @_parentRemoveListener  = parent.on "remove", @_removeLater
+    @_parentDisposeListener = parent.on "dispose", @_disposeLater
+
+  ###
+  ###
+
+  _removeLater: () => runlater @remove
+
+  ###
+  ###
+
+  _disposeLater: () => runlater @dispose
 
   ###
   ###
