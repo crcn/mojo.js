@@ -102,7 +102,7 @@ describe("parent/child#", function () {
   /**
    */
 
-  it("removes the child if the parent is removed", function () {
+  it("removes the child if the parent is removed", function (next) {
     var parent = app.createView("basic"),
     child      = app.createView("basic");
 
@@ -111,13 +111,18 @@ describe("parent/child#", function () {
     parent.render();
 
     parent.remove();
-    expect(child._rendered).to.be(false);
+
+
+    setTimeout(function () {
+      expect(child._rendered).to.be(false);
+      next()
+    }, 10)
   });
 
   /**
    */
 
-  it("disposes the child if the parent is disposed", function () {
+  it("disposes the child if the parent is disposed", function (next) {
     var parent = app.createView("basic"),
     child      = app.createView("basic");
 
@@ -128,14 +133,17 @@ describe("parent/child#", function () {
     // still triggers .remove()
     parent.dispose();
 
-    expect(child._rendered).to.be(false);
+    setTimeout(function () {
+      expect(child._rendered).to.be(false);
+      next()
+    }, 10)
 
   });
 
   /**
    */
 
-  it("properly disposes the child if the parent is switched", function () {
+  it("properly disposes the child if the parent is switched", function (next) {
     var p1 = app.createView("basic"),
     p2     = app.createView("basic"),
     child  = app.createView("basic");
@@ -150,7 +158,10 @@ describe("parent/child#", function () {
 
     expect(child._rendered).to.be(true);
     p2.dispose();
-    expect(child._rendered).to.be(false);
+    setTimeout(function () {
+      expect(child._rendered).to.be(false);
+      next()
+    }, 10)
   });
 
   /**
