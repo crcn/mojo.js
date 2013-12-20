@@ -81,7 +81,7 @@ class DecorableView extends subindable.Object
   ###
   ###
 
-  render: () =>
+  render: () ->
 
     # cannot re-render
     return @section if @_rendered
@@ -115,7 +115,7 @@ class DecorableView extends subindable.Object
    removes the section
   ###
 
-  remove: () => 
+  remove: () -> 
 
     # only emit remove if rendered
     if @_rendered
@@ -145,7 +145,14 @@ class DecorableView extends subindable.Object
   ###
 
   attach: (element) ->
-    (element[0] or element).appendChild @render().toFragment()
+
+    frag = @render().toFragment()
+
+    if process.browser
+      requestAnimationFrame () =>
+        (element[0] or element).appendChild frag
+    else
+      (element[0] or element).appendChild frag
 
   ###
   ###
@@ -169,7 +176,7 @@ class DecorableView extends subindable.Object
    of all listeners
   ###
 
-  dispose: () =>
+  dispose: () ->
 
     @remove()
 
@@ -209,12 +216,12 @@ class DecorableView extends subindable.Object
   ###
   ###
 
-  _removeLater: () => runlater @remove
+  _removeLater: () => runlater () => @remove()
 
   ###
   ###
 
-  _disposeLater: () => runlater @dispose
+  _disposeLater: () => runlater () => @dispose()
 
 
 module.exports = protoclass.setup DecorableView
