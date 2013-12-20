@@ -31,7 +31,7 @@ describe("core/basic-view#", function () {
   it("can pass appliation to the second param", function () {
     var view = new mojo.View({}, app);
     expect(view.application).to.be(app);
-    expect(view.models).to.be(app.models);
+    // expect(view.models).to.be(app.models);
   });
 
   /**
@@ -57,7 +57,6 @@ describe("core/basic-view#", function () {
 
    it("has the right info from app", function () {
     var view = app.createView("basic");
-    expect(view.models).to.be(app.models);
     expect(view.application).to.be(app);
     expect(view._id).not.to.be(undefined);
    });

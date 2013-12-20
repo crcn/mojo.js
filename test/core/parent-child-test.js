@@ -29,11 +29,11 @@ describe("parent/child#", function () {
 
     expect(child.parent).to.be(parent); 
     expect(child.application).to.be(app);
-    expect(child.models).to.be(app.models);
+    // expect(child.models).to.be(app.models);
 
     expect(child2.parent).to.be(parent); 
     expect(child2.application).to.be(app);
-    expect(child2.models).to.be(app.models);
+    // expect(child2.models).to.be(app.models);
   });
 
 
@@ -51,20 +51,20 @@ describe("parent/child#", function () {
     subChild.setChild("subChild", subSubChild);
 
     expect(child.application).to.be(app2);
-    expect(child.models).to.be(app2.models);
+    // expect(child.models).to.be(app2.models);
     expect(subChild.application).to.be(app2);
-    expect(subChild.models).to.be(app2.models);
+    // expect(subChild.models).to.be(app2.models);
     expect(subSubChild.application).to.be(app2);
-    expect(subSubChild.models).to.be(app2.models);
+    // expect(subSubChild.models).to.be(app2.models);
 
     parent.setChild("someChild", child);
 
     expect(child.application).to.be(app);
-    expect(child.models).to.be(app.models);
+    // expect(child.models).to.be(app.models);
     expect(subChild.application).to.be(app);
-    expect(subChild.models).to.be(app.models);
+    // expect(subChild.models).to.be(app.models);
     expect(subSubChild.application).to.be(app);
-    expect(subSubChild.models).to.be(app.models);
+    // expect(subSubChild.models).to.be(app.models);
   });
 
   /**

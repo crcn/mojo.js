@@ -62,8 +62,7 @@ class DecorableView extends subindable.Object
       @set data
 
     # at this point, bindings have been disposed of, so re-add then
-    @bind("application").to(@_onApplication).now()
-    @bind("parent").to(@_onParent).now()
+    @on "change:parent", @_onParent
 
 
   ###
@@ -88,6 +87,9 @@ class DecorableView extends subindable.Object
     return @section if @_rendered
     @_rendered = true
 
+    unless @section
+      @section = loaf @application.nodeFactory
+      @models  = @application.models
 
     @_render @section
 
@@ -213,13 +215,6 @@ class DecorableView extends subindable.Object
   ###
 
   _disposeLater: () => runlater @dispose
-
-  ###
-  ###
-
-  _onApplication: (application) =>
-    @section = loaf application.nodeFactory
-    @set "models", application.models
 
 
 module.exports = protoclass.setup DecorableView
