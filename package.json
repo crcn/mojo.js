@@ -47,7 +47,8 @@
     "underscore": "~1.4.4",
     "mojo-paperclip": "0.2.x",
     "protoclass": "0.0.5",
-    "subindable": "0.0.x"
+    "subindable": "0.0.x",
+    "runlater": "0.0.2"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",
