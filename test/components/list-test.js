@@ -87,6 +87,35 @@ describe("components/list#", function () {
 
   });
 
+  it("adds / removes items as the source changes", function () {
+    var src,
+    view = new mojo.View({
+      paper: paperclip.compile(
+        "{{ html: sections.items }}"
+      )
+    }, app).decorate({
+      sections: {
+        items: {
+          type: "list",
+          source: src = new bindable.Collection([{ _id: "craig", priority: 0 }, { _id: "john", priority: 1 }].map(function(obj) {
+            return new bindable.Object(obj);
+          })),
+          modelViewFactory: function (options) {
+            options.paper = paperclip.compile("hello {{model._id}} ")
+            return new mojo.View(options);
+          }
+        }
+      }
+    });
+
+
+    expect(view.render().toString()).to.be("hello craig hello john ");
+    src.push(new bindable.Object({ _id: "jeff"}));
+    expect(view.render().toString()).to.be("hello craig hello john hello jeff ");
+    src.splice(0, 1);
+    expect(view.render().toString()).to.be("hello john hello jeff ");
+
+  });
 
   it("can sort a list", function () {
 
