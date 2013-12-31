@@ -30,7 +30,7 @@ class StatesView extends require("../base")
     source = new bindable.Collection()
     @set "source", source
     super data
-    @bind("views", @_setViews).now()
+    @bind("views", { to: @_setViews }).now()
 
   ###
   ###
