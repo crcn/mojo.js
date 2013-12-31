@@ -20,7 +20,7 @@ class State extends bindable.Object
     ops._id = options.name or Math.random()
 
     super @
-    @set ops
+    @setProperties ops
 
   ###
   ###

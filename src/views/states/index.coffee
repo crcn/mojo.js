@@ -58,8 +58,8 @@ class StatesView extends require("../base")
     @_indexBinding?.dispose()
     @_cnameBinding?.dispose()
 
-    @_indexBinding = @bind("index", if process.browser then @_setIndexWithAnimation else @_setIndex).now()
-    @_cnameBinding = @bind("currentName", @_setName).now()
+    @_indexBinding = @bind("index", { to: if process.browser then @_setIndexWithAnimation else @_setIndex }).now()
+    @_cnameBinding = @bind("currentName", { to: @_setName }).now()
 
   ###
    selects a state 
@@ -111,6 +111,7 @@ class StatesView extends require("../base")
   ###
 
   _setName: (name) =>
+    return unless name
     for state, i in @source.source()
       if state.get("name") is name
         @set "index", i

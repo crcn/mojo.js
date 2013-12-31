@@ -82,7 +82,7 @@ describe("core/inherit#", function () {
     p.setChild("child", c);
 
     // _inherit() on set() - this gets triggered
-    c.bind("message").once().to(function (v) {
+    c.bind("message", function (v) {
       expect(v).to.be("ha!");
       next();
     });

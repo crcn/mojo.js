@@ -59,7 +59,7 @@ class DecorableView extends subindable.Object
 
     # set the data passed by the constructor, or recycler
     if data
-      @set data
+      @setProperties data
 
     # at this point, bindings have been disposed of, so re-add then
     @on "change:parent", @_onParent
