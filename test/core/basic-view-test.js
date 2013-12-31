@@ -180,9 +180,10 @@ describe("core/basic-view#", function () {
   });
 
   /**
+   * doesn't apply anymore - listeners stick around on dispose()
    */
 
-  it("removes listeners on dispose()", function () {
+  /*it("removes listeners on dispose()", function () {
     var view = app.createView("basic"), emitted;
     view.on("blah", function () {
       emitted = true;
@@ -191,7 +192,7 @@ describe("core/basic-view#", function () {
     view.dispose();
     view.emit("blah");
     expect(emitted).to.be(undefined);
-  });
+  });*/
 
   /**
    */

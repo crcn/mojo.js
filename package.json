@@ -33,7 +33,7 @@
     "dref": "0.0.x",
     "comerr": "0.0.x",
     "type-component": "0.0.x",
-    "bindable": "0.4.x",
+    "bindable": "0.5.x",
     "janitorjs": "0.0.x",
     "structr": "0.2.x",
     "hoist": "0.0.x",
@@ -47,7 +47,7 @@
     "underscore": "~1.4.4",
     "mojo-paperclip": "0.3.x",
     "protoclass": "0.0.5",
-    "subindable": "0.0.x",
+    "subindable": "0.1.x",
     "runlater": "0.0.2"
   },
   "devDependencies": {
