@@ -27,7 +27,6 @@ describe("components/list#", function () {
     });
 
 
-
     view.render();
     expect(view.get("sections.items").__isList).to.be(true);
   });
