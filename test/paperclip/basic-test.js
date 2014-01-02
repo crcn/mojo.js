@@ -9,7 +9,7 @@ describe("paperclip/basic#", function () {
   var app;
 
   before(function () {
-    app = new mojo.Application({ nodeFactory: nofactor.dom, $: $ });
+    app = new mojo.Application({ nodeFactory: nofactor.string });
   });
 
   /**
@@ -23,7 +23,7 @@ describe("paperclip/basic#", function () {
 
     view.render();
     expect(view.section.toString()).to.be("Hello World");
-    expect(view.section.toFragment().childNodes[2].nodeValue).to.be("Hello World");
+    //expect(view.section.toFragment().childNodes[2].nodeValue).to.be("Hello World");
   });
 
   /**

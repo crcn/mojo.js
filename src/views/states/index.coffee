@@ -148,7 +148,7 @@ class StatesView extends require("../base")
     state.render()
     
     if isNew
-      @section.append newStateView.section
+      @section.append newStateView.section.toFragment()
 
 
     @set "currentView", newStateView
