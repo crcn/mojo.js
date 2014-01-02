@@ -57,9 +57,12 @@ class DecorableView extends subindable.Object
 
   initialize: (data) ->
 
-    # set the data passed by the constructor, or recycler
-    if data
-      @setProperties data
+    # copy the data to this object. Note this shaves a TON
+    # of time off initializing any view, especially list items if we
+    # use this method over @setProperties data
+    if data 
+      for key of data
+        @[key] = data[key]
 
     # at this point, bindings have been disposed of, so re-add then
     @on "change:parent", @_onParent
