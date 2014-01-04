@@ -31,7 +31,6 @@ describe("components/list#", function () {
     expect(view.get("sections.items").__isList).to.be(true);
   });
 
-
   it("can bind to a bindable.Collection obj", function () {
 
     var src, view = new mojo.View({}, app).decorate({
