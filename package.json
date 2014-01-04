@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.7.47",
+  "version": "0.7.48",
   "description": "modular mv+ JavaScript framework for node, and the web",
   "main": "./lib/index.js",
   "jam": {
@@ -34,7 +34,7 @@
     "comerr": "0.0.x",
     "type-component": "0.0.x",
     "bindable": "0.5.x",
-    "janitorjs": "0.0.x",
+    "janitorjs": "0.0.4",
     "structr": "0.2.x",
     "hoist": "0.0.x",
     "flatstack": "0.0.x",
