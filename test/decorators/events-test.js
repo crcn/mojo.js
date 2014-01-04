@@ -112,7 +112,7 @@ describe("deorators/events#", function () {
       click: function() {  
         this.$(".button").click();
         this.$(".button2").click();
-        this.emit("camelevent")
+        this.emit("camelEvent")
       }
     }, app).decorate({
       events: {
