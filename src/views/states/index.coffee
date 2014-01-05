@@ -136,6 +136,7 @@ class StatesView extends require("../base")
     isNew          = !state.hasView()
     newStateView   = state.getView()
 
+
     @setChild "currentChild", newStateView
     @currentState.set "selected", true
 
