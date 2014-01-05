@@ -13,8 +13,7 @@ describe("core/application#", function () {
     var app = new mojo.Application();
     expect(app.models).not.to.be(undefined);
     expect(app.models.constructor).to.be(bindable.Object);
-    expect(app.decorators).not.to.be(undefined);
-    expect(app.decorator).not.to.be(undefined);
+
     expect(app.getViewClass("list")).not.to.be(undefined);
     expect(app.getViewClass("states")).not.to.be(undefined);
     expect(app.getViewClass("base")).not.to.be(undefined);
