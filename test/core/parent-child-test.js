@@ -187,24 +187,4 @@ describe("parent/child#", function () {
     expect(cs2).not.to.be(c2);
   });*/
 
-  /**
-   */
-
-
-  it("can remove() a child from the parent", function () {
-    var p = new mojo.View({
-
-    }, app), 
-    c = new mojo.View({ name: "testt" }, app);
-
-    p.render();
-    c.render();
-    p.setChild("child", c);
-    expect(p.get("sections.child")).to.be(c);
-    expect(c.get("parent")).to.be(p);
-    c.dispose();
-    expect(p.get("sections.child")).to.be(undefined);
-    expect(c.get("parent")).to.be(undefined);
-  })
-
 }); 
