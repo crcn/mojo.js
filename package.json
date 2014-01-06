@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
+    "paperclip":"0.3.x",
     "jsdom": "~0.8.9",
     "mocha": "~1.15.1",
     "istanbul": "~0.1.46",
