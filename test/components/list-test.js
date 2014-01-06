@@ -14,7 +14,34 @@ describe("components/list#", function () {
   // - source as array
   // - changing source
   // - parentNode undefined bug
-  
+
+  it("can sort a list", function () {
+
+    var view = new mojo.View({
+      paper: paperclip.compile(
+        "{{ html: sections.items }}"
+      )
+    }, app).decorate({
+      sections: {
+        items: {
+          type: "list",
+          source: new bindable.Collection([{ _id: "craig", priority: 0 }, { _id: "john", priority: 1 }].map(function (obj) {
+            return new bindable.Object(obj);
+          })),
+          modelViewClass: mojo.View.extend({
+            paper: paperclip.compile("hello {{ model._id }} ")
+          }),
+          sort: function (a, b) {
+            return a.get("model.priority") > b.get("model.priority") ? -1 : 1
+          }
+        }
+      }
+    });
+
+    expect(view.render().toString()).to.be("hello john hello craig ")
+  });
+
+  return;
   it("can create a list", function () {
 
     var view = new mojo.View({}, app).decorate({

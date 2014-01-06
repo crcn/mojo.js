@@ -48,8 +48,8 @@ describe("core/basic-view#", function () {
   /**
    */
 
-  it("returns a section on render", function () {
-    expect(new mojo.View({}, app).render().__isLoafSection).to.be(true);
+  it("returns a fragment on render", function () {
+    expect(new mojo.View({}, app).render().nodeType).to.be(11);
   })
 
   /**
@@ -147,7 +147,7 @@ describe("core/basic-view#", function () {
       emitted++;
     });
     view.render();
-    expect(view.render()).to.be(view.section);
+    expect(view.render().nodeType).to.be(11);
     expect(emitted).to.be(1);
   });
 
