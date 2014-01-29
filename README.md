@@ -39,7 +39,7 @@ Mojo was built initially to phase out old code, and itself - hence the modularit
 - [States Component](http://jsfiddle.net/BZA8K/28/)
 - [Custom Components](http://jsfiddle.net/BZA8K/24/)
 - [Transitions](http://jsfiddle.net/BZA8K/22/)
-- [dots benchmark](http://jsfiddle.net/BZA8K/35/)
+- [dots benchmark](http://jsfiddle.net/BZA8K/42/)
 
 ### TODO:
 
