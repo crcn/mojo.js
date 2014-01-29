@@ -15,5 +15,5 @@ test-coveralls:
 
 
 browser:	
-	mkdir build
-	./node_modules/.bin/browserify ./lib/index.js -o ./build/mojo.js
+	mkdir -p build
+	./node_modules/.bin/browserify ./lib/index.js -o ./build/mojo2.js
