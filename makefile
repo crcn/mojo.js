@@ -12,5 +12,8 @@ test-coveralls:
 	./node_modules/.bin/istanbul cover \
 	./node_modules/.bin/_mocha ./test/**/*-test.js --ignore-leaks --timeout 100 --report lcovonly -- -R spec && \
 	cat ./coverage/lcov.info | ./node_modules/.bin/coveralls --verbose
-	
 
+
+browser:	
+	mkdir build
+	./node_modules/.bin/browserify ./lib/index.js -o ./build/mojo.js

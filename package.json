@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.7.71",
+  "version": "0.7.72",
   "description": "modular mv+ JavaScript framework for node, and the web",
   "main": "./lib/index.js",
   "jam": {
@@ -36,7 +36,6 @@
     "factories": "0.0.x",
     "loaf": "0.2.x",
     "nofactor": "0.0.x",
-    "bindable-decor": "0.1.x",
     "bindable-decor-bindings": "0.1.x",
     "underscore": "~1.4.4",
     "mojo-paperclip": "0.3.x",
@@ -47,11 +46,12 @@
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
-    "paperclip":"0.3.x",
+    "paperclip": "0.3.x",
     "jsdom": "~0.8.9",
     "mocha": "~1.15.1",
     "istanbul": "~0.1.46",
     "coveralls": "~2.5.0",
-    "benchmark": "~1.0.0"
+    "benchmark": "~1.0.0",
+    "browserify": "~3.24.2"
   }
 }
