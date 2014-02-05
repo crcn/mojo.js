@@ -58,7 +58,7 @@ describe("core/basic-view#", function () {
    it("has the right info from app", function () {
     var view = app.createView("basic");
     expect(view.application).to.be(app);
-    expect(view._id).not.to.be(undefined);
+    expect(view._cid).not.to.be(undefined);
    });
 
    /**
