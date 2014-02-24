@@ -38,10 +38,9 @@ describe("components/list#", function () {
       }
     });
 
-    expect(view.render().toString()).to.be("hello john hello craig ")
+    expect(view.render().toString()).to.be("hello johnhello craig")
   });
 
-  return;
   it("can create a list", function () {
 
     var view = new mojo.View({}, app).decorate({
@@ -108,7 +107,7 @@ describe("components/list#", function () {
       }
     });
 
-    expect(view.render().toString()).to.be("hello craig hello john ")
+    expect(view.render().toString()).to.be("hello craighello john")
 
   });
 
@@ -126,7 +125,7 @@ describe("components/list#", function () {
             return new bindable.Object(obj);
           })),
           modelViewFactory: function (options) {
-            options.paper = paperclip.compile("hello {{model._id}} ")
+            options.paper = paperclip.compile("hello {{model._id}}")
             return new mojo.View(options);
           }
         }
@@ -134,11 +133,11 @@ describe("components/list#", function () {
     });
 
 
-    expect(view.render().toString()).to.be("hello craig hello john ");
+    expect(view.render().toString()).to.be("hello craighello john");
     src.push(new bindable.Object({ _id: "jeff"}));
-    expect(view.render().toString()).to.be("hello craig hello john hello jeff ");
+    expect(view.render().toString()).to.be("hello craighello johnhello jeff");
     src.splice(0, 1);
-    expect(view.render().toString()).to.be("hello john hello jeff ");
+    expect(view.render().toString()).to.be("hello johnhello jeff");
 
   });
 
@@ -165,7 +164,7 @@ describe("components/list#", function () {
       }
     });
 
-    expect(view.render().toString()).to.be("hello john hello craig ")
+    expect(view.render().toString()).to.be("hello johnhello craig");
   });
 
 
@@ -200,7 +199,7 @@ describe("components/list#", function () {
       }
     });
 
-    expect(view.render().toString()).to.be("hello craig hello frank ");
+    expect(view.render().toString()).to.be("hello craighello frank");
   });
   
 
@@ -229,12 +228,12 @@ describe("components/list#", function () {
       }
     });
 
-    expect(view.render().toString()).to.be("hello craig hello frank ");
+    expect(view.render().toString()).to.be("hello craighello frank");
     src.at(0).set("priority", 2);
     src.at(1).set("priority", 1);
-    expect(view.render().toString()).to.be("hello frank hello john ");
+    expect(view.render().toString()).to.be("hello frankhello john");
     src.at(2).set("priority", 2);
-    expect(view.render().toString()).to.be("hello john ");
+    expect(view.render().toString()).to.be("hello john");
   });
 
 
@@ -252,7 +251,7 @@ describe("components/list#", function () {
             return new bindable.Object(obj);
           }),
           modelViewClass: mojo.View.extend({
-            paper: paperclip.compile("hello {{ model._id }} ")
+            paper: paperclip.compile("hello {{ model._id }}")
           })
         }
       }
@@ -273,7 +272,7 @@ describe("components/list#", function () {
         items: {
           type: "list",
           modelViewClass: mojo.View.extend({
-            paper: paperclip.compile("hello {{ model._id }} ")
+            paper: paperclip.compile("hello {{ model._id }}")
           })
         }
       }
@@ -285,11 +284,11 @@ describe("components/list#", function () {
     view.set("sections.items.source", [{ _id: "craig"}, { _id: "john"} ].map(function (v) {
       return new bindable.Object(v)
     }))
-    expect(view.section.toString()).to.be("hello craig hello john !");
+    expect(view.section.toString()).to.be("hello craighello john!");
     view.set("sections.items.source", [{ _id: "jeff"}, { _id: "jake"}, { _id: "sam"} ].map(function (v) {
       return new bindable.Object(v)
     }));
-    expect(view.section.toString()).to.be("hello jeff hello jake hello sam !");
+    expect(view.section.toString()).to.be("hello jeffhello jakehello sam!");
   });
 
 
@@ -314,7 +313,7 @@ describe("components/list#", function () {
   })
 
 
-  it("can re-use a list after it's been removed", function () {
+  xit("can re-use a list after it's been removed", function () {
     var view = new mojo.View({
       paper: paperclip.compile(
         "v - {{ html: sections.items }}"
@@ -333,14 +332,14 @@ describe("components/list#", function () {
       }
     }), list;
 
-    expect(view.render().toString()).to.be("v - hello craig hello john ");
+    expect(view.render().toString()).to.be("v - hello craighello john");
     list = view.get("sections.items");
-    expect(list.section.toString()).to.be("hello craig hello john ");
+    expect(list.section.toString()).to.be("hello craighello john");
     list.remove();
     expect(view.section.toString()).to.be("v - ");
     list.render();
-    expect(list.section.toString()).to.be("hello craig hello john ");
-    expect(view.render().toString()).to.be("v - hello craig hello john ");
+    expect(list.section.toString()).to.be("hello craighello john");
+    expect(view.render().toString()).to.be("v - hello craighello john");
   });
 
 
@@ -367,7 +366,7 @@ describe("components/list#", function () {
       }
     });
 
-    expect(view.render().toString()).to.be("hello CRAIG hello JOHN ")
+    expect(view.render().toString()).to.be("hello CRAIGhello JOHN")
   });
 
   it("can bind to a source string", function () {
@@ -384,13 +383,13 @@ describe("components/list#", function () {
           type: "list",
           source: "src",
           modelViewClass: mojo.View.extend({
-            paper: paperclip.compile("hello {{ model._id }} ")
+            paper: paperclip.compile("hello {{ model._id }}")
           })
         }
       }
     });
 
-    expect(view.render().toString()).to.be("hello craig hello john ");
+    expect(view.render().toString()).to.be("hello craighello john");
   });
 
 
@@ -413,7 +412,7 @@ describe("components/list#", function () {
       }
     });
 
-    expect(view.render().toString()).to.be("v hello craig hello john ");
+    expect(view.render().toString()).to.be("v hello craighello john");
     view.get("sections.items").dispose();
     expect(view.render().toString()).to.be("v ");
 
