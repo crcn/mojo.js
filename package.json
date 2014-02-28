@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.7.80",
+  "version": "0.7.81",
   "description": "modular mv+ JavaScript framework for node, and the web",
   "main": "./lib/index.js",
   "jam": {
@@ -41,7 +41,7 @@
     "mojo-paperclip": "0.3.x",
     "protoclass": "0.0.5",
     "subindable": "0.1.x",
-    "runlater": "0.0.2",
+    "runlater": "0.0.x",
     "poolparty": "0.0.5",
     "flatstack": "0.0.10"
   },
