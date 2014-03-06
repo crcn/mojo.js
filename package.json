@@ -53,6 +53,7 @@
     "istanbul": "~0.1.46",
     "coveralls": "~2.5.0",
     "benchmark": "~1.0.0",
-    "browserify": "~3.24.2"
+    "browserify": "~3.24.2",
+    "yuidocjs": "~0.3.48"
   }
 }
