@@ -1,30 +1,168 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var process=require("__browserify_process");var bindable = require("bindable"),
-_            = require("underscore"),
-type         = require("type-component"),
-paperclip    = require("mojo-paperclip"),
-nofactor     = require("nofactor"),
-protoclass   = require("protoclass"),
-poolpaerty   = require("poolparty"),
-pools        = require("./pools"),
+var process=require("__browserify_process");var protoclass = require("protoclass");
+
+/**
+ * @module mojo
+ * @submodule mojo-core
+ */
+
+/**
+ * Animator that makes changes to the UI state of the application. Prevents layout thrashing.
+ *
+ * @class Animator
+ */
+
+function Animator (application) {
+  this.application     = application;
+  this._animationQueue = [];
+}
+
+protoclass(Animator, {
+  
+  /**
+   * Runs animatable object on requestAnimationFrame. This gets
+   * called whenever the UI state changes.
+   *
+   * @method animate
+   * @param {Object} animatable object. Must have `update()`
+   */
+
+  animate: function (animatable) {
+
+    // if not browser, or fake app
+    if (!process.browser || this.application.fake) {
+      return animatable.update();
+    }
+
+    // push on the animatable object
+    this._animationQueue.push(animatable);
+
+
+    // if animating, don't continue
+    if (this._requestingFrame) return;
+    this._requestingFrame = true;
+    var self = this;
+
+    // run the animation frame, and callback all the animatable objects
+    requestAnimationFrame(function () {
+
+      var queue = self._animationQueue;
+
+      // queue.length is important here, because animate() can be 
+      // called again immediately after an update
+      for (var i = 0; i < queue.length; i++) {
+        queue[i].update();
+      }
+
+      // flush the queue
+      self._animationQueue = [];
+      self._requestingFrame = false;
+    });
+  }
+});
+
+module.exports = Animator;
+},{"__browserify_process":30,"protoclass":92}],2:[function(require,module,exports){
+var bindable      = require("bindable"),
+_                 = require("underscore"),
+type              = require("type-component"),
+paperclip         = require("mojo-paperclip"),
+nofactor          = require("nofactor"),
+protoclass        = require("protoclass"),
+poolpaerty        = require("poolparty"),
+pools             = require("./pools"),
+Animator          = require("./animator"),
+RegisteredClasses = require("./registeredClasses"),
 
 defaultComponents = require("./plugins/defaultComponents"),
 decorators        = require("./plugins/decor");
 
 
+/**
+ * @module mojo
+ */
+
+/**
+
+Main entry point to your application. This is where everything is initialized.
+
+### Example
+
+```javascript
+var mojo = require("mojo"), 
+nofactor = require("nofactor");
+
+var app = new mojo.Application({ nodeFactory: nofactor.default });
+app.use(require("./views"));
+app.viewClasses.create("main").attach($("#application"));
+```
+
+views.js
+
+```javascript
+module.exports = function (app) {
+  app.viewClasses.add("main", MainView);
+}
+```
+
+
+@class Application
+@param {Object} options
+@extends BindableObject
+*/
+
 
 
 function Application (options) {
+  
   if (!options) options = {};
 
   Application.parent.call(this, this);
 
+  /**
+   * The node factory to use. Changes depending on the platform.
+   * @property nodeFactory
+   * @type BaseNodeFactory
+   */
+
   this.nodeFactory = options.nodeFactory || nofactor["default"];  
+
+  /**
+   * Where all the instantiated models live.
+   * @property models
+   * @type BindableObject
+   */
+
   this.models      = new bindable.Object();
+
+  /**
+   * TRUE if testing mode
+   * @property fake
+   * @type {Boolean}
+   */
+
   this.fake        = !!options.fake;
 
-  this._animationQueue = [];
+  /**
+   * List of registered model classes
+   * @property modelClasses
+   * @type RegisteredClasses
+   */
 
+  this.modelClasses = new RegisteredClasses(this);
+
+  /**
+   * List of registered view classes
+   * @property viewClasses
+   * @type RegisteredClasses
+   */
+
+  this.viewClasses = new RegisteredClasses(this);
+
+  // makes changes to the application view state.
+  this._animator = new Animator(this);
+
+  // default plugins to use for every mojo application
   this.use(defaultComponents, decorators, paperclip, pools.plugin);
 }
 
@@ -32,139 +170,109 @@ function Application (options) {
 protoclass(bindable.Object, Application, {
 
   /**
+   * Plugins to use for the mojo application. 
+   *
+   * @method use
+   * @param {Function} plugins... must be defined as `function (app) { }`
    */
 
-  use: function () {
+  use: function (test) {
+
+    // simple impl - go through each arg and pass self ref
     for(var i = 0, n = arguments.length; i < n; i++) {
       arguments[i](this);
     }
+
     return this;
   },
 
   /**
+   * DEPRECATED
    */
 
   getViewClass: function (name) {
-    return this.getClass("views." + name);
+    return this.viewClasses.get(name);
   },
+
   registerViewClass: function (name, clazz) {
-    this.registerClass("views." + name, clazz);
+    return this.viewClasses.add(name, clazz);
   },
+
   createView: function (name, options) {
-    return this.createObject("views." + name, options);
+    return this.viewClasses.create(name, options);
   },
 
   /**
+   * DEPRECATED
    */
 
   getModelClass: function (name) {
-    return this.getClass("models." + name);
+    return this.modelClasses.get(name);
   },
   registerModelClass: function (name, clazz) {
-    this.registerClass("models." + name, clazz);
+    return this.modelClasses.add(name, clazz);
   },
   createModel: function (name, options) {
-    return this.createObject("models." + name, options);
+    return this.modelClasses.create(name, options);
   },
 
   /**
-   */
-
-  getClass: function (name) {
-    return this.get("models.classes." + name);
-  },
-  registerClass: function (name, clazz) {
-    this.set("models.classes." + name, clazz);
-  },
-  createObject: function (name, options) {
-    if (!options) options = {};
-
-    var clazz;
-
-    if (type(name) === "function") {
-      clazz = name;
-    } else {
-      clazz = this.get("models.classes." + name);
-
-      if (!clazz) {
-        throw new Error("class '"+name+"' doesn't exist");
-      }
-    }
-
-    return new clazz(options, this);
-  },
-
-  /**
+   * Runs `update()` on requestAnimationFrame. Used whenever the UI changes.
+   * @method animate
+   * @param {Object} animatable Must have `update()` defined.
+   * @see Animator
    */
 
   animate: function (animatable) {
-
-    if (!process.browser || this.fake) {
-      return animatable.update();
-    }
-
-
-    this._animationQueue.push(animatable);
-
-    if (this._requestingFrame) return;
-    this._requestingFrame = true;
-    var self = this;
-
-    requestAnimationFrame(function () {
-
-      var queue = self._animationQueue;
-
-      for (var i = 0; i < queue.length; i++) {
-        queue[i].update();
-      }
-
-      self._animationQueue = [];
-      self._requestingFrame = false;
-    });
-  },
-
-  /**
-   */
-
-  pool: function (clazz, options) {
-    options.application = this;
-    var self = this, pool;
-
-    options.create = function (options) {
-      var item = new clazz(options, self);
-      item.emit("warm");
-      item.on("dispose", function () {
-        pool.add(item);
-      });
-      return item;
-    };
-
-    options.recycle = function (item, options) {
-      item.reset(options);
-      return item;
-    };
-
-    return pool = poolparty(options);
+    this._animator.animate(animatable);
   }
-
 });
 
 module.exports = Application;
-},{"./plugins/decor":5,"./plugins/defaultComponents":7,"./pools":8,"__browserify_process":28,"bindable":19,"mojo-paperclip":38,"nofactor":42,"poolparty":84,"protoclass":85,"type-component":89,"underscore":90}],2:[function(require,module,exports){
+},{"./animator":1,"./plugins/decor":6,"./plugins/defaultComponents":8,"./pools":9,"./registeredClasses":10,"bindable":21,"mojo-paperclip":41,"nofactor":45,"poolparty":91,"protoclass":92,"type-component":97,"underscore":98}],3:[function(require,module,exports){
 var views   = require("./views"),
 Application = require("./application"),
 pools       = require("./pools");
 
+/** 
+ * @module mojo
+ */
+ 
+
+/**
+ * @class Mojo
+ */
+
+
+
 module.exports = {
-  View: views.BaseView,
-  Application: Application,
-  pool: pools.add
+
+  /**
+   * The base mojo.js View
+   * @property View
+   */
+
+  View        : views.BaseView,
+
+  /**
+   * The base mojo.application. This is where all your models / views live.
+   * @property Application
+   */
+
+  Application : Application,
+
+  /**
+   * Registers a class to pool
+   * @property pool
+   */
+
+  pool        : pools.add
 };
 
 if (typeof window !== "undefined") {
   window.mojo = module.exports;
 }
-},{"./application":1,"./pools":8,"./views":11}],3:[function(require,module,exports){
+},{"./application":2,"./pools":9,"./views":13}],4:[function(require,module,exports){
 var protoclass = require("protoclass"),
 janitor        = require("janitorjs"),
 _              = require("underscore");
@@ -274,7 +382,7 @@ EventsDecorator.decorate   = function (view, options) {
 }
 
 module.exports = EventsDecorator;
-},{"janitorjs":36,"protoclass":85,"underscore":90}],4:[function(require,module,exports){
+},{"janitorjs":39,"protoclass":92,"underscore":98}],5:[function(require,module,exports){
 var protoclass = require("protoclass");
 
 
@@ -356,7 +464,7 @@ protoclass(DecorFactory, {
 module.exports = function () {
   return new DecorFactory();
 }
-},{"protoclass":85}],5:[function(require,module,exports){
+},{"protoclass":92}],6:[function(require,module,exports){
 
 var EventsDecorator   = require("./events"),
 SectionsDecorator     = require("./sections"),
@@ -381,7 +489,7 @@ module.exports = function (app) {
     return decor.use(decorator);
   }
 }
-},{"./events":3,"./factory":4,"./sections":6,"bindable-decor-bindings":15}],6:[function(require,module,exports){
+},{"./events":4,"./factory":5,"./sections":7,"bindable-decor-bindings":17}],7:[function(require,module,exports){
 var type   = require("type-component"),
 protoclass = require("protoclass"),
 _ = require("underscore");
@@ -468,7 +576,7 @@ SectionsDecorator.decorate = function (view, options) {
 }
 
 module.exports = SectionsDecorator;
-},{"protoclass":85,"type-component":89,"underscore":90}],7:[function(require,module,exports){
+},{"protoclass":92,"type-component":97,"underscore":98}],8:[function(require,module,exports){
 var views = require("../views");
 
 module.exports = function (app) {
@@ -477,7 +585,7 @@ module.exports = function (app) {
   app.registerViewClass("base", views.BaseView);
 };
 
-},{"../views":11}],8:[function(require,module,exports){
+},{"../views":13}],9:[function(require,module,exports){
 var EventEmitter = require("bindable").EventEmitter,
 em = new EventEmitter();
 
@@ -546,15 +654,70 @@ function createPool (clazz, options, app) {
 
   app._pools[clazz.pid] = pool = poolparty(options);
 }
-},{"bindable":19,"poolparty":84}],9:[function(require,module,exports){
+},{"bindable":21,"poolparty":91}],10:[function(require,module,exports){
+var protoclass = require("protoclass");
+
+/**
+ * Collection of registered classes that can be used throughout the mojo applicaiton (views/models).
+ * @module mojo
+ * @class RegisteredClasses
+ */
+
+function RegisteredClasses (application) {
+  this.application = application;
+  this._classes    = {};
+}
+
+
+protoclass(RegisteredClasses, {
+
+  /**
+   * Returns a registered class
+   * @method get
+   * @param {String} name
+   */
+
+  get: function (name) {
+    return this._classes[name];
+  },
+
+  /**
+   * Registers a class
+   * @method add
+   * @param {String} name
+   * @param {Class} clazz the view / model class
+   */
+
+  add: function (name, clazz) {
+    this._classes[name] = clazz;
+  },
+
+  /**
+   * Creates a new object. 
+   * Note that `application` is passed in the second constructor param of the instantiated class.
+
+   * @method create
+   * @param {String} name
+   * @param {Object} options to pass as the first param in the constructor
+   */
+
+  create: function (name, options) {
+    var clazz = this._classes[name];
+    if (!clazz) throw new Error(name + " doesn't exist");
+    return new clazz(options, this.application);
+  }
+});
+
+module.exports = RegisteredClasses;
+},{"protoclass":92}],11:[function(require,module,exports){
 var i = 0;
 
 module.exports = function () {
-  return String(i++);
+  return "cid" + String(i++);
 };
 
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var process=require("__browserify_process");var protoclass   = require("protoclass"),
 loaf             = require("loaf"),
 SubindableObject = require("subindable").Object,
@@ -564,12 +727,69 @@ _                = require("underscore"),
 decor            = require("../../plugins/decor"),
 generateId       = require("../../utils/idGenerator");
 
+/**
+ * @module mojo
+ * @submodule mojo-views
+ */
+
+/**
+
+## Usage
+
+
+```javascript
+var SubView = mojo.View.extend({
+  name: "craig"
+});
+var view = new SubView();
+console.log(view.get("name")); //craig
+```
+
+## Sections Property
+
+The sections property allows you to define sub-views.
+
+```javascript
+var PagesView = mojo.View.extend({
+  sections: {
+    header: require("./headerView"),
+    content: require("./contentView")
+  }
+})
+```
+
+## Events Property
+
+Events property allows you listen to events emitted by the DOM, or view controller.
+
+```javascript
+
+
+@class BaseView
+@extends SubindableObject
+*/
+
+/**
+ * Called when the view is rendered
+ * @event render
+ */
+
+/**
+ * Called when the view is remove
+ * @event remove
+ */
 
 function DecorableView (data, application) {
 
   SubindableObject.call(this, this);
 
   this._onParent     = _.bind(this._onParent, this);
+
+  /**
+   * The main application that instantiated this view
+   * @property application
+   * @type {Application}
+   */
 
   this.application = application;
 
@@ -592,6 +812,9 @@ protoclass(SubindableObject, DecorableView, {
   define: ["sections", "states"],
 
   /**
+   * adds a disposable object to cleanup when the view is destroyed.
+   * @method disposable
+   * @param {Object} disposable Must have `dispose()` defined.
    */
 
   disposable: function (disposable) {
@@ -608,13 +831,6 @@ protoclass(SubindableObject, DecorableView, {
 
   reset: function (data) {
 
-    // todo - should NOT have an ID
-    if (data) {
-      this._id = data._id ? data._id : data.model ? data.model.get("_id") : generateId();
-    } else {
-      this._id = generateId();
-    }
-
     // copy the data to this object. Note this shaves a TON
     // of time off initializing any view, especially list items if we
     // use this method over @setProperties data
@@ -629,15 +845,19 @@ protoclass(SubindableObject, DecorableView, {
   },
 
   /**
+   * Called when the view is instantiated
+   * @method initialize 
+   * @param {Object} options options passed when creating the view
    */
 
   initialize: function (data) {
+
+    this._cid = generateId();
 
     this.on("change:parent", this._onParent);
     this.reset(data);
 
     if (this.application) this._initDecor();
-
   },
 
   /**
@@ -652,6 +872,13 @@ protoclass(SubindableObject, DecorableView, {
     this._decorated = true;
 
     if (!this.section) {
+
+      /**
+       * The section that manages the `document fragment` owned by this view controller.
+       * @property section
+       * @type {Section}
+       */
+
       this.section = loaf(this.application.nodeFactory);
       this.models  = this.application.models;
     }
@@ -660,7 +887,8 @@ protoclass(SubindableObject, DecorableView, {
   },
 
   /**
-   * returns the path to this view
+   * Returns the path to the view
+   * @method path
    */
 
   path: function () {
@@ -675,12 +903,20 @@ protoclass(SubindableObject, DecorableView, {
   },
 
   /**
+   * Renders the view
+   * @method render
+   * @return {Object} document fragment
    */
 
   render: function () {
 
     if (this._rendered) return this.section.render();
     this._rendered = true;
+
+    if (this._cleanupJanitor) {
+      this._cleanupJanitor.dispose();
+      this._cleanupJanitor = undefined;
+    }
 
     if (!this._decorated)  this._initDecor();
     
@@ -692,6 +928,9 @@ protoclass(SubindableObject, DecorableView, {
   },
 
   /**
+   * called in `render()`, before emitting `render` event
+   * @method _render
+   * @protected
    */
 
   _render: function (section) {
@@ -699,6 +938,8 @@ protoclass(SubindableObject, DecorableView, {
   },
 
   /**
+   * Removes the view from the parent, or DOM
+   * @method remove
    */
 
   remove: function () {
@@ -712,6 +953,9 @@ protoclass(SubindableObject, DecorableView, {
   },
 
   /**
+   * jquery selector for elements owned by the view
+   * @method $
+   * @param {String} selector
    */
 
   $: function (search) {
@@ -727,7 +971,9 @@ protoclass(SubindableObject, DecorableView, {
   },
 
   /**
-   * attaches to an element
+   * Attaches the view to an element. This is mostly used for the main view.
+   * @method attach
+   * @param {Object} DOM element to attach to
    */
 
   attach: function (element) {
@@ -744,7 +990,7 @@ protoclass(SubindableObject, DecorableView, {
     }
   },
 
-  /**
+  /** 
    */
 
   setChild: function (name, child) {
@@ -753,6 +999,10 @@ protoclass(SubindableObject, DecorableView, {
   },
 
   /**
+   * Sort of a mix-in for the view. This is how `sections`, and `events` are added.
+   * @method decorate
+   * @param options
+   * @returns {Object} this
    */
 
   decorate: function (options) {
@@ -760,7 +1010,7 @@ protoclass(SubindableObject, DecorableView, {
     return this;
   },
 
-  /**
+  /*
    */
 
   dispose: function () {
@@ -778,6 +1028,10 @@ protoclass(SubindableObject, DecorableView, {
   },
 
   /**
+   * Bubbles an event up to the root view
+   * @method bubble
+   * @param {String} name of the event
+   * @param {Object} params... additional params
    */
 
   bubble: function () {
@@ -812,26 +1066,39 @@ protoclass(SubindableObject, DecorableView, {
 
   _removeLater: function () {
     var self = this;
-    self.remove();
+    if (!process.browser) return this.remove();
+    this.__cleanupJanitor().add(runlater(function () {
+      self.remove();
+    }));
   },
   /**
    */
 
   _disposeLater: function () {
     var self = this;
-    self.dispose();
+    if (!process.browser) return this.dispose();
+    this.__cleanupJanitor().add(runlater(function () {
+      self.dispose();
+    }));
+  },
+
+  /**
+   */
+
+  __cleanupJanitor: function () {
+    return this._cleanupJanitor || (this._cleanupJanitor = janitor())
   }
 });
 
 module.exports = DecorableView;
-},{"../../plugins/decor":5,"../../utils/idGenerator":9,"__browserify_process":28,"janitorjs":36,"loaf":37,"protoclass":85,"runlater":86,"subindable":87,"underscore":90}],11:[function(require,module,exports){
+},{"../../plugins/decor":6,"../../utils/idGenerator":11,"__browserify_process":30,"janitorjs":39,"loaf":40,"protoclass":92,"runlater":93,"subindable":95,"underscore":98}],13:[function(require,module,exports){
 module.exports = {
   BaseView   : require("./base"),
   ListView   : require("./list"),
   StatesView : require("./states")
 };
 
-},{"./base":10,"./list":12,"./states":13}],12:[function(require,module,exports){
+},{"./base":12,"./list":14,"./states":15}],14:[function(require,module,exports){
 var process=require("__browserify_process");var protoclass = require("protoclass"),
 bindable       = require("bindable"),
 type           = require("type-component"),
@@ -840,9 +1107,19 @@ janitor        = require("janitorjs"),
 BaseView       = require("../base"),
 _              = require("underscore"),
 runlater       = require("runlater").global,
-poolparty      = require("poolparty");
+poolparty      = require("poolparty"),
+idGenerator    = require("../../utils/idGenerator");
 
-
+/**
+ * @module mojo
+ * @submodule mojo-views
+ */
+ 
+/** 
+ * List View
+ * @class ListView
+ * @extends BaseView
+ */
 
 function ListView (data, application) {
   ListView.parent.call(this, data, application);
@@ -874,11 +1151,15 @@ function onOptionChange (onRef) {
 protoclass(BaseView, ListView, {
 
   /**
+   * Number of items to asyncronously add to the list (optimization).
+   * @property chunk
    */
 
   chunk: 10,
 
   /**
+   * Delay between adding chunked items to the list (optimization).
+   * @property delay
    */
 
   delay: 0,
@@ -897,7 +1178,71 @@ protoclass(BaseView, ListView, {
   /**
    */
 
-  define: ["filter", "sort", "map", "length", "modelViewFactory", "modelViewClass", "viewClass", "source"],
+  define: [
+
+    /**
+     * The filter method for the list view
+     * @method filter
+     * @param {BindableObject} the model to builder
+     */
+
+    "filter", 
+
+    /**
+     * The sort method for the list
+     * @method sort
+     * @param {BaseView} a
+     * @param {BaseView} b
+     */
+
+    "sort", 
+
+    /**
+     * Maps model data before setting to the instantiated list item view
+     * @method map
+     * @param {Object} model
+     * @return {Number} 0, 1, or -1
+     */
+
+    "map", 
+
+    /**
+     * The size of the list view
+     * @property length
+     * @type {Number}
+     */
+
+    "length", 
+
+    /**
+     * The model view factory for creating each list item
+     * @property modelViewFactory
+     */
+
+    "modelViewFactory", 
+
+    /**
+     * The model view class for each list item. Use this or `modelViewFactory`.
+     * @property modelViewClass
+     * @type {BaseView}
+     */
+
+    "modelViewClass", 
+
+    /**
+     * DEPRECATED
+     */
+
+    "viewClass", 
+
+    /**
+     * The collection of models to use. Each model is assigned as `model` to each instantiated `modelViewClass`.
+     * @property source
+     * @type {BindableCollection}
+     */
+
+    "source"
+  ],
 
   /**
    */
@@ -1043,8 +1388,8 @@ protoclass(BaseView, ListView, {
       modelsToInsert.push(model);
 
       // uneccessary overhead calling .get()
-      if (!model.__context._id) {
-        model.set("_id", Date.now() + "." + Math.round(Math.random() * 999999));
+      if (!model.__context._cid) {
+        model.set("_cid", idGenerator());
       }
 
       var self = this;
@@ -1149,7 +1494,7 @@ protoclass(BaseView, ListView, {
     for (var i = 0, n = models.length; i < n; i++) {
       model = models[i];
 
-      if(~this._searchViewIndexById(model.__context._id)) continue;
+      if(~this._searchViewIndexById(model.__context._cid)) continue;
 
       // create the view
       view = this._modelViewFactory.create({
@@ -1184,7 +1529,7 @@ protoclass(BaseView, ListView, {
   _searchViewIndexById: function (_id) {
     var src = this._views.source();
     for (var i = src.length; i--;) {
-      if(src[i].__context._id == _id) return i;
+      if(src[i].__context.model.__context._cid == _id) return i;
     }
     return -1;
   },
@@ -1194,7 +1539,9 @@ protoclass(BaseView, ListView, {
 
   _watchModelChanges: function (model) {
     var self = this;
-    if (!model.on) return;
+    if (!model.on) return {
+      dispose: function () { }
+    };
     return model.on("change", function () {
       if (!self._inserting || !~self._inserting.indexOf(model))
         self._refilter([model]);
@@ -1206,6 +1553,9 @@ protoclass(BaseView, ListView, {
 
   _onRemoveModel: function (model, index, viewIndex) {
 
+    // might happen if the collection is also a model
+    if (!model) return;
+
     var i;
 
     // remove the item that has not been added to the DOM yet
@@ -1214,7 +1564,7 @@ protoclass(BaseView, ListView, {
     }
 
     if (viewIndex === undefined) {
-      viewIndex = this._searchViewIndexById(model.__context._id);
+      viewIndex = this._searchViewIndexById(model.__context._cid);
     }
 
     if (!~viewIndex) {
@@ -1276,7 +1626,7 @@ protoclass(BaseView, ListView, {
     for (i = models.length; i--;) {
       model       = models[i];
       useModel    = !!this._filter(model, this);
-      modelIndex  = this._searchViewIndexById(model.__context._id);
+      modelIndex  = this._searchViewIndexById(model.__context._cid);
 
       if (useModel === !!~modelIndex) {
         continue;
@@ -1299,13 +1649,24 @@ protoclass(BaseView, ListView, {
 
 
 module.exports = ListView;
-},{"../base":10,"__browserify_process":28,"bindable":19,"factories":35,"janitorjs":36,"poolparty":84,"protoclass":85,"runlater":86,"type-component":89,"underscore":90}],13:[function(require,module,exports){
+},{"../../utils/idGenerator":11,"../base":12,"__browserify_process":30,"bindable":21,"factories":37,"janitorjs":39,"poolparty":91,"protoclass":92,"runlater":93,"type-component":97,"underscore":98}],15:[function(require,module,exports){
 var bindable = require("bindable")
 State        = require("./state"),
 protoclass   = require("protoclass"),
 BaseView     = require("../base"),
-_            = require("underscore");
+_            = require("underscore"),
+flatstack    = require("flatstack");
 
+/**
+ * @module mojo
+ * @submodule mojo-views
+ */
+
+/**
+ * States View. This is usually defined in `{ sections: { pages: { type: 'states'}} }`
+ * @class StateView
+ * @extends BaseView
+ */
 
 function StateView (data, application) {
   BaseView.call(this, data, application);
@@ -1321,15 +1682,60 @@ protoclass(BaseView, StateView, {
   _decorated: true,
 
   /**
+   * Transitions from one state to another
+   * @param {BaseView} from view to transition from. This can be null.
+   * @param {BaseView} to view to transition to.
+   * @param {Function} complete called when the transition finishes
    */
 
-  define: ["currentName", 
+  transition: function (from, to, next) {
+    next()
+  },
+
+  /**
+   */
+
+  define: [
+
+    /**
+     * current state name
+     * @property currentName
+     */
+
+    "currentName", 
+
+    /**
+     * current state index
+     * @property index
+     */
+
     "index", 
+
+    /**
+     * TODO - change this to 'states'
+     */
+
     "source", 
+
+    /**
+     * The current view being displayed
+     * @property currentView
+     * @type {BaseView}
+     */
+
     "currentView", 
+
     "rotate", 
     "ended", 
-    "views"],
+
+    /**
+     * The collection of view classes to use
+     * @property views
+     * @type {Array}
+     */
+
+    "views"
+  ],
 
   /**
    */
@@ -1342,6 +1748,7 @@ protoclass(BaseView, StateView, {
   initialize: function (data) {
     this.source = new bindable.Collection();    
     BaseView.prototype.initialize.call(this, data);
+    this._q = flatstack();
 
     this.next = _.bind(this.next, this);
     this.prev = _.bind(this.prev, this);
@@ -1387,6 +1794,9 @@ protoclass(BaseView, StateView, {
   },
 
   /**
+   * Selects a specific index
+   * @method select
+   * @param {Number} stateOrIndex 
    */
 
   select: function (stateOrIndex) {
@@ -1401,6 +1811,8 @@ protoclass(BaseView, StateView, {
   },
 
   /**
+   * moves to the next state
+   * @method next
    */
 
   next: function () {
@@ -1408,6 +1820,8 @@ protoclass(BaseView, StateView, {
   },
 
   /**
+   * moves to the previous state
+   * @method prev
    */
 
   prev: function () {
@@ -1415,6 +1829,9 @@ protoclass(BaseView, StateView, {
   },
 
   /**
+   * moves to a specific state index
+   * @method move
+   * @param position steps to move. Can be something like `-1`, or `1`.
    */
 
   move: function (position) {
@@ -1464,7 +1881,10 @@ protoclass(BaseView, StateView, {
    */
 
   update: function () {
-    if (!this.source.length) return;
+    if (!this.source.length) return;  
+
+    var self = this;
+
 
     var cs = this.currentState,
     os = cs;
@@ -1481,23 +1901,32 @@ protoclass(BaseView, StateView, {
 
     if (this._displayListener) this._displayListener.dispose();
 
-    if (os && os !== cs) {
-      os.remove();
-    }
-
     state.render();
 
     if (isNew) {
-      this.section.append(newStateView.section.render());
+      self.section.append(newStateView.section.render());
     }
-    
-    this.set("currentView", newStateView);
+
+    function onTransition () {
+      if (os && os !== cs) os.removeLater();
+      
+      self.set("currentView", newStateView);
+    }
+
+    if (!os) {
+      this.transition(os ? os._view : os, state._view, function () {
+        self.application.animate({ update: onTransition })
+      });
+    } else {
+      onTransition();
+    }
+
   }
 });
 
 
 module.exports = StateView;
-},{"../base":10,"./state":14,"bindable":19,"protoclass":85,"underscore":90}],14:[function(require,module,exports){
+},{"../base":12,"./state":16,"bindable":21,"flatstack":38,"protoclass":92,"underscore":98}],16:[function(require,module,exports){
 var bindable = require("bindable"),
 _            = require("underscore"),
 protoclass   = require("protoclass");
@@ -1536,8 +1965,20 @@ protoclass(bindable.Object, State, {
    */
 
   remove: function () {
+    if (!this._view) return;
     this._view.set("visible", false);
     this._view.dispose();
+    this._view = undefined;
+  },
+  
+  /**
+   */
+
+  removeLater: function () {
+    if (!this._view) return;
+    this._view.set("visible", false);
+    this._view.section.hide();
+    this._view._disposeLater();
     this._view = undefined;
   },
 
@@ -1567,7 +2008,7 @@ protoclass(bindable.Object, State, {
 });
 
 module.exports = State;
-},{"bindable":19,"protoclass":85,"underscore":90}],15:[function(require,module,exports){
+},{"bindable":21,"protoclass":92,"underscore":98}],17:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var BindingsDecorator, disposable,
@@ -1671,7 +2112,7 @@ module.exports = State;
 
 }).call(this);
 
-},{"disposable":16}],16:[function(require,module,exports){
+},{"disposable":18}],18:[function(require,module,exports){
 
 
 (function() {
@@ -1771,7 +2212,7 @@ module.exports = State;
 })();
 
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 var BindableObject = require("../object"),
 computed           = require("../utils/computed"),
 sift               = require("sift");
@@ -1936,7 +2377,7 @@ BindableObject.extend(BindableCollection, {
 
 module.exports = BindableCollection;
 
-},{"../object":20,"../utils/computed":23,"sift":26}],18:[function(require,module,exports){
+},{"../object":22,"../utils/computed":25,"sift":28}],20:[function(require,module,exports){
 var protoclass = require("protoclass"),
 disposable     = require("disposable");
 
@@ -2054,7 +2495,7 @@ EventEmitter.prototype.removeAllListeners = function (event) {
 
 
 module.exports = EventEmitter;
-},{"disposable":25,"protoclass":85}],19:[function(require,module,exports){
+},{"disposable":27,"protoclass":92}],21:[function(require,module,exports){
 module.exports = {
   Object       : require("./object"),
   Collection   : require("./collection"),
@@ -2066,7 +2507,7 @@ module.exports = {
 if (typeof window !== "undefined") {
   window.bindable = module.exports;
 }
-},{"./collection":17,"./core/eventEmitter":18,"./object":20,"./utils/computed":23,"./utils/options":24}],20:[function(require,module,exports){
+},{"./collection":19,"./core/eventEmitter":20,"./object":22,"./utils/computed":25,"./utils/options":26}],22:[function(require,module,exports){
 var EventEmitter    = require("../core/eventEmitter"),
 protoclass          = require("protoclass"),
 watchProperty       = require("./watchProperty");
@@ -2263,7 +2704,7 @@ protoclass(EventEmitter, Bindable, {
 
 module.exports = Bindable;
 
-},{"../core/eventEmitter":18,"./watchProperty":22,"protoclass":85}],21:[function(require,module,exports){
+},{"../core/eventEmitter":20,"./watchProperty":24,"protoclass":92}],23:[function(require,module,exports){
 var toarray = require("toarray"),
 _           = require("underscore");
 
@@ -2389,7 +2830,7 @@ function transform (bindable, fromProperty, options) {
 };
 
 module.exports = transform;
-},{"toarray":27,"underscore":90}],22:[function(require,module,exports){
+},{"toarray":29,"underscore":98}],24:[function(require,module,exports){
 var _     = require("underscore"),
 transform = require("./transform"),
 options   = require("../utils/options");
@@ -2634,7 +3075,7 @@ function watchProperty (bindable, property, fn) {
 }
 
 module.exports = watchProperty;
-},{"../utils/options":24,"./transform":21,"underscore":90}],23:[function(require,module,exports){
+},{"../utils/options":26,"./transform":23,"underscore":98}],25:[function(require,module,exports){
 var toarray = require("toarray");
 
 module.exports = function (properties, fn) {
@@ -2642,14 +3083,14 @@ module.exports = function (properties, fn) {
   fn.compute = properties;
   return fn;
 };
-},{"toarray":27}],24:[function(require,module,exports){
+},{"toarray":29}],26:[function(require,module,exports){
 module.exports = {
   computedDelay : 0
 };
 
-},{}],25:[function(require,module,exports){
-module.exports=require(16)
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
+module.exports=require(18)
+},{}],28:[function(require,module,exports){
 /*
  * Sift
  * 
@@ -3206,12 +3647,12 @@ module.exports=require(16)
 })();
 
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = function(item) {
   if(item === undefined)  return [];
   return Object.prototype.toString.call(item) === "[object Array]" ? item : [item];
 }
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3266,7 +3707,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],29:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var AnyFactory, factoryFactory,
@@ -3341,7 +3782,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{"./base":30,"./factory":32}],30:[function(require,module,exports){
+},{"./base":32,"./factory":34}],32:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var BaseFactory;
@@ -3361,7 +3802,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var ClassFactory,
@@ -3405,7 +3846,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{"./base":30}],32:[function(require,module,exports){
+},{"./base":32}],34:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var ClassFactory, FactoryFactory, FnFactory, factory, type,
@@ -3456,7 +3897,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{"./base":30,"./class":31,"./fn":33,"type-component":89}],33:[function(require,module,exports){
+},{"./base":32,"./class":33,"./fn":35,"type-component":97}],35:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var FnFactory;
@@ -3494,7 +3935,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{}],34:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var GroupFactory, factoryFactory,
@@ -3581,7 +4022,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{"./base":30,"./factory":32}],35:[function(require,module,exports){
+},{"./base":32,"./factory":34}],37:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   module.exports = {
@@ -3594,7 +4035,204 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{"./any":29,"./class":31,"./factory":32,"./fn":33,"./group":34}],36:[function(require,module,exports){
+},{"./any":31,"./class":33,"./factory":34,"./fn":35,"./group":36}],38:[function(require,module,exports){
+var _asyncCount = 0;
+
+function flatstack(options) {
+
+  if(!options) {
+    options = {};
+  }
+
+  var _context = options.context,
+  _parent      = options.parent,
+  _asyncLength = options.asyncLength || 1,
+  enforceAsync = !!(options.enforceAsync || module.exports.enforceAsync);
+
+
+
+  var _queue = [], _error = function(err) {
+  
+  }
+
+  var self = {
+
+    /**
+     */
+
+    _parent: _parent,
+
+
+    /**
+     */
+
+    _pauseCount: 0,
+
+    /**
+     */
+
+    error: function(callback) {
+      _error = callback;
+    },
+
+    /**
+     */
+
+    child: function(context) {
+      return flatstack({
+        context     : _context,
+        parent      : _parent,
+        asyncLength : _asyncLength
+      });
+    },
+
+    /**
+     */
+
+    pause: function() {
+      
+      var p = self;
+
+      while(p) {
+        p._pauseCount++;
+        p = p._parent;
+      }
+
+      return self;
+    },
+
+    /**
+     */
+
+    resume: function(err) {
+
+      if(err) _error(err);
+
+      //already resumed? ignore!
+      if(!self._pauseCount || self._resuming) return self;
+
+      self._resuming = true;
+
+
+      //if the queued function called for .pause() and .resume()
+      //maintain the async behavior by adding a timeout - it's expected!
+      if(enforceAsync && _asyncCount++ == flatstack.asyncLimit) {
+        _asyncCount = 0;
+        setTimeout(self._resume, 0, arguments);
+      } else {
+        self._resume(arguments);
+      }
+
+      return self;
+    },
+
+    /**
+     */
+
+    _resume: function(args) {
+      var p = self;
+      self._resuming = false;
+
+      //first decrmeent the pause count
+      while(p) {
+        p._pauseCount--;
+        p = p._parent;
+      }
+
+      p = self;
+
+
+      //next, resume eveything
+      while(p) {
+        if(p._pauseCount) break;
+        p.next(args);
+        p = p._parent;
+      }
+    },
+
+    /**
+     */
+
+    push: function() {
+      _queue.push.apply(_queue, arguments);
+      self._run();
+      return self;
+    },
+
+    /**
+     */
+
+    unshift: function() {
+      _queue.unshift.apply(_queue, arguments);
+      self._run();
+      return self;
+    },
+
+    /**
+     */
+
+    next: function() {
+
+      var args = Array.prototype.slice.call(arguments[0] || [], 0);
+
+      var fn, context, ops;
+
+      while(_queue.length) {
+
+        //paused? stop for now
+        if(self._pauseCount) break;
+
+        ops = _queue.shift();
+
+        context = ops.context || _context;
+        fn      = ops.fn      || ops;
+
+        //argument provided? it's asynchronous
+        //also check if the function is async - might be looking for
+        //arguments
+        if(fn.length === _asyncLength || fn.async) {
+          args.unshift(self.pause().resume);
+          fn.apply(context, args);
+        } else {
+          fn.apply(context, args);
+        }
+      }
+
+      if(self._complete && !_queue.length && !self._pauseCount) {
+        self._complete();
+
+        //can ONLY be called once - dispose of this.
+        self._complete = undefined;
+      }
+
+    },
+
+    /**
+     */
+
+    complete: function(fn) {
+
+      self._complete = fn;
+
+      //just need to get to the ._complete() logic
+      if(!_queue.length) return self.next();
+    },
+
+    /**
+     */
+
+    _run: function() {
+      if(self._pauseCount || !_queue.length) return;
+      self.next();
+    }
+  };
+
+  return self;
+}
+
+flatstack.asyncLimit = 10;
+module.exports = flatstack;
+},{}],39:[function(require,module,exports){
 var protoclass = require("protoclass"),
 type           = require("type-component");
 
@@ -3673,7 +4311,7 @@ protoclass(Janitor, {
 module.exports = function () {
   return new Janitor();
 }
-},{"protoclass":85,"type-component":89}],37:[function(require,module,exports){
+},{"protoclass":92,"type-component":97}],40:[function(require,module,exports){
 var protoclass = require("protoclass"),
 nofactor       = require("nofactor");
 
@@ -3871,7 +4509,7 @@ Section = protoclass(Section, {
 module.exports = function (nodeFactory, start, end)  {
   return new Section(nodeFactory, start, end);
 }
-},{"nofactor":42,"protoclass":85}],38:[function(require,module,exports){
+},{"nofactor":45,"protoclass":92}],41:[function(require,module,exports){
 var protoclass = require("protoclass"),
 paperclip      = require("paperclip"),
 runlater       = require("runlater").global;
@@ -3963,7 +4601,7 @@ var decorator = {
 module.exports = function (app) {
   app.decorator(decorator);
 }
-},{"paperclip":44,"protoclass":85,"runlater":86}],39:[function(require,module,exports){
+},{"paperclip":47,"protoclass":92,"runlater":93}],42:[function(require,module,exports){
 var protoclass = require("protoclass");
 
 function BaseFactory () {
@@ -4002,7 +4640,7 @@ protoclass(BaseFactory, {
 
 module.exports = BaseFactory;
 
-},{"protoclass":85}],40:[function(require,module,exports){
+},{"protoclass":92}],43:[function(require,module,exports){
 var Base = require("./base");
 
 function DomFactory () {
@@ -4062,7 +4700,7 @@ Base.extend(DomFactory, {
 });
 
 module.exports = new DomFactory();
-},{"./base":39}],41:[function(require,module,exports){
+},{"./base":42}],44:[function(require,module,exports){
 // from node-ent
 
 var entities = {
@@ -4092,14 +4730,14 @@ module.exports = function (str) {
 
   }).join("");
 }
-},{}],42:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = {
   string : require("./string"),
   dom    : require("./dom")
 };
 
 module.exports["default"] = typeof window !== "undefined" ? module.exports.dom : module.exports.string;
-},{"./dom":40,"./string":43}],43:[function(require,module,exports){
+},{"./dom":43,"./string":46}],46:[function(require,module,exports){
 var ent     = require("./ent"),
 Base        = require("./base"),
 protoclass  = require("protoclass");
@@ -4583,190 +5221,136 @@ protoclass(Base, StringNodeFactory, {
 });
 
 module.exports = new StringNodeFactory();
-},{"./base":39,"./ent":41,"protoclass":85}],44:[function(require,module,exports){
+},{"./base":42,"./ent":44,"protoclass":92}],47:[function(require,module,exports){
 module.exports = require("./paper");
 
 if (typeof window !== "undefined") {
   window.paperclip = module.exports;
 }
-},{"./paper":74}],45:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
-(function() {
-  var Clip, ClippedBuffer, ClippedBufferPart, bindable,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  bindable = require("bindable");
-
-  Clip = require("./index");
-
-  /*
-    watches for any changes in the template data
-  */
+},{"./paper":80}],48:[function(require,module,exports){
+var bindable = require("bindable"),
+Clip         = require("./index"),
+_            = require("underscore"),
+protoclass   = require("protoclass");
 
 
-  ClippedBufferPart = (function() {
-    /*
-    */
-    function ClippedBufferPart(clippedBuffer, script) {
-      this.clippedBuffer = clippedBuffer;
-      this.script = script;
-      this._onUpdated = __bind(this._onUpdated, this);
-      this.clip = new Clip({
-        script: this.script,
-        application: this.clippedBuffer.application
-      });
-      this.clip.bind("value", this._onUpdated);
+function ClippedBufferPart (clippedBuffer, script) {
+
+  this.clippedBuffer = clippedBuffer;
+
+  this.clip = new Clip({
+    script      : script,
+    application : clippedBuffer.application
+  });
+
+  this.clip.bind("value", _.bind(this._onUpdated, this));
+}
+
+protoclass(ClippedBufferPart, {
+
+  /**
+   */
+
+  dispose: function () {
+    this.clip.dispose();
+  },
+
+  /**
+   */
+
+  update: function () {
+    this.clip.reset(this.clippedBuffer._data);
+    this.clip.update();
+    this.value = this.clip.get("value");
+  },
+
+  /**
+   */
+
+  _onUpdated: function (value) {
+    this.value = value;
+    if (this.clippedBuffer._updating) return;
+    this.clippedBuffer.update();
+  }
+});
+
+
+function ClippedBuffer (buffer, application) {
+  bindable.Object.call(this, this);
+
+  var self = this;
+  this.application = application;
+
+  this.bindings = [];
+  this._data    = {};
+
+  this.buffer   = buffer.map(function (part) {
+
+    var ret;
+
+    if (part.fn) {
+      ret = new ClippedBufferPart(self, part);
+      self.bindings.push(ret);
+      return ret;
+    } else {
+      return { value: part };
+    };
+  });
+
+}
+
+bindable.Object.extend(ClippedBuffer, {
+
+  /**
+   */
+
+  reset: function (data) {
+    this._data = data;
+    this.update();
+    return this;
+  },
+
+  /**
+   */
+
+  dispose: function () {
+    for (var i = this.bindings.length; i--;) {
+      this.bindings[i].dispose();
+    }
+    this.bindings = [];
+  },
+
+  /**
+   */
+
+  update: function () {
+    this._updating = true;
+    for (var i = this.bindings.length; i--;) {
+      this.bindings[i].update();
+    }
+    this._updating = false;
+    this.set("value", this._getText());
+  },
+
+  /**
+   */
+
+  _getText: function () {
+
+    var buffer = "";
+
+    for (var i = 0, n = this.buffer.length; i < n; i++) {
+      var v = this.buffer[i].value;
+      buffer += v != null ? v : "";
     }
 
-    /*
-    */
 
+    return buffer;
+  }
+});
 
-    ClippedBufferPart.prototype.dispose = function() {
-      return this.clip.dispose();
-    };
-
-    /*
-    */
-
-
-    ClippedBufferPart.prototype.update = function() {
-      this.clip.reset(this.clippedBuffer._data);
-      this.clip.update();
-      return this.value = this.clip.get("value");
-    };
-
-    /*
-    */
-
-
-    ClippedBufferPart.prototype._onUpdated = function(value) {
-      this.value = value;
-      if (this.clippedBuffer._updating) {
-        return;
-      }
-      return this.clippedBuffer.update();
-    };
-
-    /*
-    */
-
-
-    ClippedBufferPart.prototype.toString = function() {
-      var _ref;
-
-      return String((_ref = this.value) != null ? _ref : "");
-    };
-
-    return ClippedBufferPart;
-
-  })();
-
-  /*
-   Keeps track of each template block. E.g: hello {{craig}}, how are you?
-  */
-
-
-  ClippedBuffer = (function(_super) {
-    __extends(ClippedBuffer, _super);
-
-    /*
-    */
-
-
-    function ClippedBuffer(buffer, application) {
-      var binding, bufferPart, _i, _len;
-
-      this.application = application;
-      ClippedBuffer.__super__.constructor.call(this);
-      this.buffer = [];
-      this.bindings = [];
-      this._data = {};
-      for (_i = 0, _len = buffer.length; _i < _len; _i++) {
-        bufferPart = buffer[_i];
-        if (bufferPart.fn) {
-          this.buffer.push(binding = new ClippedBufferPart(this, bufferPart));
-          this.bindings.push(binding);
-        } else {
-          this.buffer.push(bufferPart);
-        }
-      }
-    }
-
-    /*
-    */
-
-
-    ClippedBuffer.prototype.reset = function(data) {
-      if (data == null) {
-        data = {};
-      }
-      this._data = data;
-      this.update();
-      return this;
-    };
-
-    /*
-    */
-
-
-    ClippedBuffer.prototype.dispose = function() {
-      var binding, _i, _len, _ref;
-
-      _ref = this.bindings;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        binding = _ref[_i];
-        binding.dispose();
-      }
-      return this.bindings = [];
-    };
-
-    /*
-     updates the current text by stringifying the buffer
-    */
-
-
-    ClippedBuffer.prototype.update = function() {
-      var binding, _i, _len, _ref;
-
-      this._updating = true;
-      _ref = this.bindings;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        binding = _ref[_i];
-        binding.update();
-      }
-      this.set("text", this.text = this.render());
-      return this._updating = false;
-    };
-
-    /*
-     stringifies the buffer
-    */
-
-
-    ClippedBuffer.prototype.render = function() {
-      return this.buffer.join("");
-    };
-
-    /*
-    */
-
-
-    ClippedBuffer.prototype.toString = function() {
-      return this.text;
-    };
-
-    return ClippedBuffer;
-
-  })(bindable.Object);
-
-  module.exports = ClippedBuffer;
-
-}).call(this);
-
-},{"./index":46,"bindable":19}],46:[function(require,module,exports){
+module.exports = ClippedBuffer;
+},{"./index":49,"bindable":21,"protoclass":92,"underscore":98}],49:[function(require,module,exports){
 var process=require("__browserify_process");var protoclass = require("protoclass"),
 dref           = require("dref"),
 bindable       = require("bindable"),
@@ -4851,18 +5435,15 @@ protoclass(ClipScript, {
   /**
    */
 
-  call: function (path, key, params) {
+  call: function (ctx, key, params) {
 
-    // TODO - this doesn't look right...
-    var ctx, fn;
+    var fn;
 
-    if (arguments.length === 2) {
-      params = key;
-      ctx = this.__context;
-      fn = ctx.get(path);
+    if (ctx.__isBindable) {
+      fn = ctx.get(key);
+      ctx = ctx.context();
     } else {
-      ctx = this.__context.get(path);
-      fn = this.__context.get(path.join(".") + "." + key);
+      fn = ctx[key];
     }
 
     if (fn) return fn.apply(ctx, params);
@@ -5107,7 +5688,7 @@ protoclass(BindableObject, Clip, {
 });
 
 module.exports = Clip;
-},{"__browserify_process":28,"bindable":19,"dref":83,"protoclass":85,"type-component":89,"underscore":90}],47:[function(require,module,exports){
+},{"__browserify_process":30,"bindable":21,"dref":90,"protoclass":92,"type-component":97,"underscore":98}],50:[function(require,module,exports){
 var process=require("__browserify_process");var protoclass = require("protoclass"),
 nofactor       = require("nofactor");
 
@@ -5135,18 +5716,18 @@ protoclass(PaperclipApplication, {
 
     requestAnimationFrame(function () {
 
-      for (var i = self._animationQueue.length; i--;) {
-        var animatable = self._animationQueue[i];
-        animatable.update();
+      for (var i = 0; i < self._animationQueue.length; i++) {
+        self._animationQueue[i].update();
       }
 
       self._animationQueue = [];
+      self._requestingFrame = false;
     });
   }
 });
 
 module.exports = PaperclipApplication;
-},{"__browserify_process":28,"nofactor":42,"protoclass":85}],48:[function(require,module,exports){
+},{"__browserify_process":30,"nofactor":45,"protoclass":92}],51:[function(require,module,exports){
 var protoclass = require("protoclass");
 
 function PaperBinding (template, node, bindings, section, nodeFactory) {
@@ -5231,7 +5812,75 @@ protoclass(PaperBinding, {
 });
 
 module.exports = PaperBinding;
-},{"protoclass":85}],49:[function(require,module,exports){
+},{"protoclass":92}],52:[function(require,module,exports){
+var protoclass = require("protoclass");
+
+function BaseBinder (options) {
+  this.marker      = options.marker;
+  this.application = options.application;
+}
+
+protoclass(BaseBinder, {
+
+  /**
+   */
+
+  init: function () {
+    this._findPathToMarker();
+  },
+
+  /**
+   */
+
+  getBinding: function (node) {
+
+  },
+
+  /**
+   */
+
+  _findMark: function (node) {
+
+    var cn = node;
+
+    while (cn.parentNode) {
+      cn = cn.parentNode;
+    }
+
+    for (var i = 0, n = this.pathLength; i < n; i++) {
+      cn = cn.childNodes[this.path[i]];
+    }
+
+    return cn;
+  },
+
+  /**
+   */
+
+  _findPathToMarker: function () {
+    var path = [], 
+    marker = this.marker,
+    cn = marker;
+
+    while (cn.parentNode) {
+      var children = [];
+
+      for (var i = 0, n = cn.parentNode.childNodes.length; i < n; i++) {
+        children.push(cn.parentNode.childNodes[i]);
+      }
+
+      path.unshift(children.indexOf(cn));
+
+      cn = cn.parentNode;
+    }
+
+    this.path = path;
+    this.pathLength = path.length;
+  }
+});
+
+module.exports = BaseBinder;
+},{"protoclass":92}],53:[function(require,module,exports){
 var protoclass = require("protoclass");
 
 function BaseBinding (node) {
@@ -5248,9 +5897,9 @@ protoclass(BaseBinding, {
 });
 
 module.exports = BaseBinding;
-},{"protoclass":85}],50:[function(require,module,exports){
+},{"protoclass":92}],54:[function(require,module,exports){
 var protoclass = require("protoclass"),
-BaseBinding    = require("./index");
+BaseBinding    = require("./binding");
 
 
 function ScriptBinding (application, clip, scriptName) {
@@ -5315,46 +5964,44 @@ protoclass(BaseBinding, ScriptBinding, {
 
 
 module.exports = ScriptBinding;
-},{"./index":49,"protoclass":85}],51:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./binding":53,"protoclass":92}],55:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
   var BaseBinding, BindingCollection, Collection,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  BaseBinding = require("./base/index");
+  BaseBinding = require("./base/binding");
 
   BindingCollection = require("./collection");
 
   Collection = (function(_super) {
     __extends(Collection, _super);
 
-    /*
-    */
 
+    /*
+     */
 
     function Collection(node, _source) {
       this.node = node;
       this._source = _source != null ? _source : [];
     }
 
-    /*
-    */
 
+    /*
+     */
 
     Collection.prototype.push = function() {
       var _ref;
-
       return (_ref = this._source).push.apply(_ref, arguments);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     Collection.prototype.getBindings = function(node) {
       var binder, bindings, _i, _len, _ref;
-
       if (this._source.length === 1) {
         return this._source[0].getBinding(node);
       }
@@ -5367,13 +6014,12 @@ module.exports = ScriptBinding;
       return bindings;
     };
 
-    /*
-    */
 
+    /*
+     */
 
     Collection.prototype.init = function() {
       var binder, _i, _len, _ref, _results;
-
       _ref = this._source;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -5391,8 +6037,8 @@ module.exports = ScriptBinding;
 
 }).call(this);
 
-},{"./base/index":49,"./collection":57}],52:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./base/binding":53,"./collection":61}],56:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
   var BlockBinding,
     __hasProp = {}.hasOwnProperty,
@@ -5401,13 +6047,12 @@ module.exports = ScriptBinding;
   BlockBinding = (function(_super) {
     __extends(BlockBinding, _super);
 
-    /*
-    */
 
+    /*
+     */
 
     function BlockBinding(options) {
       var clip;
-
       clip = options.clip;
       this.section = options.section;
       this.application = options.application;
@@ -5419,9 +6064,9 @@ module.exports = ScriptBinding;
       BlockBinding.__super__.constructor.call(this, this.application, clip, this.scriptName);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     BlockBinding.prototype.bind = function(context) {
       this.context = context;
@@ -5434,9 +6079,9 @@ module.exports = ScriptBinding;
       return this.clip.unwatch();
     };
 
-    /*
-    */
 
+    /*
+     */
 
     BlockBinding.test = function(node) {
       return false;
@@ -5450,18 +6095,18 @@ module.exports = ScriptBinding;
 
 }).call(this);
 
-},{"../base/script":50}],53:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"../base/script":54}],57:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
+
 /*
 
 {{#when:condition}}
   do something
 {{/}}
-*/
-
+ */
 
 (function() {
-  var BlockDecor, _ref,
+  var BlockDecor,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -5469,20 +6114,18 @@ module.exports = ScriptBinding;
     __extends(BlockDecor, _super);
 
     function BlockDecor() {
-      _ref = BlockDecor.__super__.constructor.apply(this, arguments);
-      return _ref;
+      return BlockDecor.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     BlockDecor.prototype._onChange = function(value, oldValue) {
-      var child, childTemplate, _ref1;
-
+      var child, childTemplate, _ref;
       child = this.child;
-      if ((_ref1 = this.child) != null) {
-        _ref1.unbind();
+      if ((_ref = this.child) != null) {
+        _ref.unbind();
       }
       this.child = void 0;
       if (value) {
@@ -5498,15 +6141,14 @@ module.exports = ScriptBinding;
       }
     };
 
-    /*
-    */
 
+    /*
+     */
 
     BlockDecor.prototype.unbind = function() {
-      var _ref1;
-
+      var _ref;
       BlockDecor.__super__.unbind.call(this);
-      return (_ref1 = this.child) != null ? _ref1.dispose() : void 0;
+      return (_ref = this.child) != null ? _ref.dispose() : void 0;
     };
 
     return BlockDecor;
@@ -5517,8 +6159,8 @@ module.exports = ScriptBinding;
 
 }).call(this);
 
-},{"./base":52}],54:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./base":56}],58:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
   var Binder, BindingCollection, Clip, Factory, bindingClasses, loaf;
 
@@ -5537,47 +6179,45 @@ module.exports = ScriptBinding;
   };
 
   Binder = (function() {
+
     /*
-    */
+     */
     function Binder(options) {
       this.options = options;
     }
 
-    /*
-    */
 
+    /*
+     */
 
     Binder.prototype.getNode = function() {
       var _base;
-
       return typeof (_base = this.options["class"]).getNode === "function" ? _base.getNode(this.options) : void 0;
     };
 
-    /*
-    */
 
+    /*
+     */
 
     Binder.prototype.prepare = function() {
       var _base;
-
       return typeof (_base = this.options["class"]).prepare === "function" ? _base.prepare(this.options) : void 0;
     };
 
-    /*
-    */
 
+    /*
+     */
 
     Binder.prototype.init = function() {
       return this._path = this.path();
     };
 
-    /*
-    */
 
+    /*
+     */
 
     Binder.prototype.getBinding = function(templateNode) {
       var clazz, cn, index, key, ops, _i, _len, _ref;
-
       cn = templateNode;
       while (cn.parentNode) {
         cn = cn.parentNode;
@@ -5608,13 +6248,12 @@ module.exports = ScriptBinding;
       return new clazz(ops);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     Binder.prototype.path = function() {
       var child, children, cn, paths, _i, _len, _ref;
-
       if (this._path) {
         return this._path;
       }
@@ -5640,13 +6279,12 @@ module.exports = ScriptBinding;
   Factory = (function() {
     function Factory() {}
 
-    /*
-    */
 
+    /*
+     */
 
     Factory.prototype.getBinder = function(options) {
       var bd, clipScriptNames, scriptName, _i, _len;
-
       clipScriptNames = options.script.fn ? ["value"] : Object.keys(options.script);
       for (_i = 0, _len = clipScriptNames.length; _i < _len; _i++) {
         scriptName = clipScriptNames[_i];
@@ -5661,9 +6299,9 @@ module.exports = ScriptBinding;
       }
     };
 
-    /*
-    */
 
+    /*
+     */
 
     Factory.prototype.register = function(name, bindingClass) {
       return bindingClasses[name] = bindingClass;
@@ -5677,10 +6315,10 @@ module.exports = ScriptBinding;
 
 }).call(this);
 
-},{"../../../clip":46,"../collection":57,"./conditional":53,"./html":55,"./value":56,"loaf":37}],55:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"../../../clip":49,"../collection":61,"./conditional":57,"./html":59,"./value":60,"loaf":40}],59:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var HtmlDecor, type, _ref,
+  var HtmlDecor, type,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -5690,17 +6328,15 @@ module.exports = ScriptBinding;
     __extends(HtmlDecor, _super);
 
     function HtmlDecor() {
-      _ref = HtmlDecor.__super__.constructor.apply(this, arguments);
-      return _ref;
+      return HtmlDecor.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     HtmlDecor.prototype._onChange = function(value, oldValue) {
       var dom, node;
-
       if (oldValue != null) {
         if (typeof oldValue.remove === "function") {
           oldValue.remove();
@@ -5726,9 +6362,9 @@ module.exports = ScriptBinding;
       return this.section.replaceChildNodes(node);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     HtmlDecor.prototype.unbind = function() {
       HtmlDecor.__super__.unbind.call(this);
@@ -5743,7 +6379,7 @@ module.exports = ScriptBinding;
 
 }).call(this);
 
-},{"./base":52,"type-component":89}],56:[function(require,module,exports){
+},{"./base":56,"type-component":97}],60:[function(require,module,exports){
 var protoclass = require("protoclass"),
 BaseDecor      = require("./base");
 
@@ -5781,44 +6417,42 @@ ValueDecor.getNode = function (options) {
 }
 
 module.exports = ValueDecor;
-},{"./base":52,"protoclass":85}],57:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./base":56,"protoclass":92}],61:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
   var BaseBinding, Collection,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  BaseBinding = require("./base/index");
+  BaseBinding = require("./base/binding");
 
   Collection = (function(_super) {
     __extends(Collection, _super);
 
-    /*
-    */
 
+    /*
+     */
 
     function Collection(node, _source) {
       this.node = node;
       this._source = _source != null ? _source : [];
     }
 
-    /*
-    */
 
+    /*
+     */
 
     Collection.prototype.push = function() {
       var _ref;
-
       return (_ref = this._source).push.apply(_ref, arguments);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     Collection.prototype.bind = function(context, node) {
       var binding, _i, _len, _ref;
-
       _ref = this._source;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         binding = _ref[_i];
@@ -5826,13 +6460,12 @@ module.exports = ValueDecor;
       }
     };
 
-    /*
-    */
 
+    /*
+     */
 
     Collection.prototype.unbind = function() {
       var binding, _i, _len, _ref;
-
       _ref = this._source;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         binding = _ref[_i];
@@ -5848,8 +6481,8 @@ module.exports = ValueDecor;
 
 }).call(this);
 
-},{"./base/index":49}],58:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./base/binding":53}],62:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
   module.exports = {
     BaseBlockBinding: require("./block/base"),
@@ -5861,8 +6494,8 @@ module.exports = ValueDecor;
 
 }).call(this);
 
-},{"./block/base":52,"./block/factory":54,"./node/attrs/dataBind/handlers/base":59,"./node/base":72,"./node/factory":73}],59:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./block/base":56,"./block/factory":58,"./node/attrs/dataBind/handlers/base":63,"./node/base":76,"./node/factory":77}],63:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
   var BaseDataBindHandler,
     __hasProp = {}.hasOwnProperty,
@@ -5871,9 +6504,9 @@ module.exports = ValueDecor;
   BaseDataBindHandler = (function(_super) {
     __extends(BaseDataBindHandler, _super);
 
-    /*
-    */
 
+    /*
+     */
 
     function BaseDataBindHandler(application, node, clip, name) {
       this.node = node;
@@ -5889,10 +6522,10 @@ module.exports = ValueDecor;
 
 }).call(this);
 
-},{"../../../../base/script":50}],60:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"../../../../base/script":54}],64:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var ChangeAttrBinding, _ref,
+  var ChangeAttrBinding,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -5901,40 +6534,40 @@ module.exports = ValueDecor;
     __extends(ChangeAttrBinding, _super);
 
     function ChangeAttrBinding() {
-      this._update2 = __bind(this._update2, this);      _ref = ChangeAttrBinding.__super__.constructor.apply(this, arguments);
-      return _ref;
+      this._update2 = __bind(this._update2, this);
+      return ChangeAttrBinding.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     ChangeAttrBinding.events = "keydown change input mousedown mouseup click";
 
-    /*
-    */
 
+    /*
+     */
 
     ChangeAttrBinding.prototype.preventDefault = false;
 
-    /*
-    */
 
+    /*
+     */
 
     ChangeAttrBinding.prototype.event = ChangeAttrBinding.events;
 
-    /*
-    */
 
+    /*
+     */
 
     ChangeAttrBinding.prototype._update = function(event) {
       clearTimeout(this._changeTimeout);
       return this._changeTimeout = setTimeout(this._update2, 5);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     ChangeAttrBinding.prototype._update2 = function() {
       return this.script.update();
@@ -5948,10 +6581,10 @@ module.exports = ValueDecor;
 
 }).call(this);
 
-},{"./event":66}],61:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./event":70}],65:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var CssAttrBinding, _ref,
+  var CssAttrBinding,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -5959,27 +6592,29 @@ module.exports = ValueDecor;
     __extends(CssAttrBinding, _super);
 
     function CssAttrBinding() {
-      _ref = CssAttrBinding.__super__.constructor.apply(this, arguments);
-      return _ref;
+      return CssAttrBinding.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     CssAttrBinding.prototype._onChange = function(classes) {
-      var className, classesToUse, i, useClass, _ref1;
-
-      classesToUse = ((_ref1 = this.node.getAttribute("class")) != null ? _ref1.split(" ") : void 0) || [];
-      for (className in classes) {
-        useClass = classes[className];
-        i = classesToUse.indexOf(className);
-        if (useClass) {
-          if (!~i) {
-            classesToUse.push(className);
+      var className, classNames, classNamesArray, classesToUse, i, useClass, _i, _len, _ref;
+      classesToUse = ((_ref = this.node.getAttribute("class")) != null ? _ref.split(" ") : void 0) || [];
+      for (classNames in classes) {
+        useClass = classes[classNames];
+        classNamesArray = classNames.split(/,\s*/);
+        for (_i = 0, _len = classNamesArray.length; _i < _len; _i++) {
+          className = classNamesArray[_i];
+          i = classesToUse.indexOf(className);
+          if (useClass) {
+            if (!~i) {
+              classesToUse.push(className);
+            }
+          } else if (~i) {
+            classesToUse.splice(i, 1);
           }
-        } else if (~i) {
-          classesToUse.splice(i, 1);
         }
       }
       return this.node.setAttribute("class", classesToUse.join(" "));
@@ -5993,10 +6628,10 @@ module.exports = ValueDecor;
 
 }).call(this);
 
-},{"./base":59}],62:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./base":63}],66:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var DeleteAttrBinding, _ref,
+  var DeleteAttrBinding,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -6005,30 +6640,29 @@ module.exports = ValueDecor;
     __extends(DeleteAttrBinding, _super);
 
     function DeleteAttrBinding() {
-      this._onEvent = __bind(this._onEvent, this);      _ref = DeleteAttrBinding.__super__.constructor.apply(this, arguments);
-      return _ref;
+      this._onEvent = __bind(this._onEvent, this);
+      return DeleteAttrBinding.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     DeleteAttrBinding.prototype.event = "keydown";
 
-    /*
-    */
 
+    /*
+     */
 
     DeleteAttrBinding.prototype.preventDefault = true;
 
-    /*
-    */
 
+    /*
+     */
 
     DeleteAttrBinding.prototype._onEvent = function(event) {
-      var _ref1;
-
-      if ((_ref1 = event.keyCode) !== 8) {
+      var _ref;
+      if ((_ref = event.keyCode) !== 8) {
         return;
       }
       return DeleteAttrBinding.__super__._onEvent.call(this, event);
@@ -6042,15 +6676,15 @@ module.exports = ValueDecor;
 
 }).call(this);
 
-},{"./event":66}],63:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./event":70}],67:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
+
 /*
  Deprecated in favor of enable.coffee
-*/
-
+ */
 
 (function() {
-  var DisableAttrBinding, _ref,
+  var DisableAttrBinding,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -6058,13 +6692,12 @@ module.exports = ValueDecor;
     __extends(DisableAttrBinding, _super);
 
     function DisableAttrBinding() {
-      _ref = DisableAttrBinding.__super__.constructor.apply(this, arguments);
-      return _ref;
+      return DisableAttrBinding.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     DisableAttrBinding.prototype._onChange = function(value) {
       if (value) {
@@ -6082,10 +6715,10 @@ module.exports = ValueDecor;
 
 }).call(this);
 
-},{"./base":59}],64:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./base":63}],68:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var EnableAttrBinding, _ref,
+  var EnableAttrBinding,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -6093,13 +6726,12 @@ module.exports = ValueDecor;
     __extends(EnableAttrBinding, _super);
 
     function EnableAttrBinding() {
-      _ref = EnableAttrBinding.__super__.constructor.apply(this, arguments);
-      return _ref;
+      return EnableAttrBinding.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     EnableAttrBinding.prototype._onChange = function(value) {
       if (value) {
@@ -6117,10 +6749,10 @@ module.exports = ValueDecor;
 
 }).call(this);
 
-},{"./base":59}],65:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./base":63}],69:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var EnterAttrBinding, _ref,
+  var EnterAttrBinding,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -6129,25 +6761,25 @@ module.exports = ValueDecor;
     __extends(EnterAttrBinding, _super);
 
     function EnterAttrBinding() {
-      this._onEvent = __bind(this._onEvent, this);      _ref = EnterAttrBinding.__super__.constructor.apply(this, arguments);
-      return _ref;
+      this._onEvent = __bind(this._onEvent, this);
+      return EnterAttrBinding.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     EnterAttrBinding.prototype.event = "keydown";
 
-    /*
-    */
 
+    /*
+     */
 
     EnterAttrBinding.prototype.preventDefault = true;
 
-    /*
-    */
 
+    /*
+     */
 
     EnterAttrBinding.prototype._onEvent = function(event) {
       if (event.keyCode !== 13) {
@@ -6164,10 +6796,10 @@ module.exports = ValueDecor;
 
 }).call(this);
 
-},{"./event":66}],66:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./event":70}],70:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var EventDecor, _ref,
+  var EventDecor,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -6176,35 +6808,34 @@ module.exports = ValueDecor;
     __extends(EventDecor, _super);
 
     function EventDecor() {
-      this._onEvent = __bind(this._onEvent, this);      _ref = EventDecor.__super__.constructor.apply(this, arguments);
-      return _ref;
+      this._onEvent = __bind(this._onEvent, this);
+      return EventDecor.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     EventDecor.prototype.watch = false;
 
-    /*
-    */
 
+    /*
+     */
 
     EventDecor.prototype.propagateEvent = true;
 
-    /*
-    */
 
+    /*
+     */
 
     EventDecor.prototype.preventDefault = false;
 
-    /*
-    */
 
+    /*
+     */
 
     EventDecor.prototype.bind = function() {
-      var ev, event, name, prop, _i, _len, _ref1, _ref2, _ref3;
-
+      var ev, event, name, prop, _i, _len, _ref, _ref1, _ref2;
       EventDecor.__super__.bind.apply(this, arguments);
       event = (this.event || this.name).toLowerCase();
       name = this.name.toLowerCase();
@@ -6214,11 +6845,11 @@ module.exports = ValueDecor;
       if (event.substr(0, 2) === "on") {
         event = event.substr(2);
       }
-      if ((_ref1 = this.clip.script("propagateEvent")) != null) {
-        _ref1.update();
+      if ((_ref = this.clip.script("propagateEvent")) != null) {
+        _ref.update();
       }
-      if ((_ref2 = this.clip.script("preventDefault")) != null) {
-        _ref2.update();
+      if ((_ref1 = this.clip.script("preventDefault")) != null) {
+        _ref1.update();
       }
       if (name === "click" || name === "mouseup" || name === "mousedown" || name === "submit") {
         this.preventDefault = true;
@@ -6226,9 +6857,9 @@ module.exports = ValueDecor;
       }
       this._pge = "propagateEvent." + name;
       this._pde = "preventDefault." + name;
-      _ref3 = [this._pge, this._pde];
-      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-        ev = _ref3[_i];
+      _ref2 = [this._pge, this._pde];
+      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+        ev = _ref2[_i];
         prop = ev.split(".").shift();
         if ((this.clip.get(ev) == null) && (this.clip.get(prop) == null) && (this[prop] != null)) {
           this.clip.set(ev, this[prop]);
@@ -6237,18 +6868,18 @@ module.exports = ValueDecor;
       return (this.$node = $(this.node)).bind(this._event = event, this._onEvent);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     EventDecor.prototype.unbind = function() {
       EventDecor.__super__.unbind.call(this);
       return this.$node.unbind(this._event, this._onEvent);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     EventDecor.prototype._onEvent = function(event) {
       if (this.clip.get("propagateEvent") !== true && this.clip.get(this._pge) !== true) {
@@ -6264,9 +6895,9 @@ module.exports = ValueDecor;
       return this._update(event);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     EventDecor.prototype._update = function(event) {
       return this.script.update();
@@ -6280,10 +6911,10 @@ module.exports = ValueDecor;
 
 }).call(this);
 
-},{"./base":59}],67:[function(require,module,exports){
-var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
+},{"./base":63}],71:[function(require,module,exports){
+var process=require("__browserify_process");// Generated by CoffeeScript 1.7.0
 (function() {
-  var ChangeDecor, ModelAttrBinding, dref, type, _, _ref,
+  var ChangeDecor, ModelAttrBinding, dref, type, _,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -6303,53 +6934,59 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
       this._elementValue = __bind(this._elementValue, this);
       this._onValueChange = __bind(this._onValueChange, this);
       this._onChange = __bind(this._onChange, this);
-      this._onElementChange = __bind(this._onElementChange, this);      _ref = ModelAttrBinding.__super__.constructor.apply(this, arguments);
-      return _ref;
+      this._onElementChange = __bind(this._onElementChange, this);
+      return ModelAttrBinding.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     ModelAttrBinding.prototype.bind = function() {
+      this._autocompleteCheckInterval = setInterval(((function(_this) {
+        return function() {
+          return _this._onElementChange();
+        };
+      })(this)), 500);
       ModelAttrBinding.__super__.bind.apply(this, arguments);
       (this.$element = $(this.node)).bind(ChangeDecor.events, this._onElementChange);
       this._onChange();
       return this._nameBinding = this.clip.data.bind("name", this._onChange);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     ModelAttrBinding.prototype._onElementChange = function(event) {
-      var applyChange,
-        _this = this;
-
-      event.stopPropagation();
+      var applyChange;
+      if (event != null) {
+        event.stopPropagation();
+      }
       clearTimeout(this._changeTimeout);
-      applyChange = function() {
-        var model, name, ref, refs, value;
-
-        value = _this._parseValue(_this._elementValue());
-        name = _this._elementName();
-        refs = _this.script.script.refs;
-        model = _this.clip.get("model");
-        if (_this.clip.get("bothWays") !== false) {
-          ref = name || (refs.length ? refs[0] : void 0);
-          if (!name) {
-            model = _this.context;
-          }
-          _this.currentValue = value;
-          if (model) {
-            if (model.set) {
-              return model.set(ref, value);
-            } else {
-              return dref.set(model, ref, value);
+      applyChange = (function(_this) {
+        return function() {
+          var model, name, ref, refs, value;
+          value = _this._parseValue(_this._elementValue());
+          name = _this._elementName();
+          refs = _this.script.script.refs;
+          model = _this.clip.get("model");
+          if (_this.clip.get("bothWays") !== false) {
+            ref = name || (refs.length ? refs[0] : void 0);
+            if (!name) {
+              model = _this.context;
+            }
+            _this.currentValue = value;
+            if (model) {
+              if (model.set) {
+                return model.set(ref, value);
+              } else {
+                return dref.set(model, ref, value);
+              }
             }
           }
-        }
-      };
+        };
+      })(this);
       if (!process.browser) {
         return applyChange();
       } else {
@@ -6357,34 +6994,33 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
       }
     };
 
-    /*
-    */
 
+    /*
+     */
 
     ModelAttrBinding.prototype.unbind = function() {
-      var _ref1, _ref2;
-
+      var _ref, _ref1;
       ModelAttrBinding.__super__.unbind.call(this);
-      if ((_ref1 = this._modelBinding) != null) {
-        _ref1.dispose();
+      clearInterval(this._autocompleteCheckInterval);
+      if ((_ref = this._modelBinding) != null) {
+        _ref.dispose();
       }
-      if ((_ref2 = this._nameBinding) != null) {
-        _ref2.dispose();
+      if ((_ref1 = this._nameBinding) != null) {
+        _ref1.dispose();
       }
       return this.$element.unbind(ChangeDecor.events, this._onElementChange);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     ModelAttrBinding.prototype._onChange = function() {
-      var model, name, _ref1;
-
+      var model, name, _ref;
       model = this.clip.get("model");
       name = this._elementName();
-      if ((_ref1 = this._modelBinding) != null) {
-        _ref1.dispose();
+      if ((_ref = this._modelBinding) != null) {
+        _ref.dispose();
       }
       if (name) {
         return this._modelBinding = model != null ? model.bind(name, this._onValueChange).now() : void 0;
@@ -6393,21 +7029,20 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
       }
     };
 
-    /*
-    */
 
+    /*
+     */
 
     ModelAttrBinding.prototype._onValueChange = function(value) {
       return this._elementValue(this._parseValue(value));
     };
 
-    /*
-    */
 
+    /*
+     */
 
     ModelAttrBinding.prototype._parseValue = function(value) {
       var v;
-
       if ((value == null) || value === "") {
         return void 0;
       }
@@ -6421,13 +7056,12 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
       }
     };
 
-    /*
-    */
 
+    /*
+     */
 
     ModelAttrBinding.prototype._elementValue = function(value) {
       var isInput;
-
       if (value == null) {
         value = "";
       }
@@ -6450,21 +7084,20 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
       }
     };
 
-    /*
-    */
 
+    /*
+     */
 
     ModelAttrBinding.prototype._elementName = function() {
       return $(this.node).attr("name");
     };
 
-    /*
-    */
 
+    /*
+     */
 
     ModelAttrBinding.prototype._checkedOrValue = function(value) {
       var isCheckbox, isRadio, isRadioOrCheckbox;
-
       isCheckbox = /checkbox/.test(this.node.type);
       isRadio = /radio/.test(this.node.type);
       isRadioOrCheckbox = isCheckbox || isRadio;
@@ -6496,10 +7129,10 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
 
 }).call(this);
 
-},{"./base":59,"./change":60,"__browserify_process":28,"dref":83,"type-component":89,"underscore":90}],68:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./base":63,"./change":64,"__browserify_process":30,"dref":90,"type-component":97,"underscore":98}],72:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var ShowAttrBinding, _ref,
+  var ShowAttrBinding,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -6507,22 +7140,21 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
     __extends(ShowAttrBinding, _super);
 
     function ShowAttrBinding() {
-      _ref = ShowAttrBinding.__super__.constructor.apply(this, arguments);
-      return _ref;
+      return ShowAttrBinding.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     ShowAttrBinding.prototype.bind = function(context) {
       this._displayStyle = this.node.style.display;
       return ShowAttrBinding.__super__.bind.call(this, context);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     ShowAttrBinding.prototype._onChange = function(value) {
       return this.node.style.display = value ? this._displayStyle : "none";
@@ -6536,10 +7168,10 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
 
 }).call(this);
 
-},{"./base":59}],69:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./base":63}],73:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var StyleDecor, _ref,
+  var StyleDecor,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -6547,26 +7179,24 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
     __extends(StyleDecor, _super);
 
     function StyleDecor() {
-      _ref = StyleDecor.__super__.constructor.apply(this, arguments);
-      return _ref;
+      return StyleDecor.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     StyleDecor.prototype.bind = function() {
       this._currentStyles = {};
       return StyleDecor.__super__.bind.apply(this, arguments);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     StyleDecor.prototype._onChange = function(styles) {
       var key, name, newStyles, rmStyle, style;
-
       newStyles = {};
       rmStyle = {};
       for (name in styles) {
@@ -6592,8 +7222,8 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
 
 }).call(this);
 
-},{"./base":59}],70:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./base":63}],74:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
   var AttrDataBinding, BindingCollection, Clip, dataBindingClasses,
     __hasProp = {}.hasOwnProperty,
@@ -6637,19 +7267,18 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
   AttrDataBinding = (function(_super) {
     __extends(AttrDataBinding, _super);
 
-    /*
-    */
 
+    /*
+     */
 
     AttrDataBinding.prototype.type = "attr";
 
-    /*
-    */
 
+    /*
+     */
 
     function AttrDataBinding(options) {
       var bc, scriptName, _i, _len, _ref;
-
       AttrDataBinding.__super__.constructor.call(this, options);
       this.clip = new Clip({
         scripts: options.value[0],
@@ -6667,9 +7296,9 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
       }
     }
 
-    /*
-    */
 
+    /*
+     */
 
     AttrDataBinding.prototype.bind = function(context) {
       this.context = context;
@@ -6677,9 +7306,9 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
       return this._bindings.bind(this.context);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     AttrDataBinding.prototype.unbind = function() {
       this._bindings.unbind();
@@ -6698,8 +7327,8 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
 
 }).call(this);
 
-},{"../../../../../clip":46,"../../../collection":57,"../../base":72,"./handlers/change":60,"./handlers/css":61,"./handlers/delete":62,"./handlers/disable":63,"./handlers/enable":64,"./handlers/enter":65,"./handlers/event":66,"./handlers/model":67,"./handlers/show":68,"./handlers/style":69}],71:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"../../../../../clip":49,"../../../collection":61,"../../base":76,"./handlers/change":64,"./handlers/css":65,"./handlers/delete":66,"./handlers/disable":67,"./handlers/enable":68,"./handlers/enter":69,"./handlers/event":70,"./handlers/model":71,"./handlers/show":72,"./handlers/style":73}],75:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
   var AttrTextBinding, ClippedBuffer, type,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
@@ -6713,37 +7342,37 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
   AttrTextBinding = (function(_super) {
     __extends(AttrTextBinding, _super);
 
-    /*
-    */
 
+    /*
+     */
 
     AttrTextBinding.prototype.type = "attr";
 
-    /*
-    */
 
+    /*
+     */
 
     function AttrTextBinding(options) {
-      this._onChange = __bind(this._onChange, this);      AttrTextBinding.__super__.constructor.call(this, options);
+      this._onChange = __bind(this._onChange, this);
+      AttrTextBinding.__super__.constructor.call(this, options);
       this.clippedBuffer = new ClippedBuffer(this.value, options.application);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     AttrTextBinding.prototype.bind = function(context) {
       this.context = context;
-      return this._binding = this.clippedBuffer.reset(this.context).bind("text", this._onChange).now();
+      return this._binding = this.clippedBuffer.reset(this.context).bind("value", this._onChange).now();
     };
 
-    /*
-    */
 
+    /*
+     */
 
     AttrTextBinding.prototype.unbind = function() {
       var _ref;
-
       if ((_ref = this._binding) != null) {
         _ref.dispose();
       }
@@ -6751,9 +7380,9 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
       return this._binding;
     };
 
-    /*
-    */
 
+    /*
+     */
 
     AttrTextBinding.prototype._onChange = function(text) {
       if (!text.length) {
@@ -6763,13 +7392,12 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
       return this.node.setAttribute(this.name, text);
     };
 
-    /*
-    */
 
+    /*
+     */
 
     AttrTextBinding.prototype.test = function(binding) {
       var v, _i, _len, _ref;
-
       if (type(binding.value) !== "array") {
         return false;
       }
@@ -6791,8 +7419,8 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
 
 }).call(this);
 
-},{"../../../../../clip/buffer":45,"../../base":72,"type-component":89}],72:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"../../../../../clip/buffer":48,"../../base":76,"type-component":97}],76:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
   var BaseNodeBinding,
     __hasProp = {}.hasOwnProperty,
@@ -6801,9 +7429,9 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
   BaseNodeBinding = (function(_super) {
     __extends(BaseNodeBinding, _super);
 
-    /*
-    */
 
+    /*
+     */
 
     function BaseNodeBinding(options) {
       this.name = options.name || this.name;
@@ -6812,30 +7440,30 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
       this.nodeModel = options.context;
     }
 
-    /*
-    */
 
+    /*
+     */
 
     BaseNodeBinding.prototype.bind = function(context) {
       this.context = context;
     };
 
-    /*
-    */
 
+    /*
+     */
 
     BaseNodeBinding.prototype.unbind = function() {};
 
     return BaseNodeBinding;
 
-  })(require("../../base"));
+  })(require("../../base/binding"));
 
   module.exports = BaseNodeBinding;
 
 }).call(this);
 
-},{"../../base":49}],73:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"../../base/binding":53}],77:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
   var Binder, NodeBindingFactory, allBindingClasses, bdble, classes, clazz, dataBind, defaultBindingClasses, nodeFactory, type, _, _i, _len;
 
@@ -6851,25 +7479,25 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
   };
 
   Binder = (function() {
+
     /*
-    */
+     */
     function Binder(options) {
       this.options = options;
     }
 
-    /*
-    */
 
+    /*
+     */
 
     Binder.prototype.init = function() {};
 
-    /*
-    */
 
+    /*
+     */
 
     Binder.prototype.getBinding = function(templateNode) {
       var clazz, cn, index, _i, _len, _ref;
-
       cn = templateNode;
       while (cn.parentNode) {
         cn = cn.parentNode;
@@ -6885,13 +7513,12 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
       }));
     };
 
-    /*
-    */
 
+    /*
+     */
 
     Binder.prototype.path = function() {
       var child, children, cn, paths, _i, _len, _ref;
-
       if (this._path) {
         return this._path;
       }
@@ -6917,13 +7544,12 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
   NodeBindingFactory = (function() {
     function NodeBindingFactory() {}
 
-    /*
-    */
 
+    /*
+     */
 
     NodeBindingFactory.prototype.getBinders = function(options) {
       var attrName, attributes, bindable, bindables, binders, bindingClass, bindingClasses, context, node, nodeName, _i, _j, _len, _len1;
-
       binders = [];
       attributes = options.attributes;
       nodeName = options.nodeName;
@@ -6975,13 +7601,12 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
       return binders;
     };
 
-    /*
-    */
 
+    /*
+     */
 
     NodeBindingFactory.prototype.register = function(name, bindingClass) {
       var classes, type;
-
       type = bindingClass.type || bindingClass.prototype.type;
       if (!/node|attr/.test(String(type))) {
         throw new Error("node binding class \"" + bindingClass.name + "\" must have a type 'node', or 'attr'");
@@ -7020,88 +7645,154 @@ var process=require("__browserify_process");// Generated by CoffeeScript 1.6.2
 
 }).call(this);
 
-},{"./attrs/dataBind":70,"./attrs/text":71,"bindable":19,"underscore":90}],74:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
-(function() {
-  var Clip, bindable, bindings, modifiers, nofactor, template;
+},{"./attrs/dataBind":74,"./attrs/text":75,"bindable":21,"underscore":98}],78:[function(require,module,exports){
+var protoclass = require("protoclass"),
+BaseBinder     = require("../base/binder"),
+TextBinding    = require("./binding");
 
-  Clip = require("../clip");
+function TextBlockBinder (options) {
+  BaseBinder.apply(this, arguments);
+  this.blocks = options.blocks;
+}
 
-  template = require("./template");
+BaseBinder.extend(TextBlockBinder, {
 
-  nofactor = require("nofactor");
+  /**
+   */
 
-  modifiers = require("./modifiers");
+  getBinding: function (templateNode) {
+    var mark = this._findMark(templateNode);
+    return new TextBinding(mark, this.blocks, this.application);
+  }
+});
 
-  bindings = require("./bindings");
+module.exports = TextBlockBinder;
+},{"../base/binder":52,"./binding":79,"protoclass":92}],79:[function(require,module,exports){
+var protoclass = require("protoclass"),
+BaseBinding    = require("../base/binding"),
+ClippedBuffer  = require("../../../clip/buffer"),
+_              = require("underscore");
 
-  bindable = require("bindable");
+function TextBlockBinding (textNode, blocks, application) {
+  this.node        = textNode;
+  this.blocks      = blocks;
+  this.application = application;
+  this.clip        = new ClippedBuffer(blocks, application);
+}
 
-  module.exports = {
-    /*
-    */
+BaseBinding.extend(TextBlockBinding, {
 
-    Clip: Clip,
-    /*
-    */
+  /**
+   */
 
-    bindable: bindable,
-    /*
-     parses a template
-    */
+  bind: function (context) {
+    return this._binding = this.clip.reset(context).bind("value", _.bind(this.update, this)).now();
+  },
 
-    template: template,
-    /*
-     registers a binding modifier 
-     {{ message | titlecase() }}
-    */
+  /**
+   */
 
-    modifier: function(name, modifier) {
-      return modifiers[name] = modifier;
-    },
-    /*
-     expose the class so that one can be registered
-    */
+  unbind: function () {
+    this._binding.dispose();
+  },
 
-    BaseBlockBinding: bindings.BaseBlockBinding,
-    /*
-    */
+  /**
+   */
 
-    BaseNodeBinding: bindings.BaseNodeBinding,
-    /*
-    */
+  update: function () {
 
-    BaseAttrDataBinding: bindings.BaseAttrDataBinding,
-    /*
-     adds a block binding class
-     {{#custom}}
-     {{/}}
-    */
+    this.node.nodeValue = String(this.clip.value);
 
-    blockBinding: bindings.blockBindingFactory.register,
-    /*
-     adds a node binding shim
-     <custom />
-     <div custom="" />
-    */
-
-    nodeBinding: bindings.nodeBindingFactory.register,
-    /*
-      data-bind="{{ custom: binding }}"
-    */
-
-    attrDataBinding: bindings.nodeBindingFactory.dataBind.register,
-    /*
-    */
-
-    use: function(fn) {
-      return fn(this);
+    if (this.node.replaceText) {
+      this.node.replaceText(this.clip.value, true);
     }
-  };
+  }
 
-}).call(this);
+});
 
-},{"../clip":46,"./bindings":58,"./modifiers":75,"./template":76,"bindable":19,"nofactor":42}],75:[function(require,module,exports){
+module.exports = TextBlockBinding;
+
+
+},{"../../../clip/buffer":48,"../base/binding":53,"protoclass":92,"underscore":98}],80:[function(require,module,exports){
+var Clip  = require("../clip"),
+template  = require("./template"),
+nofactor  = require("nofactor"),
+modifiers = require("./modifiers"),
+bindings  = require("./bindings"),
+bindable  = require("bindable");
+
+module.exports = {
+
+  /*
+   */
+  Clip: Clip,
+
+  /*
+   */
+
+  bindable: bindable,
+
+  /*
+   parses a template
+   */
+
+  template: template,
+
+  /*
+   registers a binding modifier 
+   {{ message | titlecase() }}
+   */
+
+  modifier: function (name, modifier) {
+    return modifiers[name] = modifier;
+  },
+
+  /*
+   expose the class so that one can be registered
+   */
+
+  BaseBlockBinding: bindings.BaseBlockBinding,
+
+  /*
+   */
+
+  BaseNodeBinding: bindings.BaseNodeBinding,
+
+  /*
+   */
+
+  BaseAttrDataBinding: bindings.BaseAttrDataBinding,
+
+  /*
+   adds a block binding class
+   {{#custom}}
+   {{/}}
+   */
+
+  blockBinding: bindings.blockBindingFactory.register,
+
+  /*
+   adds a node binding shim
+   <custom />
+   <div custom="" />
+   */
+
+  nodeBinding: bindings.nodeBindingFactory.register,
+
+  /*
+    data-bind="{{ custom: binding }}"
+   */
+
+  attrDataBinding: bindings.nodeBindingFactory.dataBind.register,
+
+  /*
+   */
+  use: function(fn) {
+    return fn(this);
+  }
+};
+
+},{"../clip":49,"./bindings":62,"./modifiers":81,"./template":82,"bindable":21,"nofactor":45}],81:[function(require,module,exports){
 module.exports = {
   uppercase: function (value) {
     return String(value).toUpperCase();
@@ -7119,13 +7810,14 @@ module.exports = {
     return JSON.stringify.apply(JSON, arguments);
   }
 };
-},{}],76:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 var process=require("__browserify_process");var protoclass    = require("protoclass"),
 modifiers         = require("./modifiers"),
 nofactor          = require("nofactor"),
 FragmentWriter    = require("./writers/fragment"),
 BlockWriter       = require("./writers/block"),
 TextWriter        = require("./writers/text"),
+TextBlockWriter   = require("./writers/textBlock"),
 ElementWriter     = require("./writers/element"),
 ParseWriter       = require("./writers/parse"),
 BindingCollection = require("./bindings/collection"),
@@ -7194,11 +7886,12 @@ protoclass(Template, {
   _createTemplateNode: function () {
 
     var writers = {
-      fragment : new FragmentWriter(this),
-      block    : new BlockWriter(this),
-      text     : new TextWriter(this),
-      element  : new ElementWriter(this),
-      parse    : new ParseWriter(this)
+      fragment  : new FragmentWriter(this),
+      block     : new BlockWriter(this),
+      text      : new TextWriter(this),
+      element   : new ElementWriter(this),
+      parse     : new ParseWriter(this),
+      textBlock : new TextBlockWriter(this)
     }
 
     var node = this.paper(
@@ -7206,6 +7899,7 @@ protoclass(Template, {
       writers.block.write,
       writers.element.write,
       writers.text.write,
+      writers.textBlock.write,
       writers.parse.write,
       modifiers
     );
@@ -7255,39 +7949,28 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
 
   return paper.template = new Template(paper, application, ops);
 }
-},{"./application":47,"./binding":48,"./bindings/binders":51,"./bindings/collection":57,"./modifiers":75,"./writers/block":78,"./writers/element":79,"./writers/fragment":80,"./writers/parse":81,"./writers/text":82,"__browserify_process":28,"bindable":19,"loaf":37,"nofactor":42,"protoclass":85}],77:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./application":50,"./binding":51,"./bindings/binders":55,"./bindings/collection":61,"./modifiers":81,"./writers/block":84,"./writers/element":85,"./writers/fragment":86,"./writers/parse":87,"./writers/text":88,"./writers/textBlock":89,"__browserify_process":30,"bindable":21,"loaf":40,"nofactor":45,"protoclass":92}],83:[function(require,module,exports){
+var protoclass = require("protoclass"),
+_ = require("underscore");
+
+
+function BaseWriter (template) {
+  this.template = template;
+  this.nodeFactory = template.application.nodeFactory;
+  this.application = this.template.application;
+  this.binders = template.binders;
+  this.write = _.bind(this.write, this);
+}
+
+protoclass(BaseWriter, {
+  write: function (script, contentFactory, childBlockFactory) { }
+});
+
+module.exports = BaseWriter;
+},{"protoclass":92,"underscore":98}],84:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var BaseWriter;
-
-  BaseWriter = (function() {
-    /*
-    */
-    function BaseWriter(template) {
-      this.template = template;
-      this.nodeFactory = template.application.nodeFactory;
-      this.application = this.template.application;
-      this.binders = template.binders;
-    }
-
-    /*
-    */
-
-
-    BaseWriter.prototype.write = function(script, contentFactory, childBlockFactory) {};
-
-    return BaseWriter;
-
-  })();
-
-  module.exports = BaseWriter;
-
-}).call(this);
-
-},{}],78:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
-(function() {
-  var BlockWriter, Clip, blockBindingFactory, loaf, _ref,
+  var BlockWriter, Clip, blockBindingFactory, loaf,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -7302,17 +7985,16 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
     __extends(BlockWriter, _super);
 
     function BlockWriter() {
-      this.write = __bind(this.write, this);      _ref = BlockWriter.__super__.constructor.apply(this, arguments);
-      return _ref;
+      this.write = __bind(this.write, this);
+      return BlockWriter.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     BlockWriter.prototype.write = function(script, contentFactory, childBlockFactory) {
       var binder, childTpl, node, ops, tpl;
-
       tpl = contentFactory ? this.template.creator(contentFactory, this.application) : void 0;
       childTpl = childBlockFactory ? this.template.creator(childBlockFactory, this.application) : void 0;
       this.binders.push(binder = blockBindingFactory.getBinder(ops = {
@@ -7326,13 +8008,12 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
       return node;
     };
 
-    /*
-    */
 
+    /*
+     */
 
     BlockWriter.prototype.getDefaultNode = function(ops) {
       var section;
-
       ops.section = section = loaf(this.nodeFactory);
       return section.render();
     };
@@ -7345,10 +8026,10 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
 
 }).call(this);
 
-},{"../../clip":46,"../bindings/block/factory":54,"./base":77,"loaf":37}],79:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"../../clip":49,"../bindings/block/factory":58,"./base":83,"loaf":40}],85:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var ElementWriter, nodeBindingFactory, type, _ref,
+  var ElementWriter, nodeBindingFactory, type,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -7361,17 +8042,16 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
     __extends(ElementWriter, _super);
 
     function ElementWriter() {
-      this.write = __bind(this.write, this);      _ref = ElementWriter.__super__.constructor.apply(this, arguments);
-      return _ref;
+      this.write = __bind(this.write, this);
+      return ElementWriter.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     ElementWriter.prototype.write = function(name, attributes, children) {
-      var attrName, child, element, value, _i, _len, _ref1;
-
+      var attrName, child, element, value, _i, _len, _ref;
       if (attributes == null) {
         attributes = {};
       }
@@ -7386,7 +8066,7 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
         }
         element.setAttribute(attrName, value);
       }
-      (_ref1 = this.binders).push.apply(_ref1, nodeBindingFactory.getBinders({
+      (_ref = this.binders).push.apply(_ref, nodeBindingFactory.getBinders({
         node: element,
         nodeName: name,
         application: this.application,
@@ -7407,10 +8087,10 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
 
 }).call(this);
 
-},{"../bindings/node/factory":73,"./base":77,"type-component":89}],80:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"../bindings/node/factory":77,"./base":83,"type-component":97}],86:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var FragmentWriter, _ref,
+  var FragmentWriter,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -7419,13 +8099,13 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
     __extends(FragmentWriter, _super);
 
     function FragmentWriter() {
-      this.write = __bind(this.write, this);      _ref = FragmentWriter.__super__.constructor.apply(this, arguments);
-      return _ref;
+      this.write = __bind(this.write, this);
+      return FragmentWriter.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     FragmentWriter.prototype.write = function(children) {
       if (children.length === 1) {
@@ -7442,10 +8122,10 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
 
 }).call(this);
 
-},{"./base":77}],81:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./base":83}],87:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var ParseWriter, _ref,
+  var ParseWriter,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -7454,17 +8134,16 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
     __extends(ParseWriter, _super);
 
     function ParseWriter() {
-      this.write = __bind(this.write, this);      _ref = ParseWriter.__super__.constructor.apply(this, arguments);
-      return _ref;
+      this.write = __bind(this.write, this);
+      return ParseWriter.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     ParseWriter.prototype.write = function(source) {
       var element;
-
       if (typeof window !== "undefined") {
         element = this.nodeFactory.createElement("div");
         element.innerHTML = source;
@@ -7482,10 +8161,10 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
 
 }).call(this);
 
-},{"./base":77}],82:[function(require,module,exports){
-// Generated by CoffeeScript 1.6.2
+},{"./base":83}],88:[function(require,module,exports){
+// Generated by CoffeeScript 1.7.0
 (function() {
-  var TextWriter, _ref,
+  var TextWriter,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -7494,13 +8173,13 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
     __extends(TextWriter, _super);
 
     function TextWriter() {
-      this.write = __bind(this.write, this);      _ref = TextWriter.__super__.constructor.apply(this, arguments);
-      return _ref;
+      this.write = __bind(this.write, this);
+      return TextWriter.__super__.constructor.apply(this, arguments);
     }
 
-    /*
-    */
 
+    /*
+     */
 
     TextWriter.prototype.write = function(text) {
       return this.nodeFactory.createTextNode(text);
@@ -7514,7 +8193,35 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
 
 }).call(this);
 
-},{"./base":77}],83:[function(require,module,exports){
+},{"./base":83}],89:[function(require,module,exports){
+var BaseWriter  = require("./base"),
+TextBlockBinder = require("../bindings/textBlock/binder");
+
+function TextBlockWriter () {
+  BaseWriter.apply(this, arguments);
+}
+
+BaseWriter.extend(TextBlockWriter, {
+
+  /**
+   */
+
+  write: function (blocks) {
+
+    var node = this.nodeFactory.createTextNode("");
+    
+    this.binders.push(new TextBlockBinder({
+      marker      : node,
+      blocks      : blocks,
+      application : this.application
+    }))
+
+    return node;
+  }
+});
+
+module.exports = TextBlockWriter;
+},{"../bindings/textBlock/binder":78,"./base":83}],90:[function(require,module,exports){
 var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};var _gss = global._gss = global._gss || [],
 type = require("type-component");
 
@@ -7650,7 +8357,7 @@ exports.use = function(gs) {
 
 
 
-},{"type-component":89}],84:[function(require,module,exports){
+},{"type-component":97}],91:[function(require,module,exports){
 var protoclass = require("protoclass");
 
 /**
@@ -7827,7 +8534,7 @@ module.exports = function (options) {
   return new PoolParty(options)
 }
 
-},{"protoclass":85}],85:[function(require,module,exports){
+},{"protoclass":92}],92:[function(require,module,exports){
 function _copy (to, from) {
 
   for (var i = 0, n = from.length; i < n; i++) {
@@ -7896,8 +8603,10 @@ protoclass.setup = function (child) {
 
 
 module.exports = protoclass;
-},{}],86:[function(require,module,exports){
-var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};module.exports = function (batch, ms) {
+},{}],93:[function(require,module,exports){
+var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};var boo = require("boojs");
+
+module.exports = function (batch, ms) {
 
   if (!batch) batch = 5;
   if (!ms) ms = 1;
@@ -7906,22 +8615,30 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
 
   return function (fn)  {
 
-
     // items to call later
     queue.push(fn);
 
+    var disposable = {
+      dispose: function () {
+        var i = queue.indexOf(fn);
+        if (~i) queue.splice(i);
+      }
+    }
+
     // timer running? don't run
-    if (timer) return;
+    if (timer) return disposable;
+
+
 
     // start the timer until there are no more items
-    timer = setInterval(function () {
+    timer = boo.interval(function () {
 
       // pop off the most recent items
       var fns = queue.splice(0, batch);
 
       // no more items? stop the timer
       if (!fns.length) {
-        clearInterval(timer);
+        timer.dispose();
         return timer = undefined;
       }
 
@@ -7931,11 +8648,131 @@ var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? 
       }
 
     }, ms);
+
+    return disposable;
   }
 }
 
 module.exports.global = global.__runlater || (global.__runlater = module.exports());
-},{}],87:[function(require,module,exports){
+},{"boojs":94}],94:[function(require,module,exports){
+var process=require("__browserify_process");(function () {
+
+  var _queue = [], _timeout, _waiting = false;
+
+  /**
+   */
+
+  function _interval (fn, ms) {
+
+    var timeout, disposed;
+
+    function tick () {
+      timeout = setTimeout(function () {
+        _run(function () {
+
+          if (disposed) return;
+
+          fn();
+          tick();
+        })
+      }, ms);
+    }
+
+    tick();
+
+    return {
+      dispose: function () {
+        disposed = true;
+        if(timeout) {
+          clearTimeout(timeout);
+        }
+      }
+    }
+  }
+
+  /**
+   */
+
+  function _run (fn) {
+    _queue.push(fn);
+
+    if (!_waiting) {
+      _runQueue();
+    }
+  }
+
+  /**
+   */
+
+  function _runQueue () {
+
+    _waiting = false;
+    _timeout = undefined;
+
+    for (var i = 0; i < _queue.length; i++) {
+      _queue[i]();
+    }
+
+    _queue = [];
+  }
+
+  /**
+   */
+
+  function _wait () {
+    _waiting = true;
+    if (_timeout) clearTimeout(_timeout);
+    _timeout = setTimeout(_runQueue, boo.waitTimeout);
+  }
+
+  /**
+   */
+
+  function _unwait () {
+    if (_timeout) clearTimeout(_timeout);
+    _runQueue();
+  }
+
+  /**
+   */
+
+
+  var boo = {
+    interval    : _interval,
+    run         : _run,
+    wait        : _wait,
+    unwait      : _unwait,
+    waitTimeout : 1000
+  };
+
+  if (typeof process !== "undefined") {
+    module.exports = boo;
+  }
+
+  if (typeof window !== "undefined") {
+    window.boo = boo;
+
+    $(document).ready(function () {
+
+      $("body, html").
+
+        // wait on scroll
+        scroll(boo.wait).
+
+        // wait on mouse down - TODO - should be on capture
+        mousedown(boo.wait).
+
+        // wait if the user is interacting with the page
+        mousemove(boo.wait).
+
+        // run when the user's mouse leaves the stage
+        mouseleave(boo.unwait);
+    });
+  }
+
+
+})();
+},{"__browserify_process":30}],95:[function(require,module,exports){
 var bindable = require("bindable"),
 protoclass   = require("protoclass"),
 type = require("type-component"),
@@ -8127,7 +8964,7 @@ protoclass(bindable.Object, SubindableObject, {
 module.exports = {
   Object: SubindableObject
 }
-},{"bindable":19,"protoclass":85,"type-component":89,"underscore":88}],88:[function(require,module,exports){
+},{"bindable":21,"protoclass":92,"type-component":97,"underscore":96}],96:[function(require,module,exports){
 //     Underscore.js 1.5.2
 //     http://underscorejs.org
 //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -9405,7 +10242,7 @@ module.exports = {
 
 }).call(this);
 
-},{}],89:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 
 /**
  * toString ref.
@@ -9437,7 +10274,7 @@ module.exports = function(val){
   return typeof val;
 };
 
-},{}],90:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 //     Underscore.js 1.4.4
 //     http://underscorejs.org
 //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc.
@@ -10665,4 +11502,4 @@ module.exports = function(val){
 
 }).call(this);
 
-},{}]},{},[2])
+},{}]},{},[3])
