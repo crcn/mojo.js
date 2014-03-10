@@ -24,12 +24,9 @@ suite.add("new mojo.View() with app", function () {
   new mojo.View(null, app);
 });
 
-
-
 suite.on("cycle", function (event) {
   console.log(String(event.target));
 });
-
 
 suite.on("complete", function() {
   console.log("Fastest is '%s'", this.filter("fastest").pluck("name"));
