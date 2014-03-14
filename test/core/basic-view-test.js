@@ -92,7 +92,7 @@ describe("core/basic-view#", function () {
    */
 
   it("has the right path", function () {
-    expect(app.createView("basic").path()).to.be("DecorableView");
+    expect(app.createView("basic").path()).to.be("BaseView");
   });
 
   /**
@@ -198,7 +198,7 @@ describe("core/basic-view#", function () {
    */
 
   it("can attach to a an element", function () {
-    var view = new mojo.View({}, app), 
+    var view = new mojo.View({}, app),
     appended = 0;
     view.__decorators = undefined;
 
@@ -227,4 +227,4 @@ describe("core/basic-view#", function () {
     view.render();
     view.dispose();
   })
-}); 
+});
