@@ -15,6 +15,50 @@ describe("components/list#", function () {
   // - changing source
   // - parentNode undefined bug
 
+  it("throws an error if the source is not a bindable collection", function () {
+      var view = new mojo.View({
+        paper: paperclip.compile(
+          "{{ html: sections.items }}"
+        )
+      }, app).decorate({
+        sections: {
+          items: {
+            type: "list",
+            source: "source",
+            modelViewClass: mojo.View
+          }
+        }
+      });
+
+      try {
+        view.render();
+      } catch (e) {
+        expect(e.message).to.contain("must be a bindable Collection");
+      }
+  });
+
+  it("throws an error if the source doesn't contain bindable objects", function () {
+      var view = new mojo.View({
+        paper: paperclip.compile(
+          "{{ html: sections.items }}"
+        )
+      }, app).decorate({
+        sections: {
+          items: {
+            type: "list",
+            source: [{}],
+            modelViewClass: mojo.View
+          }
+        }
+      });
+
+      try {
+        view.render();
+      } catch (e) {
+        expect(e.message).to.contain("source must contain bindable objects");
+      }
+  });
+
   it("can sort a list", function () {
 
     var view = new mojo.View({
@@ -201,7 +245,7 @@ describe("components/list#", function () {
 
     expect(view.render().toString()).to.be("hello craighello frank");
   });
-  
+
 
 
   it("re-filters a list if the models change", function () {
@@ -322,7 +366,7 @@ describe("components/list#", function () {
       sections: {
         items: {
           type: "list",
-          source: [{ _id: "craig"}, { _id: "john"} ].map(function(v) { 
+          source: [{ _id: "craig"}, { _id: "john"} ].map(function(v) {
             return new bindable.Object(v);
           }),
           modelViewClass: mojo.View.extend({
