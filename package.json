@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.7.89",
+  "version": "0.7.90",
   "description": "modular mv+ JavaScript framework for node, and the web",
   "main": "./lib/index.js",
   "jam": {
@@ -42,8 +42,9 @@
     "protoclass": "0.0.5",
     "subindable": "0.1.x",
     "runlater": "0.0.x",
-    "poolparty": "0.0.5",
-    "flatstack": "0.0.10"
+    "poolparty": "0.0.x",
+    "flatstack": "0.0.10",
+    "boojs": "0.0.x"
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
