@@ -87,9 +87,7 @@ Renders the view. [For example](http://jsfiddle.net/BZA8K/82/):
 var view = new mojo.View({
   paper: paperclip.compile("hello!")
 });
-view.render(function() {
-  alert(view.section.toString());
-});
+$("#application").append(view.render());
 ```
 
 #### view.section
