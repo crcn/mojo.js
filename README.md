@@ -7,19 +7,19 @@
 [![Alt ci](https://travis-ci.org/classdojo/mojo.js.png)](https://travis-ci.org/classdojo/mojo.js)
 [![Alt ci](https://coveralls.io/repos/classdojo/mojo.js/badge.png?branch=0.7.x)](https://coveralls.io/r/classdojo/mojo.js)
 
-Mojo.js is a JavaScript framework for building Single Page Applications, or static websites in [Node.js](http://nodejs.org/). It's inspired by [Angular.js](http://angularjs.org/), [Derby.js](http://derbyjs.com/), [Knockout.js](http://knockoutjs.com/), [Meteor.js](http://www.meteor.com/), [Ember.js](http://emberjs.com/), [jQuery](http://jquery.com/), [Backbone.js](http://backbonejs.org/), and many other JavaScript, and non-JavaScript frameworks. The core is small, while third-party modules allow you to customize Mojo depending on your requirements. 
-Mojo was built initially to phase out old code, and itself - hence the modularity. The philosophy behind Mojo is to allow you to build on top of your old code base, and slowly strangle out your old application until you have a new, highly maintainable application. 
+Mojo.js is a JavaScript framework for building Single Page Applications, or static websites in [Node.js](http://nodejs.org/). It's inspired by [Angular.js](http://angularjs.org/), [Derby.js](http://derbyjs.com/), [Knockout.js](http://knockoutjs.com/), [Meteor.js](http://www.meteor.com/), [Ember.js](http://emberjs.com/), [jQuery](http://jquery.com/), [Backbone.js](http://backbonejs.org/), and many other JavaScript, and non-JavaScript frameworks. The core is small, while third-party modules allow you to customize Mojo depending on your requirements.
+Mojo was built initially to phase out old code, and itself - hence the modularity. The philosophy behind Mojo is to allow you to build on top of your old code base, and slowly strangle out your old application until you have a new, highly maintainable application.
 
 ### Features
 
 - Supported in all major browsers: `IE 8+`, `Firefox`, `Chrome`, `Safari`, and `Opera`.
-- Supported in Node.js. Run the same code on the front-end & backend. See the [mojo site source code](https://github.com/classdojo/mojojs.com) for an example. 
-- Flexible bi-directional data-bindings. 
+- Supported in Node.js. Run the same code on the front-end & backend. See the [mojo site source code](https://github.com/classdojo/mojojs.com) for an example.
+- Flexible bi-directional data-bindings.
 - Plays nicely with other frameworks such as Backbone.js, Spine.js, and jQuery. Easily build new application code on top of old code.
 - No magic. No assumptions. Mojo.js was built around explicitness and modularity.
 - 100% JavaScript - [paperclip.js](https://github.com/classdojo/paperclip.js) templates are also translated to JavaScript.
-- Small core. Modules make up the rest. 
-  - Decorators are core - they control everything from computed properties, creating children of a view, and even setting up templates. There are a few built-in decorators (for now - we'll take them out later): `drag & drop`, `paperclip.js` (template), `bindings` (computed properties), `transition`, and `events` (Backbone style). You can also [create your own](#custom-decorators) if you want to extend the core, but there isn't a single decorator that's required for Mojo.js to function properly. 
+- Small core. Modules make up the rest.
+  - Decorators are core - they control everything from computed properties, creating children of a view, and even setting up templates. There are a few built-in decorators (for now - we'll take them out later): `drag & drop`, `paperclip.js` (template), `bindings` (computed properties), `transition`, and `events` (Backbone style). You can also [create your own](#custom-decorators) if you want to extend the core, but there isn't a single decorator that's required for Mojo.js to function properly.
   - The framework itself is broken into multiple repositories - this makes it easier to encapsulate, re-use bits of functionality.
 
 ### Core Libraries
@@ -32,14 +32,13 @@ Mojo was built initially to phase out old code, and itself - hence the modularit
 
 ### Examples:
 
-- [Hello World](http://jsfiddle.net/BZA8K/16/)
-- [Hello Input](http://jsfiddle.net/BZA8K/17/)
-- [Todo List](http://jsfiddle.net/BZA8K/18/)
-- [Dynamic Templates](http://jsfiddle.net/BZA8K/20/)
-- [States Component](http://jsfiddle.net/BZA8K/28/)
-- [Custom Components](http://jsfiddle.net/BZA8K/24/)
-- [Transitions](http://jsfiddle.net/BZA8K/22/)
-- [dots benchmark](http://jsfiddle.net/BZA8K/42/)
+- [Hello World](http://jsfiddle.net/BZA8K/70/)
+- [Hello Input](http://jsfiddle.net/BZA8K/71/)
+- [Todo List](http://jsfiddle.net/BZA8K/75/)
+- [Dynamic Templates](http://jsfiddle.net/BZA8K/77/)
+- [States Component](http://jsfiddle.net/BZA8K/78/)
+- [Custom Components](http://jsfiddle.net/BZA8K/79/)
+- [dots benchmark](http://jsfiddle.net/BZA8K/80/)
 
 ### TODO:
 
@@ -71,7 +70,7 @@ console.log(view.get("name")); //craig
 
 #### view.attach(selector)
 
-Renders, and adds the view to the specific DOM element. [Here's an example](http://jsfiddle.net/BZA8K/12/):
+Renders, and adds the view to the specific DOM element. [Here's an example](http://jsfiddle.net/BZA8K/81/):
 
 ```javascript
 var view = new mojo.View({
@@ -80,9 +79,9 @@ var view = new mojo.View({
 view.attach($("#application"));
 ```
 
-#### view.render(callback)
+#### DocumentFragment view.render()
 
-Renders the view. [For example](http://jsfiddle.net/BZA8K/14/):
+Renders the view. [For example](http://jsfiddle.net/BZA8K/82/):
 
 ```javascript
 var view = new mojo.View({
@@ -116,7 +115,7 @@ listener for an event. For example:
 ```javascript
 var view = new mojo.View();
 view.on("hello", function() {
-  
+
 });
 view.emit("hello"); //trigger listener
 ```
@@ -132,15 +131,13 @@ reference to the parent view
 #### events
 
 - `render` - emitted when `view.render()` is called.
-- `rendered` - emitted after the view has been rendered.
 - `remove` - emitted when `view.remove()` is called.
-- `removed` - emitted after the view has been removed.
-- `dispose` - emitted when the view is being disposed.
+- `dispose` - emitted when the view is removed, and not used anymore.
 
 
 #### protected methods
 
-Mojo.js has a few methods you can override if you need to something durring render / remove. 
+Mojo.js has a few methods you can override if you need to something durring render / remove.
 
 ```javascript
 var view = new mojo.View({
@@ -162,12 +159,12 @@ var view = new mojo.View({
 
 ## View Decorators
 
-Decorators are extensions to the Mojo.js framework - they help you describe how your view should function, but aren't necessary for Mojo.js to work. Therefore, you can easily mix decorators, or even [create your own](#custom-decorators). This design was picked to allow you, the coder to pick whatever style suites you best. There are however a few built-in decorators that might help you get started. 
+Decorators are extensions to the Mojo.js framework - they help you describe how your view should function, but aren't necessary for Mojo.js to work. Therefore, you can easily mix decorators, or even [create your own](#custom-decorators). This design was picked to allow you, the coder to pick whatever style suites you best. There are however a few built-in decorators that might help you get started.
 
 
 ### Templates
 
-By default, Mojo.js uses [paperclip.js](https://github.com/classdojo/paperclip.js) for the template engine. [Here's a basic example](http://jsfiddle.net/BZA8K/5/):
+By default, Mojo.js uses [paperclip.js](https://github.com/classdojo/paperclip.js) for the template engine. [Here's a basic example](http://jsfiddle.net/BZA8K/70/):
 
 ```javascript
 var view = new mojo.View({
@@ -176,7 +173,7 @@ var view = new mojo.View({
 view.attach($("#application"));
 ```
 
-You can also dynamically change the template. Say for instance you want to change the template depending on a model type, [here's what you can do](http://jsfiddle.net/BZA8K/20/):
+You can also dynamically change the template. Say for instance you want to change the template depending on a model type, [here's what you can do](http://jsfiddle.net/BZA8K/77/):
 
 ```javascript
 
@@ -196,7 +193,7 @@ var NotificationView = mojo.View.extend({
                  }
              }
          }
-     }                                  
+     }
 });
 
 var alertView = new NotificationView({ model: new bindable.Object({ type: "alert" }) });
@@ -207,13 +204,13 @@ You can add your own template - just create a [custom decorator](#custom-decorat
 
 ### Bindings
 
-The bindings decorator is similar to Ember's computed properties feature. [For example](http://jsfiddle.net/BZA8K/21/):
+The bindings decorator is similar to Ember's computed properties feature. [For example](http://jsfiddle.net/BZA8K/83/):
 
 ```javascript
 var TestView = mojo.View.extend({
   paper: paperclip.compile("hello-world"),
   bindings: {
-      
+
       //join first & last name
       "firstName, lastName": {
           "fullName": {
@@ -222,7 +219,7 @@ var TestView = mojo.View.extend({
               }
           }
       },
-      
+
       //uppercase & lowercase fullName
       "fullName": {
           "fullNameUpper": {
@@ -236,7 +233,7 @@ var TestView = mojo.View.extend({
               }
           }
       },
-      
+
       //wait for fullNameUpper to change
       "fullNameUpper": function(fullNameUpper) {
           console.log("CHANGE!");
@@ -249,7 +246,7 @@ var TestView = mojo.View.extend({
 
 ### Transitions
 
-Pretty self explainatory - transitions allow you to ease a view into a particular state, whether entering, or exiting. Note that transitions require [jquery.transit](http://ricostacruz.com/jquery.transit/). [Here's an example](http://jsfiddle.net/BZA8K/22/): 
+Pretty self explainatory - transitions allow you to ease a view into a particular state, whether entering, or exiting. Note that transitions require [jquery.transit](http://ricostacruz.com/jquery.transit/). [Here's an example](http://jsfiddle.net/BZA8K/22/):
 
 ```javascript
 var HelloView = mojo.View.extend({
@@ -277,7 +274,7 @@ view.attach($("#application"));
 ### Sections
 
 
-Sections are what make up your application - they allow you to break down your app into smaller, more modular pieces. [Here's a basic example](http://jsfiddle.net/BZA8K/23/): 
+Sections are what make up your application - they allow you to break down your app into smaller, more modular pieces. [Here's a basic example](http://jsfiddle.net/BZA8K/84/):
 
 ```javascript
 //views/main/header/logo.js
@@ -315,7 +312,7 @@ Mojo comes with a few built-in components: [lists](#list-component), and [states
 
 ### List Component
 
-List of views. [Here's an example](http://jsfiddle.net/BZA8K/18/):
+List of views. [Here's an example](http://jsfiddle.net/BZA8K/75/):
 
 ```javascript
 var TodosView = mojo.View.extend({
@@ -382,7 +379,7 @@ The states component allow you to toggle between multiple views. This is useful 
 var MainView = mojo.View.extend({
   sections: {
     pages: {
-      type: "states", 
+      type: "states",
       index: 0,
       views: [
         { class: ContactView , name: "contact" },
@@ -395,13 +392,13 @@ var MainView = mojo.View.extend({
 
 ### states.index
 
-the current index of the state. [For example](http://jsfiddle.net/BZA8K/29/): 
+the current index of the state. [For example](http://jsfiddle.net/BZA8K/78/):
 
 ```javascript
 var MainView = mojo.View.extend({
   sections: {
     pages: {
-      type: "states", 
+      type: "states",
       index: 0,
       views: [
         { class: ContactView , name: "contact" },
@@ -417,7 +414,7 @@ console.log(view.get("sections.pages.index")); //0
 
 ### Custom Components
 
-Mojo.js allows you to register your own components. [Here's a basic example](http://jsfiddle.net/BZA8K/24/):
+Mojo.js allows you to register your own components. [Here's a basic example]((http://jsfiddle.net/BZA8K/79/):
 
 ```javascript
 //views/main/header/logo.js
@@ -455,14 +452,14 @@ var view = new HelloView({
 
 ### Custom Decorators
 
-There are some cases you might want to add your own decorator. Say for instance you want to add your own custom template engine. [No problem](http://jsfiddle.net/BZA8K/30/):
+There are some cases you might want to add your own decorator. Say for instance you want to add your own custom template engine. [No problem](http://jsfiddle.net/BZA8K/85/):
 
 decorator:
 
 ```javascript
 var handlebarsDecorator = {
 
-    //returns the handlebar options. This decorator is ignore if the options are 
+    //returns the handlebar options. This decorator is ignore if the options are
     //undefined
     getOptions: function(view) {
         return view.handlebars;
@@ -490,7 +487,7 @@ var handlebarsDecorator = {
 mojo.decorator(handlebarsDecorator);
 ```
 
-usage: 
+usage:
 
 ```javascript
 var MainView = mojo.View.extend({
@@ -505,7 +502,7 @@ Allows for models to be referenced anywhere in the application. [See the variabl
 
 ## Property Scope
 
-Child views inherit properties from the parent view, just like variable scope in JavaScript. Therefore, you should always `define` properties you want to use within your views. [For example](http://jsfiddle.net/BZA8K/31/):
+Child views inherit properties from the parent view, just like variable scope in JavaScript. Therefore, you should always `define` properties you want to use within your views. [For example](http://jsfiddle.net/BZA8K/86/):
 
 ```javascript
 var user = new mojo.bindable.Object({
@@ -534,14 +531,4 @@ var view = new MainView();
 view.attach($("#application"));
 ```
 
-[Checkout what happens](http://jsfiddle.net/BZA8K/32/) when we define `user` in HeaderView. Notice that `user` isn't inherited anymore, and remains `undefined`. 
-
-
-
-
-
-
-
-
-
-
+[Checkout what happens](http://jsfiddle.net/BZA8K/87/) when we define `user` in HeaderView. Notice that `user` isn't inherited anymore, and remains `undefined`.
