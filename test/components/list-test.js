@@ -357,6 +357,7 @@ describe("components/list#", function () {
   })
 
 
+  if(false)
   xit("can re-use a list after it's been removed", function () {
     var view = new mojo.View({
       paper: paperclip.compile(

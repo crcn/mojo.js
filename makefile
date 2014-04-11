@@ -1,5 +1,5 @@
 test-node:
-	./node_modules/.bin/_mocha ./test/**/*-test.js --ignore-leaks --timeout 100
+	./node_modules/.bin/_mocha ./test/**/*-test.js --ignore-leaks --timeout 100 --reporter list
 
 test-watch:
 	./node_modules/.bin/_mocha ./test/**/*-test.js --ignore-leaks --timeout 100 --watch lib test
