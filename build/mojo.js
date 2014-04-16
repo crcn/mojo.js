@@ -62,14 +62,13 @@ protoclass(Animator, {
 });
 
 module.exports = Animator;
-},{"__browserify_process":30,"protoclass":92}],2:[function(require,module,exports){
+},{"__browserify_process":31,"protoclass":130}],2:[function(require,module,exports){
 var bindable      = require("bindable"),
 _                 = require("underscore"),
 type              = require("type-component"),
 paperclip         = require("mojo-paperclip"),
 nofactor          = require("nofactor"),
 protoclass        = require("protoclass"),
-poolpaerty        = require("poolparty"),
 pools             = require("./pools"),
 Animator          = require("./animator"),
 RegisteredClasses = require("./registeredClasses"),
@@ -84,16 +83,24 @@ decorators        = require("./plugins/decor");
 
 /**
 
-Main entry point to your application. This is where everything is initialized.
+Main entry point to your mojo application. The application is an access point to other parts of the application,
+such as a third-party `mediator`, `router`, `models`, and `views` (note mojo only comes with the `view` by default). It also keeps your mojo application from polluting the global
+scope.
 
 ### Example
 
 ```javascript
-var mojo = require("mojo"), 
-nofactor = require("nofactor");
 
-var app = new mojo.Application({ nodeFactory: nofactor.default });
+// load in mojo, browserify will make it accessible from the web.
+var mojo = require("mojo");
+
+// create the app
+var app = new mojo.Application();
+
+// point to the views to
 app.use(require("./views"));
+
+// create the main view, then attach to a DOM element.
 app.viewClasses.create("main").attach($("#application"));
 ```
 
@@ -101,10 +108,15 @@ views.js
 
 ```javascript
 module.exports = function (app) {
-  app.viewClasses.add("main", MainView);
+  app.viewClasses.add("main", mojo.View.extend({
+      paper: paperclip.compile("hello")
+  }));
 }
 ```
 
+Here's what you get:
+
+<iframe width="100%" height="300" src="http://jsfiddle.net/BZA8K/58/embedded/result,js,html" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
 @class Application
 @param {Object} options
@@ -114,7 +126,7 @@ module.exports = function (app) {
 
 
 function Application (options) {
-  
+
   if (!options) options = {};
 
   Application.parent.call(this, this);
@@ -125,7 +137,7 @@ function Application (options) {
    * @type BaseNodeFactory
    */
 
-  this.nodeFactory = options.nodeFactory || nofactor["default"];  
+  this.nodeFactory = options.nodeFactory || nofactor["default"];
 
   /**
    * Where all the instantiated models live.
@@ -170,7 +182,7 @@ function Application (options) {
 protoclass(bindable.Object, Application, {
 
   /**
-   * Plugins to use for the mojo application. 
+   * Plugins to use for the mojo application.
    *
    * @method use
    * @param {Function} plugins... must be defined as `function (app) { }`
@@ -229,19 +241,25 @@ protoclass(bindable.Object, Application, {
 });
 
 module.exports = Application;
-},{"./animator":1,"./plugins/decor":6,"./plugins/defaultComponents":8,"./pools":9,"./registeredClasses":10,"bindable":21,"mojo-paperclip":41,"nofactor":45,"poolparty":91,"protoclass":92,"type-component":97,"underscore":98}],3:[function(require,module,exports){
+
+},{"./animator":1,"./plugins/decor":6,"./plugins/defaultComponents":8,"./pools":9,"./registeredClasses":10,"bindable":22,"mojo-paperclip":42,"nofactor":46,"protoclass":130,"type-component":135,"underscore":136}],3:[function(require,module,exports){
 var views   = require("./views"),
 Application = require("./application"),
 pools       = require("./pools");
 
-/** 
+/**
  * @module mojo
  */
- 
+
 
 /**
  * @class Mojo
  */
+
+
+
+// defaultApplication needs to be defined here to avoid circular references
+var defaultApplication = views.BaseView.defaultApplication = new Application();
 
 
 
@@ -262,6 +280,11 @@ module.exports = {
   Application : Application,
 
   /**
+   */
+
+  application: defaultApplication,
+
+  /**
    * Registers a class to pool
    * @property pool
    */
@@ -272,6 +295,7 @@ module.exports = {
 if (typeof window !== "undefined") {
   window.mojo = module.exports;
 }
+
 },{"./application":2,"./pools":9,"./views":13}],4:[function(require,module,exports){
 var protoclass = require("protoclass"),
 janitor        = require("janitorjs"),
@@ -382,7 +406,7 @@ EventsDecorator.decorate   = function (view, options) {
 }
 
 module.exports = EventsDecorator;
-},{"janitorjs":39,"protoclass":92,"underscore":98}],5:[function(require,module,exports){
+},{"janitorjs":40,"protoclass":130,"underscore":136}],5:[function(require,module,exports){
 var protoclass = require("protoclass");
 
 
@@ -464,7 +488,7 @@ protoclass(DecorFactory, {
 module.exports = function () {
   return new DecorFactory();
 }
-},{"protoclass":92}],6:[function(require,module,exports){
+},{"protoclass":130}],6:[function(require,module,exports){
 
 var EventsDecorator   = require("./events"),
 SectionsDecorator     = require("./sections"),
@@ -489,7 +513,7 @@ module.exports = function (app) {
     return decor.use(decorator);
   }
 }
-},{"./events":4,"./factory":5,"./sections":7,"bindable-decor-bindings":17}],7:[function(require,module,exports){
+},{"./events":4,"./factory":5,"./sections":7,"bindable-decor-bindings":18}],7:[function(require,module,exports){
 var type   = require("type-component"),
 protoclass = require("protoclass"),
 _ = require("underscore");
@@ -576,7 +600,7 @@ SectionsDecorator.decorate = function (view, options) {
 }
 
 module.exports = SectionsDecorator;
-},{"protoclass":92,"type-component":97,"underscore":98}],8:[function(require,module,exports){
+},{"protoclass":130,"type-component":135,"underscore":136}],8:[function(require,module,exports){
 var views = require("../views");
 
 module.exports = function (app) {
@@ -587,6 +611,8 @@ module.exports = function (app) {
 
 },{"../views":13}],9:[function(require,module,exports){
 var EventEmitter = require("bindable").EventEmitter,
+boo = require("boojs"),
+async = require("async"),
 em = new EventEmitter();
 
 var poolOptions = [],
@@ -594,7 +620,9 @@ poolparty = require("poolparty"),
 pid = 0;
 
 exports.add = function (clazz, options) {
-  
+
+  if (clazz.create) return clazz;
+
   clazz.pid = ++pid;
 
   poolOptions.push({
@@ -611,6 +639,8 @@ exports.add = function (clazz, options) {
   }
 
   em.emit("pool", clazz, options);
+
+  return clazz;
 }
 
 exports.plugin = function (app) {
@@ -638,6 +668,10 @@ function createPool (clazz, options, app) {
 
   var pool;
 
+  // use global tick for creating views asynchronously
+  options.tick = _tick;
+
+  // creates a new view
   options.create = function (ops) {
     var item = new clazz(ops, app);
     item.emit("warm");
@@ -652,9 +686,36 @@ function createPool (clazz, options, app) {
     return item;
   }
 
+  if (!options.chunk) options.chunk = 20;
+
+  // create the pool specific to the view
   app._pools[clazz.pid] = pool = poolparty(options);
 }
-},{"bindable":21,"poolparty":91}],10:[function(require,module,exports){
+
+
+var q = async.queue(function (tick, next) {
+
+  // wait before running next pool job
+  setTimeout(function () {
+
+    // wait until there are no user interactions
+    boo.run(function () {
+      tick();
+      next();
+    });
+  }, 20);
+});
+
+
+
+/**
+ */
+
+function _tick (next) {
+  q.push(next);
+}
+
+},{"async":17,"bindable":22,"boojs":30,"poolparty":129}],10:[function(require,module,exports){
 var protoclass = require("protoclass");
 
 /**
@@ -709,7 +770,7 @@ protoclass(RegisteredClasses, {
 });
 
 module.exports = RegisteredClasses;
-},{"protoclass":92}],11:[function(require,module,exports){
+},{"protoclass":130}],11:[function(require,module,exports){
 var i = 0;
 
 module.exports = function () {
@@ -718,14 +779,14 @@ module.exports = function () {
 
 
 },{}],12:[function(require,module,exports){
-var process=require("__browserify_process");var protoclass   = require("protoclass"),
-loaf             = require("loaf"),
-SubindableObject = require("subindable").Object,
-janitor          = require("janitorjs"),
-runlater         = require("runlater").global,
-_                = require("underscore"),
-decor            = require("../../plugins/decor"),
-generateId       = require("../../utils/idGenerator");
+var process=require("__browserify_process");var protoclass     = require("protoclass"),
+loaf               = require("loaf"),
+SubindableObject   = require("subindable").Object,
+janitor            = require("janitorjs"),
+runlater           = require("runlater")(1, 100),
+_                  = require("underscore"),
+decor              = require("../../plugins/decor"),
+generateId         = require("../../utils/idGenerator");
 
 /**
  * @module mojo
@@ -736,33 +797,216 @@ generateId       = require("../../utils/idGenerator");
 
 ## Usage
 
+<p>Views are simply models with a few special properties: `render`, and `remove`, and `decorators`. Decorators are essentially plugins
+that allow you to customize view's behavior to fit your needs. This means you can do something like add your own template engine.
+
+Mojo was design this way to allow better compatibility between different web frameworks. </p>
+
+At the core, this is what a mojo view is:
 
 ```javascript
-var SubView = mojo.View.extend({
-  name: "craig"
-});
-var view = new SubView();
+var SubView = mojo.View.extend();
+var view = new SubView({ name: "craig" }, new mojo.Application());
 console.log(view.get("name")); //craig
+console.log(view.render().toString()); // blank string, no template engine specified
 ```
 
-## Sections Property
+Mojo does however come with some built-in decorators. However, you can use whatever you need.
 
-The sections property allows you to define sub-views.
+## Paperclip Decorator
+
+The paperclip decorator allows you to use [paperclip](https://github.com/classdojo/paperclip.js) templates with mojo.
+
+Note that the following example assumes that you're running in either `node.js`, or have `browserified` your paperclip template:
+
+<br />
+
+hello.js:
 
 ```javascript
-var PagesView = mojo.View.extend({
+var HelloView = mojo.View.extend({
+  paper: require("./hello.pc")
+});
+
+new HelloView({ name: "Mojo" }, new mojo.Application()).attach($("#application"));
+```
+
+hello.pc:
+
+```mustache
+hello  \{{name}}!
+```
+
+Here's what you get: http://jsfiddle.net/BZA8K/59
+
+
+
+## Sections Decorator
+
+The sections decorator allows you to easily define sub-views to your view. Here's a basic example:
+
+```javascript
+
+var ContentView = mojo.View.extend({
+    paper: paperclip.compile("content")
+});
+
+var MainView = mojo.View.extend({
+    paper: paperclip.compile("main"),
+    sections: {
+        content: ContentView
+    }
+});
+
+```
+
+http://jsfiddle.net/BZA8K/60 <br />
+
+Note that you can also use registered components for each section, like so:
+
+```javascript
+
+
+//setup model data for the contacts view
+var contacts = new bindable.Collection([
+  new bindable.Object({ name: "John" }),
+  new bindable.Object({ name: "Jane" }),
+  new bindable.Object({ name: "Jeff" })
+]);
+
+
+// an individual contact
+var ContactVew = mojo.View.extend({
+  paper: require("./contact.pc")
+});
+
+// creates a contact view for each contact model
+var ContactsView = mojo.View.extend({
+  paper: require("./contacts.pc"),
   sections: {
-    header: require("./headerView"),
-    content: require("./contentView")
+    contacts: {
+
+      // reference ListView, and pass the following properties to it
+      type           : "list",
+      source         : contacts,
+      modelViewClass : ContactView
+    }
+  }
+});
+
+```
+
+The above example creates a list of contacts. Here's what you get: http://jsfiddle.net/BZA8K/61 <br />
+
+
+<p>You'll notice that the properties of each section are passed directly to the component you want to use. By default, Mojo comes with a `states`, and `list` component. See
+`ListView`, and `StatesView` for further documentation.</p>
+
+If you want to use your own custom component, you can do so by registering it to the application. For example:
+
+```javascript
+
+var HelloView = mojo.View.extend({
+  paper: require("./hello.pc")
+});
+
+
+var MainView = mojo.View.extend({
+  paper: require("./main.pc"),
+  sections: {
+    hello: {
+      type: "hello",
+      name: "John"
+    }
+  }
+});
+
+var app = new mojo.Application();
+app.viewClasses.add("hello", HelloView);
+app.viewClasses.add("main", MainView);
+
+app.viewClasses.create("main").attach($("#application"));
+```
+
+Here's what you get: http://jsfiddle.net/BZA8K/62 <br />
+
+## Bindings Decorator
+
+The bindings decorator provides a convenient way of data-binding properties together. This is also how you create **computed properties**
+a view controller. Here's an example:
+
+```javascript
+var MainView = mojo.View.extend({
+  paper: paperclip.compile("main"),
+  bindings: {
+
+    // easily compute two properties together
+    "firstName, lastName": {
+      "fullName": {
+        "map": function (firstName, lastName) {
+          return firstName + " " + lastName;
+        }
+      }
+    },
+
+    // bind "fullName" to "fullName2" on the view controller. This
+    // is especially useful when accessing properties from the application model locator
+    "fullName":"fullName2",
+
+    // bind a property to a function
+    "fullName2": function (fullName) {
+        console.log("fullName: ", fullName);
+    }
   }
 })
+
+
+new MainView({ firstName: "Jon", lastName: "Anderson" });
 ```
 
-## Events Property
+Here's what you get: http://jsfiddle.net/BZA8K/67/
 
-Events property allows you listen to events emitted by the DOM, or view controller.
+## Property Scope
+
+By default, sections inherit properties from their parent. Here's a basic example:
 
 ```javascript
+var HelloView = mojo.View.extend({
+  paper: paperclip.compile("hello")
+});
+
+
+var MainView = mojo.View.extend({
+  paper: paperclip.compile("main"),
+  name: "jeff",
+  sections: {
+      hello: HelloView
+  }
+});
+```
+Result: http://jsfiddle.net/BZA8K/63 <br /> <br />
+
+
+Note that since `name` is not defined in `HelloView`, it's being inherited from `MainView`. You can easily break inheritance by defining `name` in `HelloView`, like so:
+
+```javascript
+var HelloView = mojo.View.extend({
+  paper: paperclip.compile("hello"),
+  define: ["name"]
+});
+
+
+var MainView = mojo.View.extend({
+  paper: paperclip.compile("main"),
+  name: "jeff",
+  sections: {
+      hello: HelloView
+  }
+});
+```
+
+Here's what you get: http://jsfiddle.net/BZA8K/64
+
 
 
 @class BaseView
@@ -779,7 +1023,7 @@ Events property allows you listen to events emitted by the DOM, or view controll
  * @event remove
  */
 
-function DecorableView (data, application) {
+function BaseView (data, application) {
 
   SubindableObject.call(this, this);
 
@@ -791,7 +1035,9 @@ function DecorableView (data, application) {
    * @type {Application}
    */
 
-  this.application = application;
+  // note that if application is not defined, this.application will
+  // default to the default, global application.
+  this.application = application || BaseView.defaultApplication;
 
   // ref back to this context for templates
   this["this"]     = this;
@@ -799,7 +1045,7 @@ function DecorableView (data, application) {
   this.initialize(data);
 }
 
-protoclass(SubindableObject, DecorableView, {
+protoclass(SubindableObject, BaseView, {
 
   /**
    */
@@ -846,7 +1092,7 @@ protoclass(SubindableObject, DecorableView, {
 
   /**
    * Called when the view is instantiated
-   * @method initialize 
+   * @method initialize
    * @param {Object} options options passed when creating the view
    */
 
@@ -894,7 +1140,7 @@ protoclass(SubindableObject, DecorableView, {
   path: function () {
     var path = [], cp = this;
 
-    while (cp) { 
+    while (cp) {
       path.unshift(cp.constructor.name);
       cp = cp.parent;
     }
@@ -919,7 +1165,7 @@ protoclass(SubindableObject, DecorableView, {
     }
 
     if (!this._decorated)  this._initDecor();
-    
+
     this._render(this.section.show());
 
     this.emit("render");
@@ -990,7 +1236,7 @@ protoclass(SubindableObject, DecorableView, {
     }
   },
 
-  /** 
+  /**
    */
 
   setChild: function (name, child) {
@@ -1090,8 +1336,9 @@ protoclass(SubindableObject, DecorableView, {
   }
 });
 
-module.exports = DecorableView;
-},{"../../plugins/decor":6,"../../utils/idGenerator":11,"__browserify_process":30,"janitorjs":39,"loaf":40,"protoclass":92,"runlater":93,"subindable":95,"underscore":98}],13:[function(require,module,exports){
+module.exports = BaseView;
+
+},{"../../plugins/decor":6,"../../utils/idGenerator":11,"__browserify_process":31,"janitorjs":40,"loaf":41,"protoclass":130,"runlater":131,"subindable":133,"underscore":136}],13:[function(require,module,exports){
 module.exports = {
   BaseView   : require("./base"),
   ListView   : require("./list"),
@@ -1114,12 +1361,60 @@ idGenerator    = require("../../utils/idGenerator");
  * @module mojo
  * @submodule mojo-views
  */
- 
-/** 
- * List View
- * @class ListView
- * @extends BaseView
- */
+
+/**
+
+List Views are **not directly accessible**. You'll need to define them as a section, like so:
+
+```javascript
+
+// setup the models for the todo list. They must be bindable collections, & objects
+var todos = new bindable.Collection([
+  new bindable.Object({ text: "pick up groceries", done: true }),
+  new bindable.Object({ text: "do homework", done: false }),
+  new bindable.Object({ text: "Walk the dog", done: false })
+]);
+
+
+// setup the view that represents each todo item
+var TodoView = mojo.View.extend({
+  paper: require("./todo.pc")
+})
+
+
+// setup the view that represents the todos collection
+var TodosView = mojo.View.extend({
+  paper: require("./todos.pc"),
+  sections: {
+
+    // todoItems is a section which uses the ListView component. Basically,
+    // todosView.sections.todoItems IS a ListView. The following
+    // properties are passed to the created list view
+    todoItems: {
+      type: "list",
+
+      // "todos" inherited from the TodosView, which
+      // is set when TodosView is instantiated
+      source: "todos",
+      modelViewClass: TodoView
+    }
+  }
+});
+
+// add the todos view to the DOM, and pass in the todos model
+new TodosView({ todos: todos }, new mojo.Application()).attach($("#application"));
+```
+
+Here's what you get:
+
+
+<iframe width="100%" height="400" src="http://jsfiddle.net/BZA8K/66/embedded/result,js,html" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+TODO
+
+@class ListView
+@extends BaseView
+*/
 
 function ListView (data, application) {
   ListView.parent.call(this, data, application);
@@ -1143,7 +1438,7 @@ function onOptionChange (onRef) {
       onRef(value);
     }
   };
-} 
+}
 
 /**
  */
@@ -1186,7 +1481,7 @@ protoclass(BaseView, ListView, {
      * @param {BindableObject} the model to builder
      */
 
-    "filter", 
+    "filter",
 
     /**
      * The sort method for the list
@@ -1195,7 +1490,7 @@ protoclass(BaseView, ListView, {
      * @param {BaseView} b
      */
 
-    "sort", 
+    "sort",
 
     /**
      * Maps model data before setting to the instantiated list item view
@@ -1204,7 +1499,7 @@ protoclass(BaseView, ListView, {
      * @return {Number} 0, 1, or -1
      */
 
-    "map", 
+    "map",
 
     /**
      * The size of the list view
@@ -1212,14 +1507,14 @@ protoclass(BaseView, ListView, {
      * @type {Number}
      */
 
-    "length", 
+    "length",
 
     /**
      * The model view factory for creating each list item
      * @property modelViewFactory
      */
 
-    "modelViewFactory", 
+    "modelViewFactory",
 
     /**
      * The model view class for each list item. Use this or `modelViewFactory`.
@@ -1227,13 +1522,13 @@ protoclass(BaseView, ListView, {
      * @type {BaseView}
      */
 
-    "modelViewClass", 
+    "modelViewClass",
 
     /**
      * DEPRECATED
      */
 
-    "viewClass", 
+    "viewClass",
 
     /**
      * The collection of models to use. Each model is assigned as `model` to each instantiated `modelViewClass`.
@@ -1326,6 +1621,10 @@ protoclass(BaseView, ListView, {
 
     if (!source) return;
 
+    if (!source.__isBindableCollection) {
+      throw new Error("source must be a bindable Collection for " + this.path());
+    }
+
     // listen to the source for any changes
     j.
       add(source.on("insert", this._onInsertModel)).
@@ -1380,11 +1679,16 @@ protoclass(BaseView, ListView, {
         model = this._map(model);
       }
 
+      if (!model.__isBindable) {
+        throw new Error("source must contain bindable objects for " + this.path());
+      }
+
       this._sjanitor.add(this._watchModelChanges(model));
 
       if (this._filter && !this._filter(model, this)) {
         continue;
       }
+
       modelsToInsert.push(model);
 
       // uneccessary overhead calling .get()
@@ -1411,7 +1715,7 @@ protoclass(BaseView, ListView, {
     var self = this;
     models.forEach(function (model) {
       self._onRemoveModel(model);
-    }) 
+    })
   },
 
   /**
@@ -1427,7 +1731,7 @@ protoclass(BaseView, ListView, {
 
   _onInsertModel: function (model, index) {
     this._insertModels([model]);
-  },  
+  },
 
   /**
    */
@@ -1649,7 +1953,8 @@ protoclass(BaseView, ListView, {
 
 
 module.exports = ListView;
-},{"../../utils/idGenerator":11,"../base":12,"__browserify_process":30,"bindable":21,"factories":37,"janitorjs":39,"poolparty":91,"protoclass":92,"runlater":93,"type-component":97,"underscore":98}],15:[function(require,module,exports){
+
+},{"../../utils/idGenerator":11,"../base":12,"__browserify_process":31,"bindable":22,"factories":38,"janitorjs":40,"poolparty":129,"protoclass":130,"runlater":131,"type-component":135,"underscore":136}],15:[function(require,module,exports){
 var bindable = require("bindable")
 State        = require("./state"),
 protoclass   = require("protoclass"),
@@ -1663,10 +1968,10 @@ flatstack    = require("flatstack");
  */
 
 /**
- * States View. This is usually defined in `{ sections: { pages: { type: 'states'}} }`
- * @class StateView
- * @extends BaseView
- */
+
+@class StateView
+@extends BaseView
+*/
 
 function StateView (data, application) {
   BaseView.call(this, data, application);
@@ -1702,20 +2007,20 @@ protoclass(BaseView, StateView, {
      * @property currentName
      */
 
-    "currentName", 
+    "currentName",
 
     /**
      * current state index
      * @property index
      */
 
-    "index", 
+    "index",
 
     /**
      * TODO - change this to 'states'
      */
 
-    "source", 
+    "source",
 
     /**
      * The current view being displayed
@@ -1723,10 +2028,10 @@ protoclass(BaseView, StateView, {
      * @type {BaseView}
      */
 
-    "currentView", 
+    "currentView",
 
-    "rotate", 
-    "ended", 
+    "rotate",
+    "ended",
 
     /**
      * The collection of view classes to use
@@ -1746,7 +2051,7 @@ protoclass(BaseView, StateView, {
    */
 
   initialize: function (data) {
-    this.source = new bindable.Collection();    
+    this.source = new bindable.Collection();
     BaseView.prototype.initialize.call(this, data);
     this._q = flatstack();
 
@@ -1796,7 +2101,7 @@ protoclass(BaseView, StateView, {
   /**
    * Selects a specific index
    * @method select
-   * @param {Number} stateOrIndex 
+   * @param {Number} stateOrIndex
    */
 
   select: function (stateOrIndex) {
@@ -1881,7 +2186,7 @@ protoclass(BaseView, StateView, {
    */
 
   update: function () {
-    if (!this.source.length) return;  
+    if (!this.source.length) return;
 
     var self = this;
 
@@ -1909,7 +2214,7 @@ protoclass(BaseView, StateView, {
 
     function onTransition () {
       if (os && os !== cs) os.removeLater();
-      
+
       self.set("currentView", newStateView);
     }
 
@@ -1926,7 +2231,8 @@ protoclass(BaseView, StateView, {
 
 
 module.exports = StateView;
-},{"../base":12,"./state":16,"bindable":21,"flatstack":38,"protoclass":92,"underscore":98}],16:[function(require,module,exports){
+
+},{"../base":12,"./state":16,"bindable":22,"flatstack":39,"protoclass":130,"underscore":136}],16:[function(require,module,exports){
 var bindable = require("bindable"),
 _            = require("underscore"),
 protoclass   = require("protoclass");
@@ -2008,7 +2314,967 @@ protoclass(bindable.Object, State, {
 });
 
 module.exports = State;
-},{"bindable":21,"protoclass":92,"underscore":98}],17:[function(require,module,exports){
+},{"bindable":22,"protoclass":130,"underscore":136}],17:[function(require,module,exports){
+var process=require("__browserify_process");/*global setImmediate: false, setTimeout: false, console: false */
+(function () {
+
+    var async = {};
+
+    // global on the server, window in the browser
+    var root, previous_async;
+
+    root = this;
+    if (root != null) {
+      previous_async = root.async;
+    }
+
+    async.noConflict = function () {
+        root.async = previous_async;
+        return async;
+    };
+
+    function only_once(fn) {
+        var called = false;
+        return function() {
+            if (called) throw new Error("Callback was already called.");
+            called = true;
+            fn.apply(root, arguments);
+        }
+    }
+
+    //// cross-browser compatiblity functions ////
+
+    var _each = function (arr, iterator) {
+        if (arr.forEach) {
+            return arr.forEach(iterator);
+        }
+        for (var i = 0; i < arr.length; i += 1) {
+            iterator(arr[i], i, arr);
+        }
+    };
+
+    var _map = function (arr, iterator) {
+        if (arr.map) {
+            return arr.map(iterator);
+        }
+        var results = [];
+        _each(arr, function (x, i, a) {
+            results.push(iterator(x, i, a));
+        });
+        return results;
+    };
+
+    var _reduce = function (arr, iterator, memo) {
+        if (arr.reduce) {
+            return arr.reduce(iterator, memo);
+        }
+        _each(arr, function (x, i, a) {
+            memo = iterator(memo, x, i, a);
+        });
+        return memo;
+    };
+
+    var _keys = function (obj) {
+        if (Object.keys) {
+            return Object.keys(obj);
+        }
+        var keys = [];
+        for (var k in obj) {
+            if (obj.hasOwnProperty(k)) {
+                keys.push(k);
+            }
+        }
+        return keys;
+    };
+
+    //// exported async module functions ////
+
+    //// nextTick implementation with browser-compatible fallback ////
+    if (typeof process === 'undefined' || !(process.nextTick)) {
+        if (typeof setImmediate === 'function') {
+            async.nextTick = function (fn) {
+                // not a direct alias for IE10 compatibility
+                setImmediate(fn);
+            };
+            async.setImmediate = async.nextTick;
+        }
+        else {
+            async.nextTick = function (fn) {
+                setTimeout(fn, 0);
+            };
+            async.setImmediate = async.nextTick;
+        }
+    }
+    else {
+        async.nextTick = process.nextTick;
+        if (typeof setImmediate !== 'undefined') {
+            async.setImmediate = function (fn) {
+              // not a direct alias for IE10 compatibility
+              setImmediate(fn);
+            };
+        }
+        else {
+            async.setImmediate = async.nextTick;
+        }
+    }
+
+    async.each = function (arr, iterator, callback) {
+        callback = callback || function () {};
+        if (!arr.length) {
+            return callback();
+        }
+        var completed = 0;
+        _each(arr, function (x) {
+            iterator(x, only_once(function (err) {
+                if (err) {
+                    callback(err);
+                    callback = function () {};
+                }
+                else {
+                    completed += 1;
+                    if (completed >= arr.length) {
+                        callback(null);
+                    }
+                }
+            }));
+        });
+    };
+    async.forEach = async.each;
+
+    async.eachSeries = function (arr, iterator, callback) {
+        callback = callback || function () {};
+        if (!arr.length) {
+            return callback();
+        }
+        var completed = 0;
+        var iterate = function () {
+            iterator(arr[completed], function (err) {
+                if (err) {
+                    callback(err);
+                    callback = function () {};
+                }
+                else {
+                    completed += 1;
+                    if (completed >= arr.length) {
+                        callback(null);
+                    }
+                    else {
+                        iterate();
+                    }
+                }
+            });
+        };
+        iterate();
+    };
+    async.forEachSeries = async.eachSeries;
+
+    async.eachLimit = function (arr, limit, iterator, callback) {
+        var fn = _eachLimit(limit);
+        fn.apply(null, [arr, iterator, callback]);
+    };
+    async.forEachLimit = async.eachLimit;
+
+    var _eachLimit = function (limit) {
+
+        return function (arr, iterator, callback) {
+            callback = callback || function () {};
+            if (!arr.length || limit <= 0) {
+                return callback();
+            }
+            var completed = 0;
+            var started = 0;
+            var running = 0;
+
+            (function replenish () {
+                if (completed >= arr.length) {
+                    return callback();
+                }
+
+                while (running < limit && started < arr.length) {
+                    started += 1;
+                    running += 1;
+                    iterator(arr[started - 1], function (err) {
+                        if (err) {
+                            callback(err);
+                            callback = function () {};
+                        }
+                        else {
+                            completed += 1;
+                            running -= 1;
+                            if (completed >= arr.length) {
+                                callback();
+                            }
+                            else {
+                                replenish();
+                            }
+                        }
+                    });
+                }
+            })();
+        };
+    };
+
+
+    var doParallel = function (fn) {
+        return function () {
+            var args = Array.prototype.slice.call(arguments);
+            return fn.apply(null, [async.each].concat(args));
+        };
+    };
+    var doParallelLimit = function(limit, fn) {
+        return function () {
+            var args = Array.prototype.slice.call(arguments);
+            return fn.apply(null, [_eachLimit(limit)].concat(args));
+        };
+    };
+    var doSeries = function (fn) {
+        return function () {
+            var args = Array.prototype.slice.call(arguments);
+            return fn.apply(null, [async.eachSeries].concat(args));
+        };
+    };
+
+
+    var _asyncMap = function (eachfn, arr, iterator, callback) {
+        var results = [];
+        arr = _map(arr, function (x, i) {
+            return {index: i, value: x};
+        });
+        eachfn(arr, function (x, callback) {
+            iterator(x.value, function (err, v) {
+                results[x.index] = v;
+                callback(err);
+            });
+        }, function (err) {
+            callback(err, results);
+        });
+    };
+    async.map = doParallel(_asyncMap);
+    async.mapSeries = doSeries(_asyncMap);
+    async.mapLimit = function (arr, limit, iterator, callback) {
+        return _mapLimit(limit)(arr, iterator, callback);
+    };
+
+    var _mapLimit = function(limit) {
+        return doParallelLimit(limit, _asyncMap);
+    };
+
+    // reduce only has a series version, as doing reduce in parallel won't
+    // work in many situations.
+    async.reduce = function (arr, memo, iterator, callback) {
+        async.eachSeries(arr, function (x, callback) {
+            iterator(memo, x, function (err, v) {
+                memo = v;
+                callback(err);
+            });
+        }, function (err) {
+            callback(err, memo);
+        });
+    };
+    // inject alias
+    async.inject = async.reduce;
+    // foldl alias
+    async.foldl = async.reduce;
+
+    async.reduceRight = function (arr, memo, iterator, callback) {
+        var reversed = _map(arr, function (x) {
+            return x;
+        }).reverse();
+        async.reduce(reversed, memo, iterator, callback);
+    };
+    // foldr alias
+    async.foldr = async.reduceRight;
+
+    var _filter = function (eachfn, arr, iterator, callback) {
+        var results = [];
+        arr = _map(arr, function (x, i) {
+            return {index: i, value: x};
+        });
+        eachfn(arr, function (x, callback) {
+            iterator(x.value, function (v) {
+                if (v) {
+                    results.push(x);
+                }
+                callback();
+            });
+        }, function (err) {
+            callback(_map(results.sort(function (a, b) {
+                return a.index - b.index;
+            }), function (x) {
+                return x.value;
+            }));
+        });
+    };
+    async.filter = doParallel(_filter);
+    async.filterSeries = doSeries(_filter);
+    // select alias
+    async.select = async.filter;
+    async.selectSeries = async.filterSeries;
+
+    var _reject = function (eachfn, arr, iterator, callback) {
+        var results = [];
+        arr = _map(arr, function (x, i) {
+            return {index: i, value: x};
+        });
+        eachfn(arr, function (x, callback) {
+            iterator(x.value, function (v) {
+                if (!v) {
+                    results.push(x);
+                }
+                callback();
+            });
+        }, function (err) {
+            callback(_map(results.sort(function (a, b) {
+                return a.index - b.index;
+            }), function (x) {
+                return x.value;
+            }));
+        });
+    };
+    async.reject = doParallel(_reject);
+    async.rejectSeries = doSeries(_reject);
+
+    var _detect = function (eachfn, arr, iterator, main_callback) {
+        eachfn(arr, function (x, callback) {
+            iterator(x, function (result) {
+                if (result) {
+                    main_callback(x);
+                    main_callback = function () {};
+                }
+                else {
+                    callback();
+                }
+            });
+        }, function (err) {
+            main_callback();
+        });
+    };
+    async.detect = doParallel(_detect);
+    async.detectSeries = doSeries(_detect);
+
+    async.some = function (arr, iterator, main_callback) {
+        async.each(arr, function (x, callback) {
+            iterator(x, function (v) {
+                if (v) {
+                    main_callback(true);
+                    main_callback = function () {};
+                }
+                callback();
+            });
+        }, function (err) {
+            main_callback(false);
+        });
+    };
+    // any alias
+    async.any = async.some;
+
+    async.every = function (arr, iterator, main_callback) {
+        async.each(arr, function (x, callback) {
+            iterator(x, function (v) {
+                if (!v) {
+                    main_callback(false);
+                    main_callback = function () {};
+                }
+                callback();
+            });
+        }, function (err) {
+            main_callback(true);
+        });
+    };
+    // all alias
+    async.all = async.every;
+
+    async.sortBy = function (arr, iterator, callback) {
+        async.map(arr, function (x, callback) {
+            iterator(x, function (err, criteria) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    callback(null, {value: x, criteria: criteria});
+                }
+            });
+        }, function (err, results) {
+            if (err) {
+                return callback(err);
+            }
+            else {
+                var fn = function (left, right) {
+                    var a = left.criteria, b = right.criteria;
+                    return a < b ? -1 : a > b ? 1 : 0;
+                };
+                callback(null, _map(results.sort(fn), function (x) {
+                    return x.value;
+                }));
+            }
+        });
+    };
+
+    async.auto = function (tasks, callback) {
+        callback = callback || function () {};
+        var keys = _keys(tasks);
+        if (!keys.length) {
+            return callback(null);
+        }
+
+        var results = {};
+
+        var listeners = [];
+        var addListener = function (fn) {
+            listeners.unshift(fn);
+        };
+        var removeListener = function (fn) {
+            for (var i = 0; i < listeners.length; i += 1) {
+                if (listeners[i] === fn) {
+                    listeners.splice(i, 1);
+                    return;
+                }
+            }
+        };
+        var taskComplete = function () {
+            _each(listeners.slice(0), function (fn) {
+                fn();
+            });
+        };
+
+        addListener(function () {
+            if (_keys(results).length === keys.length) {
+                callback(null, results);
+                callback = function () {};
+            }
+        });
+
+        _each(keys, function (k) {
+            var task = (tasks[k] instanceof Function) ? [tasks[k]]: tasks[k];
+            var taskCallback = function (err) {
+                var args = Array.prototype.slice.call(arguments, 1);
+                if (args.length <= 1) {
+                    args = args[0];
+                }
+                if (err) {
+                    var safeResults = {};
+                    _each(_keys(results), function(rkey) {
+                        safeResults[rkey] = results[rkey];
+                    });
+                    safeResults[k] = args;
+                    callback(err, safeResults);
+                    // stop subsequent errors hitting callback multiple times
+                    callback = function () {};
+                }
+                else {
+                    results[k] = args;
+                    async.setImmediate(taskComplete);
+                }
+            };
+            var requires = task.slice(0, Math.abs(task.length - 1)) || [];
+            var ready = function () {
+                return _reduce(requires, function (a, x) {
+                    return (a && results.hasOwnProperty(x));
+                }, true) && !results.hasOwnProperty(k);
+            };
+            if (ready()) {
+                task[task.length - 1](taskCallback, results);
+            }
+            else {
+                var listener = function () {
+                    if (ready()) {
+                        removeListener(listener);
+                        task[task.length - 1](taskCallback, results);
+                    }
+                };
+                addListener(listener);
+            }
+        });
+    };
+
+    async.waterfall = function (tasks, callback) {
+        callback = callback || function () {};
+        if (tasks.constructor !== Array) {
+          var err = new Error('First argument to waterfall must be an array of functions');
+          return callback(err);
+        }
+        if (!tasks.length) {
+            return callback();
+        }
+        var wrapIterator = function (iterator) {
+            return function (err) {
+                if (err) {
+                    callback.apply(null, arguments);
+                    callback = function () {};
+                }
+                else {
+                    var args = Array.prototype.slice.call(arguments, 1);
+                    var next = iterator.next();
+                    if (next) {
+                        args.push(wrapIterator(next));
+                    }
+                    else {
+                        args.push(callback);
+                    }
+                    async.setImmediate(function () {
+                        iterator.apply(null, args);
+                    });
+                }
+            };
+        };
+        wrapIterator(async.iterator(tasks))();
+    };
+
+    var _parallel = function(eachfn, tasks, callback) {
+        callback = callback || function () {};
+        if (tasks.constructor === Array) {
+            eachfn.map(tasks, function (fn, callback) {
+                if (fn) {
+                    fn(function (err) {
+                        var args = Array.prototype.slice.call(arguments, 1);
+                        if (args.length <= 1) {
+                            args = args[0];
+                        }
+                        callback.call(null, err, args);
+                    });
+                }
+            }, callback);
+        }
+        else {
+            var results = {};
+            eachfn.each(_keys(tasks), function (k, callback) {
+                tasks[k](function (err) {
+                    var args = Array.prototype.slice.call(arguments, 1);
+                    if (args.length <= 1) {
+                        args = args[0];
+                    }
+                    results[k] = args;
+                    callback(err);
+                });
+            }, function (err) {
+                callback(err, results);
+            });
+        }
+    };
+
+    async.parallel = function (tasks, callback) {
+        _parallel({ map: async.map, each: async.each }, tasks, callback);
+    };
+
+    async.parallelLimit = function(tasks, limit, callback) {
+        _parallel({ map: _mapLimit(limit), each: _eachLimit(limit) }, tasks, callback);
+    };
+
+    async.series = function (tasks, callback) {
+        callback = callback || function () {};
+        if (tasks.constructor === Array) {
+            async.mapSeries(tasks, function (fn, callback) {
+                if (fn) {
+                    fn(function (err) {
+                        var args = Array.prototype.slice.call(arguments, 1);
+                        if (args.length <= 1) {
+                            args = args[0];
+                        }
+                        callback.call(null, err, args);
+                    });
+                }
+            }, callback);
+        }
+        else {
+            var results = {};
+            async.eachSeries(_keys(tasks), function (k, callback) {
+                tasks[k](function (err) {
+                    var args = Array.prototype.slice.call(arguments, 1);
+                    if (args.length <= 1) {
+                        args = args[0];
+                    }
+                    results[k] = args;
+                    callback(err);
+                });
+            }, function (err) {
+                callback(err, results);
+            });
+        }
+    };
+
+    async.iterator = function (tasks) {
+        var makeCallback = function (index) {
+            var fn = function () {
+                if (tasks.length) {
+                    tasks[index].apply(null, arguments);
+                }
+                return fn.next();
+            };
+            fn.next = function () {
+                return (index < tasks.length - 1) ? makeCallback(index + 1): null;
+            };
+            return fn;
+        };
+        return makeCallback(0);
+    };
+
+    async.apply = function (fn) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return function () {
+            return fn.apply(
+                null, args.concat(Array.prototype.slice.call(arguments))
+            );
+        };
+    };
+
+    var _concat = function (eachfn, arr, fn, callback) {
+        var r = [];
+        eachfn(arr, function (x, cb) {
+            fn(x, function (err, y) {
+                r = r.concat(y || []);
+                cb(err);
+            });
+        }, function (err) {
+            callback(err, r);
+        });
+    };
+    async.concat = doParallel(_concat);
+    async.concatSeries = doSeries(_concat);
+
+    async.whilst = function (test, iterator, callback) {
+        if (test()) {
+            iterator(function (err) {
+                if (err) {
+                    return callback(err);
+                }
+                async.whilst(test, iterator, callback);
+            });
+        }
+        else {
+            callback();
+        }
+    };
+
+    async.doWhilst = function (iterator, test, callback) {
+        iterator(function (err) {
+            if (err) {
+                return callback(err);
+            }
+            if (test()) {
+                async.doWhilst(iterator, test, callback);
+            }
+            else {
+                callback();
+            }
+        });
+    };
+
+    async.until = function (test, iterator, callback) {
+        if (!test()) {
+            iterator(function (err) {
+                if (err) {
+                    return callback(err);
+                }
+                async.until(test, iterator, callback);
+            });
+        }
+        else {
+            callback();
+        }
+    };
+
+    async.doUntil = function (iterator, test, callback) {
+        iterator(function (err) {
+            if (err) {
+                return callback(err);
+            }
+            if (!test()) {
+                async.doUntil(iterator, test, callback);
+            }
+            else {
+                callback();
+            }
+        });
+    };
+
+    async.queue = function (worker, concurrency) {
+        if (concurrency === undefined) {
+            concurrency = 1;
+        }
+        function _insert(q, data, pos, callback) {
+          if(data.constructor !== Array) {
+              data = [data];
+          }
+          _each(data, function(task) {
+              var item = {
+                  data: task,
+                  callback: typeof callback === 'function' ? callback : null
+              };
+
+              if (pos) {
+                q.tasks.unshift(item);
+              } else {
+                q.tasks.push(item);
+              }
+
+              if (q.saturated && q.tasks.length === concurrency) {
+                  q.saturated();
+              }
+              async.setImmediate(q.process);
+          });
+        }
+
+        var workers = 0;
+        var q = {
+            tasks: [],
+            concurrency: concurrency,
+            saturated: null,
+            empty: null,
+            drain: null,
+            push: function (data, callback) {
+              _insert(q, data, false, callback);
+            },
+            unshift: function (data, callback) {
+              _insert(q, data, true, callback);
+            },
+            process: function () {
+                if (workers < q.concurrency && q.tasks.length) {
+                    var task = q.tasks.shift();
+                    if (q.empty && q.tasks.length === 0) {
+                        q.empty();
+                    }
+                    workers += 1;
+                    var next = function () {
+                        workers -= 1;
+                        if (task.callback) {
+                            task.callback.apply(task, arguments);
+                        }
+                        if (q.drain && q.tasks.length + workers === 0) {
+                            q.drain();
+                        }
+                        q.process();
+                    };
+                    var cb = only_once(next);
+                    worker(task.data, cb);
+                }
+            },
+            length: function () {
+                return q.tasks.length;
+            },
+            running: function () {
+                return workers;
+            }
+        };
+        return q;
+    };
+
+    async.cargo = function (worker, payload) {
+        var working     = false,
+            tasks       = [];
+
+        var cargo = {
+            tasks: tasks,
+            payload: payload,
+            saturated: null,
+            empty: null,
+            drain: null,
+            push: function (data, callback) {
+                if(data.constructor !== Array) {
+                    data = [data];
+                }
+                _each(data, function(task) {
+                    tasks.push({
+                        data: task,
+                        callback: typeof callback === 'function' ? callback : null
+                    });
+                    if (cargo.saturated && tasks.length === payload) {
+                        cargo.saturated();
+                    }
+                });
+                async.setImmediate(cargo.process);
+            },
+            process: function process() {
+                if (working) return;
+                if (tasks.length === 0) {
+                    if(cargo.drain) cargo.drain();
+                    return;
+                }
+
+                var ts = typeof payload === 'number'
+                            ? tasks.splice(0, payload)
+                            : tasks.splice(0);
+
+                var ds = _map(ts, function (task) {
+                    return task.data;
+                });
+
+                if(cargo.empty) cargo.empty();
+                working = true;
+                worker(ds, function () {
+                    working = false;
+
+                    var args = arguments;
+                    _each(ts, function (data) {
+                        if (data.callback) {
+                            data.callback.apply(null, args);
+                        }
+                    });
+
+                    process();
+                });
+            },
+            length: function () {
+                return tasks.length;
+            },
+            running: function () {
+                return working;
+            }
+        };
+        return cargo;
+    };
+
+    var _console_fn = function (name) {
+        return function (fn) {
+            var args = Array.prototype.slice.call(arguments, 1);
+            fn.apply(null, args.concat([function (err) {
+                var args = Array.prototype.slice.call(arguments, 1);
+                if (typeof console !== 'undefined') {
+                    if (err) {
+                        if (console.error) {
+                            console.error(err);
+                        }
+                    }
+                    else if (console[name]) {
+                        _each(args, function (x) {
+                            console[name](x);
+                        });
+                    }
+                }
+            }]));
+        };
+    };
+    async.log = _console_fn('log');
+    async.dir = _console_fn('dir');
+    /*async.info = _console_fn('info');
+    async.warn = _console_fn('warn');
+    async.error = _console_fn('error');*/
+
+    async.memoize = function (fn, hasher) {
+        var memo = {};
+        var queues = {};
+        hasher = hasher || function (x) {
+            return x;
+        };
+        var memoized = function () {
+            var args = Array.prototype.slice.call(arguments);
+            var callback = args.pop();
+            var key = hasher.apply(null, args);
+            if (key in memo) {
+                callback.apply(null, memo[key]);
+            }
+            else if (key in queues) {
+                queues[key].push(callback);
+            }
+            else {
+                queues[key] = [callback];
+                fn.apply(null, args.concat([function () {
+                    memo[key] = arguments;
+                    var q = queues[key];
+                    delete queues[key];
+                    for (var i = 0, l = q.length; i < l; i++) {
+                      q[i].apply(null, arguments);
+                    }
+                }]));
+            }
+        };
+        memoized.memo = memo;
+        memoized.unmemoized = fn;
+        return memoized;
+    };
+
+    async.unmemoize = function (fn) {
+      return function () {
+        return (fn.unmemoized || fn).apply(null, arguments);
+      };
+    };
+
+    async.times = function (count, iterator, callback) {
+        var counter = [];
+        for (var i = 0; i < count; i++) {
+            counter.push(i);
+        }
+        return async.map(counter, iterator, callback);
+    };
+
+    async.timesSeries = function (count, iterator, callback) {
+        var counter = [];
+        for (var i = 0; i < count; i++) {
+            counter.push(i);
+        }
+        return async.mapSeries(counter, iterator, callback);
+    };
+
+    async.compose = function (/* functions... */) {
+        var fns = Array.prototype.reverse.call(arguments);
+        return function () {
+            var that = this;
+            var args = Array.prototype.slice.call(arguments);
+            var callback = args.pop();
+            async.reduce(fns, args, function (newargs, fn, cb) {
+                fn.apply(that, newargs.concat([function () {
+                    var err = arguments[0];
+                    var nextargs = Array.prototype.slice.call(arguments, 1);
+                    cb(err, nextargs);
+                }]))
+            },
+            function (err, results) {
+                callback.apply(that, [err].concat(results));
+            });
+        };
+    };
+
+    var _applyEach = function (eachfn, fns /*args...*/) {
+        var go = function () {
+            var that = this;
+            var args = Array.prototype.slice.call(arguments);
+            var callback = args.pop();
+            return eachfn(fns, function (fn, cb) {
+                fn.apply(that, args.concat([cb]));
+            },
+            callback);
+        };
+        if (arguments.length > 2) {
+            var args = Array.prototype.slice.call(arguments, 2);
+            return go.apply(this, args);
+        }
+        else {
+            return go;
+        }
+    };
+    async.applyEach = doParallel(_applyEach);
+    async.applyEachSeries = doSeries(_applyEach);
+
+    async.forever = function (fn, callback) {
+        function next(err) {
+            if (err) {
+                if (callback) {
+                    return callback(err);
+                }
+                throw err;
+            }
+            fn(next);
+        }
+        next();
+    };
+
+    // AMD / RequireJS
+    if (typeof define !== 'undefined' && define.amd) {
+        define([], function () {
+            return async;
+        });
+    }
+    // Node.js
+    else if (typeof module !== 'undefined' && module.exports) {
+        module.exports = async;
+    }
+    // included directly via <script> tag
+    else {
+        root.async = async;
+    }
+
+}());
+
+},{"__browserify_process":31}],18:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var BindingsDecorator, disposable,
@@ -2112,7 +3378,7 @@ module.exports = State;
 
 }).call(this);
 
-},{"disposable":18}],18:[function(require,module,exports){
+},{"disposable":19}],19:[function(require,module,exports){
 
 
 (function() {
@@ -2212,7 +3478,7 @@ module.exports = State;
 })();
 
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 var BindableObject = require("../object"),
 computed           = require("../utils/computed"),
 sift               = require("sift");
@@ -2230,6 +3496,11 @@ function BindableCollection(source) {
  */
 
 BindableObject.extend(BindableCollection, {
+
+  /**
+   */
+
+  __isBindableCollection: true,
 
   /**
    */
@@ -2367,6 +3638,15 @@ BindableObject.extend(BindableCollection, {
   /**
    */
 
+  toJSON: function () {
+    return this._source.map(function (item) {
+      return item && item.toJSON ? item.toJSON() : item;
+    })
+  },
+
+  /**
+   */
+
   _updateInfo: function () {
     this.set("first", this._source.length ? this._source[0] : undefined);
     this.set("length", this._source.length);
@@ -2377,9 +3657,8 @@ BindableObject.extend(BindableCollection, {
 
 module.exports = BindableCollection;
 
-},{"../object":22,"../utils/computed":25,"sift":28}],20:[function(require,module,exports){
-var protoclass = require("protoclass"),
-disposable     = require("disposable");
+},{"../object":23,"../utils/computed":26,"sift":28}],21:[function(require,module,exports){
+var protoclass = require("protoclass");
 
 function EventEmitter () {
   this._events = {};
@@ -2495,7 +3774,7 @@ EventEmitter.prototype.removeAllListeners = function (event) {
 
 
 module.exports = EventEmitter;
-},{"disposable":27,"protoclass":92}],21:[function(require,module,exports){
+},{"protoclass":130}],22:[function(require,module,exports){
 module.exports = {
   Object       : require("./object"),
   Collection   : require("./collection"),
@@ -2507,7 +3786,7 @@ module.exports = {
 if (typeof window !== "undefined") {
   window.bindable = module.exports;
 }
-},{"./collection":19,"./core/eventEmitter":20,"./object":22,"./utils/computed":25,"./utils/options":26}],22:[function(require,module,exports){
+},{"./collection":20,"./core/eventEmitter":21,"./object":23,"./utils/computed":26,"./utils/options":27}],23:[function(require,module,exports){
 var EventEmitter    = require("../core/eventEmitter"),
 protoclass          = require("protoclass"),
 watchProperty       = require("./watchProperty");
@@ -2634,7 +3913,9 @@ protoclass(EventEmitter, Bindable, {
         currentValue    = currentValue[currentProperty];
 
 
-        if (!currentValue || (typeof currentValue !== "object")) {
+        // need to take into account functions - easier not to check
+        // if value exists
+        if (!currentValue /* || (typeof currentValue !== "object")*/) {
           currentValue = previousValue[currentProperty] = {};
         }
 
@@ -2704,7 +3985,7 @@ protoclass(EventEmitter, Bindable, {
 
 module.exports = Bindable;
 
-},{"../core/eventEmitter":20,"./watchProperty":24,"protoclass":92}],23:[function(require,module,exports){
+},{"../core/eventEmitter":21,"./watchProperty":25,"protoclass":130}],24:[function(require,module,exports){
 var toarray = require("toarray"),
 _           = require("underscore");
 
@@ -2728,6 +4009,17 @@ function getToPropertyFn (target, property) {
   };
 }
 
+
+function hasChanged (oldValues, newValues) {
+
+  if (oldValues.length !== newValues.length) return true;
+
+  for (var i = newValues.length; i--;) {
+    if (newValues[i] !== oldValues[i]) return true;
+  }
+  return false;
+}
+
 function wrapFn (fn, previousValues, max) {
 
   var numCalls = 0;
@@ -2736,15 +4028,17 @@ function wrapFn (fn, previousValues, max) {
 
     var values = Array.prototype.slice.call(arguments, 0),
     newValues  = (values.length % 2) === 0 ? values.slice(0, values.length / 2) : values;
-    if (_.intersection(newValues, previousValues).length === previousValues.length) {
-      return;
-    }
+
+
+    if (!hasChanged(newValues, previousValues)) return;
+
 
     if (~max && ++numCalls >= max) {
       this.dispose();
     }
 
     previousValues = newValues;
+
 
     fn.apply(this, values);
   }
@@ -2762,7 +4056,7 @@ function transform (bindable, fromProperty, options) {
   bothWays        = options.bothWays;
 
   
-  if (typeof when === "function") {
+  if (!when.test && typeof when === "function") {
     when = { test: when };
   }
 
@@ -2830,7 +4124,7 @@ function transform (bindable, fromProperty, options) {
 };
 
 module.exports = transform;
-},{"toarray":29,"underscore":98}],24:[function(require,module,exports){
+},{"toarray":29,"underscore":136}],25:[function(require,module,exports){
 var _     = require("underscore"),
 transform = require("./transform"),
 options   = require("../utils/options");
@@ -3075,7 +4369,7 @@ function watchProperty (bindable, property, fn) {
 }
 
 module.exports = watchProperty;
-},{"../utils/options":26,"./transform":23,"underscore":98}],25:[function(require,module,exports){
+},{"../utils/options":27,"./transform":24,"underscore":136}],26:[function(require,module,exports){
 var toarray = require("toarray");
 
 module.exports = function (properties, fn) {
@@ -3083,13 +4377,11 @@ module.exports = function (properties, fn) {
   fn.compute = properties;
   return fn;
 };
-},{"toarray":29}],26:[function(require,module,exports){
+},{"toarray":29}],27:[function(require,module,exports){
 module.exports = {
   computedDelay : 0
 };
 
-},{}],27:[function(require,module,exports){
-module.exports=require(18)
 },{}],28:[function(require,module,exports){
 /*
  * Sift
@@ -3653,6 +4945,130 @@ module.exports = function(item) {
   return Object.prototype.toString.call(item) === "[object Array]" ? item : [item];
 }
 },{}],30:[function(require,module,exports){
+var process=require("__browserify_process");(function () {
+
+  var _queue = [], _timeout, _waiting = false, _running = false;
+
+  /**
+   */
+
+  function _interval (fn, ms) {
+
+    var timeout, disposed;
+
+    function tick () {
+      timeout = setTimeout(function () {
+        _run(function () {
+
+          if (disposed) return;
+
+          fn();
+          tick();
+        })
+      }, ms);
+    }
+
+    tick();
+
+    return {
+      dispose: function () {
+        disposed = true;
+        if(timeout) {
+          clearTimeout(timeout);
+        }
+      }
+    }
+  }
+
+  /**
+   */
+
+  function _run (fn) {
+    _queue.push(fn);
+
+    if (!_waiting) {
+      _runQueue();
+    }
+  }
+
+  /**
+   */
+
+  function _runQueue () {
+
+    if (_running) return;
+    _running = true;
+
+    _waiting = false;
+    _timeout = undefined;
+
+    for (var i = 0; i < _queue.length; i++) {
+      _queue[i]();
+    }
+    
+    _running = false;
+
+    _queue = [];
+  }
+
+  /**
+   */
+
+  function _wait () {
+    _waiting = true;
+    if (_timeout) clearTimeout(_timeout);
+    _timeout = setTimeout(_runQueue, boo.waitTimeout);
+  }
+
+  /**
+   */
+
+  function _unwait () {
+    if (_timeout) clearTimeout(_timeout);
+    _runQueue();
+  }
+
+  /**
+   */
+
+
+  var boo = {
+    interval    : _interval,
+    run         : _run,
+    wait        : _wait,
+    unwait      : _unwait,
+    waitTimeout : 1000
+  };
+
+  if (typeof process !== "undefined") {
+    module.exports = boo;
+  }
+
+  if (typeof window !== "undefined") {
+    window.boo = boo;
+
+    $(document).ready(function () {
+
+      $("body, html").
+
+        // wait on scroll
+        scroll(boo.wait).
+
+        // wait on mouse down - TODO - should be on capture
+        mousedown(boo.wait).
+
+        // wait if the user is interacting with the page
+        mousemove(boo.wait).
+
+        // run when the user's mouse leaves the stage
+        mouseleave(boo.unwait);
+    });
+  }
+
+
+})();
+
+},{"__browserify_process":31}],31:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3707,7 +5123,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var AnyFactory, factoryFactory,
@@ -3782,7 +5198,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{"./base":32,"./factory":34}],32:[function(require,module,exports){
+},{"./base":33,"./factory":35}],33:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var BaseFactory;
@@ -3802,7 +5218,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var ClassFactory,
@@ -3846,7 +5262,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{"./base":32}],34:[function(require,module,exports){
+},{"./base":33}],35:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var ClassFactory, FactoryFactory, FnFactory, factory, type,
@@ -3897,7 +5313,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{"./base":32,"./class":33,"./fn":35,"type-component":97}],35:[function(require,module,exports){
+},{"./base":33,"./class":34,"./fn":36,"type-component":135}],36:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var FnFactory;
@@ -3935,7 +5351,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   var GroupFactory, factoryFactory,
@@ -4022,7 +5438,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{"./base":32,"./factory":34}],37:[function(require,module,exports){
+},{"./base":33,"./factory":35}],38:[function(require,module,exports){
 // Generated by CoffeeScript 1.6.2
 (function() {
   module.exports = {
@@ -4035,7 +5451,7 @@ process.chdir = function (dir) {
 
 }).call(this);
 
-},{"./any":31,"./class":33,"./factory":34,"./fn":35,"./group":36}],38:[function(require,module,exports){
+},{"./any":32,"./class":34,"./factory":35,"./fn":36,"./group":37}],39:[function(require,module,exports){
 var _asyncCount = 0;
 
 function flatstack(options) {
@@ -4232,7 +5648,7 @@ function flatstack(options) {
 
 flatstack.asyncLimit = 10;
 module.exports = flatstack;
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 var protoclass = require("protoclass"),
 type           = require("type-component");
 
@@ -4311,7 +5727,7 @@ protoclass(Janitor, {
 module.exports = function () {
   return new Janitor();
 }
-},{"protoclass":92,"type-component":97}],40:[function(require,module,exports){
+},{"protoclass":130,"type-component":135}],41:[function(require,module,exports){
 var protoclass = require("protoclass"),
 nofactor       = require("nofactor");
 
@@ -4509,7 +5925,7 @@ Section = protoclass(Section, {
 module.exports = function (nodeFactory, start, end)  {
   return new Section(nodeFactory, start, end);
 }
-},{"nofactor":45,"protoclass":92}],41:[function(require,module,exports){
+},{"nofactor":46,"protoclass":130}],42:[function(require,module,exports){
 var protoclass = require("protoclass"),
 paperclip      = require("paperclip"),
 runlater       = require("runlater").global;
@@ -4601,7 +6017,7 @@ var decorator = {
 module.exports = function (app) {
   app.decorator(decorator);
 }
-},{"paperclip":47,"protoclass":92,"runlater":93}],42:[function(require,module,exports){
+},{"paperclip":48,"protoclass":130,"runlater":131}],43:[function(require,module,exports){
 var protoclass = require("protoclass");
 
 function BaseFactory () {
@@ -4640,7 +6056,7 @@ protoclass(BaseFactory, {
 
 module.exports = BaseFactory;
 
-},{"protoclass":92}],43:[function(require,module,exports){
+},{"protoclass":130}],44:[function(require,module,exports){
 var Base = require("./base");
 
 function DomFactory () {
@@ -4700,7 +6116,7 @@ Base.extend(DomFactory, {
 });
 
 module.exports = new DomFactory();
-},{"./base":42}],44:[function(require,module,exports){
+},{"./base":43}],45:[function(require,module,exports){
 // from node-ent
 
 var entities = {
@@ -4730,14 +6146,14 @@ module.exports = function (str) {
 
   }).join("");
 }
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = {
   string : require("./string"),
   dom    : require("./dom")
 };
 
 module.exports["default"] = typeof window !== "undefined" ? module.exports.dom : module.exports.string;
-},{"./dom":43,"./string":46}],46:[function(require,module,exports){
+},{"./dom":44,"./string":47}],47:[function(require,module,exports){
 var ent     = require("./ent"),
 Base        = require("./base"),
 protoclass  = require("protoclass");
@@ -5221,13 +6637,13 @@ protoclass(Base, StringNodeFactory, {
 });
 
 module.exports = new StringNodeFactory();
-},{"./base":42,"./ent":44,"protoclass":92}],47:[function(require,module,exports){
+},{"./base":43,"./ent":45,"protoclass":130}],48:[function(require,module,exports){
 module.exports = require("./paper");
 
 if (typeof window !== "undefined") {
   window.paperclip = module.exports;
 }
-},{"./paper":80}],48:[function(require,module,exports){
+},{"./paper":83}],49:[function(require,module,exports){
 var bindable = require("bindable"),
 Clip         = require("./index"),
 _            = require("underscore"),
@@ -5350,11 +6766,12 @@ bindable.Object.extend(ClippedBuffer, {
 });
 
 module.exports = ClippedBuffer;
-},{"./index":49,"bindable":21,"protoclass":92,"underscore":98}],49:[function(require,module,exports){
+},{"./index":50,"bindable":95,"protoclass":125,"underscore":128}],50:[function(require,module,exports){
 var process=require("__browserify_process");var protoclass = require("protoclass"),
 dref           = require("dref"),
 bindable       = require("bindable"),
 BindableObject = bindable.Object,
+BindableReference = require("./ref"),
 type           = require("type-component"),
 _              = require("underscore");
 
@@ -5365,7 +6782,7 @@ function ClipScript (script, name, clip) {
   this.clip      = clip;
   this.application = clip.application;
   this._bindings = [];
-  this.refs      = this.script.refs || [];
+  this.refs      = this.script.refs;
 }
 
 
@@ -5382,7 +6799,7 @@ protoclass(ClipScript, {
     }
 
     this._bindings = [];
-    this.__context = undefined;
+    // this.__context = undefined;
   },
 
   /**
@@ -5390,9 +6807,7 @@ protoclass(ClipScript, {
 
   update: function () {
 
-    if (this._locked) return;
-    
-    // remove all the bindings, and re-initialize. Note that 
+    // remove all the bindings, and re-initialize. Note that
     // we're optimizing for initialization, not change, since the
     // greatest overhead is on start.
     if (this.__context) this.dispose();
@@ -5421,6 +6836,15 @@ protoclass(ClipScript, {
   /**
    */
 
+  bindTo: function (path, bindFrom) {
+    // bindFrom = TRUE ~ <=>
+    // bindFrom = FALSE ~ =>
+    return new BindableReference(this, path, bindFrom);
+  },
+
+  /**
+   */
+
   get: function (path) {
     return this.__context.get(path);
   },
@@ -5439,6 +6863,8 @@ protoclass(ClipScript, {
 
     var fn;
 
+    if (!ctx) return;
+
     if (ctx.__isBindable) {
       fn = ctx.get(key);
       ctx = ctx.context();
@@ -5454,15 +6880,6 @@ protoclass(ClipScript, {
 
   watch: function () {
     this.__watch = true;
-    return this;
-  },
-
-  /**
-   */
-
-  unwatch: function () {
-    this.__watch = false;
-    this.dispose();
     return this;
   },
 
@@ -5500,6 +6917,8 @@ protoclass(ClipScript, {
         self._bindings.push(bindableBinding = self._watchBindable(value, oldValue));
       }
 
+      // check if _locked is set - might happen when assigning
+      // a value.
       if (!locked && !self._locked) {
         self.dispose();
         self.application.animate(self);
@@ -5516,7 +6935,6 @@ protoclass(ClipScript, {
     var onChange, self = this;
 
     value.on("change", onChange = function () {
-      if (!self.__watch) return;
       self._debounceUpdate();
     });
 
@@ -5531,9 +6949,12 @@ protoclass(ClipScript, {
    */
 
   _debounceUpdate: function () {
+
+    // running in node? update immediately
     if (!process.browser) {
       return this.update();
     }
+
     if(this._debounceTimeout) clearTimeout(this._debounceTimeout);
     var self = this;
     this._debounceTimeout = setTimeout(function () {
@@ -5560,15 +6981,6 @@ protoclass(ClipScripts, {
   watch: function () {
     for(var key in this._scripts) {
       this._scripts[key].watch();
-    }
-  },
-
-  /**
-   */
-
-  unwatch: function () {
-    for(var key in this._scripts) {
-      this._scripts[key].unwatch();
     }
   },
 
@@ -5624,12 +7036,8 @@ protoclass(ClipScripts, {
 function Clip (options) {
   BindableObject.call(this);
 
-  if (options.data) {
-    this.reset(options.data, false);
-  }
-
   this.application = options.application;
-  this.scripts = new ClipScripts(this, options.scripts || options.script);
+  this.scripts     = new ClipScripts(this, options.scripts || options.script);
 
   if (options.watch !== false) {
     this.watch();
@@ -5659,14 +7067,6 @@ protoclass(BindableObject, Clip, {
   /**
    */
 
-  unwatch: function () {
-    this.scripts.unwatch();
-    return this;
-  },
-
-  /**
-   */
-
   update: function () {
     this.scripts.update();
     return this;
@@ -5688,12 +7088,38 @@ protoclass(BindableObject, Clip, {
 });
 
 module.exports = Clip;
-},{"__browserify_process":30,"bindable":21,"dref":90,"protoclass":92,"type-component":97,"underscore":98}],50:[function(require,module,exports){
+
+},{"./ref":51,"__browserify_process":31,"bindable":95,"dref":102,"protoclass":125,"type-component":127,"underscore":128}],51:[function(require,module,exports){
+var protoclass = require("protoclass"),
+_              = require("underscore");
+
+
+function BindableReference (clip, path) {
+  this.clip     = clip;
+  this.path     = path;
+}
+
+protoclass(BindableReference, {
+  __isBindableReference: true,
+  value: function (value) {
+    if (!arguments.length) return this.clip.get(this.path);
+    this.clip.set(this.path, value);
+  },
+  toString: function () {
+    return this.clip.get(this.path);
+  }
+});
+
+
+module.exports = BindableReference;
+
+},{"protoclass":125,"underscore":128}],52:[function(require,module,exports){
 var process=require("__browserify_process");var protoclass = require("protoclass"),
 nofactor       = require("nofactor");
 
-function PaperclipApplication () {
-  this.nodeFactory = nofactor["default"];
+function PaperclipApplication (options) {
+  if (!options) options = {};
+  this.nodeFactory = options.nodeFactory || nofactor["default"];
   this._animationQueue = [];
 }
 
@@ -5727,7 +7153,7 @@ protoclass(PaperclipApplication, {
 });
 
 module.exports = PaperclipApplication;
-},{"__browserify_process":30,"nofactor":45,"protoclass":92}],51:[function(require,module,exports){
+},{"__browserify_process":31,"nofactor":107,"protoclass":125}],53:[function(require,module,exports){
 var protoclass = require("protoclass");
 
 function PaperBinding (template, node, bindings, section, nodeFactory) {
@@ -5798,7 +7224,7 @@ protoclass(PaperBinding, {
 
   toString: function () {
 
-    if (this.nodeFactory.name === "string") {
+    if (this.nodeFactory.name !== "dom") {
       return this.section.toString();
     }
 
@@ -5812,7 +7238,8 @@ protoclass(PaperBinding, {
 });
 
 module.exports = PaperBinding;
-},{"protoclass":92}],52:[function(require,module,exports){
+
+},{"protoclass":125}],54:[function(require,module,exports){
 var protoclass = require("protoclass");
 
 function BaseBinder (options) {
@@ -5880,7 +7307,7 @@ protoclass(BaseBinder, {
 });
 
 module.exports = BaseBinder;
-},{"protoclass":92}],53:[function(require,module,exports){
+},{"protoclass":125}],55:[function(require,module,exports){
 var protoclass = require("protoclass");
 
 function BaseBinding (node) {
@@ -5897,7 +7324,7 @@ protoclass(BaseBinding, {
 });
 
 module.exports = BaseBinding;
-},{"protoclass":92}],54:[function(require,module,exports){
+},{"protoclass":125}],56:[function(require,module,exports){
 var protoclass = require("protoclass"),
 BaseBinding    = require("./binding");
 
@@ -5964,140 +7391,90 @@ protoclass(BaseBinding, ScriptBinding, {
 
 
 module.exports = ScriptBinding;
-},{"./binding":53,"protoclass":92}],55:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var BaseBinding, BindingCollection, Collection,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  BaseBinding = require("./base/binding");
-
-  BindingCollection = require("./collection");
-
-  Collection = (function(_super) {
-    __extends(Collection, _super);
+},{"./binding":55,"protoclass":125}],57:[function(require,module,exports){
+var BaseBinding   = require("./base/binding"),
+BindingCollection = require("./collection");
 
 
-    /*
-     */
+function BinderCollection (node, source) {
+  this.node    = node;
+  this._source = source || [];
+}
 
-    function Collection(node, _source) {
-      this.node = node;
-      this._source = _source != null ? _source : [];
+BaseBinding.extend(BinderCollection, {
+  push: function () {
+    this._source.push.apply(this._source, arguments);
+  },
+  getBindings: function (node) {
+
+    if (this._source.length === 1) {
+      return this._source[0].getBinding(node);
     }
 
-
-    /*
-     */
-
-    Collection.prototype.push = function() {
-      var _ref;
-      return (_ref = this._source).push.apply(_ref, arguments);
-    };
-
-
-    /*
-     */
-
-    Collection.prototype.getBindings = function(node) {
-      var binder, bindings, _i, _len, _ref;
-      if (this._source.length === 1) {
-        return this._source[0].getBinding(node);
-      }
-      bindings = new BindingCollection();
-      _ref = this._source;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        binder = _ref[_i];
-        bindings.push(binder.getBinding(node));
-      }
-      return bindings;
-    };
-
-
-    /*
-     */
-
-    Collection.prototype.init = function() {
-      var binder, _i, _len, _ref, _results;
-      _ref = this._source;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        binder = _ref[_i];
-        _results.push(binder.init());
-      }
-      return _results;
-    };
-
-    return Collection;
-
-  })(BaseBinding);
-
-  module.exports = Collection;
-
-}).call(this);
-
-},{"./base/binding":53,"./collection":61}],56:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var BlockBinding,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  BlockBinding = (function(_super) {
-    __extends(BlockBinding, _super);
-
-
-    /*
-     */
-
-    function BlockBinding(options) {
-      var clip;
-      clip = options.clip;
-      this.section = options.section;
-      this.application = options.application;
-      this.nodeFactory = this.application.nodeFactory;
-      this.contentTemplate = options.template;
-      this.scriptName = options.scriptName;
-      this.childBlockTemplate = options.childBlockTemplate;
-      this.script = clip.script(this.scriptName);
-      BlockBinding.__super__.constructor.call(this, this.application, clip, this.scriptName);
+    var bindings = new BindingCollection();
+    for (var i = 0; i < this._source.length; i++) {
+      bindings.push(this._source[i].getBinding(node));
     }
+    return bindings;
+  },
+  init: function () {
+    for (var i = 0, n = this._source.length; i < n; i++) {
+      this._source[i].init();
+    }
+  }
+});
 
+module.exports = BinderCollection;
 
-    /*
-     */
+},{"./base/binding":55,"./collection":63}],58:[function(require,module,exports){
+var BaseScriptBinding = require("../base/script");
 
-    BlockBinding.prototype.bind = function(context) {
-      this.context = context;
-      this.clip.reset(this.context, false);
-      return BlockBinding.__super__.bind.call(this, this.context);
-    };
+function BaseBlockBinding (options) {
 
-    BlockBinding.prototype.unbind = function() {
-      BlockBinding.__super__.unbind.call(this);
-      return this.clip.unwatch();
-    };
+  var clip                = options.clip;
+  this.section            = options.section;
+  this.application        = options.application;
+  this.nodeFactory        = this.application.nodeFactory;
+  this.contentTemplate    = options.template;
+  this.scriptName         = options.scriptName;
+  this.childBlockTemplate = options.childBlockTemplate;
 
+  this.script = clip.script(this.scriptName);
 
-    /*
-     */
+  BaseScriptBinding.call(this, this.application, clip, this.scriptName);
+}
 
-    BlockBinding.test = function(node) {
-      return false;
-    };
+BaseScriptBinding.extend(BaseBlockBinding, {
 
-    return BlockBinding;
+  /**
+   */
 
-  })(require("../base/script"));
+  bind: function (context) {
+    this.context = context;
+    this.clip.reset(context, false);
+    return BaseScriptBinding.prototype.bind.call(this, context);
+  },
 
-  module.exports = BlockBinding;
+  /**
+   */
 
-}).call(this);
+  unbind: function () {
+    BaseScriptBinding.prototype.unbind.call(this);
+    return this.clip.dispose();
+  },
 
-},{"../base/script":54}],57:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
+  /**
+   */
 
+  test: function (node) {
+    return false;
+  }
+});
+
+module.exports = BaseBlockBinding;
+
+},{"../base/script":56}],59:[function(require,module,exports){
 /*
 
 {{#when:condition}}
@@ -6105,281 +7482,215 @@ module.exports = ScriptBinding;
 {{/}}
  */
 
-(function() {
-  var BlockDecor,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+var BaseBlockBinding = require("./base");
 
-  BlockDecor = (function(_super) {
-    __extends(BlockDecor, _super);
+function ConditionalBlockBinding () {
+  BaseBlockBinding.apply(this, arguments);
+}
 
-    function BlockDecor() {
-      return BlockDecor.__super__.constructor.apply(this, arguments);
+BaseBlockBinding.extend(ConditionalBlockBinding, {
+
+  _onChange: function (value, oldValue) {
+
+    // cast as a boolean value - might be something like
+    // an integer
+    value = !!value;
+
+
+    if (this._oldValue === value) {
+      return;
+    }
+
+    this._oldValue = value;
+
+    var child = this.child;
+
+
+
+    if (child) {
+      child.unbind();
+      this.child = undefined;
+    }
+
+    var childTemplate;
+
+    if (value) {
+      childTemplate = this.contentTemplate;
+    } else {
+      childTemplate = this.childBlockTemplate;
+    }
+
+    if (childTemplate) {
+      this.child = childTemplate.bind(this.context);
+      this.section.replaceChildNodes(this.child.render());
+    } else if (child) {
+      child.dispose();
+    }
+  },
+  unbind: function () {
+    BaseBlockBinding.prototype.unbind.call(this);
+    return this.child ? this.child.dispose() : undefined;
+  }
+});
+
+module.exports = ConditionalBlockBinding;
+
+},{"./base":58}],60:[function(require,module,exports){
+var BindingCollection = require("../collection"),
+loaf                  = require("loaf"),
+Clip                  = require("../../../clip"),
+protoclass            = require("protoclass");
+
+
+var bindingClasses = {
+  "html"   : require("./html"),
+  "if"     : require("./conditional"),
+  "else"   : require("./conditional"),
+  "elseif" : require("./conditional"),
+  "value"  : require("./value")
+};
+
+
+function Binder (options) {
+  this.options = options;
+}
+
+protoclass(Binder, {
+  getNode: function () {
+    return this.options.clazz.getNode ? this.options.clazz.getNode(this.options) : undefined;
+  },
+  prepare: function () {
+    return this.options.clazz.prepare ? this.options.clazz.prepare(this.options) : undefined;
+  },
+  init: function () {
+    return this._path = this.path();
+  },
+  getBinding: function (templateNode) {
+    var cn = templateNode;
+
+
+    while (cn.parentNode) {
+      cn = cn.parentNode;
     }
 
 
-    /*
-     */
+    for (var i = 0, n = this._path.length; i < n; i++) {
+      cn = cn.childNodes[this._path[i]];
+    }
 
-    BlockDecor.prototype._onChange = function(value, oldValue) {
-      var child, childTemplate, _ref;
-      child = this.child;
-      if ((_ref = this.child) != null) {
-        _ref.unbind();
+    var clazz = this.options.clazz;
+
+
+    var ops = {
+      node: cn,
+      clip: new Clip({
+        script: this.options.script,
+        watch: false, application:
+        this.options.application
+      })
+    };
+
+    if (this.options.section) {
+      ops.section = loaf(this.options.section.nodeFactory, cn, cn.nextSibling);
+    }
+
+    for (var key in this.options) {
+      if (ops[key] != null) {
+        continue;
       }
-      this.child = void 0;
-      if (value) {
-        childTemplate = this.contentTemplate;
+      ops[key] = this.options[key];
+    }
+
+    return new clazz(ops);
+  },
+  path: function() {
+    if (this._path) return this._path;
+
+    var paths = [], children = [];
+
+    var cn = this.options.node || this.options.section.start;
+
+    while (cn.parentNode) {
+      children = [];
+      for (var i = 0, n = cn.parentNode.childNodes.length; i < n; i++) {
+        children.push(cn.parentNode.childNodes[i]);
+      }
+      paths.unshift(children.indexOf(cn));
+      cn = cn.parentNode;
+    }
+
+    return this._path = paths;
+  }
+});
+
+
+function Factory () { }
+
+protoclass(Factory, {
+  getBinder: function (options) {
+    var clipScriptNames = options.script.fn ? ["value"] : Object.keys(options.script),
+    bd;
+
+    for (var i = 0, n = clipScriptNames.length; i < n; i++) {
+      var scriptName = clipScriptNames[i];
+      if (bd = bindingClasses[scriptName]) {
+        options.scriptName = scriptName;
+        options.clazz = bd;
+        if (bd.prepare) bd.prepare(options);
+        return new Binder(options);
+      }
+    }
+  },
+  register: function (name, bindingClass) {
+    bindingClasses[name] = bindingClass;
+  }
+});
+
+module.exports = new Factory();
+
+},{"../../../clip":50,"../collection":63,"./conditional":59,"./html":61,"./value":62,"loaf":103,"protoclass":125}],61:[function(require,module,exports){
+var type         = require("type-component"),
+BaseBlockBinding = require("./base");
+
+function HtmlBlockBinding () {
+  BaseBlockBinding.apply(this, arguments);
+}
+
+BaseBlockBinding.extend(HtmlBlockBinding, {
+  _onChange: function (value, oldValue) {
+
+    if (oldValue && oldValue.remove) {
+      oldValue.remove();
+    }
+
+    if (!value) {
+      return this.section.removeAll();
+    }
+
+    var node;
+
+    if (value.render) {
+      value.remove();
+      node = value.render();
+    } else if (value.nodeType != null) {
+      node = value;
+    } else {
+      if (this.nodeFactory.name !== "dom") {
+        node = this.nodeFactory.createTextNode(String(value));
       } else {
-        childTemplate = this.childBlockTemplate;
+        var div = this.nodeFactory.createElement("div");
+        div.innerHTML = String(value);
+        node = this.nodeFactory.createFragment(div.childNodes);
       }
-      if (childTemplate) {
-        this.child = childTemplate.bind(this.context);
-        return this.section.replaceChildNodes(this.child.render());
-      } else if (child != null) {
-        return child.dispose();
-      }
-    };
-
-
-    /*
-     */
-
-    BlockDecor.prototype.unbind = function() {
-      var _ref;
-      BlockDecor.__super__.unbind.call(this);
-      return (_ref = this.child) != null ? _ref.dispose() : void 0;
-    };
-
-    return BlockDecor;
-
-  })(require("./base"));
-
-  module.exports = BlockDecor;
-
-}).call(this);
-
-},{"./base":56}],58:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var Binder, BindingCollection, Clip, Factory, bindingClasses, loaf;
-
-  BindingCollection = require("../collection");
-
-  loaf = require("loaf");
-
-  Clip = require("../../../clip");
-
-  bindingClasses = {
-    html: require("./html"),
-    "if": require("./conditional"),
-    "else": require("./conditional"),
-    elseif: require("./conditional"),
-    value: require("./value")
-  };
-
-  Binder = (function() {
-
-    /*
-     */
-    function Binder(options) {
-      this.options = options;
     }
 
+    return this.section.replaceChildNodes(node);
+  }
+});
 
-    /*
-     */
+module.exports = HtmlBlockBinding;
 
-    Binder.prototype.getNode = function() {
-      var _base;
-      return typeof (_base = this.options["class"]).getNode === "function" ? _base.getNode(this.options) : void 0;
-    };
-
-
-    /*
-     */
-
-    Binder.prototype.prepare = function() {
-      var _base;
-      return typeof (_base = this.options["class"]).prepare === "function" ? _base.prepare(this.options) : void 0;
-    };
-
-
-    /*
-     */
-
-    Binder.prototype.init = function() {
-      return this._path = this.path();
-    };
-
-
-    /*
-     */
-
-    Binder.prototype.getBinding = function(templateNode) {
-      var clazz, cn, index, key, ops, _i, _len, _ref;
-      cn = templateNode;
-      while (cn.parentNode) {
-        cn = cn.parentNode;
-      }
-      _ref = this._path;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        index = _ref[_i];
-        cn = cn.childNodes[index];
-      }
-      clazz = this.options["class"];
-      ops = {
-        node: cn,
-        clip: new Clip({
-          script: this.options.script,
-          watch: false,
-          application: this.options.application
-        })
-      };
-      if (this.options.section) {
-        ops.section = loaf(this.options.section.nodeFactory, cn, cn.nextSibling);
-      }
-      for (key in this.options) {
-        if (ops[key] != null) {
-          continue;
-        }
-        ops[key] = this.options[key];
-      }
-      return new clazz(ops);
-    };
-
-
-    /*
-     */
-
-    Binder.prototype.path = function() {
-      var child, children, cn, paths, _i, _len, _ref;
-      if (this._path) {
-        return this._path;
-      }
-      paths = [];
-      cn = this.options.node || this.options.section.start;
-      while (cn.parentNode) {
-        children = [];
-        _ref = cn.parentNode.childNodes;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          child = _ref[_i];
-          children.push(child);
-        }
-        paths.unshift(Array.prototype.slice.call(children, 0).indexOf(cn));
-        cn = cn.parentNode;
-      }
-      return this._path = paths;
-    };
-
-    return Binder;
-
-  })();
-
-  Factory = (function() {
-    function Factory() {}
-
-
-    /*
-     */
-
-    Factory.prototype.getBinder = function(options) {
-      var bd, clipScriptNames, scriptName, _i, _len;
-      clipScriptNames = options.script.fn ? ["value"] : Object.keys(options.script);
-      for (_i = 0, _len = clipScriptNames.length; _i < _len; _i++) {
-        scriptName = clipScriptNames[_i];
-        if (bd = bindingClasses[scriptName]) {
-          options.scriptName = scriptName;
-          options["class"] = bd;
-          if (typeof bd.prepare === "function") {
-            bd.prepare(options);
-          }
-          return new Binder(options);
-        }
-      }
-    };
-
-
-    /*
-     */
-
-    Factory.prototype.register = function(name, bindingClass) {
-      return bindingClasses[name] = bindingClass;
-    };
-
-    return Factory;
-
-  })();
-
-  module.exports = new Factory();
-
-}).call(this);
-
-},{"../../../clip":49,"../collection":61,"./conditional":57,"./html":59,"./value":60,"loaf":40}],59:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var HtmlDecor, type,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  type = require("type-component");
-
-  HtmlDecor = (function(_super) {
-    __extends(HtmlDecor, _super);
-
-    function HtmlDecor() {
-      return HtmlDecor.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    HtmlDecor.prototype._onChange = function(value, oldValue) {
-      var dom, node;
-      if (oldValue != null) {
-        if (typeof oldValue.remove === "function") {
-          oldValue.remove();
-        }
-      }
-      if (!value) {
-        return this.section.removeAll();
-      }
-      if (value.render != null) {
-        value.remove();
-        node = value.render();
-      } else if (value.nodeType != null) {
-        node = value;
-      } else {
-        if (this.nodeFactory.name === "string") {
-          node = this.nodeFactory.createTextNode(String(value));
-        } else {
-          dom = this.nodeFactory.createElement("div");
-          dom.innerHTML = String(value);
-          node = this.nodeFactory.createFragment(dom.childNodes);
-        }
-      }
-      return this.section.replaceChildNodes(node);
-    };
-
-
-    /*
-     */
-
-    HtmlDecor.prototype.unbind = function() {
-      HtmlDecor.__super__.unbind.call(this);
-      return this._onChange(void 0, this.value);
-    };
-
-    return HtmlDecor;
-
-  })(require("./base"));
-
-  module.exports = HtmlDecor;
-
-}).call(this);
-
-},{"./base":56,"type-component":97}],60:[function(require,module,exports){
+},{"./base":58,"type-component":127}],62:[function(require,module,exports){
 var protoclass = require("protoclass"),
 BaseDecor      = require("./base");
 
@@ -6417,1235 +7728,828 @@ ValueDecor.getNode = function (options) {
 }
 
 module.exports = ValueDecor;
-},{"./base":56,"protoclass":92}],61:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var BaseBinding, Collection,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+},{"./base":58,"protoclass":125}],63:[function(require,module,exports){
+var BaseBinding = require("./base/binding");
 
-  BaseBinding = require("./base/binding");
+function BindingCollection (node, source) {
+    this._source = source || [];
+}
 
-  Collection = (function(_super) {
-    __extends(Collection, _super);
-
-
-    /*
-     */
-
-    function Collection(node, _source) {
-      this.node = node;
-      this._source = _source != null ? _source : [];
+BaseBinding.extend(BindingCollection, {
+  push: function () {
+    this._source.push.apply(this._source, arguments);
+  },
+  bind: function (context, node) {
+    for (var i = 0, n = this._source.length; i < n; i++) {
+      this._source[i].bind(context, node);
     }
-
-
-    /*
-     */
-
-    Collection.prototype.push = function() {
-      var _ref;
-      return (_ref = this._source).push.apply(_ref, arguments);
-    };
-
-
-    /*
-     */
-
-    Collection.prototype.bind = function(context, node) {
-      var binding, _i, _len, _ref;
-      _ref = this._source;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        binding = _ref[_i];
-        binding.bind(context, node);
-      }
-    };
-
-
-    /*
-     */
-
-    Collection.prototype.unbind = function() {
-      var binding, _i, _len, _ref;
-      _ref = this._source;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        binding = _ref[_i];
-        binding.unbind();
-      }
-    };
-
-    return Collection;
-
-  })(BaseBinding);
-
-  module.exports = Collection;
-
-}).call(this);
-
-},{"./base/binding":53}],62:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  module.exports = {
-    BaseBlockBinding: require("./block/base"),
-    blockBindingFactory: require("./block/factory"),
-    nodeBindingFactory: require("./node/factory"),
-    BaseNodeBinding: require("./node/base"),
-    BaseAttrDataBinding: require("./node/attrs/dataBind/handlers/base")
-  };
-
-}).call(this);
-
-},{"./block/base":56,"./block/factory":58,"./node/attrs/dataBind/handlers/base":63,"./node/base":76,"./node/factory":77}],63:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var BaseDataBindHandler,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  BaseDataBindHandler = (function(_super) {
-    __extends(BaseDataBindHandler, _super);
-
-
-    /*
-     */
-
-    function BaseDataBindHandler(application, node, clip, name) {
-      this.node = node;
-      this.name = name;
-      BaseDataBindHandler.__super__.constructor.call(this, application, clip, name);
-    }
-
-    return BaseDataBindHandler;
-
-  })(require("../../../../base/script"));
-
-  module.exports = BaseDataBindHandler;
-
-}).call(this);
-
-},{"../../../../base/script":54}],64:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var ChangeAttrBinding,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  ChangeAttrBinding = (function(_super) {
-    __extends(ChangeAttrBinding, _super);
-
-    function ChangeAttrBinding() {
-      this._update2 = __bind(this._update2, this);
-      return ChangeAttrBinding.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    ChangeAttrBinding.events = "keydown change input mousedown mouseup click";
-
-
-    /*
-     */
-
-    ChangeAttrBinding.prototype.preventDefault = false;
-
-
-    /*
-     */
-
-    ChangeAttrBinding.prototype.event = ChangeAttrBinding.events;
-
-
-    /*
-     */
-
-    ChangeAttrBinding.prototype._update = function(event) {
-      clearTimeout(this._changeTimeout);
-      return this._changeTimeout = setTimeout(this._update2, 5);
-    };
-
-
-    /*
-     */
-
-    ChangeAttrBinding.prototype._update2 = function() {
-      return this.script.update();
-    };
-
-    return ChangeAttrBinding;
-
-  })(require("./event"));
-
-  module.exports = ChangeAttrBinding;
-
-}).call(this);
-
-},{"./event":70}],65:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var CssAttrBinding,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  CssAttrBinding = (function(_super) {
-    __extends(CssAttrBinding, _super);
-
-    function CssAttrBinding() {
-      return CssAttrBinding.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    CssAttrBinding.prototype._onChange = function(classes) {
-      var className, classNames, classNamesArray, classesToUse, i, useClass, _i, _len, _ref;
-      classesToUse = ((_ref = this.node.getAttribute("class")) != null ? _ref.split(" ") : void 0) || [];
-      for (classNames in classes) {
-        useClass = classes[classNames];
-        classNamesArray = classNames.split(/,\s*/);
-        for (_i = 0, _len = classNamesArray.length; _i < _len; _i++) {
-          className = classNamesArray[_i];
-          i = classesToUse.indexOf(className);
-          if (useClass) {
-            if (!~i) {
-              classesToUse.push(className);
-            }
-          } else if (~i) {
-            classesToUse.splice(i, 1);
-          }
-        }
-      }
-      return this.node.setAttribute("class", classesToUse.join(" "));
-    };
-
-    return CssAttrBinding;
-
-  })(require("./base"));
-
-  module.exports = CssAttrBinding;
-
-}).call(this);
-
-},{"./base":63}],66:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var DeleteAttrBinding,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  DeleteAttrBinding = (function(_super) {
-    __extends(DeleteAttrBinding, _super);
-
-    function DeleteAttrBinding() {
-      this._onEvent = __bind(this._onEvent, this);
-      return DeleteAttrBinding.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    DeleteAttrBinding.prototype.event = "keydown";
-
-
-    /*
-     */
-
-    DeleteAttrBinding.prototype.preventDefault = true;
-
-
-    /*
-     */
-
-    DeleteAttrBinding.prototype._onEvent = function(event) {
-      var _ref;
-      if ((_ref = event.keyCode) !== 8) {
-        return;
-      }
-      return DeleteAttrBinding.__super__._onEvent.call(this, event);
-    };
-
-    return DeleteAttrBinding;
-
-  })(require("./event"));
-
-  module.exports = DeleteAttrBinding;
-
-}).call(this);
-
-},{"./event":70}],67:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-
-/*
- Deprecated in favor of enable.coffee
- */
-
-(function() {
-  var DisableAttrBinding,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  DisableAttrBinding = (function(_super) {
-    __extends(DisableAttrBinding, _super);
-
-    function DisableAttrBinding() {
-      return DisableAttrBinding.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    DisableAttrBinding.prototype._onChange = function(value) {
-      if (value) {
-        return this.node.setAttribute("disabled", "disabled");
-      } else {
-        return this.node.removeAttribute("disabled");
-      }
-    };
-
-    return DisableAttrBinding;
-
-  })(require("./base"));
-
-  module.exports = DisableAttrBinding;
-
-}).call(this);
-
-},{"./base":63}],68:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var EnableAttrBinding,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  EnableAttrBinding = (function(_super) {
-    __extends(EnableAttrBinding, _super);
-
-    function EnableAttrBinding() {
-      return EnableAttrBinding.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    EnableAttrBinding.prototype._onChange = function(value) {
-      if (value) {
-        return this.node.removeAttribute("disabled");
-      } else {
-        return this.node.setAttribute("disabled", "disabled");
-      }
-    };
-
-    return EnableAttrBinding;
-
-  })(require("./base"));
-
-  module.exports = EnableAttrBinding;
-
-}).call(this);
-
-},{"./base":63}],69:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var EnterAttrBinding,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  EnterAttrBinding = (function(_super) {
-    __extends(EnterAttrBinding, _super);
-
-    function EnterAttrBinding() {
-      this._onEvent = __bind(this._onEvent, this);
-      return EnterAttrBinding.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    EnterAttrBinding.prototype.event = "keydown";
-
-
-    /*
-     */
-
-    EnterAttrBinding.prototype.preventDefault = true;
-
-
-    /*
-     */
-
-    EnterAttrBinding.prototype._onEvent = function(event) {
-      if (event.keyCode !== 13) {
-        return;
-      }
-      return EnterAttrBinding.__super__._onEvent.call(this, event);
-    };
-
-    return EnterAttrBinding;
-
-  })(require("./event"));
-
-  module.exports = EnterAttrBinding;
-
-}).call(this);
-
-},{"./event":70}],70:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var EventDecor,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  EventDecor = (function(_super) {
-    __extends(EventDecor, _super);
-
-    function EventDecor() {
-      this._onEvent = __bind(this._onEvent, this);
-      return EventDecor.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    EventDecor.prototype.watch = false;
-
-
-    /*
-     */
-
-    EventDecor.prototype.propagateEvent = true;
-
-
-    /*
-     */
-
-    EventDecor.prototype.preventDefault = false;
-
-
-    /*
-     */
-
-    EventDecor.prototype.bind = function() {
-      var ev, event, name, prop, _i, _len, _ref, _ref1, _ref2;
-      EventDecor.__super__.bind.apply(this, arguments);
-      event = (this.event || this.name).toLowerCase();
-      name = this.name.toLowerCase();
-      if (name.substr(0, 2) === "on") {
-        name = name.substr(2);
-      }
-      if (event.substr(0, 2) === "on") {
-        event = event.substr(2);
-      }
-      if ((_ref = this.clip.script("propagateEvent")) != null) {
-        _ref.update();
-      }
-      if ((_ref1 = this.clip.script("preventDefault")) != null) {
-        _ref1.update();
-      }
-      if (name === "click" || name === "mouseup" || name === "mousedown" || name === "submit") {
-        this.preventDefault = true;
-        this.propagateEvent = false;
-      }
-      this._pge = "propagateEvent." + name;
-      this._pde = "preventDefault." + name;
-      _ref2 = [this._pge, this._pde];
-      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-        ev = _ref2[_i];
-        prop = ev.split(".").shift();
-        if ((this.clip.get(ev) == null) && (this.clip.get(prop) == null) && (this[prop] != null)) {
-          this.clip.set(ev, this[prop]);
-        }
-      }
-      return (this.$node = $(this.node)).bind(this._event = event, this._onEvent);
-    };
-
-
-    /*
-     */
-
-    EventDecor.prototype.unbind = function() {
-      EventDecor.__super__.unbind.call(this);
-      return this.$node.unbind(this._event, this._onEvent);
-    };
-
-
-    /*
-     */
-
-    EventDecor.prototype._onEvent = function(event) {
-      if (this.clip.get("propagateEvent") !== true && this.clip.get(this._pge) !== true) {
-        event.stopPropagation();
-      }
-      if (this.clip.get("preventDefault") === true || this.clip.get(this._pde) === true) {
-        event.preventDefault();
-      }
-      if (this.clip.get("disable")) {
-        return;
-      }
-      this.clip.data.set("event", event);
-      return this._update(event);
-    };
-
-
-    /*
-     */
-
-    EventDecor.prototype._update = function(event) {
-      return this.script.update();
-    };
-
-    return EventDecor;
-
-  })(require("./base"));
-
-  module.exports = EventDecor;
-
-}).call(this);
-
-},{"./base":63}],71:[function(require,module,exports){
-var process=require("__browserify_process");// Generated by CoffeeScript 1.7.0
-(function() {
-  var ChangeDecor, ModelAttrBinding, dref, type, _,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  _ = require("underscore");
-
-  ChangeDecor = require("./change");
-
-  type = require("type-component");
-
-  dref = require("dref");
-
-  ModelAttrBinding = (function(_super) {
-    __extends(ModelAttrBinding, _super);
-
-    function ModelAttrBinding() {
-      this._elementValue = __bind(this._elementValue, this);
-      this._onValueChange = __bind(this._onValueChange, this);
-      this._onChange = __bind(this._onChange, this);
-      this._onElementChange = __bind(this._onElementChange, this);
-      return ModelAttrBinding.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    ModelAttrBinding.prototype.bind = function() {
-      this._autocompleteCheckInterval = setInterval(((function(_this) {
-        return function() {
-          return _this._onElementChange();
-        };
-      })(this)), 500);
-      ModelAttrBinding.__super__.bind.apply(this, arguments);
-      (this.$element = $(this.node)).bind(ChangeDecor.events, this._onElementChange);
-      this._onChange();
-      return this._nameBinding = this.clip.data.bind("name", this._onChange);
-    };
-
-
-    /*
-     */
-
-    ModelAttrBinding.prototype._onElementChange = function(event) {
-      var applyChange;
-      if (event != null) {
-        event.stopPropagation();
-      }
-      clearTimeout(this._changeTimeout);
-      applyChange = (function(_this) {
-        return function() {
-          var model, name, ref, refs, value;
-          value = _this._parseValue(_this._elementValue());
-          name = _this._elementName();
-          refs = _this.script.script.refs;
-          model = _this.clip.get("model");
-          if (_this.clip.get("bothWays") !== false) {
-            ref = name || (refs.length ? refs[0] : void 0);
-            if (!name) {
-              model = _this.context;
-            }
-            _this.currentValue = value;
-            if (model) {
-              if (model.set) {
-                return model.set(ref, value);
-              } else {
-                return dref.set(model, ref, value);
-              }
-            }
-          }
-        };
-      })(this);
-      if (!process.browser) {
-        return applyChange();
-      } else {
-        return this._changeTimeout = setTimeout(applyChange, 5);
-      }
-    };
-
-
-    /*
-     */
-
-    ModelAttrBinding.prototype.unbind = function() {
-      var _ref, _ref1;
-      ModelAttrBinding.__super__.unbind.call(this);
-      clearInterval(this._autocompleteCheckInterval);
-      if ((_ref = this._modelBinding) != null) {
-        _ref.dispose();
-      }
-      if ((_ref1 = this._nameBinding) != null) {
-        _ref1.dispose();
-      }
-      return this.$element.unbind(ChangeDecor.events, this._onElementChange);
-    };
-
-
-    /*
-     */
-
-    ModelAttrBinding.prototype._onChange = function() {
-      var model, name, _ref;
-      model = this.clip.get("model");
-      name = this._elementName();
-      if ((_ref = this._modelBinding) != null) {
-        _ref.dispose();
-      }
-      if (name) {
-        return this._modelBinding = model != null ? model.bind(name, this._onValueChange).now() : void 0;
-      } else if (type(model) !== "object") {
-        return this._onValueChange(model);
-      }
-    };
-
-
-    /*
-     */
-
-    ModelAttrBinding.prototype._onValueChange = function(value) {
-      return this._elementValue(this._parseValue(value));
-    };
-
-
-    /*
-     */
-
-    ModelAttrBinding.prototype._parseValue = function(value) {
-      var v;
-      if ((value == null) || value === "") {
-        return void 0;
-      }
-      if (type(value) !== "string") {
-        return value;
-      }
-      if (isNaN(v = Number(value)) || (String(value).substr(0, 1) === "0" && String(value).length > 1)) {
-        return value;
-      } else {
-        return v;
-      }
-    };
-
-
-    /*
-     */
-
-    ModelAttrBinding.prototype._elementValue = function(value) {
-      var isInput;
-      if (value == null) {
-        value = "";
-      }
-      isInput = Object.prototype.hasOwnProperty.call(this.node, "value") || /input|textarea|checkbox/.test(this.node.nodeName.toLowerCase());
-      if (!arguments.length) {
-        if (isInput) {
-          return this._checkedOrValue();
-        } else {
-          return this.node.innerHTML;
-        }
-      }
-      if (this.currentValue === value) {
-        return;
-      }
-      this.currentValue = value;
-      if (isInput) {
-        return this._checkedOrValue(value);
-      } else {
-        return this.node.innerHTML = value;
-      }
-    };
-
-
-    /*
-     */
-
-    ModelAttrBinding.prototype._elementName = function() {
-      return $(this.node).attr("name");
-    };
-
-
-    /*
-     */
-
-    ModelAttrBinding.prototype._checkedOrValue = function(value) {
-      var isCheckbox, isRadio, isRadioOrCheckbox;
-      isCheckbox = /checkbox/.test(this.node.type);
-      isRadio = /radio/.test(this.node.type);
-      isRadioOrCheckbox = isCheckbox || isRadio;
-      if (!arguments.length) {
-        if (isCheckbox) {
-          return Boolean($(this.node).is(":checked"));
-        } else {
-          return this.node.value;
-        }
-      }
-      if (isRadioOrCheckbox) {
-        if (isRadio) {
-          if (String(value) === String($(this.node).val())) {
-            return $(this.node).prop("checked", true);
-          }
-        } else {
-          return this.node.checked = value;
-        }
-      } else {
-        return this.node.value = value;
-      }
-    };
-
-    return ModelAttrBinding;
-
-  })(require("./base"));
-
-  module.exports = ModelAttrBinding;
-
-}).call(this);
-
-},{"./base":63,"./change":64,"__browserify_process":30,"dref":90,"type-component":97,"underscore":98}],72:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var ShowAttrBinding,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  ShowAttrBinding = (function(_super) {
-    __extends(ShowAttrBinding, _super);
-
-    function ShowAttrBinding() {
-      return ShowAttrBinding.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    ShowAttrBinding.prototype.bind = function(context) {
-      this._displayStyle = this.node.style.display;
-      return ShowAttrBinding.__super__.bind.call(this, context);
-    };
-
-
-    /*
-     */
-
-    ShowAttrBinding.prototype._onChange = function(value) {
-      return this.node.style.display = value ? this._displayStyle : "none";
-    };
-
-    return ShowAttrBinding;
-
-  })(require("./base"));
-
-  module.exports = ShowAttrBinding;
-
-}).call(this);
-
-},{"./base":63}],73:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var StyleDecor,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  StyleDecor = (function(_super) {
-    __extends(StyleDecor, _super);
-
-    function StyleDecor() {
-      return StyleDecor.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    StyleDecor.prototype.bind = function() {
-      this._currentStyles = {};
-      return StyleDecor.__super__.bind.apply(this, arguments);
-    };
-
-
-    /*
-     */
-
-    StyleDecor.prototype._onChange = function(styles) {
-      var key, name, newStyles, rmStyle, style;
-      newStyles = {};
-      rmStyle = {};
-      for (name in styles) {
-        style = styles[name];
-        if (style !== this._currentStyles[name]) {
-          newStyles[name] = this._currentStyles[name] = style || "";
-        }
-      }
-      if (typeof window === "undefined") {
-        for (key in newStyles) {
-          this.node.style[key] = newStyles[key];
-        }
-      } else {
-        $(this.node).css(newStyles);
-      }
-    };
-
-    return StyleDecor;
-
-  })(require("./base"));
-
-  module.exports = StyleDecor;
-
-}).call(this);
-
-},{"./base":63}],74:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var AttrDataBinding, BindingCollection, Clip, dataBindingClasses,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  Clip = require("../../../../../clip");
-
-  BindingCollection = require("../../../collection");
-
-  dataBindingClasses = {
-    show: require("./handlers/show"),
-    css: require("./handlers/css"),
-    style: require("./handlers/style"),
-    disable: require("./handlers/disable"),
-    enable: require("./handlers/enable"),
-    model: require("./handlers/model"),
-    click: require("./handlers/event"),
-    submit: require("./handlers/event"),
-    mousedown: require("./handlers/event"),
-    mouseup: require("./handlers/event"),
-    mouseover: require("./handlers/event"),
-    mouseout: require("./handlers/event"),
-    keydown: require("./handlers/event"),
-    keyup: require("./handlers/event"),
-    enter: require("./handlers/enter"),
-    "delete": require("./handlers/delete"),
-    onClick: require("./handlers/event"),
-    onLoad: require("./handlers/event"),
-    onSubmit: require("./handlers/event"),
-    onMouseDown: require("./handlers/event"),
-    onMouseUp: require("./handlers/event"),
-    onMouseOver: require("./handlers/event"),
-    onMouseOut: require("./handlers/event"),
-    onKeyDown: require("./handlers/event"),
-    onKeyUp: require("./handlers/event"),
-    onEnter: require("./handlers/enter"),
-    onChange: require("./handlers/change"),
-    onDelete: require("./handlers/delete")
-  };
-
-  AttrDataBinding = (function(_super) {
-    __extends(AttrDataBinding, _super);
-
-
-    /*
-     */
-
-    AttrDataBinding.prototype.type = "attr";
-
-
-    /*
-     */
-
-    function AttrDataBinding(options) {
-      var bc, scriptName, _i, _len, _ref;
-      AttrDataBinding.__super__.constructor.call(this, options);
-      this.clip = new Clip({
-        scripts: options.value[0],
-        watch: false,
-        application: options.application
-      });
-      this._bindings = new BindingCollection();
-      _ref = this.clip.scripts.names;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        scriptName = _ref[_i];
-        if (!(bc = dataBindingClasses[scriptName])) {
-          continue;
-        }
-        this._bindings.push(new bc(options.application, this.node, this.clip, scriptName));
-      }
-    }
-
-
-    /*
-     */
-
-    AttrDataBinding.prototype.bind = function(context) {
-      this.context = context;
-      this.clip.reset(this.context, false);
-      return this._bindings.bind(this.context);
-    };
-
-
-    /*
-     */
-
-    AttrDataBinding.prototype.unbind = function() {
-      this._bindings.unbind();
-      return this.clip.dispose();
-    };
-
-    return AttrDataBinding;
-
-  })(require("../../base"));
-
-  module.exports = AttrDataBinding;
-
-  module.exports.register = function(name, dataBindClass) {
-    return dataBindingClasses[name] = dataBindClass;
-  };
-
-}).call(this);
-
-},{"../../../../../clip":49,"../../../collection":61,"../../base":76,"./handlers/change":64,"./handlers/css":65,"./handlers/delete":66,"./handlers/disable":67,"./handlers/enable":68,"./handlers/enter":69,"./handlers/event":70,"./handlers/model":71,"./handlers/show":72,"./handlers/style":73}],75:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var AttrTextBinding, ClippedBuffer, type,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  type = require("type-component");
-
-  ClippedBuffer = require("../../../../../clip/buffer");
-
-  AttrTextBinding = (function(_super) {
-    __extends(AttrTextBinding, _super);
-
-
-    /*
-     */
-
-    AttrTextBinding.prototype.type = "attr";
-
-
-    /*
-     */
-
-    function AttrTextBinding(options) {
-      this._onChange = __bind(this._onChange, this);
-      AttrTextBinding.__super__.constructor.call(this, options);
-      this.clippedBuffer = new ClippedBuffer(this.value, options.application);
-    }
-
-
-    /*
-     */
-
-    AttrTextBinding.prototype.bind = function(context) {
-      this.context = context;
-      return this._binding = this.clippedBuffer.reset(this.context).bind("value", this._onChange).now();
-    };
-
-
-    /*
-     */
-
-    AttrTextBinding.prototype.unbind = function() {
-      var _ref;
-      if ((_ref = this._binding) != null) {
-        _ref.dispose();
-      }
-      this.clippedBuffer.dispose();
-      return this._binding;
-    };
-
-
-    /*
-     */
-
-    AttrTextBinding.prototype._onChange = function(text) {
-      if (!text.length) {
-        this.node.removeAttribute(this.name);
-        return;
-      }
-      return this.node.setAttribute(this.name, text);
-    };
-
-
-    /*
-     */
-
-    AttrTextBinding.prototype.test = function(binding) {
-      var v, _i, _len, _ref;
-      if (type(binding.value) !== "array") {
-        return false;
-      }
-      _ref = binding.value;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        v = _ref[_i];
-        if (v.fn) {
-          return true;
-        }
-      }
-      return false;
-    };
-
-    return AttrTextBinding;
-
-  })(require("../../base"));
-
-  module.exports = AttrTextBinding;
-
-}).call(this);
-
-},{"../../../../../clip/buffer":48,"../../base":76,"type-component":97}],76:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var BaseNodeBinding,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  BaseNodeBinding = (function(_super) {
-    __extends(BaseNodeBinding, _super);
-
-
-    /*
-     */
-
-    function BaseNodeBinding(options) {
-      this.name = options.name || this.name;
-      this.node = options.node;
-      this.value = options.value;
-      this.nodeModel = options.context;
-    }
-
-
-    /*
-     */
-
-    BaseNodeBinding.prototype.bind = function(context) {
-      this.context = context;
-    };
-
-
-    /*
-     */
-
-    BaseNodeBinding.prototype.unbind = function() {};
-
-    return BaseNodeBinding;
-
-  })(require("../../base/binding"));
-
-  module.exports = BaseNodeBinding;
-
-}).call(this);
-
-},{"../../base/binding":53}],77:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var Binder, NodeBindingFactory, allBindingClasses, bdble, classes, clazz, dataBind, defaultBindingClasses, nodeFactory, type, _, _i, _len;
-
-  bdble = require("bindable");
-
-  _ = require("underscore");
-
-  allBindingClasses = {
-    node: {},
-    attr: {
-      "default": []
-    }
-  };
-
-  Binder = (function() {
-
-    /*
-     */
-    function Binder(options) {
-      this.options = options;
-    }
-
-
-    /*
-     */
-
-    Binder.prototype.init = function() {};
-
-
-    /*
-     */
-
-    Binder.prototype.getBinding = function(templateNode) {
-      var clazz, cn, index, _i, _len, _ref;
-      cn = templateNode;
-      while (cn.parentNode) {
-        cn = cn.parentNode;
-      }
-      _ref = this.path();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        index = _ref[_i];
-        cn = cn.childNodes[index];
-      }
-      clazz = this.options["class"];
-      return new clazz(_.extend({}, this.options, {
-        node: cn
-      }));
-    };
-
-
-    /*
-     */
-
-    Binder.prototype.path = function() {
-      var child, children, cn, paths, _i, _len, _ref;
-      if (this._path) {
-        return this._path;
-      }
-      paths = [];
-      cn = this.options.node;
-      while (cn.parentNode) {
-        children = [];
-        _ref = cn.parentNode.childNodes;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          child = _ref[_i];
-          children.push(child);
-        }
-        paths.unshift(children.indexOf(cn));
-        cn = cn.parentNode;
-      }
-      return this._path = paths;
-    };
-
-    return Binder;
-
-  })();
-
-  NodeBindingFactory = (function() {
-    function NodeBindingFactory() {}
-
-
-    /*
-     */
-
-    NodeBindingFactory.prototype.getBinders = function(options) {
-      var attrName, attributes, bindable, bindables, binders, bindingClass, bindingClasses, context, node, nodeName, _i, _j, _len, _len1;
-      binders = [];
-      attributes = options.attributes;
-      nodeName = options.nodeName;
-      node = options.node;
-      bindables = [
-        {
-          name: nodeName,
-          key: nodeName,
-          value: node,
-          type: "node",
-          node: node
-        }, {
-          name: nodeName,
-          key: "default",
-          value: node,
-          type: "node",
-          node: node
-        }
-      ];
-      context = void 0;
-      for (attrName in attributes) {
-        bindables.push({
-          node: node,
-          name: attrName,
-          key: attrName,
-          value: attributes[attrName],
-          type: "attr"
-        });
-        bindables.push({
-          node: node,
-          name: attrName,
-          key: "default",
-          value: attributes[attrName],
-          type: "attr"
-        });
-      }
-      for (_i = 0, _len = bindables.length; _i < _len; _i++) {
-        bindable = bindables[_i];
-        bindingClasses = allBindingClasses[bindable.type][bindable.key] || [];
-        for (_j = 0, _len1 = bindingClasses.length; _j < _len1; _j++) {
-          bindingClass = bindingClasses[_j];
-          if (bindingClass.prototype.test(bindable)) {
-            bindable["class"] = bindingClass;
-            bindable.application = options.application;
-            binders.push(new Binder(bindable));
-          }
-        }
-      }
-      return binders;
-    };
-
-
-    /*
-     */
-
-    NodeBindingFactory.prototype.register = function(name, bindingClass) {
-      var classes, type;
-      type = bindingClass.type || bindingClass.prototype.type;
-      if (!/node|attr/.test(String(type))) {
-        throw new Error("node binding class \"" + bindingClass.name + "\" must have a type 'node', or 'attr'");
-      }
-      classes = allBindingClasses[type];
-      if (!bindingClass.prototype.test) {
-        bindingClass.prototype.test = function() {
-          return true;
-        };
-      }
-      if (!classes[name]) {
-        classes[name] = [];
-      }
-      classes[name].push(bindingClass);
-      return this;
-    };
-
-    return NodeBindingFactory;
-
-  })();
-
-  nodeFactory = module.exports = new NodeBindingFactory();
-
-  defaultBindingClasses = {
-    "default": [require("./attrs/text")],
-    "data-bind": [dataBind = module.exports.dataBind = require("./attrs/dataBind")]
-  };
-
-  for (type in defaultBindingClasses) {
-    classes = defaultBindingClasses[type];
-    for (_i = 0, _len = classes.length; _i < _len; _i++) {
-      clazz = classes[_i];
-      nodeFactory.register(type, clazz);
+  },
+  unbind: function () {
+    for (var i = 0, n = this._source.length; i < n; i++) {
+      this._source[i].unbind();
     }
   }
+});
 
-}).call(this);
+module.exports = BindingCollection;
 
-},{"./attrs/dataBind":74,"./attrs/text":75,"bindable":21,"underscore":98}],78:[function(require,module,exports){
+},{"./base/binding":55}],64:[function(require,module,exports){
+module.exports = {
+  BaseBlockBinding    : require("./block/base"),
+  blockBindingFactory : require("./block/factory"),
+  nodeBindingFactory  : require("./node/factory"),
+  BaseNodeBinding     : require("./node/base"),
+  BaseAttrDataBinding : require("./node/attrs/dataBind/handlers/base")
+};
+
+},{"./block/base":58,"./block/factory":60,"./node/attrs/dataBind/handlers/base":65,"./node/base":79,"./node/factory":80}],65:[function(require,module,exports){
+var BaseScriptBinding = require("../../../../base/script");
+
+function BaseDataBindHandler (application, node, clip, name) {
+  this.node = node;
+  BaseScriptBinding.call(this, application, this.clip = clip, this.name = name);
+}
+
+BaseScriptBinding.extend(BaseDataBindHandler, {
+});
+
+module.exports = BaseDataBindHandler;
+
+},{"../../../../base/script":56}],66:[function(require,module,exports){
+var EventDataBinding = require("./event"),
+_                    = require("underscore");
+
+function ChangeAttrBinding () {
+  EventDataBinding.apply(this, arguments);
+}
+
+ChangeAttrBinding.events = "keydown change input mousedown mouseup click";
+
+EventDataBinding.extend(ChangeAttrBinding, {
+  preventDefault: false,
+  event: ChangeAttrBinding.events,
+  _update: function (event) {
+    clearTimeout(this._changeTimeout);
+    this._changeTimeout = setTimeout(_.bind(this._update2, this), 5);
+  },
+  _update2: function () {
+    this.script.update();
+  }
+});
+
+module.exports = ChangeAttrBinding;
+},{"./event":72,"underscore":128}],67:[function(require,module,exports){
+var BaseDataBinding = require("./base");
+
+function CssAttrBinding () {
+  BaseDataBinding.apply(this, arguments);
+};
+
+BaseDataBinding.extend(CssAttrBinding, {
+  _onChange: function (classes) {
+    var classesToUse = this.node.getAttribute("class");
+    classesToUse     = classesToUse ? classesToUse.split(" ") : [];
+
+    for (var classNames in classes) {
+
+      var useClass = classes[classNames];
+      var classNamesArray = classNames.split(/,\s*/);
+
+      for (var i = 0, n = classNamesArray.length; i < n; i++) {
+        var className = classNamesArray[i];
+        var j = classesToUse.indexOf(className);
+        if (useClass) {
+          if (!~j) {
+            classesToUse.push(className);
+          }
+        } else if (~j) {
+          classesToUse.splice(j, 1);
+        }
+      }
+    }
+
+    this.node.setAttribute("class", classesToUse.join(" "));
+  }
+});
+
+module.exports = CssAttrBinding;
+
+},{"./base":65}],68:[function(require,module,exports){
+var EventDataBinding = require("./event");
+
+function DeleteAttrBinding () {
+  EventDataBinding.apply(this, arguments);
+}
+
+
+EventDataBinding.extend(DeleteAttrBinding, {
+  preventDefault: true,
+  event: "keydown",
+  _onEvent: function (event) {
+    if (!~[8].indexOf(event.keyCode)) {
+      return;
+    }
+    EventDataBinding.prototype._onEvent.apply(this, arguments);
+  }
+});
+
+module.exports = DeleteAttrBinding;
+
+},{"./event":72}],69:[function(require,module,exports){
+var BaseDataBinding = require("./base");
+
+function DisableAttrBinding () {
+  BaseDataBinding.apply(this, arguments);
+}
+
+
+BaseDataBinding.extend(DisableAttrBinding, {
+  _onChange: function (value) {
+    if (value) {
+      this.node.setAttribute("disabled", "disabled");
+    } else {
+      this.node.removeAttribute("disabled");
+    }
+  }
+});
+
+module.exports = DisableAttrBinding;
+
+},{"./base":65}],70:[function(require,module,exports){
+var BaseDataBinding = require("./base");
+
+function EnableAttrBinding () {
+  BaseDataBinding.apply(this, arguments);
+}
+
+
+BaseDataBinding.extend(EnableAttrBinding, {
+  _onChange: function (value) {
+    if (value) {
+      this.node.removeAttribute("disabled");
+    } else {
+      this.node.setAttribute("disabled", "disabled");
+    }
+  }
+});
+
+module.exports = EnableAttrBinding;
+
+},{"./base":65}],71:[function(require,module,exports){
+var EventDataBinding = require("./event");
+
+function EnterAttrBinding () {
+  EventDataBinding.apply(this, arguments);
+}
+
+
+EventDataBinding.extend(EnterAttrBinding, {
+  preventDefault: true,
+  event: "keydown",
+  _onEvent: function (event) {
+    if (!~[13].indexOf(event.keyCode)) {
+      return;
+    }
+    EventDataBinding.prototype._onEvent.apply(this, arguments);
+  }
+});
+
+module.exports = EnterAttrBinding;
+
+},{"./event":72}],72:[function(require,module,exports){
+var BaseDataBinding = require("./base"),
+_                   = require("underscore");
+
+function EventDataBinding () {
+  BaseDataBinding.apply(this, arguments);
+  this._onEvent = _.bind(this._onEvent, this);
+}
+
+BaseDataBinding.extend(EventDataBinding, {
+  watch: false,
+  propagateEvent: true,
+  preventDefault: false,
+  bind: function () {
+    BaseDataBinding.prototype.bind.apply(this, arguments);
+
+    var event = (this.event || this.name).toLowerCase(),
+    name      = this.name.toLowerCase();
+
+    if (name.substr(0, 2) === "on") {
+      name = name.substr(2);
+    }
+
+    if (event.substr(0, 2) === "on") {
+      event = event.substr(2);
+    }
+
+
+    this._updateScript(this.clip.script("propagateEvent"));
+    this._updateScript(this.clip.script("preventDefault"));
+
+
+    if (~["click", "mouseup", "mousedown", "submit"].indexOf(name)) {
+      this.preventDefault = true;
+      this.propagateEvent = false;
+    }
+
+    this._pge = "propagateEvent." + name;
+    this._pde = "preventDefault." + name;
+
+    this._setDefaultProperties(this._pge);
+    this._setDefaultProperties(this._pde);
+    
+    (this.$node = $(this.node)).bind(this._event = event, this._onEvent);
+  },
+  unbind: function () {
+    BaseDataBinding.prototype.unbind.call(this);
+    return this.$node.unbind(this._event, this._onEvent);
+  },
+  _updateScript: function (script) {
+    if (script) {
+      script.update();
+    }
+  },
+  _setDefaultProperties: function (ev) {
+    var prop = ev.split(".").shift();
+    if (!this.clip.has(ev) && !this.clip.has(prop) && this[prop] != null) {
+      this.clip.set(ev, this[prop]);
+    }
+  },
+  _onEvent: function (event) {
+
+
+    if (this.clip.get("propagateEvent") !== true && this.clip.get(this._pge) !== true) {
+      event.stopPropagation();
+    }
+
+    if(this.clip.get("preventDefault") === true || this.clip.get(this._pde) === true) {
+     event.preventDefault();
+    }
+
+    if (this.clip.get("disable")) return;
+
+    this.clip.data.set("event", event);
+    this._update(event);
+  },
+  _update: function (event) {
+    this.script.update();
+  }
+});
+
+module.exports = EventDataBinding;
+},{"./base":65,"underscore":128}],73:[function(require,module,exports){
+var protoclass = require("protoclass"),
+BaseBinding = require("./base");
+
+function FocusAttrBinding () {
+  BaseBinding.apply(this, arguments);
+}
+
+protoclass(BaseBinding, FocusAttrBinding, {
+
+  /**
+   */
+
+  _onChange: function (value) {
+    if (typeof $ === "undefined" || !value) return;
+    $(this.node).focus();
+    $(this.node).trigger("focusin");
+  }
+});
+
+module.exports = FocusAttrBinding;
+},{"./base":65,"protoclass":125}],74:[function(require,module,exports){
+var process=require("__browserify_process");var _             = require("underscore"),
+ChangeAttrBinding = require("./change"),
+BaseBinding       = require("./base"),
+type              = require("type-component"),
+dref              = require("dref");
+
+function ModelAttrBinding () {
+  this._elementValue = _.bind(this._elementValue, this);
+  this._onValueChange = _.bind(this._onValueChange, this);
+  this._onChange = _.bind(this._onChange, this);
+  this._onElementChange = _.bind(this._onElementChange, this);
+  ModelAttrBinding.__super__.constructor.apply(this, arguments);
+}
+
+BaseBinding.extend(ModelAttrBinding, {
+  bind: function () {
+    var self = this;
+
+
+    if (/^(text|password|email)$/.test(this.node.getAttribute("type"))) {
+      this._autocompleteCheckInterval = setInterval(function () {
+        self._onElementChange();
+      }, 500);
+    }
+
+    ModelAttrBinding.__super__.bind.apply(this, arguments);
+
+    (this.$element = $(this.node)).bind(ChangeAttrBinding.events, this._onElementChange);
+    this._nameBinding = this.clip.data.bind("name", this._onChange);
+    this._onChange();
+  },
+
+  _onElementChange: function (event) {
+
+    if (event) event.stopPropagation();
+    clearTimeout(this._changeTimeout);
+
+    var self = this;
+
+
+    function applyChange () {
+      var value = self._parseValue(self._elementValue()),
+      name      = self._elementName(),
+      refs      = self.script.refs,
+      model     = self.clip.get("model");
+
+      if (value) {
+        clearInterval(self._autocompleteCheckInterval);
+      }
+
+      if (self.clip.get("bothWays") !== false) {
+        ref = name || (refs.length ? refs[0] : undefined);
+
+        if (!name && !model.__isBindableReference) {
+          model = self.context;
+        }
+
+        self.currentValue = value;
+
+        if (model) {
+
+          if (model.__isBindableReference) {
+            model.value(value);
+          } else if (model.set) {
+            model.set(ref, value);
+          } else {
+            dref.set(model, ref, value);
+          }
+        }
+      }
+    }
+
+    if (!process.browser) {
+      applyChange();
+    } else {
+      this._changeTimeout = setTimeout(applyChange, 5);
+    }
+  },
+
+  unbind: function () {
+    ModelAttrBinding.__super__.unbind.apply(this, arguments);
+    clearInterval(this._autocompleteCheckInterval);
+    if (this._modelBinding) this._modelBinding.dispose();
+    if (this._nameBinding) this._nameBinding.dispose();
+    this.$element.unbind(ChangeAttrBinding.events, this._onElementChange);
+  },
+
+  _onChange: function () {
+    var model = this.clip.get("model");
+
+    var name = this._elementName();
+    if (this._modelBinding) this._modelBinding.dispose();
+
+    if (name) {
+      this._modelBinding = model ? model.bind(name, _.bind(this._onValueChange, this)).now() : undefined;
+    } else if (model && model.__isBindableReference) {
+      this._onValueChange(model.value());
+    } else if (type(model) !== "object") {
+      this._onValueChange(model);
+    }
+  },
+
+  _onValueChange: function (value) {
+    this._elementValue(this._parseValue(value));
+  },
+
+
+  _parseValue: function (value) {
+    if (value == null || value === "") return void 0;
+
+    var script = this.clip.script("type");
+
+    if (!script) return value;
+    script.update();
+    var type = this.clip.get("type");
+    if (!type) return value;
+
+
+    switch(type) {
+      case "number": return Number(value);
+      case "boolean": return Boolean(value);
+      default: return value;
+    }
+
+  },
+
+  _elementValue: function (value) {
+
+    var isInput = Object.prototype.hasOwnProperty.call(this.node, "value") || /input|textarea|checkbox/.test(this.node.nodeName.toLowerCase())
+
+    if (!arguments.length) return isInput ? this._checkedOrValue() : this.node.innerHTML;
+
+    if (value == null) {
+      value = "";
+    }
+
+    if (this.currentValue === value) {
+      return;
+    }
+
+    this.currentValue = value;
+
+    if (isInput) {
+      this._checkedOrValue(value);
+    } else {
+      this.node.innerHTML = value;
+    }
+  },
+
+  _elementName: function () {
+    return $(this.node).attr("name");
+  },
+
+  _checkedOrValue: function (value) {
+
+    var isCheckbox    = /checkbox/.test(this.node.type),
+    isRadio           = /radio/.test(this.node.type),
+    isRadioOrCheckbox = isCheckbox || isRadio;
+
+    if (!arguments.length) {
+      if (isCheckbox) {
+        return Boolean($(this.node).is(":checked"));
+      } else {
+        return this.node.value;
+      }
+    }
+
+    if (isRadioOrCheckbox) {
+      if (isRadio) {
+        if (String(value) === String($(this.node).val())) {
+          $(this.node).prop("checked", true);
+        }
+      } else {
+        this.node.checked = value;
+      }
+    } else {
+      this.node.value = value;
+    }
+  }
+});
+
+module.exports = ModelAttrBinding;
+
+},{"./base":65,"./change":66,"__browserify_process":31,"dref":102,"type-component":127,"underscore":128}],75:[function(require,module,exports){
+var BaseDataBinding = require("./base");
+
+function ShowAttrBinding () {
+  BaseDataBinding.apply(this, arguments);
+}
+
+
+BaseDataBinding.extend(ShowAttrBinding, {
+  bind: function (context) {
+    this._displayStyle = this.node.style.display;
+    BaseDataBinding.prototype.bind.call(this, context);
+  },
+  _onChange: function (value) {
+    this.node.style.display = value ? this._displayStyle : "none";
+  }
+});
+
+module.exports = ShowAttrBinding;
+
+},{"./base":65}],76:[function(require,module,exports){
+var process=require("__browserify_process");var BaseDataBinding = require("./base");
+
+function StyleAttrBinding () {
+  BaseDataBinding.apply(this, arguments);
+}
+
+
+BaseDataBinding.extend(StyleAttrBinding, {
+  bind: function (context) {
+    this._currentStyles = {};
+    BaseDataBinding.prototype.bind.call(this, context);
+  },
+  _onChange: function (styles) {
+
+    var newStyles = {};
+    
+    for (var name in styles) {
+      var style = styles[name];
+      if (style !== this._currentStyles[name]) {
+        newStyles[name] = this._currentStyles[name] = style || "";
+      }
+    }
+
+    if (!process.browser) {
+      for (var key in newStyles) {
+        this.node.style[key] = newStyles[key];
+      }
+    } else {
+      $(this.node).css(newStyles);
+    }
+  }
+});
+
+module.exports = StyleAttrBinding;
+
+},{"./base":65,"__browserify_process":31}],77:[function(require,module,exports){
+var Clip          = require("../../../../../clip"),
+BindingCollection = require("../../../collection"),
+BaseBinding       = require("../../base");
+
+var dataBindingClasses = {
+  show    : require("./handlers/show"),
+  css     : require("./handlers/css"),
+  style   : require("./handlers/style"),
+  focus   : require("./handlers/focus"),
+
+  disable : require("./handlers/disable"),
+  enable  : require("./handlers/enable"),
+  model   : require("./handlers/model"),
+
+  onClick      : require("./handlers/event"),
+  onLoad       : require("./handlers/event"),
+  onSubmit     : require("./handlers/event"),
+  onMouseDown  : require("./handlers/event"),
+  onMouseMove  : require("./handlers/event"),
+  onMouseUp    : require("./handlers/event"),
+  onMouseOver  : require("./handlers/event"),
+  onMouseOut   : require("./handlers/event"),
+  onFocusIn    : require("./handlers/event"),
+  onFocusOut   : require("./handlers/event"),
+  onKeyDown    : require("./handlers/event"),
+  onKeyUp      : require("./handlers/event"),
+  onEnter      : require("./handlers/enter"),
+  onChange     : require("./handlers/change"),
+  onDelete     : require("./handlers/delete")
+}
+
+
+function AttrDataBinding (options) {
+
+  BaseBinding.call(this, options);
+
+  this.clip = new Clip({
+    scripts     : options.value[0],
+    watch       : false,
+    application : options.application
+  });
+
+  this._bindings = new BindingCollection();
+
+  for (var i = 0, n = this.clip.scripts.names.length; i < n; i++) {
+    var scriptName = this.clip.scripts.names[i], bc;
+    if (!(bc = dataBindingClasses[scriptName])) continue;
+    this._bindings.push(new bc(options.application, this.node, this.clip, scriptName));
+  }
+}
+
+BaseBinding.extend(AttrDataBinding, {
+  type: "attr",
+  bind: function (context) {
+    this.context = context;
+    this.clip.reset(context, false);
+    this._bindings.bind(context);
+  },
+  unbind: function () {
+    this._bindings.unbind();
+    this.clip.dispose();
+  }
+});
+
+
+
+module.exports = AttrDataBinding;
+module.exports.register = function (name, dataBindClass) {
+  dataBindingClasses[name] = dataBindClass;
+}
+
+},{"../../../../../clip":50,"../../../collection":63,"../../base":79,"./handlers/change":66,"./handlers/css":67,"./handlers/delete":68,"./handlers/disable":69,"./handlers/enable":70,"./handlers/enter":71,"./handlers/event":72,"./handlers/focus":73,"./handlers/model":74,"./handlers/show":75,"./handlers/style":76}],78:[function(require,module,exports){
+var type      = require("type-component"),
+ClippedBuffer = require("../../../../../clip/buffer"),
+BaseBinding   = require("../../base"),
+_             = require("underscore");
+
+function AttrTextBinding (options) {
+  BaseBinding.apply(this, arguments);
+  this.clippedBuffer = new ClippedBuffer(this.value, options.application);
+}
+
+BaseBinding.extend(AttrTextBinding, {
+  type: "attr",
+  bind: function (context) {
+    this.context = context;
+    this._binding = this.clippedBuffer.reset(this.context).bind("value", _.bind(this._onChange, this)).now();
+  },
+  unbind: function () {
+    if (this._binding) this._binding.dispose();
+    this.clippedBuffer.dispose();
+  },
+  _onChange: function (text) {
+    if (!text.length) {
+      return this.node.removeAttribute(this.name);
+    }
+    this.node.setAttribute(this.name, text);
+  },
+  test: function (binding) {
+    if (type(binding.value) !== "array") {
+      return false;
+    }
+    for (var i = 0, n = binding.value.length; i < n; i++) {
+      if (binding.value[i].fn) return true;
+    }
+
+    return false;
+  }
+});
+
+
+module.exports = AttrTextBinding;
+
+},{"../../../../../clip/buffer":49,"../../base":79,"type-component":127,"underscore":128}],79:[function(require,module,exports){
+var BaseBinding = require("../../base/binding");
+
+function BaseNodeBinding (options) {
+  this.name      = options.name || this.namel
+  this.node      = options.node;
+  this.value     = options.value;
+  this.nodeMOdel = options.context;
+}
+
+BaseBinding.extend(BaseNodeBinding, {
+  bind: function (context) {
+    this.context = context;
+  },
+  unbind: function () {
+    // OVERRIDE ME
+  }
+});
+
+module.exports = BaseNodeBinding;
+
+},{"../../base/binding":55}],80:[function(require,module,exports){
+var _      = require("underscore"),
+protoclass = require("protoclass");
+
+
+var allBindingClasses = {
+  node: {},
+  attr: {
+    "default": []
+  }
+};
+
+
+function Binder (options) {
+  this.options = options;
+}
+
+protoclass(Binder, {
+    init: function () { },
+    getBinding: function (templateNode) {
+      var cn = templateNode;
+      while (cn.parentNode) {
+        cn = cn.parentNode;
+      }
+
+      var p = this.path();
+      for (var i = 0, n = p.length; i < n; i++) {
+        cn = cn.childNodes[p[i]];
+      }
+      var clazz = this.options.clazz;
+
+
+      return new clazz(_.extend({}, this.options, { node: cn }));
+    },
+    path: function () {
+      if (this._path) return this._path;
+      var path = [];
+      var cn = this.options.node;
+      while (cn.parentNode) {
+        var children = [];
+        for (var i = 0, n = cn.parentNode.childNodes.length; i < n; i++) {
+          children.push(cn.parentNode.childNodes[i]);
+        }
+        path.unshift(children.indexOf(cn));
+        cn = cn.parentNode;
+      }
+      return this._path = path;
+    }
+});
+
+
+function NodeBindingFactory () {
+
+}
+
+protoclass(NodeBindingFactory, {
+  getBinders: function (options) {
+
+    var binders    = [],
+    attributes     = options.attributes,
+    nodeName       = options.nodeName,
+    node           = options.node;
+
+    var bindables = [{
+      name: nodeName,
+      key: nodeName,
+      value: node,
+      type: "node",
+      node: node
+    },{
+      name: nodeName,
+      key: "default",
+      value: node,
+      type: "node",
+      node: node
+    }];
+
+    var context;
+
+    for (var attrName in attributes) {
+      bindables.push({
+        node: node,
+        name: attrName,
+        key: attrName,
+        value: attributes[attrName],
+        type: "attr"
+      },{
+        node: node,
+        name: attrName,
+        key: "default",
+        value: attributes[attrName],
+        type: "attr"
+      })
+    }
+
+    for (var i = 0, n = bindables.length; i < n; i++) {
+      var bindable = bindables[i];
+      var bindingClasses = allBindingClasses[bindable.type][bindable.key] || [];
+      for (var j = 0, n2 = bindingClasses.length; j < n2; j++) {
+        var bindingClass = bindingClasses[j];
+        if (bindingClass.prototype.test(bindable)) {
+          bindable.clazz = bindingClass;
+          bindable.application = options.application;
+          binders.push(new Binder(bindable));
+        }
+      }
+    }
+
+    return binders;
+  },
+
+  register: function (name, bindingClass) {
+    var type = bindingClass.type || bindingClass.prototype.type;
+
+    if (!/node|attr/.test(String(type))) {
+      throw new Error("node binding class '"+bindingClass.name+"' must have property type 'node', or 'attr'");
+    }
+
+    var classes = allBindingClasses[type];
+
+
+    if (!bindingClass.prototype.test) {
+      bindingClass.prototype.test = function () {
+        return true;
+      };
+    }
+
+    if (!classes[name]) {
+      classes[name] = [];
+    }
+
+
+    classes[name].push(bindingClass);
+    return this;
+  }
+});
+
+var nodeFactory = module.exports = new NodeBindingFactory();
+
+var defaultBindingClasses = {
+  "default": [
+    require("./attrs/text")
+  ],
+  "data-bind": [
+    module.exports.dataBind = require("./attrs/dataBind")
+  ]
+}
+
+for (var type in defaultBindingClasses) {
+  var classes = defaultBindingClasses[type];
+  for (var i = 0, n = classes.length; i < n; i++) {
+    nodeFactory.register(type, classes[i]);
+  }
+}
+
+},{"./attrs/dataBind":77,"./attrs/text":78,"protoclass":125,"underscore":128}],81:[function(require,module,exports){
 var protoclass = require("protoclass"),
 BaseBinder     = require("../base/binder"),
 TextBinding    = require("./binding");
@@ -7667,7 +8571,7 @@ BaseBinder.extend(TextBlockBinder, {
 });
 
 module.exports = TextBlockBinder;
-},{"../base/binder":52,"./binding":79,"protoclass":92}],79:[function(require,module,exports){
+},{"../base/binder":54,"./binding":82,"protoclass":125}],82:[function(require,module,exports){
 var protoclass = require("protoclass"),
 BaseBinding    = require("../base/binding"),
 ClippedBuffer  = require("../../../clip/buffer"),
@@ -7713,13 +8617,14 @@ BaseBinding.extend(TextBlockBinding, {
 module.exports = TextBlockBinding;
 
 
-},{"../../../clip/buffer":48,"../base/binding":53,"protoclass":92,"underscore":98}],80:[function(require,module,exports){
-var Clip  = require("../clip"),
-template  = require("./template"),
-nofactor  = require("nofactor"),
-modifiers = require("./modifiers"),
-bindings  = require("./bindings"),
-bindable  = require("bindable");
+},{"../../../clip/buffer":49,"../base/binding":55,"protoclass":125,"underscore":128}],83:[function(require,module,exports){
+var Clip    = require("../clip"),
+template    = require("./template"),
+nofactor    = require("nofactor"),
+modifiers   = require("./modifiers"),
+bindings    = require("./bindings"),
+bindable    = require("bindable"),
+Application = require("./application");
 
 module.exports = {
 
@@ -7785,6 +8690,11 @@ module.exports = {
 
   attrDataBinding: bindings.nodeBindingFactory.dataBind.register,
 
+  /**
+   */
+
+  Application: Application,
+
   /*
    */
   use: function(fn) {
@@ -7792,7 +8702,7 @@ module.exports = {
   }
 };
 
-},{"../clip":49,"./bindings":62,"./modifiers":81,"./template":82,"bindable":21,"nofactor":45}],81:[function(require,module,exports){
+},{"../clip":50,"./application":52,"./bindings":64,"./modifiers":84,"./template":85,"bindable":95,"nofactor":107}],84:[function(require,module,exports){
 module.exports = {
   uppercase: function (value) {
     return String(value).toUpperCase();
@@ -7810,7 +8720,7 @@ module.exports = {
     return JSON.stringify.apply(JSON, arguments);
   }
 };
-},{}],82:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 var process=require("__browserify_process");var protoclass    = require("protoclass"),
 modifiers         = require("./modifiers"),
 nofactor          = require("nofactor"),
@@ -7829,10 +8739,10 @@ PaperBinding      = require("./binding");
 
 
 function Template (paper, application, ops) {
-  this.paper         = paper;
-  this.application   = application;
-  this.nodeFactory   = application.nodeFactory;
-  this.binders       = new BinderCollection();
+  this.paper           = paper;
+  this.application     = application;
+  this.nodeFactory     = application.nodeFactory;
+  this.binders         = new BinderCollection();
   this.useTemplateNode = ops.useTemplateNode;
 }
 
@@ -7949,17 +8859,17 @@ var tpl = Template.prototype.creator = module.exports = function (paperOrSrc, ap
 
   return paper.template = new Template(paper, application, ops);
 }
-},{"./application":50,"./binding":51,"./bindings/binders":55,"./bindings/collection":61,"./modifiers":81,"./writers/block":84,"./writers/element":85,"./writers/fragment":86,"./writers/parse":87,"./writers/text":88,"./writers/textBlock":89,"__browserify_process":30,"bindable":21,"loaf":40,"nofactor":45,"protoclass":92}],83:[function(require,module,exports){
+},{"./application":52,"./binding":53,"./bindings/binders":57,"./bindings/collection":63,"./modifiers":84,"./writers/block":87,"./writers/element":88,"./writers/fragment":89,"./writers/parse":90,"./writers/text":91,"./writers/textBlock":92,"__browserify_process":31,"bindable":95,"loaf":103,"nofactor":107,"protoclass":125}],86:[function(require,module,exports){
 var protoclass = require("protoclass"),
 _ = require("underscore");
 
 
 function BaseWriter (template) {
-  this.template = template;
+  this.template    = template;
   this.nodeFactory = template.application.nodeFactory;
   this.application = this.template.application;
-  this.binders = template.binders;
-  this.write = _.bind(this.write, this);
+  this.binders     = template.binders;
+  this.write       = _.bind(this.write, this);
 }
 
 protoclass(BaseWriter, {
@@ -7967,233 +8877,149 @@ protoclass(BaseWriter, {
 });
 
 module.exports = BaseWriter;
-},{"protoclass":92,"underscore":98}],84:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var BlockWriter, Clip, blockBindingFactory, loaf,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  loaf = require("loaf");
-
-  blockBindingFactory = require("../bindings/block/factory");
-
-  Clip = require("../../clip");
-
-  BlockWriter = (function(_super) {
-    __extends(BlockWriter, _super);
-
-    function BlockWriter() {
-      this.write = __bind(this.write, this);
-      return BlockWriter.__super__.constructor.apply(this, arguments);
-    }
+},{"protoclass":125,"underscore":128}],87:[function(require,module,exports){
+var loaf            = require("loaf"),
+blockBindingFactory = require("../bindings/block/factory"),
+Clip                = require("../../clip"),
+BaseWriter          = require("./base");
 
 
-    /*
-     */
+function BlockWriter () {
+  BaseWriter.apply(this, arguments);
+}
 
-    BlockWriter.prototype.write = function(script, contentFactory, childBlockFactory) {
-      var binder, childTpl, node, ops, tpl;
-      tpl = contentFactory ? this.template.creator(contentFactory, this.application) : void 0;
-      childTpl = childBlockFactory ? this.template.creator(childBlockFactory, this.application) : void 0;
-      this.binders.push(binder = blockBindingFactory.getBinder(ops = {
-        script: script,
-        template: tpl,
-        application: this.application,
-        childBlockTemplate: childTpl
-      }));
-      node = binder.getNode(ops) || this.getDefaultNode(ops);
-      binder.prepare(ops);
-      return node;
-    };
+BaseWriter.extend(BlockWriter, {
 
+  /**
+   */
 
-    /*
-     */
+  write: function (script, contentFactory, childBlockFactory) {
 
-    BlockWriter.prototype.getDefaultNode = function(ops) {
-      var section;
-      ops.section = section = loaf(this.nodeFactory);
-      return section.render();
-    };
+    var tpl  = contentFactory    ? this.template.creator(contentFactory, this.application) : undefined,
+    childTpl = childBlockFactory ? this.template.creator(childBlockFactory, this.application) : undefined,
+    binder,
+    ops;
 
-    return BlockWriter;
+    this.binders.push(binder = blockBindingFactory.getBinder(ops = {
+      script             : script,
+      template           : tpl,
+      application        : this.application,
+      childBlockTemplate : childTpl
+    }));
 
-  })(require("./base"));
+    var node = binder.getNode(ops) || this.getDefaultNode(ops);
 
-  module.exports = BlockWriter;
+    binder.prepare(ops);
+    return node;
+  },
 
-}).call(this);
+  /**
+   */
 
-},{"../../clip":49,"../bindings/block/factory":58,"./base":83,"loaf":40}],85:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var ElementWriter, nodeBindingFactory, type,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  getDefaultNode: function (ops) {
+    return (ops.section = loaf(this.nodeFactory)).render();
+  }
+});
 
-  nodeBindingFactory = require("../bindings/node/factory");
+module.exports = BlockWriter;
 
-  type = require("type-component");
+},{"../../clip":50,"../bindings/block/factory":60,"./base":86,"loaf":103}],88:[function(require,module,exports){
+var nodeBindingFactory = require("../bindings/node/factory"),
+type                   = require("type-component"),
+BaseWriter             = require("./base");
 
-  ElementWriter = (function(_super) {
-    __extends(ElementWriter, _super);
+function ElementWriter () {
+  BaseWriter.apply(this, arguments);
+}
 
-    function ElementWriter() {
-      this.write = __bind(this.write, this);
-      return ElementWriter.__super__.constructor.apply(this, arguments);
-    }
+BaseWriter.extend(ElementWriter, {
+  write: function (name, attributes, children) {
 
+      if (!attributes) attributes = {};
+      if (!children) children = [];
 
-    /*
-     */
+      var element = this.nodeFactory.createElement(name), attrName, value;
 
-    ElementWriter.prototype.write = function(name, attributes, children) {
-      var attrName, child, element, value, _i, _len, _ref;
-      if (attributes == null) {
-        attributes = {};
-      }
-      if (children == null) {
-        children = [];
-      }
-      element = this.nodeFactory.createElement(name);
       for (attrName in attributes) {
-        value = attributes[attrName];
-        if (typeof value === "object") {
-          continue;
-        }
-        element.setAttribute(attrName, value);
+          value = attributes[attrName];
+          if (typeof value === "object") continue;
+          element.setAttribute(attrName, value);
       }
-      (_ref = this.binders).push.apply(_ref, nodeBindingFactory.getBinders({
-        node: element,
-        nodeName: name,
-        application: this.application,
-        attributes: attributes
+
+      this.binders.push.apply(this.binders, nodeBindingFactory.getBinders({
+        node        : element,
+        nodeName    : name,
+        application : this.application,
+        attributes  : attributes
       }));
-      for (_i = 0, _len = children.length; _i < _len; _i++) {
-        child = children[_i];
-        element.appendChild(child);
+
+      for (var i = 0, n = children.length; i < n; i++) {
+        element.appendChild(children[i]);
       }
+
       return element;
-    };
+  }
+});
 
-    return ElementWriter;
+module.exports = ElementWriter;
 
-  })(require("./base"));
+},{"../bindings/node/factory":80,"./base":86,"type-component":127}],89:[function(require,module,exports){
+var BaseWriter = require("./base");
 
-  module.exports = ElementWriter;
+function FragmentWriter () {
+  BaseWriter.apply(this, arguments);
+}
 
-}).call(this);
+BaseWriter.extend(FragmentWriter, {
+  write: function (children) {
+    if (children.length === 1) return children[0];
+    return this.nodeFactory.createFragment(children);
+  }
+});
 
-},{"../bindings/node/factory":77,"./base":83,"type-component":97}],86:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var FragmentWriter,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+module.exports = FragmentWriter;
 
-  FragmentWriter = (function(_super) {
-    __extends(FragmentWriter, _super);
+},{"./base":86}],90:[function(require,module,exports){
+var process=require("__browserify_process");var BaseWriter = require("./base");
 
-    function FragmentWriter() {
-      this.write = __bind(this.write, this);
-      return FragmentWriter.__super__.constructor.apply(this, arguments);
+function ParseWriter () {
+  BaseWriter.apply(this, arguments);
+}
+
+BaseWriter.extend(ParseWriter, {
+  write: function (source) {
+    var element;
+    
+    if (process.browser) {
+      element = this.nodeFactory.createElement("div");
+      element.innerHTML = source;
+    } else {
+      element = this.nodeFactory.createTextNode(source);
     }
 
+    return element;
+  }
+});
 
-    /*
-     */
+module.exports = ParseWriter;
 
-    FragmentWriter.prototype.write = function(children) {
-      if (children.length === 1) {
-        return children[0];
-      }
-      return this.nodeFactory.createFragment(children);
-    };
+},{"./base":86,"__browserify_process":31}],91:[function(require,module,exports){
+var BaseWriter = require("./base");
 
-    return FragmentWriter;
+function TextWriter () {
+  BaseWriter.apply(this, arguments);
+}
 
-  })(require("./base"));
+BaseWriter.extend(TextWriter, {
+  write: function (text) {
+    return this.nodeFactory.createTextNode(text);
+  }
+});
 
-  module.exports = FragmentWriter;
+module.exports = TextWriter;
 
-}).call(this);
-
-},{"./base":83}],87:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var ParseWriter,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  ParseWriter = (function(_super) {
-    __extends(ParseWriter, _super);
-
-    function ParseWriter() {
-      this.write = __bind(this.write, this);
-      return ParseWriter.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    ParseWriter.prototype.write = function(source) {
-      var element;
-      if (typeof window !== "undefined") {
-        element = this.nodeFactory.createElement("div");
-        element.innerHTML = source;
-      } else {
-        element = this.nodeFactory.createTextNode(source);
-      }
-      return element;
-    };
-
-    return ParseWriter;
-
-  })(require("./base"));
-
-  module.exports = ParseWriter;
-
-}).call(this);
-
-},{"./base":83}],88:[function(require,module,exports){
-// Generated by CoffeeScript 1.7.0
-(function() {
-  var TextWriter,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-  TextWriter = (function(_super) {
-    __extends(TextWriter, _super);
-
-    function TextWriter() {
-      this.write = __bind(this.write, this);
-      return TextWriter.__super__.constructor.apply(this, arguments);
-    }
-
-
-    /*
-     */
-
-    TextWriter.prototype.write = function(text) {
-      return this.nodeFactory.createTextNode(text);
-    };
-
-    return TextWriter;
-
-  })(require("./base"));
-
-  module.exports = TextWriter;
-
-}).call(this);
-
-},{"./base":83}],89:[function(require,module,exports){
+},{"./base":86}],92:[function(require,module,exports){
 var BaseWriter  = require("./base"),
 TextBlockBinder = require("../bindings/textBlock/binder");
 
@@ -8221,7 +9047,1250 @@ BaseWriter.extend(TextBlockWriter, {
 });
 
 module.exports = TextBlockWriter;
-},{"../bindings/textBlock/binder":78,"./base":83}],90:[function(require,module,exports){
+},{"../bindings/textBlock/binder":81,"./base":86}],93:[function(require,module,exports){
+var BindableObject = require("../object"),
+computed           = require("../utils/computed"),
+sift               = require("sift");
+
+/** 
+ * @module mojo
+ * @submodule mojo-core
+ */
+
+/**
+ * @class BindableCollection
+ * @extends BindableObject
+ */
+
+/**
+ * Emitted when an item is inserted
+ * @event insert
+ * @param {Object} item inserted
+ */
+
+
+/**
+ * Emitted when an item is removed
+ * @event remove
+ * @param {Object} item removed
+ */
+
+/**
+ * Emitted when items are replaced
+ * @event replace
+ * @param {Array} newItems
+ * @param {Array} oldItems
+ */
+
+
+
+function BindableCollection (source) {
+  BindableObject.call(this, this);
+  this._source = source || [];
+  this._updateInfo();
+}
+
+/**
+ */
+
+BindableObject.extend(BindableCollection, {
+
+  /**
+   */
+
+  __isBindableCollection: true,
+  
+  /**
+   * Resets the collection. Same as `source(value)`.
+   */
+
+  reset: function (source) {
+    return this.source(source);
+  },
+
+  /**
+   * Sets / Gets source array
+   * @method source
+   * @param {Array} source source of the collection
+   * @returns [Array] source
+   */
+
+  source: function (source) {
+
+    if (!arguments.length) return this._source;
+    var oldSource = this._source || [];
+    this._source = source || [];
+    this._updateInfo();
+
+    this.emit("reset", this._source);
+  },
+
+  /**
+   * Returns the index of a value
+   * @method indexOf
+   * @param {Object} object to get index of
+   * @returns {Number} index or -1 (not found)
+   */
+
+  indexOf: function (item) {
+    return this._source.indexOf(item);
+  },
+
+  /**
+   * filters the collection
+   * @method filter
+   * @returns {Array} array of filtered items
+   */
+
+  filter: function (fn) {
+    return this._source.filter(fn);
+  },
+
+  /**
+   */
+
+  search: function (query) {
+    return sift(query, this._source).shift();
+  },
+
+  /**
+   */
+
+  searchIndex: function (query) {
+    return this.indexOf(this.search(query));
+  },
+
+  /**
+   * Returns an object at the given index
+   * @method at
+   * @returns {Object} Object at specific index
+   */
+
+  at: function (index) {
+    return this._source[index];
+  },
+
+  /**
+   * forEach item
+   * @method each
+   * @param {Function} fn function to call for each item
+   */
+
+  each: computed(["length"], function (fn) {
+    this._source.forEach(fn);
+  }),
+
+  /**
+   */
+
+  map: function (fn) {
+    return this._source.map(fn);
+  },
+
+  /**
+   */
+
+  join: function (sep) {
+    return this._source.join(sep);
+  },
+
+  /**
+   * Pushes an item onto the collection
+   * @method push
+   * @param {Object} item
+   */
+
+  push: function (item) {
+    this._source.push(item);
+    this._updateInfo();
+    this.emit("insert", item, this._source.length - 1);
+  },
+
+  /**
+   * Unshifts an item onto the collection
+   * @method unshift
+   * @param {Object} item
+   */
+
+  unshift: function (item) {
+    this._source.push(item);
+    this._updateInfo();
+    this.emit("insert", item, 0);
+  },
+
+  /**
+   * Removes N Number of items
+   * @method splice
+   * @param {Number} index start index
+   * @param {Number} count number of items to remove
+   */
+
+  splice: function (index, count) {
+    var newItems = Array.prototype.slice.call(arguments, 2),
+    oldItems     = this._source.splice.apply(this._source, arguments);
+
+    this._updateInfo();
+    this.emit("replace", newItems, oldItems, index);
+  },
+
+  /**
+   * Removes an item from the collection
+   * @method remove
+   * @param {Object} item item to remove
+   */
+
+  remove: function (item) {
+    var i = this.indexOf(item);
+    if (!~i) return false;
+    this._source.splice(i, 1);
+    this._updateInfo();
+    this.emit("remove", item, i);
+    return item;
+  },
+
+  /**
+   * Removes an item from the end
+   * @method pop
+   * @returns {Object} removed item
+   */
+
+  pop: function () {
+    if (!this._source.length) return;
+    return this.remove(this._source[this._source.length - 1]);
+  },
+
+  /**
+   * Removes an item from the beginning
+   * @method shift
+   * @returns {Object} removed item
+   */
+
+  shift: function () {
+    if (!this._source.length) return;
+    return this.remove(this._source[0]);
+  },
+
+  /*
+   */
+
+  toJSON: function () {
+    return this._source.map(function (item) {
+      return item && item.toJSON ? item.toJSON() : item;
+    })
+  },
+
+  /*
+   */
+
+  _updateInfo: function () {
+
+    /**
+     * First item in the collection
+     * @property first
+     * @type Object
+     */
+
+    this.set("first", this._source.length ? this._source[0] : undefined);
+
+
+    /**
+     * length of the collection
+     * @property length
+     * @type Number
+     */
+
+    this.set("length", this._source.length);
+
+
+    /**
+     * True of the collection is empty
+     * @property empty
+     * @type Boolean
+     */
+
+    this.set("empty", !this._source.length);
+
+    /**
+     * Last item in the collection
+     * @property last
+     * @type Object
+     */
+
+    this.set("last", this._source.length ? this._source[this._source.length - 1] : undefined);
+  }
+});
+
+module.exports = BindableCollection;
+
+},{"../object":96,"../utils/computed":99,"sift":126}],94:[function(require,module,exports){
+var protoclass = require("protoclass");
+
+/** 
+ * @module mojo
+ * @submodule mojo-core
+ */
+
+/**
+ * @class EventEmitter
+ */
+
+function EventEmitter () {
+  this._events = {};
+}
+
+EventEmitter.prototype.setMaxListeners = function () {
+
+}
+
+/**
+ * adds a listener on the event emitter
+ *
+ * @method on
+ * @param {String} event event to listen on
+ * @param {Function} listener to callback when `event` is emitted.
+ * @returns {Disposable}
+ */
+
+
+EventEmitter.prototype.on = function (event, listener) {
+
+  if (typeof listener !== "function") {
+    throw new Error("listener must be a function for event '"+event+"'");
+  }
+
+  var listeners;
+  if (!(listeners = this._events[event])) {
+    this._events[event] = listener;
+  } else if (typeof listeners === "function") {
+    this._events[event] = [listeners, listener];
+  } else {
+    listeners.push(listener);
+  }
+
+  var self = this;
+
+  return {
+    dispose: function() {
+      self.off(event, listener);
+    }
+  }
+}
+
+/**
+ * removes an event emitter
+ * @method off
+ * @param {String} event to remove
+ * @param {Function} listener to remove
+ */
+
+EventEmitter.prototype.off = function (event, listener) {
+
+  var listeners;
+
+  if(!(listeners = this._events[event])) {
+    return;
+  }
+
+  if (typeof listeners === "function") {
+    this._events[event] = undefined;
+  } else {
+    var i = listeners.indexOf(listener);
+    if (~i) listeners.splice(i, 1);
+    if (!listeners.length) {
+      this._events[event] = undefined;
+    }
+  }
+}
+
+/**
+ * adds a listener on the event emitter
+ * @method once
+ * @param {String} event event to listen on
+ * @param {Function} listener to callback when `event` is emitted.
+ * @returns {Disposable}
+ */
+
+
+EventEmitter.prototype.once = function (event, listener) {
+
+  function listener2 () {
+    disp.dispose();
+    listener.apply(this, arguments);
+  }
+
+  var disp = this.on(event, listener2);  
+  disp.target = this;
+  return disp;
+}
+
+/**
+ * emits an event
+ * @method emit
+ * @param {String} event
+ * @param {String}, `data...` data to emit
+ */
+
+
+EventEmitter.prototype.emit = function (event) {
+
+  if (this._events[event] === undefined) return;
+
+  var listeners = this._events[event];
+
+
+  if (typeof listeners === "function") {
+    if (arguments.length === 1) {
+      listeners();
+    } else {
+    switch(arguments.length) {
+      case 2:
+        listeners(arguments[1]);
+        break;
+      case 3:
+        listeners(arguments[1], arguments[2]);
+        break;
+      case 4:
+        listeners(arguments[1], arguments[2], arguments[3]);
+        break;
+      default:
+        var n = arguments.length;
+        var args = new Array(n - 1);
+        for(var i = 1; i < n; i++) args[i-1] = arguments[i];
+        listeners.apply(this, args);
+    }
+  }
+  } else {
+    var n = arguments.length;
+    var args = new Array(n - 1);
+    for(var i = 1; i < n; i++) args[i-1] = arguments[i];
+    for(var j = listeners.length; j--;) {
+      if(listeners[j]) listeners[j].apply(this, args);
+    }
+  }
+}
+
+/**
+ * removes all listeners
+ * @method removeAllListeners
+ * @param {String} event (optional) removes all listeners of `event`. Omitting will remove everything.
+ */
+
+
+EventEmitter.prototype.removeAllListeners = function (event) {
+  if (arguments.length === 1) {
+    this._events[event] = undefined;
+  } else {
+    this._events = {};
+  }
+}
+
+
+
+module.exports = EventEmitter;
+},{"protoclass":125}],95:[function(require,module,exports){
+arguments[4][22][0].apply(exports,arguments)
+},{"./collection":93,"./core/eventEmitter":94,"./object":96,"./utils/computed":99,"./utils/options":100}],96:[function(require,module,exports){
+var EventEmitter    = require("../core/eventEmitter"),
+protoclass          = require("protoclass"),
+watchProperty       = require("./watchProperty");
+
+/**
+ * @module mojo
+ * @submodule mojo-core
+ */
+
+/**
+
+BindableObjects make it easy to link properties of two separate objects - when one changes,
+the other will automatically update with that change. It enables much easier interactions between data models and UIs,
+among other uses outside of MVC.
+
+<br>
+<br>
+
+BindableObjects provide a way to maintain the state between server <-> client for a realtime front-end
+application (similar to Firebase), or perhaps a way to communicate between server <-> server for a realtime distributed Node.js
+application.
+
+
+### Example
+
+```javascript
+var bindable = require("bindable");
+
+var person = new bindable.Object({
+  name: "craig",
+  last: "condon",
+  location: {
+    city: "San Francisco"
+  }
+});
+
+person.bind("location.zip", function(value) {
+  // 94102
+}).now();
+
+//triggers the binding
+person.set("location.zip", "94102");
+
+//bind location.zip to another property in the model, and do it only once
+person.bind("location.zip", { to: "zip", max: 1 }).now();
+
+//bind location.zip to another object, and make it bi-directional.
+person.bind("location.zip", { target: anotherModel, to: "location.zip", bothWays: true }).now();
+
+//chain to multiple items, and limit it!
+person.bind("location.zip", { to: ["property", "anotherProperty"], max: 1 }).now();
+
+
+//you can also transform data as it's being bound
+person.bind("name", {
+  to: "name2",
+  map: function (name) {
+    return name.toUpperCase();
+  }
+}).now();
+```
+
+@class BindableObject
+@extends EventEmitter
+*/
+
+/**
+ * Emitted when the bindable object is disposed. This happens
+ * when the object is no-longer needed.
+ * @event dispose
+ */
+
+
+/**
+ * Emitted everytime a property changes
+ * @event change
+ * @param {String} property
+ * @param {Object} value
+ * @param {Object} oldValue
+ */
+
+/**
+ * Emitted when a specific property changes
+ * @event change:*
+ * @param {Object} value
+ * @param {Object} oldValue
+ */
+
+
+
+/**
+ * @constructor
+ * @param {Object} context context of the bindable object
+ */
+
+
+/**
+ * emitted when a property is being watched
+ * @event watching
+ */
+
+
+function Bindable (context) {
+
+  if (context) {
+    this.context(context);
+  } else {
+    this.__context = {};
+  }
+
+  Bindable.parent.call(this);
+}
+
+watchProperty.BindableObject = Bindable;
+
+protoclass(EventEmitter, Bindable, {
+
+  /**
+   */
+
+  __isBindable: true,
+
+  /**
+   * The context of the bindable object. Note that the context can be `this`.
+   * @method context
+   * @param {Object} data (optional) sets the context
+   * @returns {Object} context
+   */
+
+  context: function (data) {
+    if (!arguments.length) return this.__context;
+
+    // only exception is
+    if (data.__isBindable && data !== this) {
+      throw new Error("context cannot be a bindable object");
+    }
+
+    this.__context = data;
+  },
+
+  /**
+   * Returns the keys in the context
+   * @method keys
+   * @returns {Array}
+   */
+
+  keys: function () {
+    return Object.keys(this.toJSON());
+  },
+
+  /**
+   * Returns TRUE if a property exists in the context
+   * @method has
+   * @param {String} path
+   * @returns {Boolean}
+   */
+
+  has: function (key) {
+    return this.get(key) != null;
+  },
+
+  /**
+   * Returns a property stored in the bindable object context
+   * @method get
+   * @param {String} path path to the value. Can be something like `person.city.name`.
+   */
+
+  get: function (property) {
+
+    var isString;
+
+    // optimal
+    if ((isString = (typeof property === "string")) && !~property.indexOf(".")) {
+      return this.__context[property];
+    }
+
+    // avoid split if possible
+    var chain    = isString ? property.split(".") : property,
+    ctx          = this.__context,
+    currentValue = ctx,
+    currentProperty;
+
+    // go through all the properties
+    for (var i = 0, n = chain.length - 1; i < n; i++) {
+
+      currentValue    = currentValue[chain[i]];
+
+      if (!currentValue) return;
+
+      // current value is a bindable item? grab the context
+      if (currentValue.__isBindable && currentValue !== ctx) {
+        currentValue = currentValue.__context;
+      }
+    }
+    // might be a bindable object
+    if(currentValue) return currentValue[chain[i]];
+  },
+
+  /**
+   * Calls a function on the bindable object
+   * @method call
+   * @param {String} path path to the method to call
+   * @param {Array} arguments (optional) to pass to the function
+   * @param {Function} callback (optional) callback for returned value
+   */
+
+  call: function (path, args, onResult) {
+
+    if (typeof args === "function") {
+      onResult = args;
+      args = [];
+    }
+
+    if (!args) args = [];
+
+    if (!onResult) onResult = function (err) {
+      if (err) throw err;
+    };
+
+    if (Object.prototype.toString.call(args) !== "[object Array]") {
+      return onResult(new Error("args must be an array"));
+    }
+
+
+    var self = this, pathParts = path.split("."), methodName;
+
+
+    function onFnOrContext (fnOrContext) {
+      var fn = methodName ? fnOrContext.get(methodName) || fnOrContext[methodName] : fnOrContext;
+
+      try {
+        onResult(null, fn.apply(self, args));
+      } catch (e) {
+        onResult(e);
+      }
+    }
+
+    // might already exist, so try getting it. Might
+    // also be a property of the bindable object, so try that too
+    var fn = this.get(path) || this[path];
+
+    // fn? run it
+    if (fn) {
+      return onFnOrContext(fn);
+    }
+
+    // sub-property? try binding the context
+    if (pathParts.length > 1) {
+      methodName = pathParts.pop();
+    }
+
+
+    this.bind(pathParts, { max: 1, to: onFnOrContext }).now();
+  },
+
+  /**
+   * Properties to set on the bindable object
+   * @method setProperties
+   * @param {Object} properties properties to set
+   * @returns {BindableObject} this
+   */
+
+  setProperties: function (properties) {
+    for (var property in properties) {
+      this.set(property, properties[property]);
+    }
+    return this;
+  },
+
+  /**
+   * Sets a property on the bindable object's context
+   * @method set
+   * @param {String} path path to the value. Can be something like `person.city.name`.
+   */
+
+  set: function (property, value) {
+
+    var isString, hasChanged, oldValue;
+
+    // optimal
+    if ((isString = (typeof property === "string")) && !~property.indexOf(".")) {
+      hasChanged = (oldValue = this.__context[property]) !== value;
+      if (hasChanged) this.__context[property] = value;
+    } else {
+
+      // avoid split if possible
+      var chain     = isString ? property.split(".") : property,
+      ctx           = this.__context,
+      currentValue  = ctx,
+      previousValue,
+      currentProperty,
+      newChain;
+
+
+      for (var i = 0, n = chain.length - 1; i < n; i++) {
+
+        currentProperty = chain[i];
+        previousValue   = currentValue;
+        currentValue    = currentValue[currentProperty];
+
+
+        // need to take into account functions - easier not to check
+        // if value exists
+        if (!currentValue /* || (typeof currentValue !== "object")*/) {
+          currentValue = previousValue[currentProperty] = {};
+        }
+
+        // is the previous value bindable? pass it on
+        if (currentValue.__isBindable) {
+
+
+
+          newChain = chain.slice(i + 1);
+          // check if the value has changed
+          hasChanged = (oldValue = currentValue.get(newChain)) !== value;
+          currentValue.set(newChain, value);
+          currentValue = oldValue;
+          break;
+        }
+      }
+
+
+      if (!newChain && (hasChanged = (currentValue !== value))) {
+        currentProperty = chain[i];
+        oldValue = currentValue[currentProperty];
+        currentValue[currentProperty] = value;
+      }
+    }
+
+    if (!hasChanged) return value;
+
+    var prop = chain ? chain.join(".") : property;
+
+    this.emit("change:" + prop, value, oldValue);
+    this.emit("change", prop, value, oldValue);
+    return value;
+  },
+
+  /**
+   * Binds a property to a function
+   * @method bind
+   * @param {String} property path to bind to.
+   * @param {Object} listener `function` or `transformer` to bind to
+   * @param {Boolean} now (optional) call binding now. Otherwise wait till property changes.
+   * @returns {Binding}
+   */
+
+  bind: function (property, fn, now) {
+    return watchProperty(this, property, fn, now);
+  },
+
+  /**
+   * Disposes the bindable object. Emits `dispose`.
+   * @method dispose
+   */
+
+  dispose: function () {
+    this.emit("dispose");
+  },
+
+  /**
+   * Converts the context to a JSON object
+   * @method toJSON
+   */
+
+  toJSON: function () {
+    var obj = {}, value;
+
+    for (var key in this.__context) {
+      value = this.__context[key];
+
+      if(value && value.__isBindable) {
+        value = value.toJSON()
+      }
+
+      obj[key] = value;
+    }
+    return obj;
+  }
+});
+
+module.exports = Bindable;
+
+},{"../core/eventEmitter":94,"./watchProperty":98,"protoclass":125}],97:[function(require,module,exports){
+var toarray = require("toarray"),
+_           = require("underscore");
+
+/** 
+ * @module mojo
+ * @submodule mojo-core
+ */
+
+/**
+ * created when the second parameter on `bind(property, listener)` is an object.
+ *
+ * @class BindingTransformer
+ * @protected
+ */
+
+
+function getToPropertyFn (target, property) {
+  return function (value) {
+    target.set(property, value);
+  };
+}
+
+
+function hasChanged (oldValues, newValues) {
+
+  if (oldValues.length !== newValues.length) return true;
+
+  for (var i = newValues.length; i--;) {
+    if (newValues[i] !== oldValues[i]) return true;
+  }
+  return false;
+}
+
+function wrapFn (fn, previousValues, max) {
+
+  var numCalls = 0;
+
+  return function () {
+
+    var values = Array.prototype.slice.call(arguments, 0),
+    newValues  = (values.length % 2) === 0 ? values.slice(0, values.length / 2) : values;
+
+
+    if (!hasChanged(newValues, previousValues)) return;
+
+
+    if (~max && ++numCalls >= max) {
+      this.dispose();
+    }
+
+    previousValues = newValues;
+
+
+    fn.apply(this, values);
+  }
+}
+
+function transform (bindable, fromProperty, options) {
+
+  var when        = options.when         || function() { return true; },
+  map             = options.map          || function () { return Array.prototype.slice.call(arguments, 0); },
+  target          = options.target       || bindable,
+  max             = options.max          || (options.once ? 1 : undefined) || -1,
+  tos             = toarray(options.to).concat(),
+  previousValues  = toarray(options.defaultValue),
+  toProperties    = [],
+  bothWays        = options.bothWays;
+
+  
+  if (!when.test && typeof when === "function") {
+    when = { test: when };
+  }
+
+  if (!previousValues.length) {
+    previousValues.push(undefined)
+  }
+
+  if (!tos.length) {
+    throw new Error("missing 'to' option");
+  }
+
+  for (var i = tos.length; i--;) {
+    var to = tos[i],
+    tot    = typeof to;
+
+    /*
+     need to convert { property: { map: fn}} to another transformed value, which is
+     { map: fn, to: property }
+     */
+
+    if (tot === "object") {
+
+      // "to" might have multiple properties we're binding to, so 
+      // add them to the END of the array of "to" items
+      for (var property in to) {
+
+        // assign the property to the 'to' parameter
+        to[property].to = property;
+        tos.push(transform(target, fromProperty, to[property]));
+      }
+
+      // remove the item, since we just added new items to the end
+      tos.splice(i, 1);
+
+    // might be a property we're binding to
+    } else if(tot === "string") {
+      toProperties.push(to);
+      tos[i] = wrapFn(getToPropertyFn(target, to), previousValues, max);
+    } else if (tot === "function") {
+      tos[i] = wrapFn(to, previousValues, max);
+    } else {
+      throw new Error("'to' must be a function");
+    }
+  }
+
+  // two-way data-binding
+  if (bothWays) {
+    for (var i = toProperties.length; i--;) {
+      target.bind(toProperties[i], { to: fromProperty });
+    }
+  }
+
+  // newValue, newValue2, oldValue, oldValue2
+  return function () {
+
+    var values = toarray(map.apply(this, arguments));
+
+    // first make sure that we don't trigger the old value
+    if (!when.test.apply(when, values)) return;
+
+    for (var i = tos.length; i--;) {
+      tos[i].apply(this, values);
+    }
+  };
+};
+
+module.exports = transform;
+},{"toarray":101,"underscore":128}],98:[function(require,module,exports){
+var _     = require("underscore"),
+transform = require("./transform"),
+options   = require("../utils/options");
+
+/** 
+ * @module mojo
+ * @submodule mojo-core
+ */
+
+/**
+ * @class Binding
+ */
+
+/*
+ * bindable.bind("a", fn);
+ */
+
+function watchSimple (bindable, property, fn) {
+
+  bindable.emit("watching", [property]);
+
+  var listener = bindable.on("change:" + property, function () {
+    fn.apply(self, arguments);
+  }), self;
+
+  return self = {
+
+    /** 
+     * the target bindable object
+     * @property target
+     * @type {BindableObject}
+     */
+
+    target: bindable,
+
+    /**
+     * triggers the binding listener
+     * @method now
+     */
+
+    now: function () {
+      fn.call(self, bindable.get(property));
+      return self;
+    },
+
+    /**
+     * disposes the binding
+     * @method dispose
+     */
+
+    dispose: function () {
+      listener.dispose();
+    }
+  }
+}
+
+/*
+ * bindable.bind("a.b.c.d.e", fn);
+ */
+
+
+function watchChain (bindable, hasComputed, chain, fn) {
+
+  var listeners = [], values = hasComputed ? [] : undefined, self;
+
+  function onChange () {
+    dispose();
+    listeners = [];
+    values = hasComputed ? [] : undefined;
+    bind(bindable, chain);
+    self.now();
+  }
+
+
+  if (hasComputed && typeof window !== "undefined") {
+    onChange = _.debounce(onChange, 1);
+  }
+
+  function bind (target, chain, pushValues) {
+
+    var currentChain = [], subValue, currentProperty, j, computed, hadComputed, pv, cv = chain.length ? target.__context : target;
+
+    // need to run through all variations of the property chain incase it changes
+    // in the bindable.object. For instance:
+    // target.bind("a.b.c", fn); 
+    // triggers on
+    // target.set("a", obj);
+    // target.set("a.b", obj);
+    // target.set("a.b.c", obj);
+
+    // does it have @each in there? could be something like
+    // target.bind("friends.@each.name", function (names) { })
+    if (hasComputed) {
+
+      for (var i = 0, n = chain.length; i < n; i++) {
+
+        currentChain.push(chain[i]);
+        currentProperty = chain[i];
+
+        target.emit("watching", currentChain);
+
+        // check for @ at the beginning
+        if (computed = (currentProperty.charCodeAt(0) === 64)) {
+          hadComputed = true;
+          // remove @ - can't be used to fetch the propertyy
+          currentChain[i] = currentProperty = currentChain[i].substr(1);
+        }
+        
+        pv = cv;
+        if (cv) cv = cv[currentProperty];
+
+        // check if 
+        if (computed && cv) {
+
+
+          // used in cases where the collection might change that would affect 
+          // this binding. length for instance on the collection...
+          if (cv.compute) {
+            for (var j = cv.compute.length; j--;) {
+              bind(target, [cv.compute[j]], false);
+            }
+          }
+
+          // the sub chain for each of the items from the loop
+          var eachChain = chain.slice(i + 1);
+
+          // call the function, looping through items
+          cv.call(pv, function (item) {
+
+            if (!item) return;
+
+            // wrap around bindable object as a helper
+            if (!item.__isBindable) {
+              item = new module.exports.BindableObject(item);
+            }
+
+            bind(item, eachChain, pushValues);
+          });
+          break;
+        } else if (cv && cv.__isBindable && i !== n - 1) {
+          bind(cv, chain.slice(i + 1), false);
+          cv = cv.__context;
+        }
+
+        listeners.push(target.on("change:" +  currentChain.join("."), onChange));
+
+      } 
+
+      if (!hadComputed && pushValues !== false) {
+        values.push(cv);
+      }
+
+    } else {
+
+      for (var i = 0, n = chain.length; i < n; i++) {
+        currentProperty = chain[i];
+        currentChain.push(currentProperty);
+
+        target.emit("watching", currentChain);
+
+        if (cv) cv = cv[currentProperty];
+
+        // pass the watch onto the bindable object, but also listen 
+        // on the current target for any
+        if (cv && cv.__isBindable && i !== n - 1) {
+          bind(cv, chain.slice(i + 1), false);
+          cv = cv.__context;
+        }
+
+        listeners.push(target.on("change:" + currentChain.join("."), onChange));
+        
+      }
+
+      if (pushValues !== false) values = cv;
+    }
+
+
+  }
+
+  function dispose () {
+    if (!listeners) return;
+    for (var i = listeners.length; i--;) {
+      listeners[i].dispose();
+    }
+    listeners = undefined;
+  }
+
+  bind(bindable, chain);
+
+  return self = {
+    target: bindable,
+    now: function () {
+      fn.call(self, values);
+      return self;
+    },
+    dispose: dispose
+  }
+}
+
+/**
+ */
+
+function watchMultiple (bindable, chains, fn) { 
+
+  var values = new Array(chains.length),
+  oldValues  = new Array(chains.length),
+  bindings   = new Array(chains.length),
+  fn2        = options.computedDelay === -1 ? fn : _.debounce(fn, options.computedDelay),
+  self;
+
+  chains.forEach(function (chain, i) {
+
+    function onChange (value, oldValue) {
+      values[i]    = value;
+      oldValues[i] = oldValue;
+      fn2.apply(this, values.concat(oldValues));
+    }
+
+    bindings[i] = bindable.bind(chain, onChange);
+  });
+
+  return self = {
+    target: bindable,
+    now: function () {
+      for (var i = bindings.length; i--;) {
+        bindings[i].now();
+      }
+      return self;
+    },
+    dispose: function () {
+      for (var i = bindings.length; i--;) {
+        bindings[i].dispose();
+      }
+    }
+  }
+}
+
+/**
+ */
+
+function watchProperty (bindable, property, fn) {
+
+  if (typeof fn === "object") {
+    fn = transform(bindable, property, fn);
+  }
+
+  // TODO - check if is an array
+  var chain;
+
+  if (typeof property === "string") {
+    if (~property.indexOf(",")) {
+      return watchMultiple(bindable, property.split(/[,\s]+/), fn);
+    } else if (~property.indexOf(".")) {
+      chain = property.split(".");
+    } else {
+      chain = [property];
+    }
+  } else {
+    chain = property;
+  }
+
+  // collection.bind("length")
+  if (chain.length === 1) {
+    return watchSimple(bindable, property, fn);
+
+  // person.bind("city.zip")
+  } else {
+    return watchChain(bindable, ~property.indexOf("@"), chain, fn);
+  }
+}
+
+module.exports = watchProperty;
+},{"../utils/options":100,"./transform":97,"underscore":128}],99:[function(require,module,exports){
+module.exports=require(26)
+},{"toarray":101}],100:[function(require,module,exports){
+module.exports=require(27)
+},{}],101:[function(require,module,exports){
+module.exports=require(29)
+},{}],102:[function(require,module,exports){
 var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};var _gss = global._gss = global._gss || [],
 type = require("type-component");
 
@@ -8357,8 +10426,2080 @@ exports.use = function(gs) {
 
 
 
-},{"type-component":97}],91:[function(require,module,exports){
+},{"type-component":127}],103:[function(require,module,exports){
+arguments[4][41][0].apply(exports,arguments)
+},{"nofactor":107,"protoclass":125}],104:[function(require,module,exports){
 var protoclass = require("protoclass");
+
+function BaseFactory () {
+
+}
+
+protoclass(BaseFactory, {
+
+  /**
+   */
+
+  createElement: function (element) {},
+
+  /**
+   */
+
+  createFragment: function () { },
+
+  /**
+   */
+
+  createComment: function (value) { },
+
+  /**
+   */
+
+  createTextNode: function (value) { },
+
+  /**
+   */
+
+  parseHtml: function (content) { }
+});
+
+
+
+module.exports = BaseFactory;
+
+},{"protoclass":125}],105:[function(require,module,exports){
+var BaseFactory = require("./base"),
+factories       = require("factories");
+
+function CustomFactory (mainFactory, elements) {
+	BaseFactory.call(this);
+	this._mainFactory = mainFactory;
+
+	if (!mainFactory) {
+		throw new Error("main factory must be provided. User string, or dom");
+	}
+	
+	this._factories = {
+		element: {}
+	}
+
+	if (elements) {
+		this.registerElements(elements);
+	}
+}
+
+
+BaseFactory.extend(CustomFactory, {
+
+	/**
+	 */
+
+	registerElement: function (name, factory) {
+		this._factories.element[name] = factories.factory.create(factory);
+		return this;
+	},
+
+	/**
+	 */
+
+	registerElements: function (elements) {
+		for (var name in elements) {
+			this.registerElement(name, elements[name]);
+		}
+		return this;
+	},
+
+	/**
+	 */
+
+	createElement: function (name) {
+		var factory = this._factories.element[name];
+		if (factory) return factory.create(name);
+		return this._mainFactory.createElement(name);
+	},
+
+
+	/**
+	 */
+
+	createComment: function (text) {
+		return this._mainFactory.createTextNode(text);
+	},
+
+	/**
+	 */
+
+	createTextNode: function (text) {
+		return this._mainFactory.createTextNode(text);
+	},
+
+	/**
+	 */
+
+	createFragment: function () {
+		return this._mainFactory.createFragment.apply(this._mainFactory, arguments);
+	},
+
+	/**
+	 */
+
+	parseHtml: function (source) {
+		return this._mainFactory.parseHtml(source);
+	}
+});
+
+module.exports = function (mainFactory, elements) {
+	return new CustomFactory(mainFactory, elements);
+};
+},{"./base":104,"factories":124}],106:[function(require,module,exports){
+arguments[4][44][0].apply(exports,arguments)
+},{"./base":104}],107:[function(require,module,exports){
+module.exports = {
+  string  : require("./string"),
+  dom     : require("./dom"),
+  custom  : require("./custom")
+};
+
+module.exports["default"] = typeof window !== "undefined" ? module.exports.dom : module.exports.custom(module.exports.string, module.exports.string.voidElements);
+
+if (typeof window !== "undefined") {
+  window.nofactor = module.exports;
+}
+},{"./custom":105,"./dom":106,"./string":113}],108:[function(require,module,exports){
+var Text = require("./text");
+
+function Comment () {
+  Comment.superclass.apply(this, arguments);
+}
+
+Text.extend(Comment, {
+
+  /**
+   */
+
+  nodeType: 8,
+
+  /**
+   */
+
+  toString: function () {
+    return "<!--" + Comment.__super__.toString.call(this) + "-->";
+  },
+
+  /**
+   */
+
+  cloneNode: function () {
+    return new Comment(this.nodeValue);
+  }
+});
+
+module.exports = Comment;
+},{"./text":116}],109:[function(require,module,exports){
+var Node = require("./node");
+
+function Container () {
+  this.childNodes = [];
+}
+
+Node.extend(Container, {
+
+  /**
+   */
+
+  appendChild: function (node) {
+
+    if (node.nodeType === 11 && node.childNodes.length) {
+      while (node.childNodes.length) {
+        this.appendChild(node.childNodes[0]);
+      }
+      return;
+    }
+
+    this._unlink(node);
+    this.childNodes.push(node);
+    this._link(node);
+  },
+
+  /**
+   */
+
+  prependChild: function (node) {
+    if (!this.childNodes.length) {
+      this.appendChild(node);
+    } else {
+      this.insertBefore(node, this.childNodes[0]);
+    }
+  },
+
+  /**
+   */
+
+  removeChild: function (child) {
+    var i = this.childNodes.indexOf(child);
+
+    if (!~i) return;
+
+    this.childNodes.splice(i, 1);
+
+    if (child.previousSibling) child.previousSibling.nextSibling = child.nextSibling;
+    if (child.nextSibling)     child.nextSibling.previousSibling = child.previousSibling;
+
+    delete child.parentNode;
+    delete child.nextSibling;
+    delete child.previousSibling;
+  },
+
+  /**
+   */
+
+  insertBefore: function (newElement, before) {
+
+    if (newElement.nodeType === 11) {
+      var before, node;
+      for (var i = newElement.childNodes.length; i--;) {
+        this.insertBefore(node = newElement.childNodes[i], before);
+        before = node;
+      }
+    }
+
+    this._splice(this.childNodes.indexOf(before), 0, newElement);
+  },
+
+  /**
+   */
+
+  _splice: function (index, count, node) {
+
+    if (typeof index === "undefined") index = -1;
+    if (!~index) return;
+
+    if (node) this._unlink(node);
+    
+    this.childNodes.splice.apply(this.childNodes, arguments);
+
+    if (node) this._link(node);
+  },
+
+  /**
+   */
+
+  _unlink: function (node) {
+    if (node.parentNode) {
+      node.parentNode.removeChild(node);
+    }
+  },
+
+  /**
+   */
+
+  _link: function (node) {
+
+    if (!node.__isNode) {
+      throw new Error("cannot append non-node");
+    }
+
+    node.parentNode = this;
+    var i = this.childNodes.indexOf(node);
+
+    // FFox compatible
+    if (i !== 0)                         node.previousSibling = this.childNodes[i - 1];
+    if (i != this.childNodes.length - 1) node.nextSibling     = this.childNodes[i + 1];
+
+    if (node.previousSibling) node.previousSibling.nextSibling = node;
+    if (node.nextSibling)     node.nextSibling.previousSibling = node;
+  }
+});
+
+module.exports = Container;
+},{"./node":114}],110:[function(require,module,exports){
+var Container = require("./container"),
+Style         = require("./style");
+
+function Element (nodeName) {
+  Element.superclass.call(this);
+
+  this.nodeName    = nodeName.toUpperCase();
+  this._name       = nodeName.toLowerCase();
+  this.attributes  = [];
+  this._attrsByKey = {};
+  this.style       = new Style();
+}
+
+Container.extend(Element, {
+
+  /**
+   */
+
+  nodeType: 3,
+
+  /**
+   */
+
+  setAttribute: function (name, value) {
+
+
+    name = name.toLowerCase();
+
+    // if the name is a 
+    if (name === "style") {
+      return this.style.reset(value);
+    }
+
+    if (value == undefined) {
+      return this.removeAttribute(name);
+    }
+
+    var abk;
+
+    if (!(abk = this._attrsByKey[name])) {
+      this.attributes.push(abk = this._attrsByKey[name] = {})
+    }
+
+    abk.name  = name;
+    abk.value = value;
+  },
+
+  /**
+   */
+
+  removeAttribute: function (name) {
+
+    for (var i = this.attributes.length; i--;) {
+      var attr = this.attributes[i];
+      if (attr.name == name) {
+        this.attributes.splice(i, 1);
+        break;
+      }
+    }
+
+    delete this._attrsByKey[name];
+  },
+
+  /**
+   */
+
+  getAttribute: function (name) {
+    var abk;
+    if(abk = this._attrsByKey[name]) return abk.value;
+  },
+
+  /**
+   */
+
+  toString: function () {
+
+    var buffer = "<" + this._name,
+    attribs    =  "",
+    attrbuff;
+
+    for (var name in this._attrsByKey) {
+
+      var v    = this._attrsByKey[name].value;
+      attrbuff = name;
+
+      if (name != undefined) {
+        attrbuff += "=\"" + v + "\"";
+      }
+
+      attribs += " " + attrbuff;
+    }
+
+    if (this.style.hasStyles()) {
+      attribs += " style=" + "\"" + this.style.toString() + "\"";
+    }
+
+    if (attribs.length) {
+      buffer += attribs;
+    }
+
+
+    return buffer + ">" + this.childNodes.join("") + "</" + this._name + ">"
+  },
+
+  /**
+   */
+
+  cloneNode: function () {
+    var clone = new Element(this.nodeName);
+
+    for (var key in this._attrsByKey) {
+      clone.setAttribute(key, this._attrsByKey[key].value);
+    }
+
+    clone.setAttribute("style", this.style.toString());
+
+    for (var i = 0, n = this.childNodes.length; i < n; i++) {
+      clone.appendChild(this.childNodes[i].cloneNode());
+    }
+
+    return clone;
+  }
+});
+
+module.exports = Element;
+},{"./container":109,"./style":115}],111:[function(require,module,exports){
+module.exports=require(45)
+},{}],112:[function(require,module,exports){
+var Container = require("./container");
+
+function Fragment () {
+  Fragment.superclass.call(this);
+}
+
+Container.extend(Fragment, {
+
+  /**
+   */
+
+  nodeType: 11,
+
+  /**
+   */
+
+  toString: function () {
+    return this.childNodes.join("");
+  },
+
+  /**
+   */
+
+  cloneNode: function () {
+    var clone = new Fragment();
+
+    for (var i = 0, n = this.childNodes.length; i < n; i++) {
+      clone.appendChild(this.childNodes[i].cloneNode());
+    }
+
+    return clone;
+  }
+});
+
+module.exports = Fragment;
+},{"./container":109}],113:[function(require,module,exports){
+var Base     = require("../base"),
+Element      = require("./element"),
+Fragment     = require("./fragment"),
+Text         = require("./text"),
+Comment      = require("./comment"),
+Container    = require("./container"),
+voidElements = require("./voidElements");
+
+
+
+function StringNodeFactory (context) {
+  this.context = context;
+}
+
+Base.extend(StringNodeFactory, {
+
+  /**
+   */
+
+  name: "string",
+
+  /**
+   */
+
+  createElement: function (name) {
+    return new Element(name);
+  },
+
+  /**
+   */
+
+  createTextNode: function (value, encode) {
+    return new Text(value, encode);
+  },
+
+  /**
+   */
+
+  createComment: function (value) {
+    return new Comment(value);
+  },
+
+  /**
+   */
+
+  createFragment: function (children) {
+
+    if (!children) children = [];
+    var frag = new Fragment(),
+    childrenToArray = Array.prototype.slice.call(children, 0);
+
+    for (var i = 0, n = childrenToArray.length; i < n; i++) {
+      frag.appendChild(childrenToArray[i]);
+    }
+
+    return frag;
+  },
+
+  /**
+   */
+
+  parseHtml: function (buffer) {
+
+    //this should really parse HTML, but too much overhead
+    return this.createTextNode(buffer);
+  }
+});
+
+module.exports           = new StringNodeFactory();
+
+module.exports.Element      = Element;
+module.exports.Fragment     = Fragment;
+module.exports.Text         = Text;
+module.exports.Container    = Container;
+module.exports.voidElements = voidElements;
+},{"../base":104,"./comment":108,"./container":109,"./element":110,"./fragment":112,"./text":116,"./voidElements":117}],114:[function(require,module,exports){
+var protoclass  = require("protoclass");
+
+
+function Node () {
+
+}
+
+protoclass(Node, {
+  __isNode: true
+});
+
+module.exports = Node;
+},{"protoclass":125}],115:[function(require,module,exports){
+var protoclass = require("protoclass");
+
+function Style () {
+  this._currentStyles = {};
+}
+
+protoclass(Style, {
+
+  /**
+   */
+
+  _hasStyle: false,
+
+  /**
+   */
+
+
+  setProperty: function(key, value) {
+
+    if (value === "" || value == undefined) {
+      delete this[key];
+      return;
+    }
+
+    this[key] = value;
+  },
+
+  /**
+   */
+
+  reset: function (styles) {
+    
+    var styleParts = styles.split(/;\s*/);
+
+    for (var i = 0, n = styleParts.length; i < n; i++) {
+      var sp = styleParts[i].split(/:\s*/);
+
+      if (sp[1] == undefined || sp[1] == "") {
+        continue;
+      }
+
+      this[sp[0]] = sp[1];
+    }
+  },
+
+  /**
+   */
+
+  toString: function () {
+    var buffer = "", styles = this.getStyles();
+
+    for (var key in styles) {
+      buffer += key + ":" + styles[key] + ";"
+    }
+
+    return buffer;
+  },
+
+  /**
+   */
+
+  hasStyles: function () {
+    if(this._hasStyle) return true;
+
+    for (var key in this) {
+      if (key.substr(0, 1) !== "_" && this[key] != undefined && this.constructor.prototype[key] == undefined) {
+        return this._hasStyle = true;
+      }
+    }
+
+    return false;
+  },
+
+  /**
+   */
+
+  hasChanged: function () {
+
+    var newStyles       = this.getStyles(),
+    oldStyles           = this._currentStyles;
+    this._currentStyles = newStyles;
+
+    for (var key in newStyles) {
+      if (newStyles[key] !== oldStyles[key]) {
+        return true;
+      }
+    }
+
+    for (var key in oldStyles) {
+      if (newStyles[key] !== oldStyles[key]) {
+        return true;
+      }
+    }
+
+    return false;
+  },
+
+  /**
+   */
+
+  getStyles: function () {
+    var styles = {};
+    for (var key in this) {
+      var k = this[key];
+      if (key.substr(0, 1) !== "_" && k !== "" && this[key] != undefined && this.constructor.prototype[key] == undefined) {
+        styles[key] = this[key];
+      }
+    }
+    return styles;
+  }
+});
+
+module.exports = Style;
+},{"protoclass":125}],116:[function(require,module,exports){
+var Node = require("./node"),
+ent      = require("./ent");
+
+
+
+function Text (value, encode) {
+  this.replaceText(value, encode);
+}
+
+Node.extend(Text, {
+
+  /**
+   */
+
+  nodeType: 3,
+
+  /**
+   */
+
+  toString: function () {
+    return this.nodeValue;
+  },
+
+  /**
+   */
+
+  cloneNode: function () {
+    return new Text(this.nodeValue);
+  },
+
+  /**
+   */ 
+
+  replaceText: function (value, encode) {
+    this.nodeValue = encode ? ent(value) : value;
+  }
+});
+
+module.exports = Text;
+},{"./ent":111,"./node":114}],117:[function(require,module,exports){
+var Element = require("./element");
+
+function VoidElement () {
+	Element.apply(this, arguments);
+}
+
+Element.extend(VoidElement, {
+	toString: function () {
+		return Element.prototype.toString.call(this).replace("></" + this._name + ">", "/>");
+	},
+	cloneNode: function () {
+		var clone = new VoidElement(this._name);
+
+
+	    for (var key in this._attrsByKey) {
+	      clone.setAttribute(key, this._attrsByKey[key].value);
+	    }
+
+	    clone.setAttribute("style", this.style.toString());
+
+	    return clone;
+	}
+});
+
+/*
+area, base, br, col, command, embed, hr, img, input,
+keygen, link, meta, param, source, track, wbr
+*/
+
+["area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link", "meta", "param", "source", "track"].forEach(function (name) {
+	exports[name] = VoidElement;
+});
+},{"./element":110}],118:[function(require,module,exports){
+arguments[4][32][0].apply(exports,arguments)
+},{"./base":119,"./factory":121}],119:[function(require,module,exports){
+module.exports=require(33)
+},{}],120:[function(require,module,exports){
+module.exports=require(34)
+},{"./base":119}],121:[function(require,module,exports){
+arguments[4][35][0].apply(exports,arguments)
+},{"./base":119,"./class":120,"./fn":122,"type-component":127}],122:[function(require,module,exports){
+module.exports=require(36)
+},{}],123:[function(require,module,exports){
+arguments[4][37][0].apply(exports,arguments)
+},{"./base":119,"./factory":121}],124:[function(require,module,exports){
+arguments[4][38][0].apply(exports,arguments)
+},{"./any":118,"./class":120,"./factory":121,"./fn":122,"./group":123}],125:[function(require,module,exports){
+function _copy (to, from) {
+
+  for (var i = 0, n = from.length; i < n; i++) {
+
+    var target = from[i];
+
+    for (var property in target) {
+      to[property] = target[property];
+    }
+  }
+
+  return to;
+}
+
+function protoclass (parent, child) {
+
+  var mixins = Array.prototype.slice.call(arguments, 2);
+
+  if (typeof child !== "function") {
+    if(child) mixins.unshift(child); // constructor is a mixin
+    child   = parent;
+    parent  = function() { };
+  }
+
+  _copy(child, parent); 
+
+  function ctor () {
+    this.constructor = child;
+  }
+
+  ctor.prototype  = parent.prototype;
+  child.prototype = new ctor();
+  child.__super__ = parent.prototype;
+  child.parent = child.superclass = parent;
+
+  _copy(child.prototype, mixins);
+
+  protoclass.setup(child);
+
+  return child;
+}
+
+protoclass.setup = function (child) {
+
+
+  if (!child.extend) {
+    child.extend = function(constructor) {
+
+      var args = Array.prototype.slice.call(arguments, 0);
+
+      if (typeof constructor !== "function") {
+        args.unshift(constructor = function () {
+          constructor.parent.apply(this, arguments);
+        });
+      }
+
+      return protoclass.apply(this, [this].concat(args));
+    }
+    child.mixin = function(proto) {
+      _copy(this.prototype, arguments);
+    }
+  }
+
+  return child;
+}
+
+
+module.exports = protoclass;
+},{}],126:[function(require,module,exports){
+module.exports=require(28)
+},{}],127:[function(require,module,exports){
+
+/**
+ * toString ref.
+ */
+
+var toString = Object.prototype.toString;
+
+/**
+ * Return the type of `val`.
+ *
+ * @param {Mixed} val
+ * @return {String}
+ * @api public
+ */
+
+module.exports = function(val){
+  switch (toString.call(val)) {
+    case '[object Function]': return 'function';
+    case '[object Date]': return 'date';
+    case '[object RegExp]': return 'regexp';
+    case '[object Arguments]': return 'arguments';
+    case '[object Array]': return 'array';
+  }
+
+  if (val === null) return 'null';
+  if (val === undefined) return 'undefined';
+  if (val === Object(val)) return 'object';
+
+  return typeof val;
+};
+
+},{}],128:[function(require,module,exports){
+//     Underscore.js 1.4.4
+//     http://underscorejs.org
+//     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc.
+//     Underscore may be freely distributed under the MIT license.
+
+(function() {
+
+  // Baseline setup
+  // --------------
+
+  // Establish the root object, `window` in the browser, or `global` on the server.
+  var root = this;
+
+  // Save the previous value of the `_` variable.
+  var previousUnderscore = root._;
+
+  // Establish the object that gets returned to break out of a loop iteration.
+  var breaker = {};
+
+  // Save bytes in the minified (but not gzipped) version:
+  var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
+
+  // Create quick reference variables for speed access to core prototypes.
+  var push             = ArrayProto.push,
+      slice            = ArrayProto.slice,
+      concat           = ArrayProto.concat,
+      toString         = ObjProto.toString,
+      hasOwnProperty   = ObjProto.hasOwnProperty;
+
+  // All **ECMAScript 5** native function implementations that we hope to use
+  // are declared here.
+  var
+    nativeForEach      = ArrayProto.forEach,
+    nativeMap          = ArrayProto.map,
+    nativeReduce       = ArrayProto.reduce,
+    nativeReduceRight  = ArrayProto.reduceRight,
+    nativeFilter       = ArrayProto.filter,
+    nativeEvery        = ArrayProto.every,
+    nativeSome         = ArrayProto.some,
+    nativeIndexOf      = ArrayProto.indexOf,
+    nativeLastIndexOf  = ArrayProto.lastIndexOf,
+    nativeIsArray      = Array.isArray,
+    nativeKeys         = Object.keys,
+    nativeBind         = FuncProto.bind;
+
+  // Create a safe reference to the Underscore object for use below.
+  var _ = function(obj) {
+    if (obj instanceof _) return obj;
+    if (!(this instanceof _)) return new _(obj);
+    this._wrapped = obj;
+  };
+
+  // Export the Underscore object for **Node.js**, with
+  // backwards-compatibility for the old `require()` API. If we're in
+  // the browser, add `_` as a global object via a string identifier,
+  // for Closure Compiler "advanced" mode.
+  if (typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+      exports = module.exports = _;
+    }
+    exports._ = _;
+  } else {
+    root._ = _;
+  }
+
+  // Current version.
+  _.VERSION = '1.4.4';
+
+  // Collection Functions
+  // --------------------
+
+  // The cornerstone, an `each` implementation, aka `forEach`.
+  // Handles objects with the built-in `forEach`, arrays, and raw objects.
+  // Delegates to **ECMAScript 5**'s native `forEach` if available.
+  var each = _.each = _.forEach = function(obj, iterator, context) {
+    if (obj == null) return;
+    if (nativeForEach && obj.forEach === nativeForEach) {
+      obj.forEach(iterator, context);
+    } else if (obj.length === +obj.length) {
+      for (var i = 0, l = obj.length; i < l; i++) {
+        if (iterator.call(context, obj[i], i, obj) === breaker) return;
+      }
+    } else {
+      for (var key in obj) {
+        if (_.has(obj, key)) {
+          if (iterator.call(context, obj[key], key, obj) === breaker) return;
+        }
+      }
+    }
+  };
+
+  // Return the results of applying the iterator to each element.
+  // Delegates to **ECMAScript 5**'s native `map` if available.
+  _.map = _.collect = function(obj, iterator, context) {
+    var results = [];
+    if (obj == null) return results;
+    if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
+    each(obj, function(value, index, list) {
+      results[results.length] = iterator.call(context, value, index, list);
+    });
+    return results;
+  };
+
+  var reduceError = 'Reduce of empty array with no initial value';
+
+  // **Reduce** builds up a single result from a list of values, aka `inject`,
+  // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.
+  _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {
+    var initial = arguments.length > 2;
+    if (obj == null) obj = [];
+    if (nativeReduce && obj.reduce === nativeReduce) {
+      if (context) iterator = _.bind(iterator, context);
+      return initial ? obj.reduce(iterator, memo) : obj.reduce(iterator);
+    }
+    each(obj, function(value, index, list) {
+      if (!initial) {
+        memo = value;
+        initial = true;
+      } else {
+        memo = iterator.call(context, memo, value, index, list);
+      }
+    });
+    if (!initial) throw new TypeError(reduceError);
+    return memo;
+  };
+
+  // The right-associative version of reduce, also known as `foldr`.
+  // Delegates to **ECMAScript 5**'s native `reduceRight` if available.
+  _.reduceRight = _.foldr = function(obj, iterator, memo, context) {
+    var initial = arguments.length > 2;
+    if (obj == null) obj = [];
+    if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
+      if (context) iterator = _.bind(iterator, context);
+      return initial ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
+    }
+    var length = obj.length;
+    if (length !== +length) {
+      var keys = _.keys(obj);
+      length = keys.length;
+    }
+    each(obj, function(value, index, list) {
+      index = keys ? keys[--length] : --length;
+      if (!initial) {
+        memo = obj[index];
+        initial = true;
+      } else {
+        memo = iterator.call(context, memo, obj[index], index, list);
+      }
+    });
+    if (!initial) throw new TypeError(reduceError);
+    return memo;
+  };
+
+  // Return the first value which passes a truth test. Aliased as `detect`.
+  _.find = _.detect = function(obj, iterator, context) {
+    var result;
+    any(obj, function(value, index, list) {
+      if (iterator.call(context, value, index, list)) {
+        result = value;
+        return true;
+      }
+    });
+    return result;
+  };
+
+  // Return all the elements that pass a truth test.
+  // Delegates to **ECMAScript 5**'s native `filter` if available.
+  // Aliased as `select`.
+  _.filter = _.select = function(obj, iterator, context) {
+    var results = [];
+    if (obj == null) return results;
+    if (nativeFilter && obj.filter === nativeFilter) return obj.filter(iterator, context);
+    each(obj, function(value, index, list) {
+      if (iterator.call(context, value, index, list)) results[results.length] = value;
+    });
+    return results;
+  };
+
+  // Return all the elements for which a truth test fails.
+  _.reject = function(obj, iterator, context) {
+    return _.filter(obj, function(value, index, list) {
+      return !iterator.call(context, value, index, list);
+    }, context);
+  };
+
+  // Determine whether all of the elements match a truth test.
+  // Delegates to **ECMAScript 5**'s native `every` if available.
+  // Aliased as `all`.
+  _.every = _.all = function(obj, iterator, context) {
+    iterator || (iterator = _.identity);
+    var result = true;
+    if (obj == null) return result;
+    if (nativeEvery && obj.every === nativeEvery) return obj.every(iterator, context);
+    each(obj, function(value, index, list) {
+      if (!(result = result && iterator.call(context, value, index, list))) return breaker;
+    });
+    return !!result;
+  };
+
+  // Determine if at least one element in the object matches a truth test.
+  // Delegates to **ECMAScript 5**'s native `some` if available.
+  // Aliased as `any`.
+  var any = _.some = _.any = function(obj, iterator, context) {
+    iterator || (iterator = _.identity);
+    var result = false;
+    if (obj == null) return result;
+    if (nativeSome && obj.some === nativeSome) return obj.some(iterator, context);
+    each(obj, function(value, index, list) {
+      if (result || (result = iterator.call(context, value, index, list))) return breaker;
+    });
+    return !!result;
+  };
+
+  // Determine if the array or object contains a given value (using `===`).
+  // Aliased as `include`.
+  _.contains = _.include = function(obj, target) {
+    if (obj == null) return false;
+    if (nativeIndexOf && obj.indexOf === nativeIndexOf) return obj.indexOf(target) != -1;
+    return any(obj, function(value) {
+      return value === target;
+    });
+  };
+
+  // Invoke a method (with arguments) on every item in a collection.
+  _.invoke = function(obj, method) {
+    var args = slice.call(arguments, 2);
+    var isFunc = _.isFunction(method);
+    return _.map(obj, function(value) {
+      return (isFunc ? method : value[method]).apply(value, args);
+    });
+  };
+
+  // Convenience version of a common use case of `map`: fetching a property.
+  _.pluck = function(obj, key) {
+    return _.map(obj, function(value){ return value[key]; });
+  };
+
+  // Convenience version of a common use case of `filter`: selecting only objects
+  // containing specific `key:value` pairs.
+  _.where = function(obj, attrs, first) {
+    if (_.isEmpty(attrs)) return first ? null : [];
+    return _[first ? 'find' : 'filter'](obj, function(value) {
+      for (var key in attrs) {
+        if (attrs[key] !== value[key]) return false;
+      }
+      return true;
+    });
+  };
+
+  // Convenience version of a common use case of `find`: getting the first object
+  // containing specific `key:value` pairs.
+  _.findWhere = function(obj, attrs) {
+    return _.where(obj, attrs, true);
+  };
+
+  // Return the maximum element or (element-based computation).
+  // Can't optimize arrays of integers longer than 65,535 elements.
+  // See: https://bugs.webkit.org/show_bug.cgi?id=80797
+  _.max = function(obj, iterator, context) {
+    if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {
+      return Math.max.apply(Math, obj);
+    }
+    if (!iterator && _.isEmpty(obj)) return -Infinity;
+    var result = {computed : -Infinity, value: -Infinity};
+    each(obj, function(value, index, list) {
+      var computed = iterator ? iterator.call(context, value, index, list) : value;
+      computed >= result.computed && (result = {value : value, computed : computed});
+    });
+    return result.value;
+  };
+
+  // Return the minimum element (or element-based computation).
+  _.min = function(obj, iterator, context) {
+    if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {
+      return Math.min.apply(Math, obj);
+    }
+    if (!iterator && _.isEmpty(obj)) return Infinity;
+    var result = {computed : Infinity, value: Infinity};
+    each(obj, function(value, index, list) {
+      var computed = iterator ? iterator.call(context, value, index, list) : value;
+      computed < result.computed && (result = {value : value, computed : computed});
+    });
+    return result.value;
+  };
+
+  // Shuffle an array.
+  _.shuffle = function(obj) {
+    var rand;
+    var index = 0;
+    var shuffled = [];
+    each(obj, function(value) {
+      rand = _.random(index++);
+      shuffled[index - 1] = shuffled[rand];
+      shuffled[rand] = value;
+    });
+    return shuffled;
+  };
+
+  // An internal function to generate lookup iterators.
+  var lookupIterator = function(value) {
+    return _.isFunction(value) ? value : function(obj){ return obj[value]; };
+  };
+
+  // Sort the object's values by a criterion produced by an iterator.
+  _.sortBy = function(obj, value, context) {
+    var iterator = lookupIterator(value);
+    return _.pluck(_.map(obj, function(value, index, list) {
+      return {
+        value : value,
+        index : index,
+        criteria : iterator.call(context, value, index, list)
+      };
+    }).sort(function(left, right) {
+      var a = left.criteria;
+      var b = right.criteria;
+      if (a !== b) {
+        if (a > b || a === void 0) return 1;
+        if (a < b || b === void 0) return -1;
+      }
+      return left.index < right.index ? -1 : 1;
+    }), 'value');
+  };
+
+  // An internal function used for aggregate "group by" operations.
+  var group = function(obj, value, context, behavior) {
+    var result = {};
+    var iterator = lookupIterator(value || _.identity);
+    each(obj, function(value, index) {
+      var key = iterator.call(context, value, index, obj);
+      behavior(result, key, value);
+    });
+    return result;
+  };
+
+  // Groups the object's values by a criterion. Pass either a string attribute
+  // to group by, or a function that returns the criterion.
+  _.groupBy = function(obj, value, context) {
+    return group(obj, value, context, function(result, key, value) {
+      (_.has(result, key) ? result[key] : (result[key] = [])).push(value);
+    });
+  };
+
+  // Counts instances of an object that group by a certain criterion. Pass
+  // either a string attribute to count by, or a function that returns the
+  // criterion.
+  _.countBy = function(obj, value, context) {
+    return group(obj, value, context, function(result, key) {
+      if (!_.has(result, key)) result[key] = 0;
+      result[key]++;
+    });
+  };
+
+  // Use a comparator function to figure out the smallest index at which
+  // an object should be inserted so as to maintain order. Uses binary search.
+  _.sortedIndex = function(array, obj, iterator, context) {
+    iterator = iterator == null ? _.identity : lookupIterator(iterator);
+    var value = iterator.call(context, obj);
+    var low = 0, high = array.length;
+    while (low < high) {
+      var mid = (low + high) >>> 1;
+      iterator.call(context, array[mid]) < value ? low = mid + 1 : high = mid;
+    }
+    return low;
+  };
+
+  // Safely convert anything iterable into a real, live array.
+  _.toArray = function(obj) {
+    if (!obj) return [];
+    if (_.isArray(obj)) return slice.call(obj);
+    if (obj.length === +obj.length) return _.map(obj, _.identity);
+    return _.values(obj);
+  };
+
+  // Return the number of elements in an object.
+  _.size = function(obj) {
+    if (obj == null) return 0;
+    return (obj.length === +obj.length) ? obj.length : _.keys(obj).length;
+  };
+
+  // Array Functions
+  // ---------------
+
+  // Get the first element of an array. Passing **n** will return the first N
+  // values in the array. Aliased as `head` and `take`. The **guard** check
+  // allows it to work with `_.map`.
+  _.first = _.head = _.take = function(array, n, guard) {
+    if (array == null) return void 0;
+    return (n != null) && !guard ? slice.call(array, 0, n) : array[0];
+  };
+
+  // Returns everything but the last entry of the array. Especially useful on
+  // the arguments object. Passing **n** will return all the values in
+  // the array, excluding the last N. The **guard** check allows it to work with
+  // `_.map`.
+  _.initial = function(array, n, guard) {
+    return slice.call(array, 0, array.length - ((n == null) || guard ? 1 : n));
+  };
+
+  // Get the last element of an array. Passing **n** will return the last N
+  // values in the array. The **guard** check allows it to work with `_.map`.
+  _.last = function(array, n, guard) {
+    if (array == null) return void 0;
+    if ((n != null) && !guard) {
+      return slice.call(array, Math.max(array.length - n, 0));
+    } else {
+      return array[array.length - 1];
+    }
+  };
+
+  // Returns everything but the first entry of the array. Aliased as `tail` and `drop`.
+  // Especially useful on the arguments object. Passing an **n** will return
+  // the rest N values in the array. The **guard**
+  // check allows it to work with `_.map`.
+  _.rest = _.tail = _.drop = function(array, n, guard) {
+    return slice.call(array, (n == null) || guard ? 1 : n);
+  };
+
+  // Trim out all falsy values from an array.
+  _.compact = function(array) {
+    return _.filter(array, _.identity);
+  };
+
+  // Internal implementation of a recursive `flatten` function.
+  var flatten = function(input, shallow, output) {
+    each(input, function(value) {
+      if (_.isArray(value)) {
+        shallow ? push.apply(output, value) : flatten(value, shallow, output);
+      } else {
+        output.push(value);
+      }
+    });
+    return output;
+  };
+
+  // Return a completely flattened version of an array.
+  _.flatten = function(array, shallow) {
+    return flatten(array, shallow, []);
+  };
+
+  // Return a version of the array that does not contain the specified value(s).
+  _.without = function(array) {
+    return _.difference(array, slice.call(arguments, 1));
+  };
+
+  // Produce a duplicate-free version of the array. If the array has already
+  // been sorted, you have the option of using a faster algorithm.
+  // Aliased as `unique`.
+  _.uniq = _.unique = function(array, isSorted, iterator, context) {
+    if (_.isFunction(isSorted)) {
+      context = iterator;
+      iterator = isSorted;
+      isSorted = false;
+    }
+    var initial = iterator ? _.map(array, iterator, context) : array;
+    var results = [];
+    var seen = [];
+    each(initial, function(value, index) {
+      if (isSorted ? (!index || seen[seen.length - 1] !== value) : !_.contains(seen, value)) {
+        seen.push(value);
+        results.push(array[index]);
+      }
+    });
+    return results;
+  };
+
+  // Produce an array that contains the union: each distinct element from all of
+  // the passed-in arrays.
+  _.union = function() {
+    return _.uniq(concat.apply(ArrayProto, arguments));
+  };
+
+  // Produce an array that contains every item shared between all the
+  // passed-in arrays.
+  _.intersection = function(array) {
+    var rest = slice.call(arguments, 1);
+    return _.filter(_.uniq(array), function(item) {
+      return _.every(rest, function(other) {
+        return _.indexOf(other, item) >= 0;
+      });
+    });
+  };
+
+  // Take the difference between one array and a number of other arrays.
+  // Only the elements present in just the first array will remain.
+  _.difference = function(array) {
+    var rest = concat.apply(ArrayProto, slice.call(arguments, 1));
+    return _.filter(array, function(value){ return !_.contains(rest, value); });
+  };
+
+  // Zip together multiple lists into a single array -- elements that share
+  // an index go together.
+  _.zip = function() {
+    var args = slice.call(arguments);
+    var length = _.max(_.pluck(args, 'length'));
+    var results = new Array(length);
+    for (var i = 0; i < length; i++) {
+      results[i] = _.pluck(args, "" + i);
+    }
+    return results;
+  };
+
+  // Converts lists into objects. Pass either a single array of `[key, value]`
+  // pairs, or two parallel arrays of the same length -- one of keys, and one of
+  // the corresponding values.
+  _.object = function(list, values) {
+    if (list == null) return {};
+    var result = {};
+    for (var i = 0, l = list.length; i < l; i++) {
+      if (values) {
+        result[list[i]] = values[i];
+      } else {
+        result[list[i][0]] = list[i][1];
+      }
+    }
+    return result;
+  };
+
+  // If the browser doesn't supply us with indexOf (I'm looking at you, **MSIE**),
+  // we need this function. Return the position of the first occurrence of an
+  // item in an array, or -1 if the item is not included in the array.
+  // Delegates to **ECMAScript 5**'s native `indexOf` if available.
+  // If the array is large and already in sort order, pass `true`
+  // for **isSorted** to use binary search.
+  _.indexOf = function(array, item, isSorted) {
+    if (array == null) return -1;
+    var i = 0, l = array.length;
+    if (isSorted) {
+      if (typeof isSorted == 'number') {
+        i = (isSorted < 0 ? Math.max(0, l + isSorted) : isSorted);
+      } else {
+        i = _.sortedIndex(array, item);
+        return array[i] === item ? i : -1;
+      }
+    }
+    if (nativeIndexOf && array.indexOf === nativeIndexOf) return array.indexOf(item, isSorted);
+    for (; i < l; i++) if (array[i] === item) return i;
+    return -1;
+  };
+
+  // Delegates to **ECMAScript 5**'s native `lastIndexOf` if available.
+  _.lastIndexOf = function(array, item, from) {
+    if (array == null) return -1;
+    var hasIndex = from != null;
+    if (nativeLastIndexOf && array.lastIndexOf === nativeLastIndexOf) {
+      return hasIndex ? array.lastIndexOf(item, from) : array.lastIndexOf(item);
+    }
+    var i = (hasIndex ? from : array.length);
+    while (i--) if (array[i] === item) return i;
+    return -1;
+  };
+
+  // Generate an integer Array containing an arithmetic progression. A port of
+  // the native Python `range()` function. See
+  // [the Python documentation](http://docs.python.org/library/functions.html#range).
+  _.range = function(start, stop, step) {
+    if (arguments.length <= 1) {
+      stop = start || 0;
+      start = 0;
+    }
+    step = arguments[2] || 1;
+
+    var len = Math.max(Math.ceil((stop - start) / step), 0);
+    var idx = 0;
+    var range = new Array(len);
+
+    while(idx < len) {
+      range[idx++] = start;
+      start += step;
+    }
+
+    return range;
+  };
+
+  // Function (ahem) Functions
+  // ------------------
+
+  // Create a function bound to a given object (assigning `this`, and arguments,
+  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
+  // available.
+  _.bind = function(func, context) {
+    if (func.bind === nativeBind && nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
+    var args = slice.call(arguments, 2);
+    return function() {
+      return func.apply(context, args.concat(slice.call(arguments)));
+    };
+  };
+
+  // Partially apply a function by creating a version that has had some of its
+  // arguments pre-filled, without changing its dynamic `this` context.
+  _.partial = function(func) {
+    var args = slice.call(arguments, 1);
+    return function() {
+      return func.apply(this, args.concat(slice.call(arguments)));
+    };
+  };
+
+  // Bind all of an object's methods to that object. Useful for ensuring that
+  // all callbacks defined on an object belong to it.
+  _.bindAll = function(obj) {
+    var funcs = slice.call(arguments, 1);
+    if (funcs.length === 0) funcs = _.functions(obj);
+    each(funcs, function(f) { obj[f] = _.bind(obj[f], obj); });
+    return obj;
+  };
+
+  // Memoize an expensive function by storing its results.
+  _.memoize = function(func, hasher) {
+    var memo = {};
+    hasher || (hasher = _.identity);
+    return function() {
+      var key = hasher.apply(this, arguments);
+      return _.has(memo, key) ? memo[key] : (memo[key] = func.apply(this, arguments));
+    };
+  };
+
+  // Delays a function for the given number of milliseconds, and then calls
+  // it with the arguments supplied.
+  _.delay = function(func, wait) {
+    var args = slice.call(arguments, 2);
+    return setTimeout(function(){ return func.apply(null, args); }, wait);
+  };
+
+  // Defers a function, scheduling it to run after the current call stack has
+  // cleared.
+  _.defer = function(func) {
+    return _.delay.apply(_, [func, 1].concat(slice.call(arguments, 1)));
+  };
+
+  // Returns a function, that, when invoked, will only be triggered at most once
+  // during a given window of time.
+  _.throttle = function(func, wait) {
+    var context, args, timeout, result;
+    var previous = 0;
+    var later = function() {
+      previous = new Date;
+      timeout = null;
+      result = func.apply(context, args);
+    };
+    return function() {
+      var now = new Date;
+      var remaining = wait - (now - previous);
+      context = this;
+      args = arguments;
+      if (remaining <= 0) {
+        clearTimeout(timeout);
+        timeout = null;
+        previous = now;
+        result = func.apply(context, args);
+      } else if (!timeout) {
+        timeout = setTimeout(later, remaining);
+      }
+      return result;
+    };
+  };
+
+  // Returns a function, that, as long as it continues to be invoked, will not
+  // be triggered. The function will be called after it stops being called for
+  // N milliseconds. If `immediate` is passed, trigger the function on the
+  // leading edge, instead of the trailing.
+  _.debounce = function(func, wait, immediate) {
+    var timeout, result;
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if (!immediate) result = func.apply(context, args);
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) result = func.apply(context, args);
+      return result;
+    };
+  };
+
+  // Returns a function that will be executed at most one time, no matter how
+  // often you call it. Useful for lazy initialization.
+  _.once = function(func) {
+    var ran = false, memo;
+    return function() {
+      if (ran) return memo;
+      ran = true;
+      memo = func.apply(this, arguments);
+      func = null;
+      return memo;
+    };
+  };
+
+  // Returns the first function passed as an argument to the second,
+  // allowing you to adjust arguments, run code before and after, and
+  // conditionally execute the original function.
+  _.wrap = function(func, wrapper) {
+    return function() {
+      var args = [func];
+      push.apply(args, arguments);
+      return wrapper.apply(this, args);
+    };
+  };
+
+  // Returns a function that is the composition of a list of functions, each
+  // consuming the return value of the function that follows.
+  _.compose = function() {
+    var funcs = arguments;
+    return function() {
+      var args = arguments;
+      for (var i = funcs.length - 1; i >= 0; i--) {
+        args = [funcs[i].apply(this, args)];
+      }
+      return args[0];
+    };
+  };
+
+  // Returns a function that will only be executed after being called N times.
+  _.after = function(times, func) {
+    if (times <= 0) return func();
+    return function() {
+      if (--times < 1) {
+        return func.apply(this, arguments);
+      }
+    };
+  };
+
+  // Object Functions
+  // ----------------
+
+  // Retrieve the names of an object's properties.
+  // Delegates to **ECMAScript 5**'s native `Object.keys`
+  _.keys = nativeKeys || function(obj) {
+    if (obj !== Object(obj)) throw new TypeError('Invalid object');
+    var keys = [];
+    for (var key in obj) if (_.has(obj, key)) keys[keys.length] = key;
+    return keys;
+  };
+
+  // Retrieve the values of an object's properties.
+  _.values = function(obj) {
+    var values = [];
+    for (var key in obj) if (_.has(obj, key)) values.push(obj[key]);
+    return values;
+  };
+
+  // Convert an object into a list of `[key, value]` pairs.
+  _.pairs = function(obj) {
+    var pairs = [];
+    for (var key in obj) if (_.has(obj, key)) pairs.push([key, obj[key]]);
+    return pairs;
+  };
+
+  // Invert the keys and values of an object. The values must be serializable.
+  _.invert = function(obj) {
+    var result = {};
+    for (var key in obj) if (_.has(obj, key)) result[obj[key]] = key;
+    return result;
+  };
+
+  // Return a sorted list of the function names available on the object.
+  // Aliased as `methods`
+  _.functions = _.methods = function(obj) {
+    var names = [];
+    for (var key in obj) {
+      if (_.isFunction(obj[key])) names.push(key);
+    }
+    return names.sort();
+  };
+
+  // Extend a given object with all the properties in passed-in object(s).
+  _.extend = function(obj) {
+    each(slice.call(arguments, 1), function(source) {
+      if (source) {
+        for (var prop in source) {
+          obj[prop] = source[prop];
+        }
+      }
+    });
+    return obj;
+  };
+
+  // Return a copy of the object only containing the whitelisted properties.
+  _.pick = function(obj) {
+    var copy = {};
+    var keys = concat.apply(ArrayProto, slice.call(arguments, 1));
+    each(keys, function(key) {
+      if (key in obj) copy[key] = obj[key];
+    });
+    return copy;
+  };
+
+   // Return a copy of the object without the blacklisted properties.
+  _.omit = function(obj) {
+    var copy = {};
+    var keys = concat.apply(ArrayProto, slice.call(arguments, 1));
+    for (var key in obj) {
+      if (!_.contains(keys, key)) copy[key] = obj[key];
+    }
+    return copy;
+  };
+
+  // Fill in a given object with default properties.
+  _.defaults = function(obj) {
+    each(slice.call(arguments, 1), function(source) {
+      if (source) {
+        for (var prop in source) {
+          if (obj[prop] == null) obj[prop] = source[prop];
+        }
+      }
+    });
+    return obj;
+  };
+
+  // Create a (shallow-cloned) duplicate of an object.
+  _.clone = function(obj) {
+    if (!_.isObject(obj)) return obj;
+    return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
+  };
+
+  // Invokes interceptor with the obj, and then returns obj.
+  // The primary purpose of this method is to "tap into" a method chain, in
+  // order to perform operations on intermediate results within the chain.
+  _.tap = function(obj, interceptor) {
+    interceptor(obj);
+    return obj;
+  };
+
+  // Internal recursive comparison function for `isEqual`.
+  var eq = function(a, b, aStack, bStack) {
+    // Identical objects are equal. `0 === -0`, but they aren't identical.
+    // See the Harmony `egal` proposal: http://wiki.ecmascript.org/doku.php?id=harmony:egal.
+    if (a === b) return a !== 0 || 1 / a == 1 / b;
+    // A strict comparison is necessary because `null == undefined`.
+    if (a == null || b == null) return a === b;
+    // Unwrap any wrapped objects.
+    if (a instanceof _) a = a._wrapped;
+    if (b instanceof _) b = b._wrapped;
+    // Compare `[[Class]]` names.
+    var className = toString.call(a);
+    if (className != toString.call(b)) return false;
+    switch (className) {
+      // Strings, numbers, dates, and booleans are compared by value.
+      case '[object String]':
+        // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
+        // equivalent to `new String("5")`.
+        return a == String(b);
+      case '[object Number]':
+        // `NaN`s are equivalent, but non-reflexive. An `egal` comparison is performed for
+        // other numeric values.
+        return a != +a ? b != +b : (a == 0 ? 1 / a == 1 / b : a == +b);
+      case '[object Date]':
+      case '[object Boolean]':
+        // Coerce dates and booleans to numeric primitive values. Dates are compared by their
+        // millisecond representations. Note that invalid dates with millisecond representations
+        // of `NaN` are not equivalent.
+        return +a == +b;
+      // RegExps are compared by their source patterns and flags.
+      case '[object RegExp]':
+        return a.source == b.source &&
+               a.global == b.global &&
+               a.multiline == b.multiline &&
+               a.ignoreCase == b.ignoreCase;
+    }
+    if (typeof a != 'object' || typeof b != 'object') return false;
+    // Assume equality for cyclic structures. The algorithm for detecting cyclic
+    // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
+    var length = aStack.length;
+    while (length--) {
+      // Linear search. Performance is inversely proportional to the number of
+      // unique nested structures.
+      if (aStack[length] == a) return bStack[length] == b;
+    }
+    // Add the first object to the stack of traversed objects.
+    aStack.push(a);
+    bStack.push(b);
+    var size = 0, result = true;
+    // Recursively compare objects and arrays.
+    if (className == '[object Array]') {
+      // Compare array lengths to determine if a deep comparison is necessary.
+      size = a.length;
+      result = size == b.length;
+      if (result) {
+        // Deep compare the contents, ignoring non-numeric properties.
+        while (size--) {
+          if (!(result = eq(a[size], b[size], aStack, bStack))) break;
+        }
+      }
+    } else {
+      // Objects with different constructors are not equivalent, but `Object`s
+      // from different frames are.
+      var aCtor = a.constructor, bCtor = b.constructor;
+      if (aCtor !== bCtor && !(_.isFunction(aCtor) && (aCtor instanceof aCtor) &&
+                               _.isFunction(bCtor) && (bCtor instanceof bCtor))) {
+        return false;
+      }
+      // Deep compare objects.
+      for (var key in a) {
+        if (_.has(a, key)) {
+          // Count the expected number of properties.
+          size++;
+          // Deep compare each member.
+          if (!(result = _.has(b, key) && eq(a[key], b[key], aStack, bStack))) break;
+        }
+      }
+      // Ensure that both objects contain the same number of properties.
+      if (result) {
+        for (key in b) {
+          if (_.has(b, key) && !(size--)) break;
+        }
+        result = !size;
+      }
+    }
+    // Remove the first object from the stack of traversed objects.
+    aStack.pop();
+    bStack.pop();
+    return result;
+  };
+
+  // Perform a deep comparison to check if two objects are equal.
+  _.isEqual = function(a, b) {
+    return eq(a, b, [], []);
+  };
+
+  // Is a given array, string, or object empty?
+  // An "empty" object has no enumerable own-properties.
+  _.isEmpty = function(obj) {
+    if (obj == null) return true;
+    if (_.isArray(obj) || _.isString(obj)) return obj.length === 0;
+    for (var key in obj) if (_.has(obj, key)) return false;
+    return true;
+  };
+
+  // Is a given value a DOM element?
+  _.isElement = function(obj) {
+    return !!(obj && obj.nodeType === 1);
+  };
+
+  // Is a given value an array?
+  // Delegates to ECMA5's native Array.isArray
+  _.isArray = nativeIsArray || function(obj) {
+    return toString.call(obj) == '[object Array]';
+  };
+
+  // Is a given variable an object?
+  _.isObject = function(obj) {
+    return obj === Object(obj);
+  };
+
+  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
+  each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'], function(name) {
+    _['is' + name] = function(obj) {
+      return toString.call(obj) == '[object ' + name + ']';
+    };
+  });
+
+  // Define a fallback version of the method in browsers (ahem, IE), where
+  // there isn't any inspectable "Arguments" type.
+  if (!_.isArguments(arguments)) {
+    _.isArguments = function(obj) {
+      return !!(obj && _.has(obj, 'callee'));
+    };
+  }
+
+  // Optimize `isFunction` if appropriate.
+  if (typeof (/./) !== 'function') {
+    _.isFunction = function(obj) {
+      return typeof obj === 'function';
+    };
+  }
+
+  // Is a given object a finite number?
+  _.isFinite = function(obj) {
+    return isFinite(obj) && !isNaN(parseFloat(obj));
+  };
+
+  // Is the given value `NaN`? (NaN is the only number which does not equal itself).
+  _.isNaN = function(obj) {
+    return _.isNumber(obj) && obj != +obj;
+  };
+
+  // Is a given value a boolean?
+  _.isBoolean = function(obj) {
+    return obj === true || obj === false || toString.call(obj) == '[object Boolean]';
+  };
+
+  // Is a given value equal to null?
+  _.isNull = function(obj) {
+    return obj === null;
+  };
+
+  // Is a given variable undefined?
+  _.isUndefined = function(obj) {
+    return obj === void 0;
+  };
+
+  // Shortcut function for checking if an object has a given property directly
+  // on itself (in other words, not on a prototype).
+  _.has = function(obj, key) {
+    return hasOwnProperty.call(obj, key);
+  };
+
+  // Utility Functions
+  // -----------------
+
+  // Run Underscore.js in *noConflict* mode, returning the `_` variable to its
+  // previous owner. Returns a reference to the Underscore object.
+  _.noConflict = function() {
+    root._ = previousUnderscore;
+    return this;
+  };
+
+  // Keep the identity function around for default iterators.
+  _.identity = function(value) {
+    return value;
+  };
+
+  // Run a function **n** times.
+  _.times = function(n, iterator, context) {
+    var accum = Array(n);
+    for (var i = 0; i < n; i++) accum[i] = iterator.call(context, i);
+    return accum;
+  };
+
+  // Return a random integer between min and max (inclusive).
+  _.random = function(min, max) {
+    if (max == null) {
+      max = min;
+      min = 0;
+    }
+    return min + Math.floor(Math.random() * (max - min + 1));
+  };
+
+  // List of HTML entities for escaping.
+  var entityMap = {
+    escape: {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      '/': '&#x2F;'
+    }
+  };
+  entityMap.unescape = _.invert(entityMap.escape);
+
+  // Regexes containing the keys and values listed immediately above.
+  var entityRegexes = {
+    escape:   new RegExp('[' + _.keys(entityMap.escape).join('') + ']', 'g'),
+    unescape: new RegExp('(' + _.keys(entityMap.unescape).join('|') + ')', 'g')
+  };
+
+  // Functions for escaping and unescaping strings to/from HTML interpolation.
+  _.each(['escape', 'unescape'], function(method) {
+    _[method] = function(string) {
+      if (string == null) return '';
+      return ('' + string).replace(entityRegexes[method], function(match) {
+        return entityMap[method][match];
+      });
+    };
+  });
+
+  // If the value of the named property is a function then invoke it;
+  // otherwise, return it.
+  _.result = function(object, property) {
+    if (object == null) return null;
+    var value = object[property];
+    return _.isFunction(value) ? value.call(object) : value;
+  };
+
+  // Add your own custom functions to the Underscore object.
+  _.mixin = function(obj) {
+    each(_.functions(obj), function(name){
+      var func = _[name] = obj[name];
+      _.prototype[name] = function() {
+        var args = [this._wrapped];
+        push.apply(args, arguments);
+        return result.call(this, func.apply(_, args));
+      };
+    });
+  };
+
+  // Generate a unique integer id (unique within the entire client session).
+  // Useful for temporary DOM ids.
+  var idCounter = 0;
+  _.uniqueId = function(prefix) {
+    var id = ++idCounter + '';
+    return prefix ? prefix + id : id;
+  };
+
+  // By default, Underscore uses ERB-style template delimiters, change the
+  // following template settings to use alternative delimiters.
+  _.templateSettings = {
+    evaluate    : /<%([\s\S]+?)%>/g,
+    interpolate : /<%=([\s\S]+?)%>/g,
+    escape      : /<%-([\s\S]+?)%>/g
+  };
+
+  // When customizing `templateSettings`, if you don't want to define an
+  // interpolation, evaluation or escaping regex, we need one that is
+  // guaranteed not to match.
+  var noMatch = /(.)^/;
+
+  // Certain characters need to be escaped so that they can be put into a
+  // string literal.
+  var escapes = {
+    "'":      "'",
+    '\\':     '\\',
+    '\r':     'r',
+    '\n':     'n',
+    '\t':     't',
+    '\u2028': 'u2028',
+    '\u2029': 'u2029'
+  };
+
+  var escaper = /\\|'|\r|\n|\t|\u2028|\u2029/g;
+
+  // JavaScript micro-templating, similar to John Resig's implementation.
+  // Underscore templating handles arbitrary delimiters, preserves whitespace,
+  // and correctly escapes quotes within interpolated code.
+  _.template = function(text, data, settings) {
+    var render;
+    settings = _.defaults({}, settings, _.templateSettings);
+
+    // Combine delimiters into one regular expression via alternation.
+    var matcher = new RegExp([
+      (settings.escape || noMatch).source,
+      (settings.interpolate || noMatch).source,
+      (settings.evaluate || noMatch).source
+    ].join('|') + '|$', 'g');
+
+    // Compile the template source, escaping string literals appropriately.
+    var index = 0;
+    var source = "__p+='";
+    text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
+      source += text.slice(index, offset)
+        .replace(escaper, function(match) { return '\\' + escapes[match]; });
+
+      if (escape) {
+        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
+      }
+      if (interpolate) {
+        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+      }
+      if (evaluate) {
+        source += "';\n" + evaluate + "\n__p+='";
+      }
+      index = offset + match.length;
+      return match;
+    });
+    source += "';\n";
+
+    // If a variable is not specified, place data values in local scope.
+    if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
+
+    source = "var __t,__p='',__j=Array.prototype.join," +
+      "print=function(){__p+=__j.call(arguments,'');};\n" +
+      source + "return __p;\n";
+
+    try {
+      render = new Function(settings.variable || 'obj', '_', source);
+    } catch (e) {
+      e.source = source;
+      throw e;
+    }
+
+    if (data) return render(data, _);
+    var template = function(data) {
+      return render.call(this, data, _);
+    };
+
+    // Provide the compiled function source as a convenience for precompilation.
+    template.source = 'function(' + (settings.variable || 'obj') + '){\n' + source + '}';
+
+    return template;
+  };
+
+  // Add a "chain" function, which will delegate to the wrapper.
+  _.chain = function(obj) {
+    return _(obj).chain();
+  };
+
+  // OOP
+  // ---------------
+  // If Underscore is called as a function, it returns a wrapped object that
+  // can be used OO-style. This wrapper holds altered versions of all the
+  // underscore functions. Wrapped objects may be chained.
+
+  // Helper function to continue chaining intermediate results.
+  var result = function(obj) {
+    return this._chain ? _(obj).chain() : obj;
+  };
+
+  // Add all of the Underscore functions to the wrapper object.
+  _.mixin(_);
+
+  // Add all mutator Array functions to the wrapper.
+  each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
+    var method = ArrayProto[name];
+    _.prototype[name] = function() {
+      var obj = this._wrapped;
+      method.apply(obj, arguments);
+      if ((name == 'shift' || name == 'splice') && obj.length === 0) delete obj[0];
+      return result.call(this, obj);
+    };
+  });
+
+  // Add all accessor Array functions to the wrapper.
+  each(['concat', 'join', 'slice'], function(name) {
+    var method = ArrayProto[name];
+    _.prototype[name] = function() {
+      return result.call(this, method.apply(this._wrapped, arguments));
+    };
+  });
+
+  _.extend(_.prototype, {
+
+    // Start chaining a wrapped Underscore object.
+    chain: function() {
+      this._chain = true;
+      return this;
+    },
+
+    // Extracts the result from a wrapped and chained object.
+    value: function() {
+      return this._wrapped;
+    }
+
+  });
+
+}).call(this);
+
+},{}],129:[function(require,module,exports){
+var protoclass = require("protoclass"),
+boo = require("boojs");
 
 /**
  */
@@ -8376,19 +12517,27 @@ function PoolParty (options) {
   this.min            = options.min              || 0;
 
   // timeout when disposing objects in the pool
-  this.staleInterval  = options.staleInterval    || 1000;
+  this.staleInterval  = options.staleInterval    || options.speed || 1000;
 
   // the factory for creating each object
   this.factory        = options.factory          || options.create;
 
   // interval for creating idle items
-  this.warmUpInterval = options.warmUpInterval   || 0;
+  this.warmUpInterval = options.warmUpInterval   || options.speed || 0;
 
   // number of items to create each time
-  this.warmUpBatch    = options.warmUpBatch      || 1;
+  this.warmUpBatch    = options.warmUpBatch      || options.chunk || 1;
 
   // the function for recycling objects
   this.recycle        = options.recycle;
+
+  var self = this;
+
+  this.tick = options.tick || function (next) {
+    setTimeout(function () {
+      boo.run(next);
+    }, self.warmUpInterval);
+  };
 
   // the object pool
   this._pool = [];
@@ -8472,13 +12621,13 @@ protoclass(PoolParty, {
   },
 
   /**
-   * adds an item to the object pool. Note that at this point, 
+   * adds an item to the object pool. Note that at this point,
    * an object should have been disposed.
    */
 
   add: function (object) {
 
-    // make sure that the object hasn't already been added to the pool, 
+    // make sure that the object hasn't already been added to the pool,
     // AND the pool hasn't hit the max # of items
     if (!~this._pool.indexOf(object) && this._size < this.max) {
       this._size++;
@@ -8508,15 +12657,18 @@ protoclass(PoolParty, {
    */
 
   _warmUp: function () {
-    if (this._warmUpTimeout || this._size >= this.min) return;
+
+    if (this._warmingUp || this._size >= this.min) return;
+    this._warmingUp = true;
 
     var self = this;
 
-    this._warmUpTimeout = setTimeout(function () {
 
-      self._warmUpTimeout = undefined;
+    this.tick(function () {
 
-      // make sure the batch number does't exceed 
+      self._warmingUp = false;
+
+      // make sure the batch number does't exceed
       var n = Math.min(self.min - self._size, self.warmUpBatch);
 
       for (var i = 0; i < n; i++) {
@@ -8524,8 +12676,7 @@ protoclass(PoolParty, {
       }
 
       self._warmUp();
-
-    }, this.warmUpInterval);
+    });
   }
 
 });
@@ -8534,76 +12685,36 @@ module.exports = function (options) {
   return new PoolParty(options)
 }
 
-},{"protoclass":92}],92:[function(require,module,exports){
-function _copy (to, from) {
+module.exports.factorize = function (clazz, options) {
 
-  for (var i = 0, n = from.length; i < n; i++) {
+  var pool;
 
-    var target = from[i];
+  options.create = function (options) {
+    var item = new clazz(options);
 
-    for (var property in target) {
-      to[property] = target[property];
-    }
+    item.on("dispose", function () {
+      pool.add(item);
+    });
+
+    return item;
+  };
+
+  options.recycle = function (item, options) {
+    item.reset(options);
+  };
+
+  pool = new PoolParty(options);
+
+  clazz.create = function (options) {
+    return pool.create(options);
   }
 
-  return to;
-}
+  return clazz;
+};
 
-function protoclass (parent, child) {
-
-  var mixins = Array.prototype.slice.call(arguments, 2);
-
-  if (typeof child !== "function") {
-    if(child) mixins.unshift(child); // constructor is a mixin
-    child   = parent;
-    parent  = function() { };
-  }
-
-  _copy(child, parent); 
-
-  function ctor () {
-    this.constructor = child;
-  }
-
-  ctor.prototype  = parent.prototype;
-  child.prototype = new ctor();
-  child.__super__ = parent.prototype;
-  child.parent = child.superclass = parent;
-
-  _copy(child.prototype, mixins);
-
-  protoclass.setup(child);
-
-  return child;
-}
-
-protoclass.setup = function (child) {
-
-
-  if (!child.extend) {
-    child.extend = function(constructor) {
-
-      var args = Array.prototype.slice.call(arguments, 0);
-
-      if (typeof constructor !== "function") {
-        args.unshift(constructor = function () {
-          constructor.parent.apply(this, arguments);
-        });
-      }
-
-      return protoclass.apply(this, [this].concat(args));
-    }
-    child.mixin = function(proto) {
-      _copy(this.prototype, arguments);
-    }
-  }
-
-  return child;
-}
-
-
-module.exports = protoclass;
-},{}],93:[function(require,module,exports){
+},{"boojs":30,"protoclass":130}],130:[function(require,module,exports){
+module.exports=require(125)
+},{}],131:[function(require,module,exports){
 var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};var boo = require("boojs");
 
 module.exports = function (batch, ms) {
@@ -8654,7 +12765,7 @@ module.exports = function (batch, ms) {
 }
 
 module.exports.global = global.__runlater || (global.__runlater = module.exports());
-},{"boojs":94}],94:[function(require,module,exports){
+},{"boojs":132}],132:[function(require,module,exports){
 var process=require("__browserify_process");(function () {
 
   var _queue = [], _timeout, _waiting = false;
@@ -8772,7 +12883,7 @@ var process=require("__browserify_process");(function () {
 
 
 })();
-},{"__browserify_process":30}],95:[function(require,module,exports){
+},{"__browserify_process":31}],133:[function(require,module,exports){
 var bindable = require("bindable"),
 protoclass   = require("protoclass"),
 type = require("type-component"),
@@ -8964,7 +13075,7 @@ protoclass(bindable.Object, SubindableObject, {
 module.exports = {
   Object: SubindableObject
 }
-},{"bindable":21,"protoclass":92,"type-component":97,"underscore":96}],96:[function(require,module,exports){
+},{"bindable":22,"protoclass":130,"type-component":135,"underscore":134}],134:[function(require,module,exports){
 //     Underscore.js 1.5.2
 //     http://underscorejs.org
 //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -10242,1264 +14353,8 @@ module.exports = {
 
 }).call(this);
 
-},{}],97:[function(require,module,exports){
-
-/**
- * toString ref.
- */
-
-var toString = Object.prototype.toString;
-
-/**
- * Return the type of `val`.
- *
- * @param {Mixed} val
- * @return {String}
- * @api public
- */
-
-module.exports = function(val){
-  switch (toString.call(val)) {
-    case '[object Function]': return 'function';
-    case '[object Date]': return 'date';
-    case '[object RegExp]': return 'regexp';
-    case '[object Arguments]': return 'arguments';
-    case '[object Array]': return 'array';
-  }
-
-  if (val === null) return 'null';
-  if (val === undefined) return 'undefined';
-  if (val === Object(val)) return 'object';
-
-  return typeof val;
-};
-
-},{}],98:[function(require,module,exports){
-//     Underscore.js 1.4.4
-//     http://underscorejs.org
-//     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc.
-//     Underscore may be freely distributed under the MIT license.
-
-(function() {
-
-  // Baseline setup
-  // --------------
-
-  // Establish the root object, `window` in the browser, or `global` on the server.
-  var root = this;
-
-  // Save the previous value of the `_` variable.
-  var previousUnderscore = root._;
-
-  // Establish the object that gets returned to break out of a loop iteration.
-  var breaker = {};
-
-  // Save bytes in the minified (but not gzipped) version:
-  var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
-
-  // Create quick reference variables for speed access to core prototypes.
-  var push             = ArrayProto.push,
-      slice            = ArrayProto.slice,
-      concat           = ArrayProto.concat,
-      toString         = ObjProto.toString,
-      hasOwnProperty   = ObjProto.hasOwnProperty;
-
-  // All **ECMAScript 5** native function implementations that we hope to use
-  // are declared here.
-  var
-    nativeForEach      = ArrayProto.forEach,
-    nativeMap          = ArrayProto.map,
-    nativeReduce       = ArrayProto.reduce,
-    nativeReduceRight  = ArrayProto.reduceRight,
-    nativeFilter       = ArrayProto.filter,
-    nativeEvery        = ArrayProto.every,
-    nativeSome         = ArrayProto.some,
-    nativeIndexOf      = ArrayProto.indexOf,
-    nativeLastIndexOf  = ArrayProto.lastIndexOf,
-    nativeIsArray      = Array.isArray,
-    nativeKeys         = Object.keys,
-    nativeBind         = FuncProto.bind;
-
-  // Create a safe reference to the Underscore object for use below.
-  var _ = function(obj) {
-    if (obj instanceof _) return obj;
-    if (!(this instanceof _)) return new _(obj);
-    this._wrapped = obj;
-  };
-
-  // Export the Underscore object for **Node.js**, with
-  // backwards-compatibility for the old `require()` API. If we're in
-  // the browser, add `_` as a global object via a string identifier,
-  // for Closure Compiler "advanced" mode.
-  if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-      exports = module.exports = _;
-    }
-    exports._ = _;
-  } else {
-    root._ = _;
-  }
-
-  // Current version.
-  _.VERSION = '1.4.4';
-
-  // Collection Functions
-  // --------------------
-
-  // The cornerstone, an `each` implementation, aka `forEach`.
-  // Handles objects with the built-in `forEach`, arrays, and raw objects.
-  // Delegates to **ECMAScript 5**'s native `forEach` if available.
-  var each = _.each = _.forEach = function(obj, iterator, context) {
-    if (obj == null) return;
-    if (nativeForEach && obj.forEach === nativeForEach) {
-      obj.forEach(iterator, context);
-    } else if (obj.length === +obj.length) {
-      for (var i = 0, l = obj.length; i < l; i++) {
-        if (iterator.call(context, obj[i], i, obj) === breaker) return;
-      }
-    } else {
-      for (var key in obj) {
-        if (_.has(obj, key)) {
-          if (iterator.call(context, obj[key], key, obj) === breaker) return;
-        }
-      }
-    }
-  };
-
-  // Return the results of applying the iterator to each element.
-  // Delegates to **ECMAScript 5**'s native `map` if available.
-  _.map = _.collect = function(obj, iterator, context) {
-    var results = [];
-    if (obj == null) return results;
-    if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
-    each(obj, function(value, index, list) {
-      results[results.length] = iterator.call(context, value, index, list);
-    });
-    return results;
-  };
-
-  var reduceError = 'Reduce of empty array with no initial value';
-
-  // **Reduce** builds up a single result from a list of values, aka `inject`,
-  // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.
-  _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {
-    var initial = arguments.length > 2;
-    if (obj == null) obj = [];
-    if (nativeReduce && obj.reduce === nativeReduce) {
-      if (context) iterator = _.bind(iterator, context);
-      return initial ? obj.reduce(iterator, memo) : obj.reduce(iterator);
-    }
-    each(obj, function(value, index, list) {
-      if (!initial) {
-        memo = value;
-        initial = true;
-      } else {
-        memo = iterator.call(context, memo, value, index, list);
-      }
-    });
-    if (!initial) throw new TypeError(reduceError);
-    return memo;
-  };
-
-  // The right-associative version of reduce, also known as `foldr`.
-  // Delegates to **ECMAScript 5**'s native `reduceRight` if available.
-  _.reduceRight = _.foldr = function(obj, iterator, memo, context) {
-    var initial = arguments.length > 2;
-    if (obj == null) obj = [];
-    if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
-      if (context) iterator = _.bind(iterator, context);
-      return initial ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
-    }
-    var length = obj.length;
-    if (length !== +length) {
-      var keys = _.keys(obj);
-      length = keys.length;
-    }
-    each(obj, function(value, index, list) {
-      index = keys ? keys[--length] : --length;
-      if (!initial) {
-        memo = obj[index];
-        initial = true;
-      } else {
-        memo = iterator.call(context, memo, obj[index], index, list);
-      }
-    });
-    if (!initial) throw new TypeError(reduceError);
-    return memo;
-  };
-
-  // Return the first value which passes a truth test. Aliased as `detect`.
-  _.find = _.detect = function(obj, iterator, context) {
-    var result;
-    any(obj, function(value, index, list) {
-      if (iterator.call(context, value, index, list)) {
-        result = value;
-        return true;
-      }
-    });
-    return result;
-  };
-
-  // Return all the elements that pass a truth test.
-  // Delegates to **ECMAScript 5**'s native `filter` if available.
-  // Aliased as `select`.
-  _.filter = _.select = function(obj, iterator, context) {
-    var results = [];
-    if (obj == null) return results;
-    if (nativeFilter && obj.filter === nativeFilter) return obj.filter(iterator, context);
-    each(obj, function(value, index, list) {
-      if (iterator.call(context, value, index, list)) results[results.length] = value;
-    });
-    return results;
-  };
-
-  // Return all the elements for which a truth test fails.
-  _.reject = function(obj, iterator, context) {
-    return _.filter(obj, function(value, index, list) {
-      return !iterator.call(context, value, index, list);
-    }, context);
-  };
-
-  // Determine whether all of the elements match a truth test.
-  // Delegates to **ECMAScript 5**'s native `every` if available.
-  // Aliased as `all`.
-  _.every = _.all = function(obj, iterator, context) {
-    iterator || (iterator = _.identity);
-    var result = true;
-    if (obj == null) return result;
-    if (nativeEvery && obj.every === nativeEvery) return obj.every(iterator, context);
-    each(obj, function(value, index, list) {
-      if (!(result = result && iterator.call(context, value, index, list))) return breaker;
-    });
-    return !!result;
-  };
-
-  // Determine if at least one element in the object matches a truth test.
-  // Delegates to **ECMAScript 5**'s native `some` if available.
-  // Aliased as `any`.
-  var any = _.some = _.any = function(obj, iterator, context) {
-    iterator || (iterator = _.identity);
-    var result = false;
-    if (obj == null) return result;
-    if (nativeSome && obj.some === nativeSome) return obj.some(iterator, context);
-    each(obj, function(value, index, list) {
-      if (result || (result = iterator.call(context, value, index, list))) return breaker;
-    });
-    return !!result;
-  };
-
-  // Determine if the array or object contains a given value (using `===`).
-  // Aliased as `include`.
-  _.contains = _.include = function(obj, target) {
-    if (obj == null) return false;
-    if (nativeIndexOf && obj.indexOf === nativeIndexOf) return obj.indexOf(target) != -1;
-    return any(obj, function(value) {
-      return value === target;
-    });
-  };
-
-  // Invoke a method (with arguments) on every item in a collection.
-  _.invoke = function(obj, method) {
-    var args = slice.call(arguments, 2);
-    var isFunc = _.isFunction(method);
-    return _.map(obj, function(value) {
-      return (isFunc ? method : value[method]).apply(value, args);
-    });
-  };
-
-  // Convenience version of a common use case of `map`: fetching a property.
-  _.pluck = function(obj, key) {
-    return _.map(obj, function(value){ return value[key]; });
-  };
-
-  // Convenience version of a common use case of `filter`: selecting only objects
-  // containing specific `key:value` pairs.
-  _.where = function(obj, attrs, first) {
-    if (_.isEmpty(attrs)) return first ? null : [];
-    return _[first ? 'find' : 'filter'](obj, function(value) {
-      for (var key in attrs) {
-        if (attrs[key] !== value[key]) return false;
-      }
-      return true;
-    });
-  };
-
-  // Convenience version of a common use case of `find`: getting the first object
-  // containing specific `key:value` pairs.
-  _.findWhere = function(obj, attrs) {
-    return _.where(obj, attrs, true);
-  };
-
-  // Return the maximum element or (element-based computation).
-  // Can't optimize arrays of integers longer than 65,535 elements.
-  // See: https://bugs.webkit.org/show_bug.cgi?id=80797
-  _.max = function(obj, iterator, context) {
-    if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {
-      return Math.max.apply(Math, obj);
-    }
-    if (!iterator && _.isEmpty(obj)) return -Infinity;
-    var result = {computed : -Infinity, value: -Infinity};
-    each(obj, function(value, index, list) {
-      var computed = iterator ? iterator.call(context, value, index, list) : value;
-      computed >= result.computed && (result = {value : value, computed : computed});
-    });
-    return result.value;
-  };
-
-  // Return the minimum element (or element-based computation).
-  _.min = function(obj, iterator, context) {
-    if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {
-      return Math.min.apply(Math, obj);
-    }
-    if (!iterator && _.isEmpty(obj)) return Infinity;
-    var result = {computed : Infinity, value: Infinity};
-    each(obj, function(value, index, list) {
-      var computed = iterator ? iterator.call(context, value, index, list) : value;
-      computed < result.computed && (result = {value : value, computed : computed});
-    });
-    return result.value;
-  };
-
-  // Shuffle an array.
-  _.shuffle = function(obj) {
-    var rand;
-    var index = 0;
-    var shuffled = [];
-    each(obj, function(value) {
-      rand = _.random(index++);
-      shuffled[index - 1] = shuffled[rand];
-      shuffled[rand] = value;
-    });
-    return shuffled;
-  };
-
-  // An internal function to generate lookup iterators.
-  var lookupIterator = function(value) {
-    return _.isFunction(value) ? value : function(obj){ return obj[value]; };
-  };
-
-  // Sort the object's values by a criterion produced by an iterator.
-  _.sortBy = function(obj, value, context) {
-    var iterator = lookupIterator(value);
-    return _.pluck(_.map(obj, function(value, index, list) {
-      return {
-        value : value,
-        index : index,
-        criteria : iterator.call(context, value, index, list)
-      };
-    }).sort(function(left, right) {
-      var a = left.criteria;
-      var b = right.criteria;
-      if (a !== b) {
-        if (a > b || a === void 0) return 1;
-        if (a < b || b === void 0) return -1;
-      }
-      return left.index < right.index ? -1 : 1;
-    }), 'value');
-  };
-
-  // An internal function used for aggregate "group by" operations.
-  var group = function(obj, value, context, behavior) {
-    var result = {};
-    var iterator = lookupIterator(value || _.identity);
-    each(obj, function(value, index) {
-      var key = iterator.call(context, value, index, obj);
-      behavior(result, key, value);
-    });
-    return result;
-  };
-
-  // Groups the object's values by a criterion. Pass either a string attribute
-  // to group by, or a function that returns the criterion.
-  _.groupBy = function(obj, value, context) {
-    return group(obj, value, context, function(result, key, value) {
-      (_.has(result, key) ? result[key] : (result[key] = [])).push(value);
-    });
-  };
-
-  // Counts instances of an object that group by a certain criterion. Pass
-  // either a string attribute to count by, or a function that returns the
-  // criterion.
-  _.countBy = function(obj, value, context) {
-    return group(obj, value, context, function(result, key) {
-      if (!_.has(result, key)) result[key] = 0;
-      result[key]++;
-    });
-  };
-
-  // Use a comparator function to figure out the smallest index at which
-  // an object should be inserted so as to maintain order. Uses binary search.
-  _.sortedIndex = function(array, obj, iterator, context) {
-    iterator = iterator == null ? _.identity : lookupIterator(iterator);
-    var value = iterator.call(context, obj);
-    var low = 0, high = array.length;
-    while (low < high) {
-      var mid = (low + high) >>> 1;
-      iterator.call(context, array[mid]) < value ? low = mid + 1 : high = mid;
-    }
-    return low;
-  };
-
-  // Safely convert anything iterable into a real, live array.
-  _.toArray = function(obj) {
-    if (!obj) return [];
-    if (_.isArray(obj)) return slice.call(obj);
-    if (obj.length === +obj.length) return _.map(obj, _.identity);
-    return _.values(obj);
-  };
-
-  // Return the number of elements in an object.
-  _.size = function(obj) {
-    if (obj == null) return 0;
-    return (obj.length === +obj.length) ? obj.length : _.keys(obj).length;
-  };
-
-  // Array Functions
-  // ---------------
-
-  // Get the first element of an array. Passing **n** will return the first N
-  // values in the array. Aliased as `head` and `take`. The **guard** check
-  // allows it to work with `_.map`.
-  _.first = _.head = _.take = function(array, n, guard) {
-    if (array == null) return void 0;
-    return (n != null) && !guard ? slice.call(array, 0, n) : array[0];
-  };
-
-  // Returns everything but the last entry of the array. Especially useful on
-  // the arguments object. Passing **n** will return all the values in
-  // the array, excluding the last N. The **guard** check allows it to work with
-  // `_.map`.
-  _.initial = function(array, n, guard) {
-    return slice.call(array, 0, array.length - ((n == null) || guard ? 1 : n));
-  };
-
-  // Get the last element of an array. Passing **n** will return the last N
-  // values in the array. The **guard** check allows it to work with `_.map`.
-  _.last = function(array, n, guard) {
-    if (array == null) return void 0;
-    if ((n != null) && !guard) {
-      return slice.call(array, Math.max(array.length - n, 0));
-    } else {
-      return array[array.length - 1];
-    }
-  };
-
-  // Returns everything but the first entry of the array. Aliased as `tail` and `drop`.
-  // Especially useful on the arguments object. Passing an **n** will return
-  // the rest N values in the array. The **guard**
-  // check allows it to work with `_.map`.
-  _.rest = _.tail = _.drop = function(array, n, guard) {
-    return slice.call(array, (n == null) || guard ? 1 : n);
-  };
-
-  // Trim out all falsy values from an array.
-  _.compact = function(array) {
-    return _.filter(array, _.identity);
-  };
-
-  // Internal implementation of a recursive `flatten` function.
-  var flatten = function(input, shallow, output) {
-    each(input, function(value) {
-      if (_.isArray(value)) {
-        shallow ? push.apply(output, value) : flatten(value, shallow, output);
-      } else {
-        output.push(value);
-      }
-    });
-    return output;
-  };
-
-  // Return a completely flattened version of an array.
-  _.flatten = function(array, shallow) {
-    return flatten(array, shallow, []);
-  };
-
-  // Return a version of the array that does not contain the specified value(s).
-  _.without = function(array) {
-    return _.difference(array, slice.call(arguments, 1));
-  };
-
-  // Produce a duplicate-free version of the array. If the array has already
-  // been sorted, you have the option of using a faster algorithm.
-  // Aliased as `unique`.
-  _.uniq = _.unique = function(array, isSorted, iterator, context) {
-    if (_.isFunction(isSorted)) {
-      context = iterator;
-      iterator = isSorted;
-      isSorted = false;
-    }
-    var initial = iterator ? _.map(array, iterator, context) : array;
-    var results = [];
-    var seen = [];
-    each(initial, function(value, index) {
-      if (isSorted ? (!index || seen[seen.length - 1] !== value) : !_.contains(seen, value)) {
-        seen.push(value);
-        results.push(array[index]);
-      }
-    });
-    return results;
-  };
-
-  // Produce an array that contains the union: each distinct element from all of
-  // the passed-in arrays.
-  _.union = function() {
-    return _.uniq(concat.apply(ArrayProto, arguments));
-  };
-
-  // Produce an array that contains every item shared between all the
-  // passed-in arrays.
-  _.intersection = function(array) {
-    var rest = slice.call(arguments, 1);
-    return _.filter(_.uniq(array), function(item) {
-      return _.every(rest, function(other) {
-        return _.indexOf(other, item) >= 0;
-      });
-    });
-  };
-
-  // Take the difference between one array and a number of other arrays.
-  // Only the elements present in just the first array will remain.
-  _.difference = function(array) {
-    var rest = concat.apply(ArrayProto, slice.call(arguments, 1));
-    return _.filter(array, function(value){ return !_.contains(rest, value); });
-  };
-
-  // Zip together multiple lists into a single array -- elements that share
-  // an index go together.
-  _.zip = function() {
-    var args = slice.call(arguments);
-    var length = _.max(_.pluck(args, 'length'));
-    var results = new Array(length);
-    for (var i = 0; i < length; i++) {
-      results[i] = _.pluck(args, "" + i);
-    }
-    return results;
-  };
-
-  // Converts lists into objects. Pass either a single array of `[key, value]`
-  // pairs, or two parallel arrays of the same length -- one of keys, and one of
-  // the corresponding values.
-  _.object = function(list, values) {
-    if (list == null) return {};
-    var result = {};
-    for (var i = 0, l = list.length; i < l; i++) {
-      if (values) {
-        result[list[i]] = values[i];
-      } else {
-        result[list[i][0]] = list[i][1];
-      }
-    }
-    return result;
-  };
-
-  // If the browser doesn't supply us with indexOf (I'm looking at you, **MSIE**),
-  // we need this function. Return the position of the first occurrence of an
-  // item in an array, or -1 if the item is not included in the array.
-  // Delegates to **ECMAScript 5**'s native `indexOf` if available.
-  // If the array is large and already in sort order, pass `true`
-  // for **isSorted** to use binary search.
-  _.indexOf = function(array, item, isSorted) {
-    if (array == null) return -1;
-    var i = 0, l = array.length;
-    if (isSorted) {
-      if (typeof isSorted == 'number') {
-        i = (isSorted < 0 ? Math.max(0, l + isSorted) : isSorted);
-      } else {
-        i = _.sortedIndex(array, item);
-        return array[i] === item ? i : -1;
-      }
-    }
-    if (nativeIndexOf && array.indexOf === nativeIndexOf) return array.indexOf(item, isSorted);
-    for (; i < l; i++) if (array[i] === item) return i;
-    return -1;
-  };
-
-  // Delegates to **ECMAScript 5**'s native `lastIndexOf` if available.
-  _.lastIndexOf = function(array, item, from) {
-    if (array == null) return -1;
-    var hasIndex = from != null;
-    if (nativeLastIndexOf && array.lastIndexOf === nativeLastIndexOf) {
-      return hasIndex ? array.lastIndexOf(item, from) : array.lastIndexOf(item);
-    }
-    var i = (hasIndex ? from : array.length);
-    while (i--) if (array[i] === item) return i;
-    return -1;
-  };
-
-  // Generate an integer Array containing an arithmetic progression. A port of
-  // the native Python `range()` function. See
-  // [the Python documentation](http://docs.python.org/library/functions.html#range).
-  _.range = function(start, stop, step) {
-    if (arguments.length <= 1) {
-      stop = start || 0;
-      start = 0;
-    }
-    step = arguments[2] || 1;
-
-    var len = Math.max(Math.ceil((stop - start) / step), 0);
-    var idx = 0;
-    var range = new Array(len);
-
-    while(idx < len) {
-      range[idx++] = start;
-      start += step;
-    }
-
-    return range;
-  };
-
-  // Function (ahem) Functions
-  // ------------------
-
-  // Create a function bound to a given object (assigning `this`, and arguments,
-  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
-  // available.
-  _.bind = function(func, context) {
-    if (func.bind === nativeBind && nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
-    var args = slice.call(arguments, 2);
-    return function() {
-      return func.apply(context, args.concat(slice.call(arguments)));
-    };
-  };
-
-  // Partially apply a function by creating a version that has had some of its
-  // arguments pre-filled, without changing its dynamic `this` context.
-  _.partial = function(func) {
-    var args = slice.call(arguments, 1);
-    return function() {
-      return func.apply(this, args.concat(slice.call(arguments)));
-    };
-  };
-
-  // Bind all of an object's methods to that object. Useful for ensuring that
-  // all callbacks defined on an object belong to it.
-  _.bindAll = function(obj) {
-    var funcs = slice.call(arguments, 1);
-    if (funcs.length === 0) funcs = _.functions(obj);
-    each(funcs, function(f) { obj[f] = _.bind(obj[f], obj); });
-    return obj;
-  };
-
-  // Memoize an expensive function by storing its results.
-  _.memoize = function(func, hasher) {
-    var memo = {};
-    hasher || (hasher = _.identity);
-    return function() {
-      var key = hasher.apply(this, arguments);
-      return _.has(memo, key) ? memo[key] : (memo[key] = func.apply(this, arguments));
-    };
-  };
-
-  // Delays a function for the given number of milliseconds, and then calls
-  // it with the arguments supplied.
-  _.delay = function(func, wait) {
-    var args = slice.call(arguments, 2);
-    return setTimeout(function(){ return func.apply(null, args); }, wait);
-  };
-
-  // Defers a function, scheduling it to run after the current call stack has
-  // cleared.
-  _.defer = function(func) {
-    return _.delay.apply(_, [func, 1].concat(slice.call(arguments, 1)));
-  };
-
-  // Returns a function, that, when invoked, will only be triggered at most once
-  // during a given window of time.
-  _.throttle = function(func, wait) {
-    var context, args, timeout, result;
-    var previous = 0;
-    var later = function() {
-      previous = new Date;
-      timeout = null;
-      result = func.apply(context, args);
-    };
-    return function() {
-      var now = new Date;
-      var remaining = wait - (now - previous);
-      context = this;
-      args = arguments;
-      if (remaining <= 0) {
-        clearTimeout(timeout);
-        timeout = null;
-        previous = now;
-        result = func.apply(context, args);
-      } else if (!timeout) {
-        timeout = setTimeout(later, remaining);
-      }
-      return result;
-    };
-  };
-
-  // Returns a function, that, as long as it continues to be invoked, will not
-  // be triggered. The function will be called after it stops being called for
-  // N milliseconds. If `immediate` is passed, trigger the function on the
-  // leading edge, instead of the trailing.
-  _.debounce = function(func, wait, immediate) {
-    var timeout, result;
-    return function() {
-      var context = this, args = arguments;
-      var later = function() {
-        timeout = null;
-        if (!immediate) result = func.apply(context, args);
-      };
-      var callNow = immediate && !timeout;
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-      if (callNow) result = func.apply(context, args);
-      return result;
-    };
-  };
-
-  // Returns a function that will be executed at most one time, no matter how
-  // often you call it. Useful for lazy initialization.
-  _.once = function(func) {
-    var ran = false, memo;
-    return function() {
-      if (ran) return memo;
-      ran = true;
-      memo = func.apply(this, arguments);
-      func = null;
-      return memo;
-    };
-  };
-
-  // Returns the first function passed as an argument to the second,
-  // allowing you to adjust arguments, run code before and after, and
-  // conditionally execute the original function.
-  _.wrap = function(func, wrapper) {
-    return function() {
-      var args = [func];
-      push.apply(args, arguments);
-      return wrapper.apply(this, args);
-    };
-  };
-
-  // Returns a function that is the composition of a list of functions, each
-  // consuming the return value of the function that follows.
-  _.compose = function() {
-    var funcs = arguments;
-    return function() {
-      var args = arguments;
-      for (var i = funcs.length - 1; i >= 0; i--) {
-        args = [funcs[i].apply(this, args)];
-      }
-      return args[0];
-    };
-  };
-
-  // Returns a function that will only be executed after being called N times.
-  _.after = function(times, func) {
-    if (times <= 0) return func();
-    return function() {
-      if (--times < 1) {
-        return func.apply(this, arguments);
-      }
-    };
-  };
-
-  // Object Functions
-  // ----------------
-
-  // Retrieve the names of an object's properties.
-  // Delegates to **ECMAScript 5**'s native `Object.keys`
-  _.keys = nativeKeys || function(obj) {
-    if (obj !== Object(obj)) throw new TypeError('Invalid object');
-    var keys = [];
-    for (var key in obj) if (_.has(obj, key)) keys[keys.length] = key;
-    return keys;
-  };
-
-  // Retrieve the values of an object's properties.
-  _.values = function(obj) {
-    var values = [];
-    for (var key in obj) if (_.has(obj, key)) values.push(obj[key]);
-    return values;
-  };
-
-  // Convert an object into a list of `[key, value]` pairs.
-  _.pairs = function(obj) {
-    var pairs = [];
-    for (var key in obj) if (_.has(obj, key)) pairs.push([key, obj[key]]);
-    return pairs;
-  };
-
-  // Invert the keys and values of an object. The values must be serializable.
-  _.invert = function(obj) {
-    var result = {};
-    for (var key in obj) if (_.has(obj, key)) result[obj[key]] = key;
-    return result;
-  };
-
-  // Return a sorted list of the function names available on the object.
-  // Aliased as `methods`
-  _.functions = _.methods = function(obj) {
-    var names = [];
-    for (var key in obj) {
-      if (_.isFunction(obj[key])) names.push(key);
-    }
-    return names.sort();
-  };
-
-  // Extend a given object with all the properties in passed-in object(s).
-  _.extend = function(obj) {
-    each(slice.call(arguments, 1), function(source) {
-      if (source) {
-        for (var prop in source) {
-          obj[prop] = source[prop];
-        }
-      }
-    });
-    return obj;
-  };
-
-  // Return a copy of the object only containing the whitelisted properties.
-  _.pick = function(obj) {
-    var copy = {};
-    var keys = concat.apply(ArrayProto, slice.call(arguments, 1));
-    each(keys, function(key) {
-      if (key in obj) copy[key] = obj[key];
-    });
-    return copy;
-  };
-
-   // Return a copy of the object without the blacklisted properties.
-  _.omit = function(obj) {
-    var copy = {};
-    var keys = concat.apply(ArrayProto, slice.call(arguments, 1));
-    for (var key in obj) {
-      if (!_.contains(keys, key)) copy[key] = obj[key];
-    }
-    return copy;
-  };
-
-  // Fill in a given object with default properties.
-  _.defaults = function(obj) {
-    each(slice.call(arguments, 1), function(source) {
-      if (source) {
-        for (var prop in source) {
-          if (obj[prop] == null) obj[prop] = source[prop];
-        }
-      }
-    });
-    return obj;
-  };
-
-  // Create a (shallow-cloned) duplicate of an object.
-  _.clone = function(obj) {
-    if (!_.isObject(obj)) return obj;
-    return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
-  };
-
-  // Invokes interceptor with the obj, and then returns obj.
-  // The primary purpose of this method is to "tap into" a method chain, in
-  // order to perform operations on intermediate results within the chain.
-  _.tap = function(obj, interceptor) {
-    interceptor(obj);
-    return obj;
-  };
-
-  // Internal recursive comparison function for `isEqual`.
-  var eq = function(a, b, aStack, bStack) {
-    // Identical objects are equal. `0 === -0`, but they aren't identical.
-    // See the Harmony `egal` proposal: http://wiki.ecmascript.org/doku.php?id=harmony:egal.
-    if (a === b) return a !== 0 || 1 / a == 1 / b;
-    // A strict comparison is necessary because `null == undefined`.
-    if (a == null || b == null) return a === b;
-    // Unwrap any wrapped objects.
-    if (a instanceof _) a = a._wrapped;
-    if (b instanceof _) b = b._wrapped;
-    // Compare `[[Class]]` names.
-    var className = toString.call(a);
-    if (className != toString.call(b)) return false;
-    switch (className) {
-      // Strings, numbers, dates, and booleans are compared by value.
-      case '[object String]':
-        // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
-        // equivalent to `new String("5")`.
-        return a == String(b);
-      case '[object Number]':
-        // `NaN`s are equivalent, but non-reflexive. An `egal` comparison is performed for
-        // other numeric values.
-        return a != +a ? b != +b : (a == 0 ? 1 / a == 1 / b : a == +b);
-      case '[object Date]':
-      case '[object Boolean]':
-        // Coerce dates and booleans to numeric primitive values. Dates are compared by their
-        // millisecond representations. Note that invalid dates with millisecond representations
-        // of `NaN` are not equivalent.
-        return +a == +b;
-      // RegExps are compared by their source patterns and flags.
-      case '[object RegExp]':
-        return a.source == b.source &&
-               a.global == b.global &&
-               a.multiline == b.multiline &&
-               a.ignoreCase == b.ignoreCase;
-    }
-    if (typeof a != 'object' || typeof b != 'object') return false;
-    // Assume equality for cyclic structures. The algorithm for detecting cyclic
-    // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
-    var length = aStack.length;
-    while (length--) {
-      // Linear search. Performance is inversely proportional to the number of
-      // unique nested structures.
-      if (aStack[length] == a) return bStack[length] == b;
-    }
-    // Add the first object to the stack of traversed objects.
-    aStack.push(a);
-    bStack.push(b);
-    var size = 0, result = true;
-    // Recursively compare objects and arrays.
-    if (className == '[object Array]') {
-      // Compare array lengths to determine if a deep comparison is necessary.
-      size = a.length;
-      result = size == b.length;
-      if (result) {
-        // Deep compare the contents, ignoring non-numeric properties.
-        while (size--) {
-          if (!(result = eq(a[size], b[size], aStack, bStack))) break;
-        }
-      }
-    } else {
-      // Objects with different constructors are not equivalent, but `Object`s
-      // from different frames are.
-      var aCtor = a.constructor, bCtor = b.constructor;
-      if (aCtor !== bCtor && !(_.isFunction(aCtor) && (aCtor instanceof aCtor) &&
-                               _.isFunction(bCtor) && (bCtor instanceof bCtor))) {
-        return false;
-      }
-      // Deep compare objects.
-      for (var key in a) {
-        if (_.has(a, key)) {
-          // Count the expected number of properties.
-          size++;
-          // Deep compare each member.
-          if (!(result = _.has(b, key) && eq(a[key], b[key], aStack, bStack))) break;
-        }
-      }
-      // Ensure that both objects contain the same number of properties.
-      if (result) {
-        for (key in b) {
-          if (_.has(b, key) && !(size--)) break;
-        }
-        result = !size;
-      }
-    }
-    // Remove the first object from the stack of traversed objects.
-    aStack.pop();
-    bStack.pop();
-    return result;
-  };
-
-  // Perform a deep comparison to check if two objects are equal.
-  _.isEqual = function(a, b) {
-    return eq(a, b, [], []);
-  };
-
-  // Is a given array, string, or object empty?
-  // An "empty" object has no enumerable own-properties.
-  _.isEmpty = function(obj) {
-    if (obj == null) return true;
-    if (_.isArray(obj) || _.isString(obj)) return obj.length === 0;
-    for (var key in obj) if (_.has(obj, key)) return false;
-    return true;
-  };
-
-  // Is a given value a DOM element?
-  _.isElement = function(obj) {
-    return !!(obj && obj.nodeType === 1);
-  };
-
-  // Is a given value an array?
-  // Delegates to ECMA5's native Array.isArray
-  _.isArray = nativeIsArray || function(obj) {
-    return toString.call(obj) == '[object Array]';
-  };
-
-  // Is a given variable an object?
-  _.isObject = function(obj) {
-    return obj === Object(obj);
-  };
-
-  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.
-  each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'], function(name) {
-    _['is' + name] = function(obj) {
-      return toString.call(obj) == '[object ' + name + ']';
-    };
-  });
-
-  // Define a fallback version of the method in browsers (ahem, IE), where
-  // there isn't any inspectable "Arguments" type.
-  if (!_.isArguments(arguments)) {
-    _.isArguments = function(obj) {
-      return !!(obj && _.has(obj, 'callee'));
-    };
-  }
-
-  // Optimize `isFunction` if appropriate.
-  if (typeof (/./) !== 'function') {
-    _.isFunction = function(obj) {
-      return typeof obj === 'function';
-    };
-  }
-
-  // Is a given object a finite number?
-  _.isFinite = function(obj) {
-    return isFinite(obj) && !isNaN(parseFloat(obj));
-  };
-
-  // Is the given value `NaN`? (NaN is the only number which does not equal itself).
-  _.isNaN = function(obj) {
-    return _.isNumber(obj) && obj != +obj;
-  };
-
-  // Is a given value a boolean?
-  _.isBoolean = function(obj) {
-    return obj === true || obj === false || toString.call(obj) == '[object Boolean]';
-  };
-
-  // Is a given value equal to null?
-  _.isNull = function(obj) {
-    return obj === null;
-  };
-
-  // Is a given variable undefined?
-  _.isUndefined = function(obj) {
-    return obj === void 0;
-  };
-
-  // Shortcut function for checking if an object has a given property directly
-  // on itself (in other words, not on a prototype).
-  _.has = function(obj, key) {
-    return hasOwnProperty.call(obj, key);
-  };
-
-  // Utility Functions
-  // -----------------
-
-  // Run Underscore.js in *noConflict* mode, returning the `_` variable to its
-  // previous owner. Returns a reference to the Underscore object.
-  _.noConflict = function() {
-    root._ = previousUnderscore;
-    return this;
-  };
-
-  // Keep the identity function around for default iterators.
-  _.identity = function(value) {
-    return value;
-  };
-
-  // Run a function **n** times.
-  _.times = function(n, iterator, context) {
-    var accum = Array(n);
-    for (var i = 0; i < n; i++) accum[i] = iterator.call(context, i);
-    return accum;
-  };
-
-  // Return a random integer between min and max (inclusive).
-  _.random = function(min, max) {
-    if (max == null) {
-      max = min;
-      min = 0;
-    }
-    return min + Math.floor(Math.random() * (max - min + 1));
-  };
-
-  // List of HTML entities for escaping.
-  var entityMap = {
-    escape: {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#x27;',
-      '/': '&#x2F;'
-    }
-  };
-  entityMap.unescape = _.invert(entityMap.escape);
-
-  // Regexes containing the keys and values listed immediately above.
-  var entityRegexes = {
-    escape:   new RegExp('[' + _.keys(entityMap.escape).join('') + ']', 'g'),
-    unescape: new RegExp('(' + _.keys(entityMap.unescape).join('|') + ')', 'g')
-  };
-
-  // Functions for escaping and unescaping strings to/from HTML interpolation.
-  _.each(['escape', 'unescape'], function(method) {
-    _[method] = function(string) {
-      if (string == null) return '';
-      return ('' + string).replace(entityRegexes[method], function(match) {
-        return entityMap[method][match];
-      });
-    };
-  });
-
-  // If the value of the named property is a function then invoke it;
-  // otherwise, return it.
-  _.result = function(object, property) {
-    if (object == null) return null;
-    var value = object[property];
-    return _.isFunction(value) ? value.call(object) : value;
-  };
-
-  // Add your own custom functions to the Underscore object.
-  _.mixin = function(obj) {
-    each(_.functions(obj), function(name){
-      var func = _[name] = obj[name];
-      _.prototype[name] = function() {
-        var args = [this._wrapped];
-        push.apply(args, arguments);
-        return result.call(this, func.apply(_, args));
-      };
-    });
-  };
-
-  // Generate a unique integer id (unique within the entire client session).
-  // Useful for temporary DOM ids.
-  var idCounter = 0;
-  _.uniqueId = function(prefix) {
-    var id = ++idCounter + '';
-    return prefix ? prefix + id : id;
-  };
-
-  // By default, Underscore uses ERB-style template delimiters, change the
-  // following template settings to use alternative delimiters.
-  _.templateSettings = {
-    evaluate    : /<%([\s\S]+?)%>/g,
-    interpolate : /<%=([\s\S]+?)%>/g,
-    escape      : /<%-([\s\S]+?)%>/g
-  };
-
-  // When customizing `templateSettings`, if you don't want to define an
-  // interpolation, evaluation or escaping regex, we need one that is
-  // guaranteed not to match.
-  var noMatch = /(.)^/;
-
-  // Certain characters need to be escaped so that they can be put into a
-  // string literal.
-  var escapes = {
-    "'":      "'",
-    '\\':     '\\',
-    '\r':     'r',
-    '\n':     'n',
-    '\t':     't',
-    '\u2028': 'u2028',
-    '\u2029': 'u2029'
-  };
-
-  var escaper = /\\|'|\r|\n|\t|\u2028|\u2029/g;
-
-  // JavaScript micro-templating, similar to John Resig's implementation.
-  // Underscore templating handles arbitrary delimiters, preserves whitespace,
-  // and correctly escapes quotes within interpolated code.
-  _.template = function(text, data, settings) {
-    var render;
-    settings = _.defaults({}, settings, _.templateSettings);
-
-    // Combine delimiters into one regular expression via alternation.
-    var matcher = new RegExp([
-      (settings.escape || noMatch).source,
-      (settings.interpolate || noMatch).source,
-      (settings.evaluate || noMatch).source
-    ].join('|') + '|$', 'g');
-
-    // Compile the template source, escaping string literals appropriately.
-    var index = 0;
-    var source = "__p+='";
-    text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
-      source += text.slice(index, offset)
-        .replace(escaper, function(match) { return '\\' + escapes[match]; });
-
-      if (escape) {
-        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
-      }
-      if (interpolate) {
-        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
-      }
-      if (evaluate) {
-        source += "';\n" + evaluate + "\n__p+='";
-      }
-      index = offset + match.length;
-      return match;
-    });
-    source += "';\n";
-
-    // If a variable is not specified, place data values in local scope.
-    if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
-
-    source = "var __t,__p='',__j=Array.prototype.join," +
-      "print=function(){__p+=__j.call(arguments,'');};\n" +
-      source + "return __p;\n";
-
-    try {
-      render = new Function(settings.variable || 'obj', '_', source);
-    } catch (e) {
-      e.source = source;
-      throw e;
-    }
-
-    if (data) return render(data, _);
-    var template = function(data) {
-      return render.call(this, data, _);
-    };
-
-    // Provide the compiled function source as a convenience for precompilation.
-    template.source = 'function(' + (settings.variable || 'obj') + '){\n' + source + '}';
-
-    return template;
-  };
-
-  // Add a "chain" function, which will delegate to the wrapper.
-  _.chain = function(obj) {
-    return _(obj).chain();
-  };
-
-  // OOP
-  // ---------------
-  // If Underscore is called as a function, it returns a wrapped object that
-  // can be used OO-style. This wrapper holds altered versions of all the
-  // underscore functions. Wrapped objects may be chained.
-
-  // Helper function to continue chaining intermediate results.
-  var result = function(obj) {
-    return this._chain ? _(obj).chain() : obj;
-  };
-
-  // Add all of the Underscore functions to the wrapper object.
-  _.mixin(_);
-
-  // Add all mutator Array functions to the wrapper.
-  each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
-    var method = ArrayProto[name];
-    _.prototype[name] = function() {
-      var obj = this._wrapped;
-      method.apply(obj, arguments);
-      if ((name == 'shift' || name == 'splice') && obj.length === 0) delete obj[0];
-      return result.call(this, obj);
-    };
-  });
-
-  // Add all accessor Array functions to the wrapper.
-  each(['concat', 'join', 'slice'], function(name) {
-    var method = ArrayProto[name];
-    _.prototype[name] = function() {
-      return result.call(this, method.apply(this._wrapped, arguments));
-    };
-  });
-
-  _.extend(_.prototype, {
-
-    // Start chaining a wrapped Underscore object.
-    chain: function() {
-      this._chain = true;
-      return this;
-    },
-
-    // Extracts the result from a wrapped and chained object.
-    value: function() {
-      return this._wrapped;
-    }
-
-  });
-
-}).call(this);
-
+},{}],135:[function(require,module,exports){
+module.exports=require(127)
+},{}],136:[function(require,module,exports){
+module.exports=require(128)
 },{}]},{},[3])
