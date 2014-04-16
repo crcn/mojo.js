@@ -32,13 +32,13 @@ Mojo was built initially to phase out old code, and itself - hence the modularit
 
 ### Examples:
 
-- [Hello World](http://jsfiddle.net/BZA8K/70/)
-- [Hello Input](http://jsfiddle.net/BZA8K/71/)
-- [Todo List](http://jsfiddle.net/BZA8K/75/)
-- [Dynamic Templates](http://jsfiddle.net/BZA8K/77/)
-- [States Component](http://jsfiddle.net/BZA8K/78/)
-- [Custom Components](http://jsfiddle.net/BZA8K/79/)
-- [dots benchmark](http://jsfiddle.net/BZA8K/80/)
+- [Hello World](http://jsfiddle.net/BZA8K/88/)
+- [Hello Input](http://jsfiddle.net/BZA8K/91/)
+- [Todo List](http://jsfiddle.net/BZA8K/92/)
+- [Dynamic Templates](http://jsfiddle.net/BZA8K/93/)
+- [States Component](http://jsfiddle.net/BZA8K/94/)
+- [Custom Components](http://jsfiddle.net/BZA8K/95/)
+- [dots benchmark](http://jsfiddle.net/BZA8K/96/)
 
 ### TODO:
 
@@ -70,7 +70,7 @@ console.log(view.get("name")); //craig
 
 #### view.attach(selector)
 
-Renders, and adds the view to the specific DOM element. [Here's an example](http://jsfiddle.net/BZA8K/81/):
+Renders, and adds the view to the specific DOM element. [Here's an example](http://jsfiddle.net/BZA8K/107/):
 
 ```javascript
 var view = new mojo.View({
@@ -81,7 +81,7 @@ view.attach($("#application"));
 
 #### DocumentFragment view.render()
 
-Renders the view. [For example](http://jsfiddle.net/BZA8K/82/):
+Renders the view. [For example](http://jsfiddle.net/BZA8K/97/):
 
 ```javascript
 var view = new mojo.View({
@@ -97,10 +97,6 @@ The [loaf section](https://github.com/classdojo/loaf.js). This is where everythi
 #### view.remove(callback)
 
 Removes the view from the DOM.
-
-#### view.callstack
-
-the queue for rendering / removing views. This is particularly useful if you need to perform an action before a view is completely rendered, or removed. [Transitions](https://github.com/classdojo/mojo.js/blob/master/src/views/base/decor/transition.coffee) are a good example.
 
 #### view.emit(event [, data...])
 
@@ -202,7 +198,7 @@ You can add your own template - just create a [custom decorator](#custom-decorat
 
 ### Bindings
 
-The bindings decorator is similar to Ember's computed properties feature. [For example](http://jsfiddle.net/BZA8K/83/):
+The bindings decorator is similar to Ember's computed properties feature. [For example](http://jsfiddle.net/BZA8K/98/):
 
 ```javascript
 var TestView = mojo.View.extend({
@@ -242,37 +238,10 @@ var TestView = mojo.View.extend({
 //init view somewhere
 ```
 
-### Transitions
-
-Pretty self explainatory - transitions allow you to ease a view into a particular state, whether entering, or exiting. Note that transitions require [jquery.transit](http://ricostacruz.com/jquery.transit/). [Here's an example](http://jsfiddle.net/BZA8K/22/):
-
-```javascript
-var HelloView = mojo.View.extend({
-
-    paper: paperclip.compile("notice"),
-
-    transition: {
-
-        enter: {
-            from: { opacity: 0, top: "-10px", position: "relative" },
-            to: { opacity: 1, top: "0px" }
-        },
-
-        exit: {
-            to: { opacity: 0, top: "10px" }
-        }
-    }
-});
-
-var view = new HelloView();
-view.attach($("#application"));
-```
-
-
 ### Sections
 
 
-Sections are what make up your application - they allow you to break down your app into smaller, more modular pieces. [Here's a basic example](http://jsfiddle.net/BZA8K/84/):
+Sections are what make up your application - they allow you to break down your app into smaller, more modular pieces. [Here's a basic example](http://jsfiddle.net/BZA8K/99/):
 
 ```javascript
 //views/main/header/logo.js
@@ -310,7 +279,7 @@ Mojo comes with a few built-in components: [lists](#list-component), and [states
 
 ### List Component
 
-List of views. [Here's an example](http://jsfiddle.net/BZA8K/75/):
+List of views. [Here's an example](http://jsfiddle.net/BZA8K/100/):
 
 ```javascript
 var TodosView = mojo.View.extend({
@@ -371,7 +340,7 @@ var TodosView = mojo.View.extend({
 
 ### States Component
 
-The states component allow you to toggle between multiple views. This is useful if you want to introduce something like routes into your application. [Here's an example](http://jsfiddle.net/BZA8K/27/):
+The states component allow you to toggle between multiple views. This is useful if you want to introduce something like routes into your application. [Here's an example](http://jsfiddle.net/BZA8K/101/):
 
 ```javascript
 var MainView = mojo.View.extend({
@@ -390,7 +359,7 @@ var MainView = mojo.View.extend({
 
 ### states.index
 
-the current index of the state. [For example](http://jsfiddle.net/BZA8K/78/):
+the current index of the state. [For example](http://jsfiddle.net/BZA8K/102/):
 
 ```javascript
 var MainView = mojo.View.extend({
@@ -412,7 +381,7 @@ console.log(view.get("sections.pages.index")); //0
 
 ### Custom Components
 
-Mojo.js allows you to register your own components. [Here's a basic example]((http://jsfiddle.net/BZA8K/79/):
+Mojo.js allows you to register your own components. [Here's a basic example](http://jsfiddle.net/BZA8K/103/):
 
 ```javascript
 //views/main/header/logo.js
@@ -450,7 +419,7 @@ var view = new HelloView({
 
 ### Custom Decorators
 
-There are some cases you might want to add your own decorator. Say for instance you want to add your own custom template engine. [No problem](http://jsfiddle.net/BZA8K/85/):
+There are some cases you might want to add your own decorator. Say for instance you want to add your own custom template engine. [No problem](http://jsfiddle.net/BZA8K/104/):
 
 decorator:
 
@@ -500,7 +469,7 @@ Allows for models to be referenced anywhere in the application. [See the variabl
 
 ## Property Scope
 
-Child views inherit properties from the parent view, just like variable scope in JavaScript. Therefore, you should always `define` properties you want to use within your views. [For example](http://jsfiddle.net/BZA8K/86/):
+Child views inherit properties from the parent view, just like variable scope in JavaScript. Therefore, you should always `define` properties you want to use within your views. [For example](http://jsfiddle.net/BZA8K/105/):
 
 ```javascript
 var user = new mojo.bindable.Object({
@@ -529,4 +498,4 @@ var view = new MainView();
 view.attach($("#application"));
 ```
 
-[Checkout what happens](http://jsfiddle.net/BZA8K/87/) when we define `user` in HeaderView. Notice that `user` isn't inherited anymore, and remains `undefined`.
+[Checkout what happens](http://jsfiddle.net/BZA8K/106/) when we define `user` in HeaderView. Notice that `user` isn't inherited anymore, and remains `undefined`.
