@@ -21,6 +21,7 @@ describe("core/basic-view#", function () {
   it("can create a view apart from the application", function () {
     var view = new mojo.View();
     expect(view.__isView).to.be(true);
+    view.render();
     expect(view.application).to.be(mojo.application);
     expect(view.models).to.be(mojo.application.models);
   });
