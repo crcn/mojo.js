@@ -156,13 +156,13 @@ describe("core/basic-view#", function () {
    */
 
 
-  it("can remove a view before it's rendered", function () {
+  it("cannot remove a view before it's rendered", function () {
     var view = app.createView("basic"), emitted;
     view.once("remove", function () {
       emitted = true;
     })
     view.remove();
-    expect(emitted).to.be(true);
+    expect(emitted).to.be(undefined);
   });
 
 
