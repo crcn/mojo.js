@@ -13,8 +13,6 @@ describe("core/basic-view#", function () {
   // - return doc fragment
   // - can re-render after remove
 
-
-
   /**
    */
 
@@ -227,5 +225,83 @@ describe("core/basic-view#", function () {
     view.__decorators = undefined;
     view.render();
     view.dispose();
-  })
+  });
+
+  /**
+   */
+
+  it("will call render", function () {
+    var view = new mojo.View({}, app), c = 0, e= 0;
+    view.willRender = function () {
+      c++;
+    }
+
+    view.once("render", function () {
+      expect(c).to.be(1);
+      e++;
+    });
+
+    view.render();
+    expect(e).to.be(1);
+
+  });
+
+  /**
+   */
+
+  it("did call render", function () {
+    var view = new mojo.View({}, app), c = 0, e= 0;
+    view.didRender = function () {
+      c++;
+    }
+
+    view.once("render", function () {
+      expect(c).to.be(0);
+      e++;
+    });
+
+    view.render();
+    expect(e).to.be(1);
+    expect(c).to.be(1);
+  });
+
+  /**
+   */
+
+  it("will call remove", function () {
+    var view = new mojo.View({}, app), c = 0, e= 0;
+    view.render();
+    view.willRemove = function () {
+      c++;
+    }
+
+    view.once("remove", function () {
+      expect(c).to.be(1);
+      e++;
+    });
+
+    view.remove();
+    expect(e).to.be(1);
+    expect(c).to.be(1);
+  });
+
+  /**
+   */
+
+  it("did call remove", function () {
+    var view = new mojo.View({}, app), c = 0, e= 0;
+    view.render();
+    view.didRemove = function () {
+      c++;
+    }
+
+    view.once("remove", function () {
+      expect(c).to.be(0);
+      e++;
+    });
+
+    view.remove();
+    expect(e).to.be(1);
+    expect(c).to.be(1);
+  });
 });
