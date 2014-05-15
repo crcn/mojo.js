@@ -135,16 +135,16 @@ Mojo.js has a few methods you can override if you need to something durring rend
 
 ```javascript
 var view = new mojo.View({
-  _onRender: function() {
-    //called on render
+  willRender: function() {
+    // called before render 
   },
-  _onRendered: function() {
-    //called on rendered
+  didRender: function() {
+    //called after render
   },
-  _onRemove: function() {
-    //called on remove
+  willRemove: function() {
+    //called before remove
   },
-  _onRemoved: function() {
+  didRemove: function() {
     //called on removed
   }
 });
