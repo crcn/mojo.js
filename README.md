@@ -68,17 +68,6 @@ var view = new SubView();
 console.log(view.get("name")); //craig
 ```
 
-#### view.attach(selector)
-
-Renders, and adds the view to the specific DOM element. [Here's an example](http://jsfiddle.net/BZA8K/107/):
-
-```javascript
-var view = new mojo.View({
-  paper: paperclip.compile("hello!")
-});
-view.attach($("#application"));
-```
-
 #### DocumentFragment view.render()
 
 Renders the view. [For example](http://jsfiddle.net/BZA8K/97/):
@@ -136,7 +125,7 @@ Mojo.js has a few methods you can override if you need to something durring rend
 ```javascript
 var view = new mojo.View({
   willRender: function() {
-    // called before render 
+    // called before render
   },
   didRender: function() {
     //called after render
@@ -164,7 +153,7 @@ By default, Mojo.js uses [paperclip.js](https://github.com/classdojo/paperclip.j
 var view = new mojo.View({
   paper: paperclip.compile("hello world!")
 });
-view.attach($("#application"));
+$("#application").append(view.render());
 ```
 
 You can also dynamically change the template. Say for instance you want to change the template depending on a model type, [here's what you can do](http://jsfiddle.net/BZA8K/77/):
@@ -272,7 +261,7 @@ var MainView = mojo.View.extend({
 });
 
 var mainView = new MainView();
-mainView.attach($("#application"));
+$("#application")..append(mainView.render());
 ```
 
 Mojo comes with a few built-in components: [lists](#list-component), and [states](#states-component).
@@ -406,7 +395,7 @@ var MainView = mojo.View.extend({
 });
 
 var mainView = new MainView();
-mainView.attach($("#application"));
+$("#application").append(mainView.render());
 ```
 
 Note that options provided for each section are automatically set to the component being created. The above equivalent might be:
@@ -495,7 +484,7 @@ var MainView = mojo.View.extend({
 
 
 var view = new MainView();
-view.attach($("#application"));
+$("#application").append(view.render());
 ```
 
 [Checkout what happens](http://jsfiddle.net/BZA8K/106/) when we define `user` in HeaderView. Notice that `user` isn't inherited anymore, and remains `undefined`.

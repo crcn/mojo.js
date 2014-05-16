@@ -196,30 +196,6 @@ describe("core/basic-view#", function () {
   /**
    */
 
-  it("can attach to a an element", function () {
-    var view = new mojo.View({}, app),
-    appended = 0;
-    view.__decorators = undefined;
-
-    view.attach({
-      appendChild: function (frag) {
-        expect(frag.nodeType).to.be(11);
-        appended++;
-      }
-    });
-    view.attach([{
-      appendChild: function (frag) {
-        expect(frag.nodeType).to.be(11);
-        appended++;
-      }
-    }]);
-
-    expect(appended).to.be(2);
-  });
-
-  /**
-   */
-
   it("can render() a view after it's been dispose()d", function () {
     var view = new mojo.View({}, app);
     view.__decorators = undefined;
