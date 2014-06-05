@@ -1,61 +1,24 @@
 {
   "name": "mojojs",
-  "version": "0.8.1",
-  "description": "modular mv+ JavaScript framework for node, and the web",
+  "version": "0.0.1",
+  "description": "",
   "main": "./lib/index.js",
-  "jam": {
-    "baseUrl": "public",
-    "packageDir": "public/vendor",
-    "dependencies": {
-      "jquery": "1.7.x",
-      "jquery-transit": "*",
-      "underscore": "*",
-      "events": "0.0.x",
-      "async": "0.2.x"
-    },
-    "config": {
-      "repository": "http://npm.classdojo.com:5984/jam",
-      "paths": {
-        "templates": "public/templates"
-      }
-    }
-  },
   "scripts": {
-    "test": "make test-node"
+    "build": "make all"
   },
-  "keywords": [
-    "mojo-plugin"
-  ],
   "repository": {
-    "url": "git://github.com/classdojo/mojo.js.git"
+    "type": "git",
+    "url": "https://crcn@github.com/classdojo/mojo.js.git"
   },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/classdojo/mojo.js/issues"
+  },
+  "homepage": "https://github.com/classdojo/mojo.js",
   "dependencies": {
-    "type-component": "0.0.x",
-    "bindable": "0.5.x",
-    "janitorjs": "0.0.4",
-    "factories": "0.0.x",
-    "loaf": "0.2.x",
-    "nofactor": "0.0.x",
-    "bindable-decor-bindings": "0.1.x",
-    "underscore": "1.4.x",
-    "mojo-paperclip": "0.3.x",
-    "protoclass": "0.0.5",
-    "subindable": "0.1.x",
-    "runlater": "0.0.x",
-    "poolparty": "0.0.x",
-    "flatstack": "0.0.10",
-    "boojs": "0.0.x",
-    "async": "0.x.x"
-  },
-  "devDependencies": {
-    "expect.js": "~0.2.0",
-    "paperclip": "0.3.x",
-    "jsdom": "~0.8.9",
-    "mocha": "~1.15.1",
-    "istanbul": "~0.1.46",
-    "coveralls": "~2.5.0",
-    "benchmark": "~1.0.0",
-    "browserify": "~3.24.2",
-    "yuidocjs": "~0.3.48"
+    "mojo-application": "0.0.8",
+    "mojo-paperclip": "0.4.4",
+    "mojo-views": "0.0.3"
   }
 }
