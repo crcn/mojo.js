@@ -85,6 +85,37 @@ describe("components/list#", function () {
     expect(view.render().toString()).to.be("hello johnhello craig")
   });
 
+  it("can sort a list by creating a sorter from an array of property names", function () {
+
+    var people = [
+      { _id: "craig", priority: 0 },
+      { _id: "john", priority: 1 },
+      { _id: "bob", priority: 0 },
+      { _id: "peter", priority: 1}
+    ]
+
+    var view = new mojo.View({
+      paper: paperclip.compile(
+        "{{ html: sections.items }}"
+      )
+    }, app).decorate({
+      sections: {
+        items: {
+          type: "list",
+          source: new bindable.Collection(people.map(function (obj) {
+            return new bindable.Object(obj);
+          })),
+          modelViewClass: mojo.View.extend({
+            paper: paperclip.compile("{{ model._id }}, ")
+          }),
+          sort: ["model.priority", "!model._id"]
+        }
+      }
+    });
+
+    expect(view.render().toString()).to.be("craig, bob, peter, john, ");
+  });
+
   it("can create a list", function () {
 
     var view = new mojo.View({}, app).decorate({
