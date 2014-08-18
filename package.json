@@ -17,8 +17,14 @@
   },
   "homepage": "https://github.com/classdojo/mojo.js",
   "dependencies": {
-    "mojo-application": "0.0.8",
-    "mojo-paperclip": "0.4.4",
-    "mojo-views": "0.0.3"
+    "mojo-application": "0.0.x",
+    "mojo-bootstrap": "0.0.x",
+    "mojo-models": "0.1.x",
+    "mojo-paperclip": "0.4.x",
+    "mojo-views": "0.1.x"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^1.21.4"
   }
 }
