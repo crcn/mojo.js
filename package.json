@@ -21,10 +21,13 @@
     "mojo-bootstrap": "0.0.x",
     "mojo-models": "0.1.x",
     "mojo-paperclip": "0.4.x",
-    "mojo-views": "0.1.x"
+    "mojo-router": "0.4.x",
+    "mojo-views": "0.1.x",
+    "paperclip": "0.3.x"
   },
   "devDependencies": {
-    "expect.js": "^0.3.1",
-    "mocha": "^1.21.4"
+    "expect.js": "0.3.1",
+    "mocha": "1.21.4",
+    "mojo-cli": "0.0.x"
   }
 }

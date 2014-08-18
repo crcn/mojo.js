@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="mojo.js"></script>
+    
+    <script type="text/x-paperclip" data-template-name="hello-world">
+      hello, what is your name? 
+
+      <input type="text" data-bind="{{ model: <~>name }}"></input>
+
+      {{#if: name}}
+        <h1>Hello {{name}}!</h1>
+      {{/}}
+    </script>
+  </head>
+
+  <body>
+    <script type="text/javascript">
+
+      var app = new mojo.Application();
+
+      var mainView = new mojo.views.Base({
+        paper: "hello-world"
+      }, app);
+
+      document.body.appendChild(mainView.render());
+    </script>
+  </body>
+</html>
