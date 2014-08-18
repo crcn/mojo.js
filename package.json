@@ -15,6 +15,10 @@
   "bugs": {
     "url": "https://github.com/classdojo/mojo.js/issues"
   },
+  "browser": {
+    "zepto": "./vendor/zepto.js",
+    "jquery": "./vendor/jquery.js"
+  },
   "homepage": "https://github.com/classdojo/mojo.js",
   "dependencies": {
     "mojo-application": "0.0.x",

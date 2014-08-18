@@ -1,6 +1,5 @@
 <html>
   <head>
-    <script type="text/javascript" src="jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="mojo.js"></script>
     
     <script type="text/x-paperclip" data-template-name="hello-world">
@@ -17,11 +16,9 @@
   <body>
     <script type="text/javascript">
 
-      var app = new mojo.Application();
-
       var mainView = new mojo.views.Base({
         paper: "hello-world"
-      }, app);
+      });
 
       document.body.appendChild(mainView.render());
     </script>
