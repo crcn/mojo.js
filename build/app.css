@@ -1,0 +1,20 @@
+body, html {
+  margin: 0px;
+  padding: 0px;
+}
+
+#todos {
+  margin: 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+
+#todos ul {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}

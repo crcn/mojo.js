@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/classdojo/mojo.js",
   "dependencies": {
+    "bindable": "0.5.x",
     "mojo-application": "0.0.x",
     "mojo-bootstrap": "0.0.x",
     "mojo-models": "0.1.x",
