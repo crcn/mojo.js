@@ -31,6 +31,7 @@
     "paperclip": "0.3.x"
   },
   "devDependencies": {
+    "jshint": "^2.5.4",
     "expect.js": "0.3.1",
     "mocha": "1.21.4",
     "mojo-cli": "0.0.x"

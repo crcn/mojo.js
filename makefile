@@ -11,6 +11,9 @@ browser:
 min:
 	./node_modules/.bin/mojo build . -m -o ./build/mojo.min.js
 
+lint:
+	./node_modules/.bin/jshint ./build/mojo.js
+
 test-watch:
 	./node_modules/.bin/_mocha $(ALL_TESTS) --timeout $(TIMEOUT) --ignore-leaks --bail --reporter $(REPORTER) -g $(ONLY) --watch ./test
 
