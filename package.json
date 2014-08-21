@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "description": "modular mv+ JavaScript framework for node, and the web",
   "main": "./lib/index.js",
   "jam": {
