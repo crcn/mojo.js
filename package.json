@@ -1,6 +1,6 @@
 {
   "name": "mojojs",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "description": "modular mv+ JavaScript framework for node, and the web",
   "main": "./lib/index.js",
   "jam": {
@@ -30,22 +30,23 @@
     "url": "git://github.com/classdojo/mojo.js.git"
   },
   "dependencies": {
-    "type-component": "0.0.x",
+    "async": "0.x.x",
     "bindable": "0.5.x",
-    "janitorjs": "0.0.4",
-    "factories": "0.0.x",
-    "loaf": "0.2.x",
-    "nofactor": "0.0.x",
     "bindable-decor-bindings": "0.1.x",
-    "underscore": "1.4.x",
-    "mojo-paperclip": "0.3.x",
-    "protoclass": "0.0.5",
-    "subindable": "0.1.x",
-    "runlater": "0.0.x",
-    "poolparty": "0.0.x",
-    "flatstack": "0.0.10",
     "boojs": "0.0.x",
-    "async": "0.x.x"
+    "factories": "0.0.x",
+    "flatstack": "0.0.10",
+    "janitorjs": "0.0.4",
+    "loaf": "0.2.x",
+    "mojo-animator": "0.0.x",
+    "mojo-paperclip": "0.3.x",
+    "nofactor": "0.0.x",
+    "poolparty": "0.0.x",
+    "protoclass": "0.0.5",
+    "runlater": "0.0.x",
+    "subindable": "0.1.x",
+    "type-component": "0.0.x",
+    "underscore": "1.4.x"
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
