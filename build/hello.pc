@@ -1,7 +1,0 @@
-hello, what is your name? 
-
-      <input type="text" data-bind="{{ model: <~>name }}"></input>
-
-      {{#if: name}}
-        <h1>Hello {{name}}!</h1>
-      {{/}}
