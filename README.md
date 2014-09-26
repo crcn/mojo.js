@@ -12,8 +12,7 @@ This library comes bundles with:
 ```html
 <html>
   <head>
-    <script type="text/javascript" src="
-//cdnjs.cloudflare.com/ajax/libs/mojo/0.9.0/mojo.min.js" data-main="./entry.js" />
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mojo/0.9.0/mojo.min.js" data-main="./entry.js" />
   </head>
   <body>
   </body>
