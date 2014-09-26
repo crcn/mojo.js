@@ -61,7 +61,8 @@ if (selfScript.getAttribute("data-inject") === "false") {
 (function (process,global){
 var MojoApplication = require("./application"),
 bindable            = require("bindable"),
-Inject              = require("inject");
+Inject              = require("inject"),
+BaseApplication     = require("mojo-application");
 
 // browser includes
 if (process.browser) {
@@ -74,7 +75,7 @@ require("paperclip");
 
 // paperclip template parser - registered as a global
 require("paperclip/lib/parser");
-global.application = new MojoApplication();
+global.application = BaseApplication.main = new MojoApplication();
 
 // expose ns
 module.exports = global.mojo = {
@@ -87,7 +88,7 @@ module.exports = global.mojo = {
 };
 
 }).call(this,require("OpdoqP"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./application":1,"./includes":2,"./inject":4,"OpdoqP":58,"bindable":9,"inject":289,"mojo-models":70,"mojo-views":139,"paperclip":189,"paperclip/lib/parser":254}],4:[function(require,module,exports){
+},{"./application":1,"./includes":2,"./inject":4,"OpdoqP":58,"bindable":9,"inject":289,"mojo-application":19,"mojo-models":70,"mojo-views":139,"paperclip":189,"paperclip/lib/parser":254}],4:[function(require,module,exports){
 (function (global){
 // injects the main application
 var path = require("path");
