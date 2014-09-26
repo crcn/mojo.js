@@ -33,7 +33,15 @@ Application.extend(MojoApplication, {
 module.exports = MojoApplication;
 
 },{"./plugins":5,"mojo-application":19,"mojo-bootstrap":43,"mojo-models":70,"mojo-paperclip":84,"mojo-router":86,"mojo-views":139}],2:[function(require,module,exports){
+(function (global){
 require("zepto"); 
+
+
+var allScripts = document.getElementsByTagName("script"),
+selfScript     = allScripts[allScripts.length - 1];
+
+
+
 require("inject"); // AMD / commonjs loader
 require("inject-css"); 
 require("inject-text"); 
@@ -42,6 +50,13 @@ require("inject-json");
 INJECT_PLUGINS.text(Inject);
 INJECT_PLUGINS.json(Inject);
 INJECT_PLUGINS.css(Inject);
+
+
+
+if (selfScript.getAttribute("data-inject") === "false") {
+  global.define = global.require = void 0;
+}
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"inject":289,"inject-css":290,"inject-json":291,"inject-text":292,"zepto":293}],3:[function(require,module,exports){
 (function (process,global){
 var MojoApplication = require("./application"),
@@ -72,15 +87,17 @@ module.exports = global.mojo = {
 
 }).call(this,require("OpdoqP"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./application":1,"./includes":2,"./inject":4,"OpdoqP":58,"bindable":9,"inject":289,"mojo-models":70,"mojo-views":139,"paperclip":189,"paperclip/lib/parser":254}],4:[function(require,module,exports){
+(function (global){
 // injects the main application
 var path = require("path");
 
 var mainScript = $("script[data-main]").attr("data-main");
 
-if (mainScript) { 
+if (mainScript && global.require != null) { 
   Inject.setModuleRoot(path.dirname(mainScript));
   Inject.require.run(path.basename(mainScript)); 
 }
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"path":57}],5:[function(require,module,exports){
 module.exports = function (app) {
   app.use(require("./waitForDOM"));
