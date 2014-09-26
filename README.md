@@ -6,7 +6,7 @@ This library comes bundles with:
 [mojo-models](/mojo-js/mojo-models), [views](/mojo-js/mojo-views), [mojo-paperclip](/mojo-js/paperclip.js),
 [mojo-router](/mojo-js/mojo-router.js), [mojo-bootstrap](/mojo-js/mojo-bootstrap), [zepto](http://zeptojs.com/), and [inject.js](http://www.injectjs.com/).
 
-## Examples
+### Examples
 
 - [Todo List](https://github.com/mojo-js/mojo.js/blob/master/build/examples/todoList/index.html)
 
