@@ -1,3 +1,3 @@
 Mojo.js is a customizable MV+ framework. This library comes bundles with: 
-[models](/classdojo/mojo-models), [views](/classdojo/mojo-views), [template engine](/classdojo/paperclip.js),
-[HTTP router](/classdojo/kubrik.js), [mediator](/classdojo/mediocre.js).
+[models](/mojo-js/mojo-models), [views](/mojo-js/mojo-views), [template engine](/mojo-js/paperclip.js),
+[HTTP router](/mojo-js/mojo-router.js), [mediator](/mojo-js/mojo-bootstrap).
