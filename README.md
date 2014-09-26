@@ -3,11 +3,21 @@ Mojo.js is a customizable, modular JavaScript framework inspired by Node.js and 
 Mojo.js was designed with the Strangler Pattern in mind. If you already have a pre-existing application, you can easily build Mojo on-top of it without a full, application re-write. Meaning you can slowly ease into it without worrying about the all-or-nothing approach associated with most JavaScript frameworks.
 
 This library comes bundles with: 
-[models](/mojo-js/mojo-models), [views](/mojo-js/mojo-views), [template engine](/mojo-js/paperclip.js),
-[HTTP router](/mojo-js/mojo-router.js), [mediator](/mojo-js/mojo-bootstrap).
+[mojo-models](/mojo-js/mojo-models), [views](/mojo-js/mojo-views), [mojo-paperclip](/mojo-js/paperclip.js),
+[mojo-router](/mojo-js/mojo-router.js), [mojo-bootstrap](/mojo-js/mojo-bootstrap), [zepto](http://zeptojs.com/), and [inject.js](http://www.injectjs.com/).
 
 ## Browser API
 
-```javascript
+The browser API contains an eas
 
+```html
+<html>
+  <head>
+    <script type="text/javascript" src="/js/mojo.min.js" data-main="./entry.js" />
+  </head>
+  <body>
+  </body>
+</html>
 ```
+
+### 
