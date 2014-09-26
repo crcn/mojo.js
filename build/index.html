@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="app.css">
+    <script type="text/javascript" src="mojo.js"></script>
+
+    <script type="text/x-paperclip" data-template-name="todos">
+      <div id="todos">
+
+        <h1>Todo Items</h1>
+
+        <input type="text" data-bind="{{ model: <~>newTodoText, onEnter: addNewTodo() }}" placeholder="new todo item"></input>
+        <ul>
+          {{ html: children.todos }}  
+        </ul>
+
+        <button data-bind="{{ onClick: clearTodos() }}">clear completed</button>
+      </div>
+    </script>
+    
+    <script type="text/x-paperclip" data-template-name="todo-item">
+      <li data-bind="{{ onClick: model.done = !model.done}}">
+        <input type="checkbox" data-bind="{{ model: <~>model.done }}"></input> {{~model.text}}
+      </li>
+    </script>
+  </head>
+
+  <body>
+    <script type="text/javascript">
+
+      // the initial todo models
+      var todos = new mojo.Collection([
+        new mojo.Object({ text: "clean car", done: true }),
+        new mojo.Object({ text: "walk dog", done: false })
+      ]);
+
+      // a list of the todos
+      var todosView = new mojo.views.List({
+        source: todos,
+        modelViewClass: mojo.views.Base.extend({
+          paper: "todo-item"
+        })
+      });
+
+      // the main todos view
+      var mainView = new mojo.views.Base({
+
+        paper: "todos",
+
+        children: {
+          todos: todosView
+        },
+
+        // adds a new todo item
+        addNewTodo: function () {
+          if (!this.newTodoText) return;
+          todos.push(new mojo.Object({ text: this.newTodoText }));
+          this.set("newTodoText", void 0);
+        },
+
+        // removes all completed todo items
+        clearTodos: function () {
+          for (var i = todos.length; i--;) {
+            if (todos.at(i).get("done")) {
+              todos.splice(i, 1);
+            }
+          }
+        }
+      });
+
+      document.body.appendChild(mainView.render());
+    </script>
+  </body>
+</html>
