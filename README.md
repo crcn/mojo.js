@@ -17,7 +17,7 @@ index.html:
 ```html
 <html>
   <head>
-    <script type="text/javascript" data-main="./entry.js" src="//cdnjs.cloudflare.com/ajax/libs/mojo/0.9.0/mojo.min.js" />
+    <script type="text/javascript" data-main="entry.js" src="//cdnjs.cloudflare.com/ajax/libs/mojo/0.9.0/mojo.min.js" />
   </head>
   <body>
   </body>
