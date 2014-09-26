@@ -1,7 +1,7 @@
 {
   "name": "mojojs",
   "description": "",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "main": "./lib/index.js",
   "scripts": {
     "build": "make all"
