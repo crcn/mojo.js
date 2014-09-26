@@ -35,6 +35,8 @@ var HelloView = mojo.views.Base.extend({
 // waits for document.body to be available.
 application.bootstrap(function () {
   var view = new HelloView({ message: "World" }, application);
+  
+  // displays "Hello World!"
   document.body.appendChild(view.render());
 });
 
