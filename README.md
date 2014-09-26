@@ -10,7 +10,7 @@ This library comes bundles with:
 
 - [Todo List](https://github.com/mojo-js/mojo.js/blob/master/build/examples/todoList/index.html)
 
-## Browser API
+#### Hello World
 
 index.html:
 
@@ -27,6 +27,16 @@ index.html:
 entry.js:
 
 ```javascript
+var HelloView = mojo.views.Base.extend({
+  paper: "<div>hello {{message}}!</div>"
+});
+
+// bootstrap first. Important so the application loads properly -
+// waits for document.body to be available.
+application.bootstrap(function () {
+  var view = new HelloView({ message: "World" }, application);
+  document.body.appendChild(view.render());
+});
 
 ```
 
