@@ -78,6 +78,7 @@ global.application = new MojoApplication();
 
 // expose ns
 module.exports = global.mojo = {
+  application : global.application,
   Application : MojoApplication,
   Object      : bindable.Object,
   Collection  : bindable.Collection,
