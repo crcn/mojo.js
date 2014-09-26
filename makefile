@@ -6,6 +6,9 @@ ONLY = "."
 
 all: browser min
 
+run-examples:
+	static build
+
 browser:
 	./node_modules/.bin/mojo build . -o ./build/mojo.js
 
