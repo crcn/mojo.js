@@ -1,7 +1,7 @@
 {
   "name": "mojojs",
   "description": "",
-  "version": "0.9.7",
+  "version": "0.9.10",
   "main": "./lib/index.js",
   "scripts": {
     "build": "make all"
@@ -28,8 +28,8 @@
     "bindable": "0.6.x",
     "inject": "^1.0.0-beta2",
     "mojo-application": "0.1.x",
-    "mojo-bootstrap": "0.0.x",
-    "mojo-models": "0.2.x",
+    "mojo-bootstrap": "0.1.x",
+    "mojo-models": "0.3.x",
     "mojo-paperclip": "0.6.x",
     "mojo-router": "0.6.x",
     "mojo-views": "0.2.x",
