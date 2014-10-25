@@ -1,8 +1,12 @@
-
+MojoJS is a fast, customizable JavaScript framework that runs on any platform. 
 
 This library comes pre-bundled with: 
 [mojo-models](/mojo-js/mojo-models), [views](/mojo-js/mojo-views), [mojo-paperclip](/mojo-js/paperclip.js),
 [mojo-router](/mojo-js/mojo-router.js), [mojo-bootstrap](/mojo-js/mojo-bootstrap), [zepto](http://zeptojs.com/), and [inject.js](http://www.injectjs.com/).
+
+### See also
+
+- [starter kit](https://github.com/mojo-js/mojo-starter) - seed application. Helps you get started with Mojo and browserify (commonjs).
 
 ### Projects using Mojo
 
