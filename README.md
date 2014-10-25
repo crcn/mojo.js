@@ -1,4 +1,4 @@
-MojoJS is a fast, customizable JavaScript framework that runs on any platform. 
+MojoJS is a fast, customizable JavaScript MVC framework that runs on NodeJS, and Web. 
 
 This library comes pre-bundled with: 
 [mojo-models](/mojo-js/mojo-models), [views](/mojo-js/mojo-views), [mojo-paperclip](/mojo-js/paperclip.js),
