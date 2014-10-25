@@ -32,7 +32,7 @@ use **commonjs** (browserify, NodeJS), or **amd** (requirejs, injectjs) when org
   <body>
 
     <script type="text/x-paperclip" id="hello-template">
-      hello world! What's your name?
+      Hello! What's your name?
 
       <input type="text" data-bind="{{ model: <~>name }}"></input>
 
