@@ -1,3 +1,0 @@
-<li data-bind="{{ onClick: model.done = !model.done}}">
-  <input type="checkbox" data-bind="{{ model: <~>model.done }}"></input> {{~model.text}}
-</li>
