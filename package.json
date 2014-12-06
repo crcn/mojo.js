@@ -1,7 +1,7 @@
 {
   "name": "mojojs",
   "description": "",
-  "version": "0.9.10",
+  "version": "0.10.0",
   "main": "./lib/index.js",
   "scripts": {
     "build": "make all"
@@ -25,16 +25,16 @@
   },
   "homepage": "https://github.com/classdojo/mojo.js",
   "dependencies": {
-    "bindable": "0.6.x",
-    "inject": "^1.0.0-beta2",
-    "mojo-application": "0.1.x",
-    "mojo-bootstrap": "0.1.x",
-    "mojo-models": "0.3.x",
-    "mojo-paperclip": "0.6.x",
-    "mojo-router": "0.6.x",
-    "mojo-views": "0.2.x",
+    "bindable-object": "0.0.x",
+    "bindable-collection": "0.0.x",
+    "mojo-application": "0.2.x",
+    "mojo-bootstrap": "0.2.x",
+    "mojo-models": "0.4.x",
+    "mojo-paperclip": "0.7.x",
+    "mojo-router": "0.7.x",
+    "mojo-views": "0.3.x",
     "node-static": "^0.7.6",
-    "paperclip": "0.5.x"
+    "paperclip": "0.6.x"
   },
   "devDependencies": {
     "expect.js": "0.3.1",
