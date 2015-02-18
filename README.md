@@ -6,6 +6,8 @@ This library comes pre-bundled with:
 
 ### See also
 
+[![Join the chat at https://gitter.im/mojo-js/mojo.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mojo-js/mojo.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 - [starter kit](https://github.com/mojo-js/mojo-starter) - seed application. Helps you get started with Mojo and browserify (commonjs).
 
 ### Projects using Mojo
